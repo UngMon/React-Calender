@@ -1,0 +1,35 @@
+.header {
+  width: 90%;
+  height: 4rem;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+  background-color: transparent;
+  display: flex;
+  justify-content: space-between;
+  justify-items: center;
+}
+
+.header div {
+  margin: 0 0 0 1rem;
+  font-size: 2rem;
+  font-weight: bold;
+}
+
+.header nav {
+  display: block;
+  margin: 0;
+}
+
+.header ul {
+  margin-right: 2rem;
+  padding: 0;
+  display: flex;
+}
+
+.header li {
+  margin: 0 1rem;
+  padding: 0;
+  list-style: none;
+  font-size: 1rem;
+  font-weight: bold;
+}
