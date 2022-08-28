@@ -1,6 +1,13 @@
-import classes from "./Calender.module.css";
+import { useState } from "react";
+import AddEvent from "./AddEvent";
+import "./Calender.css";
+
+// const week = [0, 1, 2, 3, 4, 5, 6]
+
 
 const Calender = (props) => {
+  const [eventMordal, setEventMordal]  = useState(false);
+
   let thisDates = []; //div태그 생성을 위한 날짜 배열 생성
   let differenceDay = 0;
 
@@ -45,14 +52,34 @@ const Calender = (props) => {
     }
   }
 
+  const dateClickHandler = () => {
+    setEventMordal((prevState) => !prevState)
+    console.log(eventMordal);
+  };
+
+  const thisDateLength = thisDates.length / 7;
 
   return (
-    <div className={classes.calender}>
-      {thisDates.map((date, idx) => (
-        <div key={idx} className={classes.calender_div}>
-          <div className={classes.calender_day}>{date}</div>
+    <div>
+      <div className="weekname">
+        <div>일</div>
+        <div>월</div>
+        <div>화</div>
+        <div>수</div>
+        <div>목</div>
+        <div>금</div>
+        <div>토</div>
+      </div>
+      <div className="presentation">
+        <div className={thisDateLength === 6 ? "week-six" : "week-fifth"}>
+          {thisDates.map((date, idx) => (
+            <div key={idx} className="calender_div" onClick={dateClickHandler}>
+              <div className="calender_day">{date}</div>
+            </div>
+          ))}
         </div>
-      ))}
+      </div>
+      {eventMordal && <AddEvent />}
     </div>
   );
 };
