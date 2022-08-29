@@ -1,12 +1,13 @@
-import { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { modalActions } from "../store/modal-slice";
 import AddEvent from "./AddEvent";
 import "./Calender.css";
 
-// const week = [0, 1, 2, 3, 4, 5, 6]
-
+// const week = [0, 1, 2, 3, 4, 5, 6];
 
 const Calender = (props) => {
-  const [eventMordal, setEventMordal]  = useState(false);
+  const dispatch = useDispatch();
+  const eventModal = useSelector((state) => state.modal);
 
   let thisDates = []; //div태그 생성을 위한 날짜 배열 생성
   let differenceDay = 0;
@@ -14,7 +15,7 @@ const Calender = (props) => {
   if (props.prevDay === 0) {
     thisDates.push(props.prevDate);
 
-    for (let i = 1; i <= props.lastDayOfThisMonth; i++) {
+    for (let i = 1; i <= props.lastDateOfThisMonth; i++) {
       thisDates.push(i);
     }
 
@@ -26,7 +27,7 @@ const Calender = (props) => {
       }
     }
   } else if (props.prevDay === 6) {
-    for (let i = 1; i < props.lastDayOfThisMonth + 1; i++) {
+    for (let i = 1; i < props.lastDateOfThisMonth + 1; i++) {
       thisDates.push(i);
     }
     differenceDay = 35 - thisDates.length;
@@ -37,7 +38,7 @@ const Calender = (props) => {
     for (let i = props.prevDate - props.prevDay; i < props.prevDate + 1; i++) {
       thisDates.push(i);
     }
-    for (let j = 1; j < props.lastDayOfThisMonth + 1; j++) {
+    for (let j = 1; j < props.lastDateOfThisMonth + 1; j++) {
       thisDates.push(j);
     }
     if (thisDates.length > 35) {
@@ -52,15 +53,21 @@ const Calender = (props) => {
     }
   }
 
-  const dateClickHandler = () => {
-    setEventMordal((prevState) => !prevState)
-    console.log(eventMordal);
+  const dateClickHandler = (index) => {
+    dispatch(modalActions.toggle(index));
   };
 
   const thisDateLength = thisDates.length / 7;
 
   return (
     <div>
+      {eventModal.isVisible && (
+        <AddEvent
+          todayYear={props.todayYear}
+          todayMonth={props.todayMonth}
+          todayDate={eventModal.clickedDate}
+        />
+      )}
       <div className="weekname">
         <div>일</div>
         <div>월</div>
@@ -73,13 +80,16 @@ const Calender = (props) => {
       <div className="presentation">
         <div className={thisDateLength === 6 ? "week-six" : "week-fifth"}>
           {thisDates.map((date, idx) => (
-            <div key={idx} className="calender_div" onClick={dateClickHandler}>
+            <div
+              key={idx}
+              className="calender_div"
+              onClick={() => dateClickHandler(date)}
+            >
               <div className="calender_day">{date}</div>
             </div>
           ))}
         </div>
       </div>
-      {eventMordal && <AddEvent />}
     </div>
   );
 };

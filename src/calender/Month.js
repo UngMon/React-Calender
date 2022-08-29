@@ -1,67 +1,72 @@
-import { useState } from "react";
 import Calender from "./Calender";
-
-let thisYear = new Date().getFullYear(); // 이번 년도
-let thisMonth = new Date().getMonth(); // 이번 달
-console.log('랜더링확인')
+import { useDispatch, useSelector } from "react-redux";
+import { monthActions } from "../store/month-slice";
 
 const Month = () => {
-  const [monthState, setMonthState] = useState({ thisYear, thisMonth });
+  const dispatch = useDispatch();
 
-  const lastDayOfThisMonth = new Date(
-    monthState.thisYear,
-    monthState.thisMonth + 1,
-    0
-  ).getDate(); // 이 달 말일
+  const monthInfo = useSelector(state => state.month);
 
-  const prevDate = new Date(
-    monthState.thisYear,
-    monthState.thisMonth,
-    0
-  ).getDate(); // 저번 달 마지막 날
 
-  const prevDay = new Date(
-    monthState.thisYear,
-    monthState.thisMonth,
-    0
-  ).getDay(); // 저번 달 마지막 날 요일 0~6
-
-  const prevMonthHandler = () => {
-    if (thisMonth === 0) {
-      thisYear -= 1;
-      thisMonth = 11;
-      setMonthState({ thisYear, thisMonth });
-    } else {
-      thisMonth -= 1;
-      setMonthState({ thisYear, thisMonth });
-    }
+  const movePrevMonthHandler = () => {
+    dispatch(monthActions.prevMonth());
   };
 
-  const nextMonthHandler = () => {
-    if (thisMonth === 11) {
-      thisYear += 1;
-      thisMonth = 0;
-      setMonthState({ thisYear, thisMonth });
-    } else {
-      thisMonth += 1;
-      setMonthState({ thisYear, thisMonth });
-    }
+  const moveNextMonthHandler = () => {
+    dispatch(monthActions.nextMonth());
   };
 
   return (
     <div>
-      <button onClick={prevMonthHandler}>prev</button>
+      <button onClick={movePrevMonthHandler}>prev</button>
       <span>
-        {monthState.thisYear}년 {monthState.thisMonth + 1}월
+        {monthInfo.thisYear}년 {monthInfo.thisMonth + 1}월
       </span>
-      <button onClick={nextMonthHandler}>next</button>
+      <button onClick={moveNextMonthHandler}>next</button>
       <Calender
-        lastDayOfThisMonth={lastDayOfThisMonth}
-        prevDate={prevDate}
-        prevDay={prevDay}
+        lastDateOfThisMonth={monthInfo.lastDateOfThisMonth}
+        prevDate={monthInfo.prevMonthLastDate}
+        prevDay={monthInfo.prevMonthLastDay}
+        todayYear={monthInfo.thisYear}
+        todayMonth={monthInfo.thisMonth}
       />
     </div>
   );
 };
 
 export default Month;
+
+// const today = new Date(); // 현재 날짜 객체 생성
+// let thisYear = today.getFullYear(); // 이번 년도
+// let thisMonth = today.getMonth(); // 이번 달
+
+// const [thisMonthState, setThisMonthState] = useState({ thisYear, thisMonth });
+// const endOfThisMonthInfo = new Date(
+//   thisMonthState.thisYear,
+//   thisMonthState.thisMonth + 1,
+//   0
+// ); // 이달 말일
+// const lastDayOfThisMonth = endOfThisMonthInfo.getDate(); //
+
+// const prevMonthInfo = new Date(
+//   thisMonthState.thisYear,
+//   thisMonthState.thisMonth,
+//   0
+// ); // 저번 달에 대한 정보
+// const prevDate = prevMonthInfo.getDate(); // 저번 달 마지막 날
+// const prevDay = prevMonthInfo.getDay(); // 저번 달 마지막 날 요일 0~6
+
+// const movePrevMonthHandler = () => {
+//   if (thisMonth === 0) {
+//     thisYear -= 1;
+//     thisMonth = 11;
+//     setThisMonthState({ thisYear, thisMonth });
+//     console.log(thisMonthState);
+//   } else {
+//     thisMonth -= 1;
+//     setThisMonthState({ thisYear, thisMonth });
+//     console.log(thisMonthState);
+//   }
+// };
+
+// const moveNextMonthHandler = () => {};
