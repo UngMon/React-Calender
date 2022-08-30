@@ -10,7 +10,6 @@ const initialDateInfo = {
   lastDateOfThisMonth: new Date(todayYear, todayMonth + 1, 0).getDate(),
   prevMonthLastDate: new Date(todayYear, todayMonth, 0).getDate(),
   prevMonthLastDay: new Date(todayYear, todayMonth, 0).getDay(),
-  todo: [],
 };
 
 const monthSlice = createSlice({

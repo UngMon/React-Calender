@@ -8,6 +8,7 @@ import "./Calender.css";
 const Calender = (props) => {
   const dispatch = useDispatch();
   const eventModal = useSelector((state) => state.modal);
+  const todayDate = useSelector((state) => state.month.todayDate);
 
   let thisDates = []; //div태그 생성을 위한 날짜 배열 생성
   let differenceDay = 0;
@@ -52,6 +53,7 @@ const Calender = (props) => {
       }
     }
   }
+  console.log(thisDates);
 
   const dateClickHandler = (index) => {
     dispatch(modalActions.toggle(index));
@@ -85,7 +87,14 @@ const Calender = (props) => {
               className="calender_div"
               onClick={() => dateClickHandler(date)}
             >
-              <div className="calender_day">{date}</div>
+              <div
+                className={`calender_day ${
+                  todayDate === idx ? "today" : "date"
+                }`}
+              >
+                {date}
+              </div>
+              {/* {date.todos.length !== 0 && <div></div>} */}
             </div>
           ))}
         </div>
