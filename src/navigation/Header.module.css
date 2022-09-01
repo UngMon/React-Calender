@@ -1,35 +1,27 @@
 .header {
-  width: 90%;
-  height: 4rem;
-  margin: 0 auto;
-  padding: 2rem 1rem;
-  background-color: transparent;
+  width: 95%;
+  height: 2rem;
+  margin: 1rem auto 0.5rem;
   display: flex;
   justify-content: space-between;
-  justify-items: center;
+  align-items: center;
 }
 
 .header div {
-  margin: 0 0 0 1rem;
-  font-size: 2rem;
+  font-size: 1.2rem;
   font-weight: bold;
 }
 
-.header nav {
-  display: block;
-  margin: 0;
-}
-
 .header ul {
-  margin-right: 2rem;
+  margin: 0;
   padding: 0;
   display: flex;
+  list-style: none;
+  align-items: stretch;
 }
 
 .header li {
-  margin: 0 1rem;
-  padding: 0;
-  list-style: none;
+  margin: 0 1rem 0 1.5rem;
   font-size: 1rem;
   font-weight: bold;
 }

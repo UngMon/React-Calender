@@ -1,5 +1,4 @@
 import { Fragment } from "react";
-import "./App.css";
 import Header from './navigation/Header'
 import Month from "./calender/Month";
 

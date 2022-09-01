@@ -1,12 +1,12 @@
-import Calender from "./Calender";
 import { useDispatch, useSelector } from "react-redux";
 import { monthActions } from "../store/month-slice";
+import Calender from "./Calender";
+import "./Month.css";
 
 const Month = () => {
   const dispatch = useDispatch();
 
-  const monthInfo = useSelector(state => state.month);
-
+  const monthInfo = useSelector((state) => state.month);
 
   const movePrevMonthHandler = () => {
     dispatch(monthActions.prevMonth());
@@ -15,22 +15,22 @@ const Month = () => {
   const moveNextMonthHandler = () => {
     dispatch(monthActions.nextMonth());
   };
-
   return (
-    <div>
-      <button onClick={movePrevMonthHandler}>prev</button>
-      <span>
-        {monthInfo.thisYear}년 {monthInfo.thisMonth + 1}월
-      </span>
-      <button onClick={moveNextMonthHandler}>next</button>
+    <>
+      <div className="main-area">
+        <button onClick={movePrevMonthHandler}>prev</button>
+        <span>
+          {monthInfo.year}년 {monthInfo.month + 1}월
+        </span>
+        <button onClick={moveNextMonthHandler}>next</button>
+      </div>
       <Calender
-        lastDateOfThisMonth={monthInfo.lastDateOfThisMonth}
-        prevDate={monthInfo.prevMonthLastDate}
-        prevDay={monthInfo.prevMonthLastDay}
-        todayYear={monthInfo.thisYear}
-        todayMonth={monthInfo.thisMonth}
+        year={monthInfo.year}
+        month={monthInfo.month}
+        firstDay={monthInfo.firstDay}
+        lastDate={monthInfo.lastDate}
       />
-    </div>
+    </>
   );
 };
 

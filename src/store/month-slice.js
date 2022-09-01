@@ -3,11 +3,14 @@ import { createSlice } from "@reduxjs/toolkit";
 const today = new Date();
 const todayYear = today.getFullYear();
 const todayMonth = today.getMonth();
+const todayDate = today.getDate();
 
 const initialDateInfo = {
-  thisYear: todayYear,
-  thisMonth: todayMonth,
-  lastDateOfThisMonth: new Date(todayYear, todayMonth + 1, 0).getDate(),
+  year: todayYear,
+  month: todayMonth,
+  date: todayDate,
+  firstDay: new Date(todayYear, todayMonth, 1).getDay(),
+  lastDate: new Date(todayYear, todayMonth + 1, 0).getDate(),
   prevMonthLastDate: new Date(todayYear, todayMonth, 0).getDate(),
   prevMonthLastDay: new Date(todayYear, todayMonth, 0).getDay(),
 };
@@ -17,31 +20,28 @@ const monthSlice = createSlice({
   initialState: initialDateInfo,
   reducers: {
     prevMonth(state) {
-      if (state.thisMonth === 0) {
-        state.thisMonth = 11;
-        state.thisYear -= 1;
-        state.lastDateOfThisMonth = new Date(state.thisYear, state.thisMonth + 1, 0).getDate();
-        state.prevMonthLastDate = new Date(state.thisYear, state.thisMonth, 0).getDate();
-        state.prevMonthLastDay = new Date(state.thisYear, state.thisMonth, 0).getDay();
+      if (state.month === 0) {
+        state.month = 11;
+        state.year -= 1;
+        state.firstDay = new Date(state.year, state.month, 1).getDay();
+        state.lastDate = new Date(state.year, state.month + 1, 0).getDate();
       } else {
-        state.thisMonth -= 1;
-        state.lastDateOfThisMonth = new Date(state.thisYear, state.thisMonth + 1, 0).getDate();
-        state.prevMonthLastDate = new Date(state.thisYear, state.thisMonth, 0).getDate();
-        state.prevMonthLastDay = new Date(state.thisYear, state.thisMonth, 0).getDay();
+        state.month -= 1;
+        state.firstDay = new Date(state.year, state.month, 1).getDay();
+        state.lastDate = new Date(state.year, state.month + 1, 0).getDate();
       }
     },
     nextMonth(state) {
-      if (state.thisMonth === 11) {
-        state.thisYear += 1;
-        state.thisMonth = 0;
-        state.lastDateOfThisMonth = new Date(state.thisYear, state.thisMonth + 1, 0).getDate();
-        state.prevMonthLastDate = new Date(state.thisYear, state.thisMonth, 0).getDate();
-        state.prevMonthLastDay = new Date(state.thisYear, state.thisMonth, 0).getDay();
+      if (state.month === 11) {
+        state.year += 1;
+        state.month = 0;
+        state.firstDay = new Date(state.year, state.month, 1).getDay();
+        state.lastDate = new Date(state.year, state.month + 1, 0).getDate();
       } else {
-        state.thisMonth += 1;
-        state.lastDateOfThisMonth = new Date(state.thisYear, state.thisMonth + 1, 0).getDate();
-        state.prevMonthLastDate = new Date(state.thisYear, state.thisMonth, 0).getDate();
-        state.prevMonthLastDay = new Date(state.thisYear, state.thisMonth, 0).getDay();
+        state.month += 1;
+        state.firstDay = new Date(state.year, state.month, 1).getDay();
+        state.lastDate = new Date(state.year, state.month + 1, 0).getDate();
+
       }
     },
   },

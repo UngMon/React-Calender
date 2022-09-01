@@ -1,0 +1,44 @@
+.calender {
+  width: 100%;
+  height: 80%;
+  margin: 0;
+  padding: 0;
+}
+
+.table {
+  width: 99%;
+  margin: 0 auto;
+  height: 100%;
+}
+
+.weekname {
+  height: 5%;
+  text-align: left;
+  background-color: lightgray;
+}
+
+.weekname tr {
+  width: 100%;
+}
+
+.weekname th {
+  padding: 0 5px;
+}
+
+.presentation tr {
+  height: auto;
+  padding: 0;
+}
+
+.presentation td {
+  padding: 0 5px;
+  height: auto;
+}
+
+.presentation td div {
+  height: 80%;
+}
+
+.presentation div {
+  height: 50%;
+}
