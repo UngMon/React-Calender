@@ -4,14 +4,12 @@ import classes from "./Calender.module.css";
 import MakeCaledner from "./MakeCalender";
 
 const Calender = ({ year, month, firstDay, lastDate }) => {
-  const eventModal = useSelector((state) => state.modal);
+  const addModal = useSelector((state) => state.modal);
 
   return (
     <div className={classes.calender}>
-      {eventModal.isVisible && (
-        <AddEvent
-          todayDate={eventModal.clickedDate}
-        />
+      {addModal.isVisible && (
+        <AddEvent/>
       )}
       <table className={classes.table}>
         <thead className={classes.weekname}>

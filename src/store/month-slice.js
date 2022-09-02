@@ -11,8 +11,6 @@ const initialDateInfo = {
   date: todayDate,
   firstDay: new Date(todayYear, todayMonth, 1).getDay(),
   lastDate: new Date(todayYear, todayMonth + 1, 0).getDate(),
-  prevMonthLastDate: new Date(todayYear, todayMonth, 0).getDate(),
-  prevMonthLastDay: new Date(todayYear, todayMonth, 0).getDay(),
 };
 
 const monthSlice = createSlice({
@@ -41,7 +39,6 @@ const monthSlice = createSlice({
         state.month += 1;
         state.firstDay = new Date(state.year, state.month, 1).getDay();
         state.lastDate = new Date(state.year, state.month + 1, 0).getDate();
-
       }
     },
   },

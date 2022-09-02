@@ -1,8 +1,10 @@
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { modalActions } from "../store/modal-slice";
 
 const MakeCaledner = ({ year, month, firstDay, lastDate }) => {
   const dispatch = useDispatch();
+
+  const schedule = useSelector((state) => state.modal.schedule);
 
   const makeKey = (identy, year, month, date) => {
     if (identy === "prev") {
@@ -19,6 +21,17 @@ const MakeCaledner = ({ year, month, firstDay, lastDate }) => {
       }
     } else {
       return year + "." + month + "." + date;
+    }
+  };
+
+  const scheduleHandler = (index) => {
+    const toDoList = schedule.find((item) => item.idx === index);
+    if (toDoList) {
+      const toDoArray = [];
+      toDoList.todo.map((item) =>
+        toDoArray.push(<div key={Math.random()} className='list'>{item}</div>)
+      );
+      return toDoArray;
     }
   };
 
@@ -43,7 +56,7 @@ const MakeCaledner = ({ year, month, firstDay, lastDate }) => {
           thisMonthArray.push(
             <td key={idx} onClick={() => clickHandler(idx)}>
               {nowDate}
-              <div></div>
+              <div>{scheduleHandler(idx)}</div>
             </td>
           );
         } else {
@@ -51,9 +64,9 @@ const MakeCaledner = ({ year, month, firstDay, lastDate }) => {
           const idx = makeKey("", year, month, nowDate);
 
           thisMonthArray.push(
-            <td key={idx}>
+            <td key={idx} onClick={() => clickHandler(idx)}>
               {nowDate}
-              <div></div>
+              <div>{scheduleHandler(idx)}</div>
             </td>
           );
         }
@@ -65,7 +78,7 @@ const MakeCaledner = ({ year, month, firstDay, lastDate }) => {
           const nowDate = i - firstDay + 1;
           const idx = makeKey("", year, month, nowDate);
           thisMonthArray.push(
-            <td key={idx}>
+            <td key={idx} onClick={() => clickHandler(idx)}>
               {nowDate}
               <div></div>
             </td>
@@ -74,7 +87,7 @@ const MakeCaledner = ({ year, month, firstDay, lastDate }) => {
           const nowDate = i - lastDate - firstDay + 1;
           const idx = makeKey("next", year, month, nowDate);
           thisMonthArray.push(
-            <td key={idx}>
+            <td key={idx} onClick={() => clickHandler(idx)}>
               {nowDate}
               <div></div>
             </td>
@@ -88,7 +101,7 @@ const MakeCaledner = ({ year, month, firstDay, lastDate }) => {
   const week = Math.ceil((firstDay + lastDate) / 7);
   for (let i = 1; i <= week; i++) {
     monthArray.push(
-      <tr key={i} className={`week-${i}`}>
+      <tr key={i} className="week">
         {makeDay(i)}
       </tr>
     );

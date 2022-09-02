@@ -15,6 +15,7 @@ const Month = () => {
   const moveNextMonthHandler = () => {
     dispatch(monthActions.nextMonth());
   };
+  
   return (
     <>
       <div className="main-area">
