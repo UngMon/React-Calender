@@ -64,7 +64,9 @@ const MakeCaledner = ({ year, month, firstDay, lastDate }) => {
               onClick={() => clickHandler(idx)}
               className={classes.date_box}
             >
-              <div className={classes.date}>{nowDate}</div>
+              <div className={classes.date} >
+                {nowDate}
+              </div>
               <div className={classes.list_box}>{scheduleHandler(idx)}</div>
             </td>
           );

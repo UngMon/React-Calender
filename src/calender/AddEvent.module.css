@@ -1,7 +1,48 @@
 .addMordal {
-  z-index: 5;
-  width: 50%;
+  position: absolute;
+  z-index: 1;
+  top: 30%;
+  left: 37%;
+  width: 30%;
+  height: 30%;
   background-color: white;
   border-radius: 10px;
-  box-shadow: 0.5;
+  box-shadow: 5px 5px 10px rgb(224, 224, 224);
+}
+
+.inputArea{
+  width: 90%;
+  height: 40%;
+  margin: 1rem auto;
+  text-align: center;
+}
+
+.inputArea h2 {
+  font-size: 1.3rem;
+}
+
+.inputArea input {
+  width: 100%;
+  margin: 1rem auto;
+  height: 20%;
+}
+
+.inputArea .input-empty {
+  width: 100%;
+  margin: 1rem auto;
+  height: 20%;
+  background-color: rgb(251, 215, 221);
+  border: 1px solid red;
+  color: red;
+}
+
+.buttonBox {
+  width: 90%;
+  height: 20%;
+  margin: 0 auto;
+  text-align: right;
+}
+
+.buttonBox button {
+  margin: 0 0 0 1rem;
 }
