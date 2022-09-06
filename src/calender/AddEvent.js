@@ -3,7 +3,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { modalActions } from "../store/modal-slice";
 import classes from "./AddEvent.module.css";
 
-
 const AddEvent = () => {
   const dispatch = useDispatch();
   const [isEmpty, setIsEmpty] = useState(false);
@@ -23,13 +22,23 @@ const AddEvent = () => {
   const listSubmitHandler = (event) => {
     event.preventDefault();
     const inputList = inputRef.current.value;
-    if (inputList.trim() === '') {
+    if (inputList.trim() === "") {
       setIsEmpty(true);
       return;
     } else {
       setIsEmpty(false);
-      console.log(isEmpty)
     }
+    fetch("https://calender-dab28-default-rtdb.firebaseio.com", {
+      method: "PUT",
+      body: JSON.stringify(schedule),
+      headers: "",
+    })
+      .then((res) => {
+        if (!res.ok) {
+          throw new Error("전송에 실패했습니다!");
+        }
+      })
+      .catch((err) => {});
     dispatch(modalActions.inputList(inputList));
     inputRef.current.value = "";
     cancelHandler();
@@ -38,6 +47,7 @@ const AddEvent = () => {
   const cancelHandler = () => {
     dispatch(modalActions.toggle());
   };
+  console.log(`랜더링 확인`);
 
   return (
     <form className={classes.addMordal} onSubmit={listSubmitHandler}>

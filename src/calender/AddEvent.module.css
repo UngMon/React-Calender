@@ -31,9 +31,8 @@
   width: 100%;
   margin: 1rem auto;
   height: 20%;
-  background-color: rgb(251, 215, 221);
+  background-color: rgb(245, 231, 233);
   border: 1px solid red;
-  color: red;
 }
 
 .buttonBox {
