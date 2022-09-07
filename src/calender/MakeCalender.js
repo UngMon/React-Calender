@@ -6,6 +6,7 @@ const MakeCaledner = ({ year, month, firstDay, lastDate }) => {
   const dispatch = useDispatch();
 
   const schedule = useSelector((state) => state.modal.schedule);
+  console.log(schedule);
 
   const makeKey = (identy, year, month, date) => {
     if (identy === "prev") {

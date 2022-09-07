@@ -14,10 +14,12 @@ const modalSlice = createSlice({
     },
 
     inputList(state, action) {
+      console.log(action.payload)
       const result = state.schedule.find(
         (item) => item.idx === state.clickedDate
       );
       if (result) {
+        console.log('true')
         state.schedule.map((item) => {
           if (item.idx === state.clickedDate) {
             item.todo = [...item.todo, action.payload];
@@ -25,11 +27,13 @@ const modalSlice = createSlice({
           return state.schedule;
         });
       } else {
+        console.log('false')
         state.schedule = [
           ...state.schedule,
           { idx: state.clickedDate, todo: [action.payload] },
         ];
       }
+      console.log(state.schedule)
     },
   },
 });

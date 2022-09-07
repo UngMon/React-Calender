@@ -1,8 +1,19 @@
-import { Fragment } from "react";
-import Header from './navigation/Header'
+import { Fragment, useEffect } from "react";
+import Header from "./navigation/Header";
 import Month from "./calender/Month";
+import { useDispatch } from "react-redux";
+import { fetchScheduleData } from "./store/modal-action";
+import { modalActions } from "./store/modal-slice";
 
 function App() {
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(fetchScheduleData());
+    console.log('effect렌더링');
+  }, [dispatch]);
+  console.log('app렌더링')
+  
   return (
     <Fragment>
       <Header />

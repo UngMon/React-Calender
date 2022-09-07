@@ -7,12 +7,12 @@ const AddEvent = () => {
   const dispatch = useDispatch();
   const [isEmpty, setIsEmpty] = useState(false);
 
-  const clickedDate = useSelector((state) => state.modal.clickedDate);
-
+  const modalState = useSelector((state) => state.modal);
+  console.log(modalState);
   const inputRef = useRef();
 
   const modalNameHandler = () => {
-    let splitDateArray = clickedDate.split(".");
+    let splitDateArray = modalState.clickedDate.split(".");
     splitDateArray[1] = +splitDateArray[1] + 1;
     return (
       splitDateArray[0] + "." + splitDateArray[1] + "." + splitDateArray[2]
@@ -27,20 +27,23 @@ const AddEvent = () => {
       return;
     } else {
       setIsEmpty(false);
-    }
-    fetch("https://calender-dab28-default-rtdb.firebaseio.com", {
-      method: "PUT",
-      body: JSON.stringify(schedule),
-      headers: "",
-    })
-      .then((res) => {
-        if (!res.ok) {
-          throw new Error("전송에 실패했습니다!");
+      dispatch(modalActions.inputList(inputList));
+      inputRef.current.value = "";
+      fetch(
+        "https://calender-dab28-default-rtdb.firebaseio.com/schedule.json",
+        {
+          method: "PUT",
+          body: JSON.stringify(modalState.schedule),
         }
-      })
-      .catch((err) => {});
-    dispatch(modalActions.inputList(inputList));
-    inputRef.current.value = "";
+      )
+        .then((res) => {
+          if (!res.ok) {
+            throw new Error("전송에 실패했습니다!");
+          }
+        })
+        .catch((err) => {});
+    }
+
     cancelHandler();
   };
 
