@@ -17,7 +17,7 @@ export const fetchScheduleData = () => {
     };
     try {
       const scheduleData = await fetchData();
-      dispatch(modalActions.inputList(scheduleData));
+      dispatch(modalActions.fetchFromData(scheduleData));
     } catch (error) {}
   };
 };

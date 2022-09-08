@@ -3,7 +3,7 @@ import Header from "./navigation/Header";
 import Month from "./calender/Month";
 import { useDispatch } from "react-redux";
 import { fetchScheduleData } from "./store/modal-action";
-import { modalActions } from "./store/modal-slice";
+// import { modalActions } from "./store/modal-slice";
 
 function App() {
   const dispatch = useDispatch();
