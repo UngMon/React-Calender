@@ -1,14 +1,12 @@
-import { useRef, useState } from "react";
+import { useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { modalActions } from "../store/modal-slice";
 import classes from "./AddEvent.module.css";
 
 const AddEvent = () => {
   const dispatch = useDispatch();
-  const [isEmpty, setIsEmpty] = useState(false);
 
   const modalState = useSelector((state) => state.modal);
-  console.log(modalState);
   const inputRef = useRef();
 
   const modalNameHandler = () => {
@@ -21,48 +19,28 @@ const AddEvent = () => {
 
   const listSubmitHandler = (event) => {
     event.preventDefault();
-    const inputList = inputRef.current.value;
-    if (inputList.trim() === "") {
-      setIsEmpty(true);
-      return;
-    } else {
-      setIsEmpty(false);
-      dispatch(modalActions.inputList(inputList));
-      inputRef.current.value = "";
-      fetch(
-        "https://calender-dab28-default-rtdb.firebaseio.com/schedule.json",
-        {
-          method: "PUT",
-          body: JSON.stringify(modalState.schedule),
-        }
-      )
-        .then((res) => {
-          if (!res.ok) {
-            throw new Error("전송에 실패했습니다!");
-          }
-        })
-        .catch((err) => {});
-    }
 
+    const inputList = inputRef.current.value;
+
+    dispatch(modalActions.inputList(inputList));
+
+    inputRef.current.value = "";
+    console.log(modalState.changed);
     cancelHandler();
   };
 
   const cancelHandler = () => {
     dispatch(modalActions.toggle());
   };
-  console.log(`랜더링 확인`);
 
   return (
     <form className={classes.addMordal} onSubmit={listSubmitHandler}>
       <div className={classes.inputArea}>
         <h2 className={classes.modalMonth}>{modalNameHandler()}</h2>
         <input
-          placeholder={
-            isEmpty ? "계획을 입력해주세요!" : "계획을 추가해보세요!"
-          }
+          placeholder="계획을 입력해주세요!"
           type="text"
           ref={inputRef}
-          className={`${isEmpty && classes["input-empty"]}`}
         />
       </div>
       <div className={classes.buttonBox}>

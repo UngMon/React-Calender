@@ -1,19 +1,26 @@
 import { Fragment, useEffect } from "react";
 import Header from "./navigation/Header";
 import Month from "./calender/Month";
-import { useDispatch } from "react-redux";
-import { fetchScheduleData } from "./store/modal-action";
-// import { modalActions } from "./store/modal-slice";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchScheduleData, sendScheduleData } from "./store/modal-action";
+
 
 function App() {
   const dispatch = useDispatch();
 
+  const modal = useSelector(state => state.modal);
+
   useEffect(() => {
-    dispatch(fetchScheduleData());
-    console.log('effect렌더링');
+    dispatch(fetchScheduleData())
   }, [dispatch]);
-  console.log('app렌더링')
-  
+  console.log("app렌더링");
+
+  useEffect(() => {
+    if (modal.changed) {
+      dispatch(sendScheduleData(modal.schedule))
+    }
+  }, [modal, dispatch])
+
   return (
     <Fragment>
       <Header />

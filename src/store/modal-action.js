@@ -21,3 +21,21 @@ export const fetchScheduleData = () => {
     } catch (error) {}
   };
 };
+
+export const sendScheduleData = (schedule) => {
+  return async (dispatch) => {
+    const sendData = async () => {
+      const response = await fetch(
+        "https://calender-dab28-default-rtdb.firebaseio.com/schedule.json",
+        { method: "PUT", body: JSON.stringify(schedule) }
+      );
+      if (!response.ok) {
+        throw new Error("정보를 보내지 못 했습니다.");
+      }
+    };
+    try {
+      await sendData();
+      dispatch(modalActions.toggleChanged())
+    } catch (error) {}
+  };
+};
