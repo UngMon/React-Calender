@@ -26,13 +26,19 @@ const MakeCaledner = ({ year, month, firstDay, lastDate }) => {
     }
   };
 
-  const scheduleHandler = (index) => {
+  const scheduleHandler = (index, dayIdx) => {
     const toDoList = schedule.find((item) => item.idx === index);
     if (toDoList) {
       const toDoArray = [];
+      console.log(toDoArray);
       toDoList.todo.map((item) =>
         toDoArray.push(
-          <div key={Math.random()} className={classes.list}>
+          <div
+            key={Math.random()}
+            className={classes.list}
+            onClick={() => removelistHandler(idx)}
+            dayindex={dayIdx}
+          >
             {item}
           </div>
         )
@@ -41,7 +47,7 @@ const MakeCaledner = ({ year, month, firstDay, lastDate }) => {
     }
   };
 
-  const clickHandler = (index) => {
+  const addClickHandler = (index) => {
     dispatch(modalActions.toggle(index));
   };
 
@@ -62,13 +68,11 @@ const MakeCaledner = ({ year, month, firstDay, lastDate }) => {
           thisMonthArray.push(
             <td
               key={idx}
-              onClick={() => clickHandler(idx)}
-              className={classes.date_box}
+              onClick={() => addClickHandler(idx)}
+              className={`${classes.date_box} day-inddex-${i}`}
             >
-              <div className={classes.date} >
-                {nowDate}
-              </div>
-              <div className={classes.list_box}>{scheduleHandler(idx)}</div>
+              <div className={classes.date}>{nowDate}</div>
+              <div className={classes.list_box}>{scheduleHandler(idx, i)}</div>
             </td>
           );
         } else {
@@ -78,7 +82,7 @@ const MakeCaledner = ({ year, month, firstDay, lastDate }) => {
           thisMonthArray.push(
             <td
               key={idx}
-              onClick={() => clickHandler(idx)}
+              onClick={() => addClickHandler(idx)}
               className={classes.date_box}
             >
               <div className={classes.date}>{nowDate}</div>
@@ -96,7 +100,7 @@ const MakeCaledner = ({ year, month, firstDay, lastDate }) => {
           thisMonthArray.push(
             <td
               key={idx}
-              onClick={() => clickHandler(idx)}
+              onClick={() => addClickHandler(idx)}
               className={classes.date_box}
             >
               <div className={classes.date}>{nowDate}</div>
@@ -109,7 +113,7 @@ const MakeCaledner = ({ year, month, firstDay, lastDate }) => {
           thisMonthArray.push(
             <td
               key={idx}
-              onClick={() => clickHandler(idx)}
+              onClick={() => addClickHandler(idx)}
               className={classes.date_box}
             >
               <div className={classes.date}>{nowDate}</div>
@@ -125,7 +129,7 @@ const MakeCaledner = ({ year, month, firstDay, lastDate }) => {
   const week = Math.ceil((firstDay + lastDate) / 7);
   for (let i = 1; i <= week; i++) {
     monthArray.push(
-      <tr key={i} className={classes.list_box}>
+      <tr key={i} className={classes.list_box} weekindex={i}>
         {makeDay(i)}
       </tr>
     );

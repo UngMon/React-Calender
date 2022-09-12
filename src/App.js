@@ -17,7 +17,7 @@ function App() {
 
   useEffect(() => {
     if (modal.changed) {
-      dispatch(sendScheduleData(modal.schedule))
+      dispatch(sendScheduleData(modal.schedule));
     }
   }, [modal, dispatch])
 
