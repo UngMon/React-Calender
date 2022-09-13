@@ -1,6 +1,6 @@
 .addMordal {
   position: absolute;
-  z-index: 1;
+  z-index: 5;
   top: 30%;
   left: 37%;
   width: 30%;

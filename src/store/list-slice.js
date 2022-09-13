@@ -2,11 +2,21 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const listSlice = createSlice({
   name: "list",
-  initialState: { isVisible: false, clickedIndex: "" },
+  initialState: {
+    isVisible: false,
+    clickedDate: "",
+    dayIndex: "",
+    listName: "",
+    listIndex: "",
+    index: "",
+  },
   reducers: {
     toggle(state, action) {
       state.isVisible = !state.isVisible;
-      state.clickedIndex = action.payload;
+      state.clickedDate = action.payload.date;
+      state.listName = action.payload.item;
+      state.listIndex = action.payload.listIndex;
+      state.index = action.payload.scheduleIndex;
     },
   },
 });

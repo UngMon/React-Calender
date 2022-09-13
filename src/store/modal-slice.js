@@ -15,14 +15,12 @@ const modalSlice = createSlice({
     },
 
     inputList(state, action) {
-      console.log('렌더링확인')
       state.changed = true;
       const result = state.schedule.find(
         (item) => item.idx === state.clickedDate
       );
 
       if (result) {
-        // console.log("true");
         state.schedule.map((item) => {
           if (item.idx === state.clickedDate) {
             item.todo = [...item.todo, action.payload];
@@ -30,12 +28,17 @@ const modalSlice = createSlice({
           return state.schedule;
         });
       } else {
-        // console.log("false");
         state.schedule = [
           ...state.schedule,
           { idx: state.clickedDate, todo: [action.payload] },
         ];
       }
+    },
+
+    removeList(state, action) {
+      state.schedule[action.payload.index].todo = state.schedule[
+        action.payload.index
+      ].todo.splice(action.payload.listIndex, 1);
     },
 
     fetchFromData(state, action) {
@@ -44,9 +47,9 @@ const modalSlice = createSlice({
       }
     },
 
-    toggleChanged (state) {
+    toggleChanged(state) {
       state.changed = false;
-    }
+    },
   },
 });
 

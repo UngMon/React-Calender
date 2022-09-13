@@ -1,4 +1,5 @@
 import { useDispatch, useSelector } from "react-redux";
+import { listActions } from "../store/list-slice";
 import { modalActions } from "../store/modal-slice";
 import classes from "./Calender.module.css";
 
@@ -26,25 +27,30 @@ const MakeCaledner = ({ year, month, firstDay, lastDate }) => {
     }
   };
 
-  const scheduleHandler = (index, dayIdx) => {
-    const toDoList = schedule.find((item) => item.idx === index);
+  const listClickHandler = (date, dayIdx, item, listIndex, scheduleIndex) => {
+    dispatch(
+      listActions.toggle({ date, dayIdx, item, listIndex, scheduleIndex })
+    );
+  };
+
+  const scheduleHandler = (nowDate, dayIdx) => {
+    const toDoList = schedule.find((item) => item.idx === nowDate);
     if (toDoList) {
-      const toDoArray = [];
-      console.log(toDoArray);
-      toDoList.todo.map((item) =>
-        toDoArray.push(
-          <div
-            key={Math.random()}
-            className={classes.list}
-            onClick={() => removelistHandler(idx)}
-            dayindex={dayIdx}
-          >
-            {item}
-          </div>
-        )
-      );
-      return toDoArray;
+      const scheduleIndex = schedule.indexOf(toDoList);
+      return toDoList.todo.map((item, listIndex) => (
+        <div
+          key={Math.random()}
+          className={classes.list}
+          onClick={() =>
+            listClickHandler(nowDate, dayIdx, item, listIndex, scheduleIndex)
+          }
+          dayindex={dayIdx}
+        >
+          {item}
+        </div>
+      ));
     }
+    return;
   };
 
   const addClickHandler = (index) => {
@@ -69,7 +75,7 @@ const MakeCaledner = ({ year, month, firstDay, lastDate }) => {
             <td
               key={idx}
               onClick={() => addClickHandler(idx)}
-              className={`${classes.date_box} day-inddex-${i}`}
+              className={classes.date_box}
             >
               <div className={classes.date}>{nowDate}</div>
               <div className={classes.list_box}>{scheduleHandler(idx, i)}</div>
@@ -135,7 +141,6 @@ const MakeCaledner = ({ year, month, firstDay, lastDate }) => {
     );
   }
 
-  // console.log(monthArray);
   return monthArray;
 };
 
