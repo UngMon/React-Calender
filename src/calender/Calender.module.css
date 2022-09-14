@@ -11,7 +11,6 @@
   font-size: 0.8rem;
   border-collapse: collapse;
   text-align: left;
-  z-index: 1;
 }
 
 .weekname {
@@ -64,7 +63,6 @@
   padding: 0 0 0 5px;
   height: 20%;
   line-height: 200%;
-  z-index: 1;
 }
 
 .date_box .list_box {
@@ -72,7 +70,6 @@
   top: 20%;
   height: 80%;
   position: absolute;
-  z-index: 2;
 }
 
 .list_box .list {
@@ -84,7 +81,7 @@
   font-weight: bold;
   display: flex;
   align-items: center;
-  z-index: 3;
+  background-color: white;
 }
 
 .list:hover {

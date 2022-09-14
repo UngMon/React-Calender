@@ -16,6 +16,7 @@ function App() {
 
   useEffect(() => {
     if (modal.changed) {
+      console.log('작동여부');
       dispatch(sendScheduleData(modal.schedule));
     }
   }, [modal, dispatch])

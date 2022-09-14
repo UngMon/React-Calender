@@ -36,9 +36,8 @@ const modalSlice = createSlice({
     },
 
     removeList(state, action) {
-      state.schedule[action.payload.index].todo = state.schedule[
-        action.payload.index
-      ].todo.splice(action.payload.listIndex, 1);
+      state.changed = true;
+      state.schedule[action.payload.index].todo.splice(action.payload.listIndex,1);
     },
 
     fetchFromData(state, action) {
