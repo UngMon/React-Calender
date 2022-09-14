@@ -1,4 +1,5 @@
 import { useDispatch, useSelector } from "react-redux";
+import { listActions } from "../store/list-slice";
 import { modalActions } from "../store/modal-slice";
 import classes from "./List.module.css";
 
@@ -8,6 +9,7 @@ const List = () => {
 
   const removeListHandler = (listIndex, index) => {
     dispatch(modalActions.removeList({ listIndex, index }));
+    dispatch(listActions.toggle());
   };
 
   return (

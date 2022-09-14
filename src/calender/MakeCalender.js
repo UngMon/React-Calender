@@ -29,7 +29,7 @@ const MakeCaledner = ({ year, month, firstDay, lastDate }) => {
 
   const listClickHandler = (date, dayIdx, item, listIndex, scheduleIndex) => {
     dispatch(
-      listActions.toggle({ date, dayIdx, item, listIndex, scheduleIndex })
+      listActions.clickedList({ date, dayIdx, item, listIndex, scheduleIndex })
     );
   };
 
@@ -41,8 +41,9 @@ const MakeCaledner = ({ year, month, firstDay, lastDate }) => {
         <div
           key={Math.random()}
           className={classes.list}
-          onClick={() =>
-            listClickHandler(nowDate, dayIdx, item, listIndex, scheduleIndex)
+          onClick={(event) => {
+            event.stopPropagation();
+            listClickHandler(nowDate, dayIdx, item, listIndex, scheduleIndex)}
           }
           dayindex={dayIdx}
         >

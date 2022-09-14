@@ -11,13 +11,16 @@ const listSlice = createSlice({
     index: "",
   },
   reducers: {
-    toggle(state, action) {
+    clickedList(state, action) {
       state.isVisible = !state.isVisible;
       state.clickedDate = action.payload.date;
       state.listName = action.payload.item;
       state.listIndex = action.payload.listIndex;
       state.index = action.payload.scheduleIndex;
     },
+    toggle(state) {
+      state.isVisible = !state.isVisible;
+    }
   },
 });
 

@@ -1,0 +1,7 @@
+.list-box {
+    width: 30%;
+    height: 20%;
+    /* background-color: white; */
+    border-radius: 10px;
+    box-shadow: 5px 5px 10px rgb(224, 224, 224);
+}
