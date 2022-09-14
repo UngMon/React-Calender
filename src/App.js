@@ -11,6 +11,7 @@ function App() {
 
   useEffect(() => {
     dispatch(fetchScheduleData());
+    console.log('fetch')
   }, [dispatch]);
   console.log("app렌더링");
 

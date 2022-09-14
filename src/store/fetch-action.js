@@ -12,7 +12,6 @@ export const fetchScheduleData = () => {
       }
 
       const data = await response.json();
-      console.log(data);
       return data;
     };
     try {
@@ -29,6 +28,7 @@ export const sendScheduleData = (schedule) => {
         "https://calender-dab28-default-rtdb.firebaseio.com/schedule.json",
         { method: "PUT", body: JSON.stringify(schedule) }
       );
+      console.log(schedule);
       if (!response.ok) {
         throw new Error("정보를 보내지 못 했습니다.");
       }

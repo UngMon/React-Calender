@@ -35,7 +35,7 @@ const MakeCaledner = ({ year, month, firstDay, lastDate }) => {
 
   const scheduleHandler = (nowDate, dayIdx) => {
     const toDoList = schedule.find((item) => item.idx === nowDate);
-    if (toDoList) {
+    if (toDoList && toDoList.todo) {
       const scheduleIndex = schedule.indexOf(toDoList);
       return toDoList.todo.map((item, listIndex) => (
         <div
