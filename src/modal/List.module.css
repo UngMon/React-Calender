@@ -1,7 +1,38 @@
 .list-box {
-    width: 30%;
-    height: 20%;
-    /* background-color: white; */
-    border-radius: 10px;
-    box-shadow: 5px 5px 10px rgb(224, 224, 224);
+  position: absolute;
+  top: 30%;
+  left: 37%;
+  margin: 0;
+  padding: 0;
+  width: 25%;
+  height: 17%;
+  border-radius: 10px;
+  background-color: white;
+  box-shadow: 5px 5px 10px rgb(224, 224, 224);
+  z-index: 5;
+  display: flex;
+  flex-direction: column;
 }
+
+.list-box input {
+    margin-left: 1rem;
+    width: 90%;
+}
+
+.option-box {
+  margin: 1rem 1rem 1rem 40%;
+  width: 60%;
+  display: flex;
+}
+
+.option-box div {
+  width: 25%;
+  margin: 0 2px 0 1px;
+}
+
+.listName {
+    margin-left: 2rem;
+}
+
+
+
