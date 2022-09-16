@@ -8,6 +8,21 @@ const List = () => {
   const dispatch = useDispatch();
   const listInfo = useSelector((state) => state.list);
   const [listIsVisible, setListIsVisible] = useState(false);
+  console.log(listInfo.dayIndex);
+  const listDayIndex =
+    listInfo.dayIndex === 1
+      ? "classes[day-1]"
+      : listInfo.dayIndex === 2
+      ? "classes[day-2]"
+      : listInfo.dayIndex === 3
+      ? "classes[day-3]"
+      : listInfo.dayIndex === 4
+      ? "classes[day-4]"
+      : listInfo.dayIndex === 5
+      ? "classes[day-5]"
+      : listInfo.dayIndex === 6
+      ? "classes[day-6]"
+      : "classes[day-7]";
 
   const removeListHandler = (listIndex, index) => {
     dispatch(modalActions.removeList({ listIndex, index }));
@@ -23,7 +38,7 @@ const List = () => {
   };
 
   return (
-    <div className={classes["list-box"]}>
+    <div className={`${classes["list-box"]} ${listDayIndex}`}>
       <div className={classes["option-box"]}>
         <div className={classes.edit} onClick={listVisivleHandler}>
           수정
@@ -38,7 +53,9 @@ const List = () => {
         <div onClick={closeModalHandler}>닫기</div>
       </div>
       {listIsVisible && <input placeholder={listInfo.listName} type="text" />}
-      {!listIsVisible && <div className={classes.listName}>{listInfo.listName}</div>}
+      {!listIsVisible && (
+        <div className={classes.listName}>{listInfo.listName}</div>
+      )}
     </div>
   );
 };

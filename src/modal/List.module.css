@@ -1,7 +1,6 @@
 .list-box {
   position: absolute;
   top: 30%;
-  left: 37%;
   margin: 0;
   padding: 0;
   width: 25%;
@@ -14,9 +13,13 @@
   flex-direction: column;
 }
 
+.day-1 {
+  left: 14.2857142857%;
+}
+
 .list-box input {
-    margin-left: 1rem;
-    width: 90%;
+  margin-left: 1rem;
+  width: 90%;
 }
 
 .option-box {
@@ -30,9 +33,11 @@
   margin: 0 2px 0 1px;
 }
 
-.listName {
-    margin-left: 2rem;
+.option-box div:hover {
+  background-color: rgb(242, 239, 239);
+  border-radius: 100%;
 }
 
-
-
+.listName {
+  margin-left: 2rem;
+}

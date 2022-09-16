@@ -14,13 +14,14 @@ const listSlice = createSlice({
     clickedList(state, action) {
       state.isVisible = !state.isVisible;
       state.clickedDate = action.payload.date;
+      state.dayIndex = action.payload.dayIdx;
       state.listName = action.payload.item;
       state.listIndex = action.payload.listIndex;
       state.index = action.payload.scheduleIndex;
     },
     toggle(state) {
       state.isVisible = !state.isVisible;
-    }
+    },
   },
 });
 

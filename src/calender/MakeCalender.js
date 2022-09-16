@@ -69,13 +69,11 @@ const MakeCaledner = ({ year, month, firstDay, lastDate }) => {
       const prevMonthLastDate = new Date(year, month, 0).getDate();
 
       for (let i = 1; i <= 7; i++) {
-
         if (i <= firstDay) {
-
           const nowDate = prevMonthLastDate - firstDay + i;
           const idx = makeKey("prev", year, month, nowDate);
           const dayIdx = `day-${i}`; //모달창을 띄울 때 위치를 무슨 요일인지 저장
-          
+
           thisMonthArray.push(
             <td
               key={idx}
@@ -88,7 +86,6 @@ const MakeCaledner = ({ year, month, firstDay, lastDate }) => {
             </td>
           );
         } else {
-
           const nowDate = i - firstDay;
           const idx = makeKey("", year, month, nowDate);
           const dayIdx = `day-${i}`;
@@ -101,7 +98,7 @@ const MakeCaledner = ({ year, month, firstDay, lastDate }) => {
               day-index={dayIdx}
             >
               <div className={classes.date}>{nowDate}</div>
-              <div className={classes.list_box}>{scheduleHandler(idx)}</div>
+              <div className={classes.list_box}>{scheduleHandler(idx, i)}</div>
             </td>
           );
         }
@@ -110,9 +107,7 @@ const MakeCaledner = ({ year, month, firstDay, lastDate }) => {
       const startDate = (week - 1) * 7;
 
       for (let i = startDate; i <= week * 7 - 1; i++) {
-
         if (i - firstDay < lastDate) {
-
           const nowDate = i - firstDay + 1;
           const idx = makeKey("", year, month, nowDate);
           const dayIdx = `day-${(i % 7) + 1}`;
@@ -125,11 +120,12 @@ const MakeCaledner = ({ year, month, firstDay, lastDate }) => {
               day-index={dayIdx}
             >
               <div className={classes.date}>{nowDate}</div>
-              <div className={classes.list_box}>{scheduleHandler(idx)}</div>
+              <div className={classes.list_box}>
+                {scheduleHandler(idx, (i % 7) + 1)}
+              </div>
             </td>
           );
         } else {
-          
           const nowDate = i - lastDate - firstDay + 1;
           const idx = makeKey("next", year, month, nowDate);
           const dayIdx = `day-${(i % 7) + 1}`;
@@ -142,7 +138,9 @@ const MakeCaledner = ({ year, month, firstDay, lastDate }) => {
               day-index={dayIdx}
             >
               <div className={classes.date}>{nowDate}</div>
-              <div className={classes.list_box}>{scheduleHandler(idx)}</div>
+              <div className={classes.list_box}>
+                {scheduleHandler(idx, (i % 7) + 1)}
+              </div>
             </td>
           );
         }
