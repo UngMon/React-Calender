@@ -5,13 +5,17 @@ const modalSlice = createSlice({
   initialState: {
     isVisible: false,
     clickedDate: "",
+    week: "",
+    dayIndex: "",
     schedule: [],
     changed: false,
   },
   reducers: {
     toggle(state, action) {
       state.isVisible = !state.isVisible;
-      state.clickedDate = action.payload;
+      state.clickedDate = action.payload.idx;
+      state.week = action.payload.week;
+      state.dayIndex = action.payload.dayIndex;
     },
 
     inputList(state, action) {
@@ -37,7 +41,10 @@ const modalSlice = createSlice({
 
     removeList(state, action) {
       state.changed = true;
-      state.schedule[action.payload.index].todo.splice(action.payload.listIndex,1);
+      state.schedule[action.payload.index].todo.splice(
+        action.payload.listIndex,
+        1
+      );
 
       if (state.schedule[action.payload.index].todo.length === 0) {
         state.schedule.splice(action.payload.index, 1);
@@ -46,7 +53,6 @@ const modalSlice = createSlice({
 
     fetchFromData(state, action) {
       if (action.payload.length !== 0) {
-
         state.schedule = action.payload;
       }
     },

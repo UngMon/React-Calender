@@ -1,7 +1,8 @@
 import { useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { modalActions } from "../store/modal-slice";
-import classes from "./AddEvent.module.css";
+import "./AddEvent.css";
+import ModalPosition from "./ModalPosition";
 
 const AddEvent = () => {
   const dispatch = useDispatch();
@@ -34,16 +35,18 @@ const AddEvent = () => {
   };
 
   return (
-    <form className={classes.addMordal} onSubmit={listSubmitHandler}>
-      <div className={classes.inputArea}>
-        <h2 className={classes.modalMonth}>{modalNameHandler()}</h2>
-        <input
-          placeholder="계획을 입력해주세요!"
-          type="text"
-          ref={inputRef}
-        />
+    <form
+      className={`addMordal ${ModalPosition(
+        modalState.dayIndex,
+        modalState.week
+      )}`}
+      onSubmit={listSubmitHandler}
+    >
+      <div className="inputArea">
+        <h2 className="modalMonth">{modalNameHandler()}</h2>
+        <input placeholder="(제목 없음)" type="text" ref={inputRef} />
       </div>
-      <div className={classes.buttonBox}>
+      <div className="buttonBox">
         <button type="submit">저장</button>
         <button type="button" onClick={cancelHandler}>
           취소
