@@ -1,14 +1,15 @@
 import { useDispatch, useSelector } from "react-redux";
 import { allListActions } from "../store/all-list-slice";
+import './AllList.css';
 
 const AllList = () => {
   const dispatch = useDispatch();
   const schedule = useSelector((state) => state.modal.schedule);
-  const listModal = useSelector(state => state.list);
   const allModal = useSelector((state) => state.all);
+  console.log(allModal);
 
   const makeListHandler = () => {
-    return schedule[allModal.index].todo.map((item) => (<li className="item-list">{item}</li>));
+    return schedule[allModal.index].todo.map((item, index) => (<li key={index} className="item-list">{item}</li>));
   };
 
   const cancelHandler = () => {
@@ -32,7 +33,7 @@ const AllList = () => {
   };
 
   return (
-    <div className={`AllList week-${listModal.week} day-${listModal.dayIndex}`}>
+    <div className={`all-list week-${allModal.week} day-${allModal.day}`}>
       <div className="header-list-box">
         <h2>{dayChangeHandler()}</h2>
         <button onClick={cancelHandler}>닫기</button>

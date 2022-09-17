@@ -1,17 +1,90 @@
-.AllList {
+.all-list {
   position: absolute;
+  z-index: 5;
   width: 15%;
-  height: 20%;
+  height: 30%;
   background-color: white;
   border-radius: 10px;
   box-shadow: 5px 5px 10px rgb(224, 224, 224);
+  text-align: center;
 }
 
 .header-list-box {
+  margin: 1rem 5.5rem;
   width: 50%;
   height: 20%;
+  display: flex;
+  justify-content: right;
+  justify-items: flex-start;
+}
+
+.header-list-box h2 {
+  font-size: 1.5rem;
+  margin-right: 2rem;
+}
+
+.header-list-box button {
+  margin-left: 1rem;
+  width: 30%;
 }
 
 .main-list-box {
-    border: 1px solid black;
+  border: 0.5px solid black;
+}
+
+ul {
+  list-style: none;
+  text-align: left;
+}
+
+.day-1 {
+  left: 14.2857142857%;
+}
+
+.day-2 {
+  left: 29%;
+}
+
+.day-3 {
+  left: 43%;
+}
+
+.day-4 {
+  right: 57%;
+}
+
+.day-5 {
+  right: 43%;
+}
+
+.day-6 {
+  right: 29%;
+}
+
+.day-7 {
+  right: 15%;
+}
+
+.week-1 {
+  top: 17%;
+}
+
+.week-2 {
+  top: 30%;
+}
+
+.week-3 {
+  top: 40%;
+}
+
+.week-4 {
+  top: 50%;
+}
+
+.week-5 {
+  top: 60%;
+}
+
+.week-6 {
+  top: 70;
 }
