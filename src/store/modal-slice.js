@@ -11,11 +11,14 @@ const modalSlice = createSlice({
     changed: false,
   },
   reducers: {
-    toggle(state, action) {
+    toggle(state) {
       state.isVisible = !state.isVisible;
+    },
+
+    clickedData(state, action) {
       state.clickedDate = action.payload.idx;
       state.week = action.payload.week;
-      state.dayIndex = action.payload.dayIndex;
+      state.dayIndex = action.payload.dayIndex;  
     },
 
     inputList(state, action) {

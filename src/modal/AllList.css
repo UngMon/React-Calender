@@ -1,0 +1,17 @@
+.AllList {
+  position: absolute;
+  width: 15%;
+  height: 20%;
+  background-color: white;
+  border-radius: 10px;
+  box-shadow: 5px 5px 10px rgb(224, 224, 224);
+}
+
+.header-list-box {
+  width: 50%;
+  height: 20%;
+}
+
+.main-list-box {
+    border: 1px solid black;
+}

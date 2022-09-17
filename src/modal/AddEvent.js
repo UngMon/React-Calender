@@ -21,8 +21,10 @@ const AddEvent = () => {
   const listSubmitHandler = (event) => {
     event.preventDefault();
 
-    const inputList = inputRef.current.value;
-
+    let inputList = inputRef.current.value;
+    if (inputList.trim() === '') {
+      inputList = '(제목 없음)';
+    }
     dispatch(modalActions.inputList(inputList));
 
     inputRef.current.value = "";
@@ -31,6 +33,7 @@ const AddEvent = () => {
   };
 
   const cancelHandler = () => {
+    console.log(`작동 캔슬`)
     dispatch(modalActions.toggle());
   };
 

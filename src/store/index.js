@@ -2,12 +2,14 @@ import { configureStore } from "@reduxjs/toolkit";
 import monthSlice from "./month-slice";
 import modalSlice from "./modal-slice";
 import listSlice from "./listmodal-slice";
+import allListSlice from "./all-list-slice";
 
 const store = configureStore({
   reducer: {
     month: monthSlice.reducer,
     modal: modalSlice.reducer,
     list: listSlice.reducer,
+    all: allListSlice.reducer,
   },
 });
 

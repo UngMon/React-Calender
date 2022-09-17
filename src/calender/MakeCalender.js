@@ -1,4 +1,5 @@
 import { useDispatch, useSelector } from "react-redux";
+import { allListActions } from "../store/all-list-slice";
 import { listActions } from "../store/listmodal-slice";
 import { modalActions } from "../store/modal-slice";
 import classes from "./Calender.module.css";
@@ -8,6 +9,7 @@ const MakeCaledner = ({ year, month, firstDay, lastDate }) => {
 
   const schedule = useSelector((state) => state.modal.schedule);
   console.log(schedule);
+  console.log("make렌더링");
 
   const makeKey = (identy, year, month, date) => {
     if (identy === "prev") {
@@ -27,35 +29,78 @@ const MakeCaledner = ({ year, month, firstDay, lastDate }) => {
     }
   };
 
-  const listClickHandler = (date, week, dayIdx, item, listIndex, scheduleIndex) => {
+  const listClickHandler = (
+    date,
+    week,
+    dayIdx,
+    item,
+    listIndex,
+    scheduleIndex
+  ) => {
     dispatch(
-      listActions.clickedList({ date, week, dayIdx, item, listIndex, scheduleIndex })
+      listActions.clickedList({
+        date,
+        week,
+        dayIdx,
+        item,
+        listIndex,
+        scheduleIndex,
+      })
     );
+  };
+
+  const allListClickHandler = (date, day, week, scheduleIndex) => {
+    dispatch(allListActions.toggle());
+    dispatch(allListActions.clickedListBox({date, day, week, scheduleIndex}));
   };
 
   const scheduleHandler = (nowDate, dayIdx, week) => {
     const toDoList = schedule.find((item) => item.idx === nowDate);
-    if (toDoList && toDoList.todo) {
+
+    if (toDoList) {
       const scheduleIndex = schedule.indexOf(toDoList);
-      return toDoList.todo.map((item, listIndex) => (
-        <div
-          key={Math.random()}
-          className={classes.list}
-          onClick={(event) => {
-            event.stopPropagation();
-            listClickHandler(nowDate, week, dayIdx, item, listIndex, scheduleIndex);
-          }}
-          dayindex={dayIdx}
-        >
-          {item}
-        </div>
-      ));
+      const todolength = toDoList.todo.length;
+
+      return toDoList.todo.map((item, listIndex) =>
+        listIndex <= 2 ? (
+          <div
+            key={listIndex}
+            className={classes.list}
+            onClick={(event) => {
+              event.stopPropagation();
+              listClickHandler(
+                nowDate,
+                week,
+                dayIdx,
+                item,
+                listIndex,
+                scheduleIndex
+              );
+            }}
+            dayindex={dayIdx}
+          >
+            {item}
+          </div>
+        ) : (
+          listIndex === 3 && (
+            <div
+              key={listIndex}
+              className={classes.list}
+              onClick={(event) => {
+                event.stopPropagation();
+                allListClickHandler(nowDate, dayIdx, week, scheduleIndex);
+              }}
+            >{` ${todolength - 3}개 더보기`}</div>
+          )
+        )
+      );
     }
     return;
   };
 
   const addClickHandler = (idx, dayIndex, week) => {
-    dispatch(modalActions.toggle({idx, dayIndex, week}));
+    dispatch(modalActions.clickedData({ idx, dayIndex, week }));
+    dispatch(modalActions.toggle());
   };
 
   const monthArray = [];
@@ -82,7 +127,9 @@ const MakeCaledner = ({ year, month, firstDay, lastDate }) => {
               day-index={dayIdx}
             >
               <div className={classes.date}>{nowDate}</div>
-              <div className={classes.list_box}>{scheduleHandler(idx, i, week)}</div>
+              <div className={classes.list_box}>
+                {scheduleHandler(idx, i, week)}
+              </div>
             </td>
           );
         } else {
@@ -98,7 +145,9 @@ const MakeCaledner = ({ year, month, firstDay, lastDate }) => {
               day-index={dayIdx}
             >
               <div className={classes.date}>{nowDate}</div>
-              <div className={classes.list_box}>{scheduleHandler(idx, i, week)}</div>
+              <div className={classes.list_box}>
+                {scheduleHandler(idx, i, week)}
+              </div>
             </td>
           );
         }
