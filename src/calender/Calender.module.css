@@ -77,11 +77,14 @@
   height: 25%;
   box-sizing: border-box;
   padding: 0 5px;
-  color: blue;
+  color: #506ee2;
   font-weight: bold;
   display: flex;
   align-items: center;
   background-color: white;
+  white-space:nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .list:hover {

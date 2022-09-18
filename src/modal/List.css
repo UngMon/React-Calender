@@ -1,31 +1,30 @@
 .list-box {
   position: absolute;
-  margin: 0;
-  padding: 0;
-  width: 25%;
-  height: 25%;
+  width: 40%;
+  height: 17%;
   border-radius: 10px;
   background-color: white;
   box-shadow: 5px 5px 10px rgb(224, 224, 224);
   z-index: 5;
-  display: flex;
-  flex-direction: column;
-}
-
-.list-box input {
-  margin-left: 1rem;
-  width: 90%;
 }
 
 .option-box {
-  margin: 1rem 1rem 1rem 40%;
   width: 60%;
+  height: 30%;
+  margin-left: 37%;
   display: flex;
+  justify-content: right;
+  align-items: center;
 }
 
 .option-box div {
-  width: 25%;
-  margin: 0 2px 0 1px;
+  width: 2rem;
+  height: 2rem;
+  margin-left: 0.8rem;
+  font-size: 0.9rem;
+  font-weight: bold;
+  text-align: center;
+  line-height: 2rem;
 }
 
 .option-box div:hover {
@@ -33,8 +32,27 @@
   border-radius: 100%;
 }
 
-.listName {
+.list-area {
+  width: 90%;
+  margin: 1rem auto 0;
+}
+
+.list-area input {
+  width: 100%;
+  height: 1.3rem;
+}
+
+.list-area .listName {
+  width: 90%;
   margin-left: 2rem;
+}
+
+.fa-check {
+  font-size: 1.1rem;
+}
+
+.fa-xmark {
+  font-size: 1.1rem;
 }
 
 .day-1 {

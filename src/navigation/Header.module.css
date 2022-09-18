@@ -1,11 +1,11 @@
 .header {
   width: 95%;
   height: 2rem;
-  margin: 0 1.2rem;
+  margin: 4px 1.2rem 0;
   display: flex;
   justify-content: space-between;
+  justify-items: center;
   align-items: center;
-
 }
 
 .header div {

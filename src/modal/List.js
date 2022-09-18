@@ -2,8 +2,10 @@ import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { listActions } from "../store/listmodal-slice";
 import { modalActions } from "../store/modal-slice";
-import  "./List.css";
 import ModalPosition from "./ModalPosition";
+import "./List.css";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faXmark, faTrash, faCheck, faEdit } from "@fortawesome/free-solid-svg-icons";
 
 const List = () => {
   const dispatch = useDispatch();
@@ -24,24 +26,29 @@ const List = () => {
   };
 
   return (
-    <div className={`list-box ${ModalPosition(listInfo.dayIndex, listInfo.week)}`}>
+    <div
+      className={`list-box ${ModalPosition(listInfo.dayIndex, listInfo.week)}`}
+    >
       <div className="option-box">
-        <div className='edit' onClick={listVisivleHandler}>
-          수정
+        <div onClick={listVisivleHandler}>
+          <FontAwesomeIcon icon={faEdit}/>
         </div>
         <div
-          className='remove'
           onClick={() => removeListHandler(listInfo.listIndex, listInfo.index)}
         >
-          삭제
+          <FontAwesomeIcon icon={faTrash}/>
         </div>
-        <div className='done'>완료</div>
-        <div onClick={closeModalHandler}>닫기</div>
+        <div className="fa-check">
+          <FontAwesomeIcon icon={faCheck}/>
+        </div>
+        <div className="fa-xmark" onClick={closeModalHandler}>
+          <FontAwesomeIcon icon={faXmark}/>
+        </div>
       </div>
-      {listIsVisible && <input placeholder={listInfo.listName} type="text" />}
-      {!listIsVisible && (
-        <div className='listName'>{listInfo.listName}</div>
-      )}
+      <div className="list-area">
+        {listIsVisible && <input placeholder={listInfo.listName} type="text" />}
+        {!listIsVisible && <div className="listName">{listInfo.listName}</div>}
+      </div>
     </div>
   );
 };

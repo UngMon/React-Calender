@@ -1,47 +1,77 @@
 .addMordal {
   position: absolute;
   z-index: 5;
-  width: 20%;
+  width: 40%;
   height: 25%;
   background-color: white;
   border-radius: 10px;
   box-shadow: 5px 5px 10px rgb(224, 224, 224);
+  text-align: center;
 }
 
 .inputArea{
   width: 90%;
   height: 40%;
-  margin: 1rem auto;
+  margin: 1rem auto 0.5rem;
   text-align: center;
 }
 
 .inputArea h2 {
   font-size: 1.3rem;
+  margin-bottom: 1rem;
 }
 
 .inputArea input {
   width: 100%;
-  margin: 1rem auto;
-  height: 20%;
+  height: 25%;
+  margin: 0 auto;
+  font-weight: bold;
+  border-top: 0;
+  border-left: 0;
+  border-right: 0;
 }
 
-.inputArea .input-empty {
-  width: 100%;
-  margin: 1rem auto;
+.time-area {
+  width: 90%;
   height: 20%;
-  background-color: rgb(245, 231, 233);
-  border: 1px solid red;
+  display: flex;
+  align-items: center;
+  justify-content: left;
+  margin: 0 auto;
+}
+
+.time-area label {
+  font-size: 0.8rem;
+  font-weight: bold;
+}
+
+.time-area input {
+  width: 25%;
+  margin: 0 10px;
 }
 
 .buttonBox {
   width: 90%;
   height: 20%;
   margin: 0 auto;
-  text-align: right;
+  display: flex;
+  justify-content: right;
+  align-items: center;
 }
 
 .buttonBox button {
-  margin: 0 0 0 1rem;
+  background-color: white;
+  width: 2rem;
+  height: 2rem;
+  margin-left: 10px;
+  border: 0;
+  font-size: 0.8rem;
+  font-weight: bold;
+}
+
+.buttonBox button:hover {
+  border-radius: 100%;
+  background-color: lightgray;
 }
 
 .day-1 {

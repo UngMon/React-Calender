@@ -18,7 +18,7 @@ const Month = () => {
   
   return (
     <>
-      <div className="main-area">
+      <div className="month-area">
         <button onClick={movePrevMonthHandler}>prev</button>
         <span>
           {monthInfo.year}년 {monthInfo.month + 1}월

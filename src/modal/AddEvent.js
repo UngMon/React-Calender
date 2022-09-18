@@ -1,14 +1,19 @@
 import { useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { modalActions } from "../store/modal-slice";
-import "./AddEvent.css";
 import ModalPosition from "./ModalPosition";
+import "./AddEvent.css";
+// import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+// import { faXmark } from "@fortawesome/free-solid-svg-icons";
 
 const AddEvent = () => {
   const dispatch = useDispatch();
 
   const modalState = useSelector((state) => state.modal);
   const inputRef = useRef();
+
+  const currnetTime = new Date().toLocaleTimeString();
+  console.log(currnetTime);
 
   const modalNameHandler = () => {
     let splitDateArray = modalState.clickedDate.split(".");
@@ -22,8 +27,8 @@ const AddEvent = () => {
     event.preventDefault();
 
     let inputList = inputRef.current.value;
-    if (inputList.trim() === '') {
-      inputList = '(제목 없음)';
+    if (inputList.trim() === "") {
+      inputList = "(제목 없음)";
     }
     dispatch(modalActions.inputList(inputList));
 
@@ -33,7 +38,7 @@ const AddEvent = () => {
   };
 
   const cancelHandler = () => {
-    console.log(`작동 캔슬`)
+    console.log(`작동 캔슬`);
     dispatch(modalActions.toggle());
   };
 
@@ -47,7 +52,13 @@ const AddEvent = () => {
     >
       <div className="inputArea">
         <h2 className="modalMonth">{modalNameHandler()}</h2>
-        <input placeholder="(제목 없음)" type="text" ref={inputRef} />
+        <input placeholder="(제목 없음)" type="text" ref={inputRef} autoFocus />
+      </div>
+      <div className="time-area">
+        <label htmlFor="time">시간</label>
+        <input type="text" id="time" value={currnetTime} />
+        <span>-</span>
+        <input type='text' id='time' value={currnetTime}/>
       </div>
       <div className="buttonBox">
         <button type="submit">저장</button>

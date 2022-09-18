@@ -15,7 +15,7 @@
   height: 20%;
   display: flex;
   justify-content: right;
-  justify-items: flex-start;
+  justify-items:center;
 }
 
 .header-list-box h2 {
@@ -38,19 +38,19 @@ ul {
 }
 
 .day-1 {
-  left: 14.2857142857%;
+  left: 1%;
 }
 
 .day-2 {
-  left: 29%;
+  left: 14%;
 }
 
 .day-3 {
-  left: 43%;
+  left: 28%;
 }
 
 .day-4 {
-  right: 57%;
+  right: 42%;
 }
 
 .day-5 {
