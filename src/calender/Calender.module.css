@@ -60,10 +60,18 @@
 
 .date_box .date {
   position: absolute;
-  padding: 0 0 0 5px;
-  height: 20%;
+  width: 1.5rem;
+  height: 1.5rem;
   line-height: 200%;
+  text-align: center;
 }
+
+.Today {
+  background-color: #1a73e8;
+  color: white;
+  border-radius: 100%;
+}
+
 
 .date_box .list_box {
   width: 100%;

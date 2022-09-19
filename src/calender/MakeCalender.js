@@ -8,7 +8,8 @@ const MakeCaledner = ({ year, month, firstDay, lastDate }) => {
   const dispatch = useDispatch();
 
   const schedule = useSelector((state) => state.modal.schedule);
-  console.log(schedule);
+  const today = useSelector((state) => state.month.today);
+
   console.log("make렌더링");
 
   const makeKey = (identy, year, month, date) => {
@@ -51,7 +52,7 @@ const MakeCaledner = ({ year, month, firstDay, lastDate }) => {
 
   const allListClickHandler = (date, day, week, scheduleIndex) => {
     dispatch(allListActions.toggle());
-    dispatch(allListActions.clickedListBox({date, day, week, scheduleIndex}));
+    dispatch(allListActions.clickedListBox({ date, day, week, scheduleIndex }));
   };
 
   const scheduleHandler = (nowDate, dayIdx, week) => {
@@ -126,7 +127,13 @@ const MakeCaledner = ({ year, month, firstDay, lastDate }) => {
               className={classes.date_box}
               day-index={dayIdx}
             >
-              <div className={classes.date}>{nowDate}</div>
+              <div
+                className={`${classes.date} ${
+                  nowDate === today && classes.Today
+                }`}
+              >
+                {nowDate}
+              </div>
               <div className={classes.list_box}>
                 {scheduleHandler(idx, i, week)}
               </div>
@@ -144,7 +151,13 @@ const MakeCaledner = ({ year, month, firstDay, lastDate }) => {
               className={classes.date_box}
               day-index={dayIdx}
             >
-              <div className={classes.date}>{nowDate}</div>
+              <div
+                className={`${classes.date} ${
+                  nowDate === today && classes.Today
+                }`}
+              >
+                {nowDate}
+              </div>
               <div className={classes.list_box}>
                 {scheduleHandler(idx, i, week)}
               </div>
@@ -168,7 +181,13 @@ const MakeCaledner = ({ year, month, firstDay, lastDate }) => {
               className={classes.date_box}
               day-index={dayIdx}
             >
-              <div className={classes.date}>{nowDate}</div>
+              <div
+                className={`${classes.date} ${
+                  nowDate === today && classes.Today
+                }`}
+              >
+                {nowDate}
+              </div>
               <div className={classes.list_box}>
                 {scheduleHandler(idx, (i % 7) + 1, week)}
               </div>
@@ -186,7 +205,13 @@ const MakeCaledner = ({ year, month, firstDay, lastDate }) => {
               className={classes.date_box}
               day-index={dayIdx}
             >
-              <div className={classes.date}>{nowDate}</div>
+              <div
+                className={`${classes.date} ${
+                  nowDate === today && classes.Today
+                }`}
+              >
+                {nowDate}
+              </div>
               <div className={classes.list_box}>
                 {scheduleHandler(idx, (i % 7) + 1, week)}
               </div>

@@ -2,8 +2,8 @@
   position: absolute;
   z-index: 5;
   width: 16%;
-  max-height: 50%;
-  background-color: white;
+  height: 30%;
+  background-color:white;
   border-radius: 10px;
   box-shadow: 5px 5px 10px rgb(224, 224, 224);
   text-align: center;
@@ -17,12 +17,20 @@
 
 .header-list-box h2 {
   font-size: 1rem;
-  margin: 0 35% 0 45%;
+  margin: 0 20% 0 50%;
 }
 
 .header-list-box button {
-  margin-left: 1rem;
-  width: 30%;
+  font-size: 0.8rem;
+  width: 20%;
+  height: 20%;
+  border: 0;
+  background-color: white;
+}
+
+.header-list-box button:hover {
+  background-color: pink;
+  border-radius: 100%;
 }
 
 .list-box-date {
@@ -30,9 +38,10 @@
 }
 
 .main-list-box {
-  padding: 12px;
-  overflow: scroll;
-  height: 70%;
+  margin: 16px 16px;
+  margin-bottom: 10%;
+  overflow-y: auto;
+  max-height: 56%;
 }
 
 .main-list-box ul {

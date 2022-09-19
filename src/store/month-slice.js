@@ -11,6 +11,7 @@ const initialDateInfo = {
   date: todayDate,
   firstDay: new Date(todayYear, todayMonth, 1).getDay(),
   lastDate: new Date(todayYear, todayMonth + 1, 0).getDate(),
+  today: new Date().getDate(),
 };
 
 const monthSlice = createSlice({

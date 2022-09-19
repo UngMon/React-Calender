@@ -6,6 +6,7 @@ import "./AddEvent.css";
 
 const AddEvent = () => {
   const dispatch = useDispatch();
+  console.log(new Date().getDate());
 
   const modalState = useSelector((state) => state.modal);
   const inputRef = useRef();
@@ -54,9 +55,9 @@ const AddEvent = () => {
       </div>
       <div className="time-area">
         <label htmlFor="time">시간</label>
-        <input type="text" id="time" value={currnetTime} />
+        <input type="text" id="time" defaultValue={currnetTime} />
         <span>-</span>
-        <input type='text' id='time' value={currnetTime}/>
+        <input type='text' id='time' defaultValue={currnetTime}/>
       </div>
       <div className="buttonBox">
         <button type="submit">저장</button>

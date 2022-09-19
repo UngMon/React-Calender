@@ -5,14 +5,15 @@
   justify-items: center;
   align-items: center;
   text-align: center;
+  font-size: 1.3rem;
 }
 
 .month-area span {
   margin: 0 1rem;
-  font-size: 20px;
 }
 
 .month-area button {
   border-radius: 5px;
   border: 1px;
+  font-size: 1.5rem;
 }
