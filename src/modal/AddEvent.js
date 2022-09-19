@@ -3,8 +3,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { modalActions } from "../store/modal-slice";
 import ModalPosition from "./ModalPosition";
 import "./AddEvent.css";
-// import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-// import { faXmark } from "@fortawesome/free-solid-svg-icons";
 
 const AddEvent = () => {
   const dispatch = useDispatch();

@@ -1,6 +1,8 @@
 import { useDispatch, useSelector } from "react-redux";
 import { allListActions } from "../store/all-list-slice";
 import './AllList.css';
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faXmark } from "@fortawesome/free-solid-svg-icons";
 
 const AllList = () => {
   const dispatch = useDispatch();
@@ -33,12 +35,12 @@ const AllList = () => {
   };
 
   return (
-    <div className={`all-list week-${allModal.week} day-${allModal.day}`}>
+    <div className={`all-list li-week-${allModal.week} li-day-${allModal.day}`}>
       <div className="header-list-box">
         <h2>{dayChangeHandler()}</h2>
-        <button onClick={cancelHandler}>닫기</button>
+        <FontAwesomeIcon icon={faXmark} onClick={cancelHandler}/>
       </div>
-      <h3>{allModal.date}</h3>
+      <h3 className="list-box-date">{allModal.date}</h3>
       <div className="main-list-box">
         <ul>{makeListHandler()}</ul>
       </div>

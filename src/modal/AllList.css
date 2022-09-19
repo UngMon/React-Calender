@@ -1,8 +1,8 @@
 .all-list {
   position: absolute;
   z-index: 5;
-  width: 15%;
-  height: 30%;
+  width: 16%;
+  max-height: 50%;
   background-color: white;
   border-radius: 10px;
   box-shadow: 5px 5px 10px rgb(224, 224, 224);
@@ -10,17 +10,14 @@
 }
 
 .header-list-box {
-  margin: 1rem 5.5rem;
-  width: 50%;
-  height: 20%;
+  margin: 12px 0 1rem 0;
   display: flex;
-  justify-content: right;
-  justify-items:center;
+  align-items: center;
 }
 
 .header-list-box h2 {
-  font-size: 1.5rem;
-  margin-right: 2rem;
+  font-size: 1rem;
+  margin: 0 35% 0 45%;
 }
 
 .header-list-box button {
@@ -28,63 +25,73 @@
   width: 30%;
 }
 
-.main-list-box {
-  border: 0.5px solid black;
+.list-box-date {
+  font-size: 1rem;
 }
 
-ul {
+.main-list-box {
+  padding: 12px;
+  overflow: scroll;
+  height: 70%;
+}
+
+.main-list-box ul {
   list-style: none;
   text-align: left;
 }
 
-.day-1 {
+.main-list-box li {
+  margin-top: 10px;
+}
+
+.li-day-1 {
   left: 1%;
 }
 
-.day-2 {
+.li-day-2 {
   left: 14%;
 }
 
-.day-3 {
+.li-day-3 {
   left: 28%;
 }
 
-.day-4 {
+.li-day-4 {
   right: 42%;
 }
 
-.day-5 {
+.li-day-5 {
   right: 43%;
 }
 
-.day-6 {
+.li-day-6 {
   right: 29%;
 }
 
-.day-7 {
+.li-day-7 {
   right: 15%;
 }
 
-.week-1 {
+.li-week-1 {
   top: 17%;
 }
 
-.week-2 {
+.li-week-2 {
   top: 30%;
 }
 
-.week-3 {
+.li-week-3 {
   top: 40%;
 }
 
-.week-4 {
+.li-week-4 {
   top: 50%;
 }
 
-.week-5 {
+.li-week-5 {
   top: 60%;
 }
 
-.week-6 {
+.li-week-6 {
   top: 70;
 }

@@ -1,7 +1,7 @@
 .addMordal {
   position: absolute;
   z-index: 5;
-  width: 40%;
+  width: 25%;
   height: 25%;
   background-color: white;
   border-radius: 10px;
@@ -10,7 +10,7 @@
 }
 
 .inputArea{
-  width: 90%;
+  width: 80%;
   height: 40%;
   margin: 1rem auto 0.5rem;
   text-align: center;
@@ -32,7 +32,7 @@
 }
 
 .time-area {
-  width: 90%;
+  width: 80%;
   height: 20%;
   display: flex;
   align-items: center;
