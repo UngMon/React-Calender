@@ -4,15 +4,14 @@ import { listActions } from "../store/list-slice";
 import { modalActions } from "../store/modal-slice";
 import classes from "./Calender.module.css";
 
+const todayDate = new Date().getDate();
+const todayMonth = new Date().getMonth();
+
 const MakeCaledner = ({ year, month, firstDay, lastDate }) => {
   const dispatch = useDispatch();
-
   const schedule = useSelector((state) => state.modal.schedule);
-  const today = useSelector((state) => state.month.today);
-  const todayMonth = new Date().getMonth();
 
   console.log("make렌더링");
-  console.log(todayMonth);
 
   const makeKey = (identy, year, month, date) => {
     if (identy === "prev") {
@@ -131,7 +130,7 @@ const MakeCaledner = ({ year, month, firstDay, lastDate }) => {
             >
               <div
                 className={`${classes.date} ${
-                  nowDate === today && classes.Today
+                  month === todayMonth && nowDate === todayDate && classes.Today
                 }`}
               >
                 {nowDate}
@@ -155,7 +154,7 @@ const MakeCaledner = ({ year, month, firstDay, lastDate }) => {
             >
               <div
                 className={`${classes.date} ${
-                  nowDate === today && classes.Today
+                  month === todayMonth && nowDate === todayDate && classes.Today
                 }`}
               >
                 {nowDate}
@@ -185,7 +184,7 @@ const MakeCaledner = ({ year, month, firstDay, lastDate }) => {
             >
               <div
                 className={`${classes.date} ${
-                  nowDate === today && classes.Today
+                  month === todayMonth && nowDate === todayDate && classes.Today
                 }`}
               >
                 {nowDate}
@@ -209,7 +208,7 @@ const MakeCaledner = ({ year, month, firstDay, lastDate }) => {
             >
               <div
                 className={`${classes.date} ${
-                  nowDate === today && classes.Today
+                  month === todayMonth && nowDate === todayDate && classes.Today
                 }`}
               >
                 {nowDate}

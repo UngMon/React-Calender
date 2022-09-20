@@ -5,7 +5,6 @@ import "./Month.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSquareCaretLeft, faSquareCaretRight } from "@fortawesome/free-solid-svg-icons";
 
-
 const Month = () => {
   const dispatch = useDispatch();
 
