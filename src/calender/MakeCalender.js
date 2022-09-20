@@ -1,6 +1,6 @@
 import { useDispatch, useSelector } from "react-redux";
 import { allListActions } from "../store/all-list-slice";
-import { listActions } from "../store/listmodal-slice";
+import { listActions } from "../store/list-slice";
 import { modalActions } from "../store/modal-slice";
 import classes from "./Calender.module.css";
 
@@ -9,8 +9,10 @@ const MakeCaledner = ({ year, month, firstDay, lastDate }) => {
 
   const schedule = useSelector((state) => state.modal.schedule);
   const today = useSelector((state) => state.month.today);
+  const todayMonth = new Date().getMonth();
 
   console.log("make렌더링");
+  console.log(todayMonth);
 
   const makeKey = (identy, year, month, date) => {
     if (identy === "prev") {

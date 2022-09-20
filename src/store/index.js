@@ -1,7 +1,7 @@
 import { configureStore } from "@reduxjs/toolkit";
 import monthSlice from "./month-slice";
 import modalSlice from "./modal-slice";
-import listSlice from "./listmodal-slice";
+import listSlice from "./list-slice";
 import allListSlice from "./all-list-slice";
 
 const store = configureStore({

@@ -1,11 +1,11 @@
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { listActions } from "../store/listmodal-slice";
+import { listActions } from "../store/list-slice";
 import { modalActions } from "../store/modal-slice";
 import ModalPosition from "./ModalPosition";
 import "./List.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faXmark, faTrash, faCheck, faEdit } from "@fortawesome/free-solid-svg-icons";
+import {faXmark,faTrash,faCheck,faEdit,} from "@fortawesome/free-solid-svg-icons";
 
 const List = () => {
   const dispatch = useDispatch();
@@ -21,9 +21,16 @@ const List = () => {
     setListIsVisible(true);
   };
 
+  const listDoneHandler = () => {
+    dispatch(listActions.doneList());
+  };
+  
   const closeModalHandler = () => {
     dispatch(listActions.toggle());
   };
+  
+  const styleClass = listInfo.style && !listIsVisible && 'done'; 
+  console.log(styleClass);
 
   return (
     <div
@@ -31,23 +38,25 @@ const List = () => {
     >
       <div className="option-box">
         <div onClick={listVisivleHandler}>
-          <FontAwesomeIcon icon={faEdit}/>
+          <FontAwesomeIcon icon={faEdit} />
         </div>
         <div
           onClick={() => removeListHandler(listInfo.listIndex, listInfo.index)}
         >
-          <FontAwesomeIcon icon={faTrash}/>
+          <FontAwesomeIcon icon={faTrash} />
         </div>
-        <div className="fa-check">
-          <FontAwesomeIcon icon={faCheck}/>
+        <div className="fa-check" onClick={listDoneHandler}>
+          <FontAwesomeIcon icon={faCheck} />
         </div>
         <div className="fa-xmark" onClick={closeModalHandler}>
-          <FontAwesomeIcon icon={faXmark}/>
+          <FontAwesomeIcon icon={faXmark} />
         </div>
       </div>
       <div className="list-area">
         {listIsVisible && <input placeholder={listInfo.listName} type="text" />}
-        {!listIsVisible && <div className="listName">{listInfo.listName}</div>}
+        {!listIsVisible && (
+          <div className={`listName  ${styleClass}`}>{listInfo.listName}</div>
+        )}
       </div>
     </div>
   );
