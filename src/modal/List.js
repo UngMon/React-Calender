@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { listActions } from "../store/list-slice";
 import { modalActions } from "../store/modal-slice";
-import ModalPosition from "./ModalPosition";
+import ModalPosition from '../library/ModalPosition'
 import "./List.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {faXmark,faTrash,faCheck,faEdit,} from "@fortawesome/free-solid-svg-icons";
@@ -30,7 +30,6 @@ const List = () => {
   };
   
   const styleClass = listInfo.style && !listIsVisible && 'done'; 
-  console.log(styleClass);
 
   return (
     <div

@@ -1,15 +1,16 @@
 .addMordal {
   position: absolute;
   z-index: 5;
-  width: 25%;
-  height: 25%;
+  width: 30%;
+  /* height: 25%; */
+  max-height: 50%;
   background-color: white;
   border-radius: 10px;
   box-shadow: 5px 5px 10px rgb(224, 224, 224);
   text-align: center;
 }
 
-.inputArea{
+.inputArea {
   width: 80%;
   height: 40%;
   margin: 1rem auto 0.5rem;
@@ -36,7 +37,7 @@
   height: 20%;
   display: flex;
   align-items: center;
-  justify-content: left;
+  justify-content: center;
   margin: 0 auto;
 }
 
@@ -46,8 +47,9 @@
 }
 
 .time-area input {
-  width: 25%;
+  width: 23%;
   margin: 0 10px;
+  text-align: center;
 }
 
 .buttonBox {
@@ -59,11 +61,30 @@
   align-items: center;
 }
 
+.time-select {
+  width: 30%;
+  height: 64%;
+  margin-left: 25%;
+  white-space: nowrap;
+  overflow: auto;
+  background-color: white;
+  font-size: 13px;
+  display: flex;
+}
+
+.time-select select {
+  width: 65%;
+}
+
+.time-select option:hover {
+  background-color: lightgray;
+}
+
 .buttonBox button {
   background-color: white;
   width: 2rem;
   height: 2rem;
-  margin-left: 10px;
+  margin: 0 0 1rem 10px;
   border: 0;
   font-size: 0.8rem;
   font-weight: bold;
@@ -79,7 +100,7 @@
 }
 
 .day-2 {
-  left : 29%;
+  left: 29%;
 }
 
 .day-3 {

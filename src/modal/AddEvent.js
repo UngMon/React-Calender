@@ -1,18 +1,17 @@
 import { useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { modalActions } from "../store/modal-slice";
-import ModalPosition from "./ModalPosition";
+import ModalPosition from "../library/ModalPosition";
 import "./AddEvent.css";
+import Time from "../library/Time";
+import TimeBox from "./TimeBox";
+import { timeActions } from "../store/time-slice";
 
 const AddEvent = () => {
   const dispatch = useDispatch();
-  console.log(new Date().getDate());
-
   const modalState = useSelector((state) => state.modal);
+  const timeState = useSelector(state => state.time);
   const inputRef = useRef();
-
-  const currnetTime = new Date().toLocaleTimeString();
-  console.log(currnetTime);
 
   const modalNameHandler = () => {
     let splitDateArray = modalState.clickedDate.split(".");
@@ -27,8 +26,10 @@ const AddEvent = () => {
 
     let inputList = inputRef.current.value;
     if (inputList.trim() === "") {
-      inputList = "(제목 없음)";
+      inputList = " (제목 없음)";
     }
+    inputList = Time().currentTime + ' ' + inputList;
+
     dispatch(modalActions.inputList(inputList));
 
     inputRef.current.value = "";
@@ -41,6 +42,14 @@ const AddEvent = () => {
     dispatch(modalActions.toggle());
   };
 
+  const firstTimeSelectorHandler = () => {
+    dispatch(timeActions.startTimetoggle());
+  };
+
+  const lastTimeSelectorHandler = () => {
+    dispatch(timeActions.lastTimetoggle());
+  };
+
   return (
     <form
       className={`addMordal ${ModalPosition(
@@ -51,14 +60,34 @@ const AddEvent = () => {
     >
       <div className="inputArea">
         <h2 className="modalMonth">{modalNameHandler()}</h2>
-        <input placeholder="(제목 없음)" type="text" ref={inputRef} autoFocus />
+        <input placeholder="(제목 없음)" type="text" ref={inputRef} />
       </div>
       <div className="time-area">
         <label htmlFor="time">시간</label>
-        <input type="text" id="time" defaultValue={currnetTime} />
+        <input
+          type="text"
+          id="time"
+          defaultValue={Time().currentTime}
+          onClick={firstTimeSelectorHandler}
+        />
         <span>-</span>
-        <input type='text' id='time' defaultValue={currnetTime}/>
+        <input
+          type="text"
+          id="time"
+          defaultValue={Time().lastTime}
+          onClick={lastTimeSelectorHandler}
+        />
       </div>
+      {timeState.firstIsVisible && (
+        <div className="time-select">
+          <TimeBox currentTime={Time().currentTime} />
+        </div>
+      )}
+      {timeState.lastIsVisible && (
+        <div className="time-select">
+          <TimeBox currentTime={Time().lastTime} />
+        </div>
+      )}
       <div className="buttonBox">
         <button type="submit">저장</button>
         <button type="button" onClick={cancelHandler}>

@@ -10,6 +10,7 @@ const todayMonth = new Date().getMonth();
 const MakeCaledner = ({ year, month, firstDay, lastDate }) => {
   const dispatch = useDispatch();
   const schedule = useSelector((state) => state.modal.schedule);
+  const listStyle = useSelector(state => state.list.style);
 
   console.log("make렌더링");
 
@@ -67,7 +68,7 @@ const MakeCaledner = ({ year, month, firstDay, lastDate }) => {
         listIndex <= 2 ? (
           <div
             key={listIndex}
-            className={classes.list}
+            className={`${classes.list} ${listStyle && classes.done}`}
             onClick={(event) => {
               event.stopPropagation();
               listClickHandler(
