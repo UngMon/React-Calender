@@ -11,7 +11,10 @@ const AddEvent = () => {
   const dispatch = useDispatch();
   const modalState = useSelector((state) => state.modal);
   const timeState = useSelector(state => state.time);
+
   const inputRef = useRef();
+  const firstTimeRef = useRef();
+  const lastTimeRef = useRef();
 
   const modalNameHandler = () => {
     let splitDateArray = modalState.clickedDate.split(".");
@@ -25,16 +28,23 @@ const AddEvent = () => {
     event.preventDefault();
 
     let inputList = inputRef.current.value;
+    let lastTime = timeState.lastTime;
+    let timeData = '';
     if (inputList.trim() === "") {
-      inputList = " (제목 없음)";
+      inputList = "(제목 없음)";
     }
-    inputList = Time().currentTime + ' ' + inputList;
 
-    dispatch(modalActions.inputList(inputList));
+    if (timeState.firstTime !== '') {
+      timeData = timeState.firstTime;
+    } else {
+      timeData = Time().currentTime;
+    };
 
+    dispatch(modalActions.inputList({timeData, lastTime, inputList}));
+    // dispatch(modalActions.)
     inputRef.current.value = "";
-    console.log(modalState.changed);
     cancelHandler();
+    dispatch(timeActions.closeModal());
   };
 
   const cancelHandler = () => {
@@ -69,6 +79,7 @@ const AddEvent = () => {
           id="time"
           defaultValue={Time().currentTime}
           onClick={firstTimeSelectorHandler}
+          ref={firstTimeRef}
         />
         <span>-</span>
         <input
@@ -76,17 +87,14 @@ const AddEvent = () => {
           id="time"
           defaultValue={Time().lastTime}
           onClick={lastTimeSelectorHandler}
+          ref={lastTimeRef}
         />
       </div>
       {timeState.firstIsVisible && (
-        <div className="time-select">
-          <TimeBox currentTime={Time().currentTime} />
-        </div>
+        <div className="time-select"><TimeBox /></div>
       )}
       {timeState.lastIsVisible && (
-        <div className="time-select">
-          <TimeBox currentTime={Time().lastTime} />
-        </div>
+        <div className="time-select"><TimeBox /></div>
       )}
       <div className="buttonBox">
         <button type="submit">저장</button>

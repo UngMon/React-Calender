@@ -7,20 +7,20 @@ import { fetchScheduleData, sendScheduleData } from "./store/fetch-action";
 function App() {
   const dispatch = useDispatch();
 
-  const modal = useSelector(state => state.modal);
+  const modal = useSelector((state) => state.modal);
 
   useEffect(() => {
     dispatch(fetchScheduleData());
-    console.log('fetch')
+    console.log("fetch");
   }, [dispatch]);
   console.log("app렌더링");
 
   useEffect(() => {
     if (modal.changed) {
-      console.log('작동여부');
+      console.log("작동여부");
       dispatch(sendScheduleData(modal.schedule));
     }
-  }, [modal, dispatch])
+  }, [modal, dispatch]);
 
   return (
     <Fragment>

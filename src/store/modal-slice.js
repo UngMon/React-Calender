@@ -18,26 +18,46 @@ const modalSlice = createSlice({
     clickedData(state, action) {
       state.clickedDate = action.payload.idx;
       state.week = action.payload.week;
-      state.dayIndex = action.payload.dayIndex;  
+      state.dayIndex = action.payload.dayIndex;
     },
 
     inputList(state, action) {
+      console.log(action.payload);
       state.changed = true;
       const result = state.schedule.find(
         (item) => item.idx === state.clickedDate
-      );
+      ); // schedule 배열에서 해당 날짜에 요소가 있을 때, true 와 해당 {} return
 
       if (result) {
+        // 존재하면
         state.schedule.map((item) => {
           if (item.idx === state.clickedDate) {
-            item.todo = [...item.todo, action.payload];
+            item.todo = [
+              ...item.todo,
+              [
+                action.payload.timeData,
+                action.payload.lastTime,
+                action.payload.inputList,
+              ],
+            ];
           }
+          item.todo.sort((a, b) => a[0] < b[0] ? -1 : a[0] > b[0] ? 1 : 0 );
           return state.schedule;
         });
       } else {
+        // 해당 날짜가 schedule 배열에 없을 때, 즉 처음
         state.schedule = [
           ...state.schedule,
-          { idx: state.clickedDate, todo: [action.payload] },
+          {
+            idx: state.clickedDate,
+            todo: [
+              [
+                action.payload.timeData,
+                action.payload.lastTime,
+                action.payload.inputList,
+              ],
+            ],
+          },
         ];
       }
     },

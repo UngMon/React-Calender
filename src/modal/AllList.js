@@ -42,8 +42,8 @@ const AllList = () => {
     <div className={`all-list li-week-${allModal.week} li-day-${allModal.day}`}>
       <div className="header-list-box">
         <h2>{dayChangeHandler()}</h2>
-        <button>
-          <FontAwesomeIcon icon={faXmark} onClick={cancelHandler} />
+        <button onClick={cancelHandler}>
+          <FontAwesomeIcon icon={faXmark} />
         </button>
       </div>
       <h3 className="list-box-date">{allModal.date}</h3>

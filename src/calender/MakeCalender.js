@@ -11,6 +11,7 @@ const MakeCaledner = ({ year, month, firstDay, lastDate }) => {
   const dispatch = useDispatch();
   const schedule = useSelector((state) => state.modal.schedule);
   const listStyle = useSelector(state => state.list.style);
+  console.log(schedule)
 
   console.log("make렌더링");
 
@@ -67,7 +68,8 @@ const MakeCaledner = ({ year, month, firstDay, lastDate }) => {
       return toDoList.todo.map((item, listIndex) =>
         listIndex <= 2 ? (
           <div
-            key={listIndex}
+            key={item[0]+listIndex}
+            id={item[0]}
             className={`${classes.list} ${listStyle && classes.done}`}
             onClick={(event) => {
               event.stopPropagation();
@@ -82,7 +84,7 @@ const MakeCaledner = ({ year, month, firstDay, lastDate }) => {
             }}
             dayindex={dayIdx}
           >
-            {item}
+            {item[0] + ' ' + item[2]}
           </div>
         ) : (
           listIndex === 3 && (

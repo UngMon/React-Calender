@@ -3,6 +3,8 @@ const Time = () => {
   let hour = time.getHours();
   let minute = time.getMinutes();
 
+  console.log(hour);
+
   let currentTime = "";
   let lastTime = "";
 
@@ -18,6 +20,7 @@ const Time = () => {
     lastTime = "오후 ";
     if (hour < 10) {
       hour = "0" + hour;
+      console.log(hour);
     } else if (hour === 11) {
       lastTime = "오전";
     }
@@ -27,10 +30,14 @@ const Time = () => {
     minute = Math.ceil(minute / 15) * 15;
     if (minute === 60) {
       hour += 1;
+      if (hour === 12) {
+        hour = '0';
+      }
       minute = "00";
     }
     currentTime = currentTime + hour + ":" + minute;
     lastTime = lastTime + (hour + 1) + ":" + minute;
+    console.log(hour);
   } else {
     if (minute === 0) {
       minute = "0" + minute;
