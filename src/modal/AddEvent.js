@@ -4,7 +4,7 @@ import { modalActions } from "../store/modal-slice";
 import ModalPosition from "../library/ModalPosition";
 import "./AddEvent.css";
 import Time from "../library/Time";
-import TimeBox from "./TimeBox";
+import TimeBox from "../library/TimeBox";
 import { timeActions } from "../store/time-slice";
 
 const AddEvent = () => {
