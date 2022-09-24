@@ -25,11 +25,18 @@ const Time = () => {
         }
       }
     } else {
-      hour -= 12;
-      currentTime = "오후 " + hour;
-      lastTime = "오후 " + (hour + 1);
-      if (hour === 23) {
-        lastTime = "오전 00";
+      if (hour < 22) {
+        currentTime = '오후 0' + (hour - 12);
+        lastTime = "오후 0" + (hour - 11);
+        if (hour === 21) {
+          lastTime = '오후 10'; 
+        }
+      }else {
+        currentTime = "오후 " + (hour - 12);
+        lastTime = "오후" + (hour - 11);
+        if (hour === 23) {
+          lastTime = '오전 00';
+        }
       }
     }
   };

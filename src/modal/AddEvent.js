@@ -53,7 +53,7 @@ const AddEvent = () => {
   };
 
   const firstTimeSelectorHandler = () => {
-    dispatch(timeActions.startTimetoggle());
+    dispatch(timeActions.firstTimetoggle());
   };
 
   const lastTimeSelectorHandler = () => {
