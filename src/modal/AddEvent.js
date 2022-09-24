@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { modalActions } from "../store/modal-slice";
 import ModalPosition from "../library/ModalPosition";
@@ -13,8 +13,10 @@ const AddEvent = () => {
   const timeState = useSelector(state => state.time);
 
   const inputRef = useRef();
-  const firstTimeRef = useRef();
+  const [firstTimeRef, setFirstTimeRef ] = useState(timeState.firstTime ||Time().currentTime);
   const lastTimeRef = useRef();
+
+  console.log(firstTimeRef)
 
   const modalNameHandler = () => {
     let splitDateArray = modalState.clickedDate.split(".");
@@ -23,6 +25,10 @@ const AddEvent = () => {
       splitDateArray[0] + "." + splitDateArray[1] + "." + splitDateArray[2]
     );
   };
+
+  // const inputHandler = (event) => {
+  //   setFirstTimeRef(event.target.value);
+  // }
 
   const listSubmitHandler = (event) => {
     event.preventDefault();
@@ -41,7 +47,7 @@ const AddEvent = () => {
     };
 
     dispatch(modalActions.inputList({timeData, lastTime, inputList}));
-    // dispatch(modalActions.)
+
     inputRef.current.value = "";
     cancelHandler();
     dispatch(timeActions.closeModal());
@@ -77,9 +83,8 @@ const AddEvent = () => {
         <input
           type="text"
           id="time"
-          defaultValue={Time().currentTime}
+          value={firstTimeRef}
           onClick={firstTimeSelectorHandler}
-          ref={firstTimeRef}
         />
         <span>-</span>
         <input
@@ -91,10 +96,10 @@ const AddEvent = () => {
         />
       </div>
       {timeState.firstIsVisible && (
-        <div className="time-select"><TimeBox /></div>
+        <div className="time-select"><TimeBox setFirstTimeRef={setFirstTimeRef}/></div>
       )}
       {timeState.lastIsVisible && (
-        <div className="time-select"><TimeBox /></div>
+        <div className="time-select"><TimeBox setFirstTimeRef={setFirstTimeRef}/></div>
       )}
       <div className="buttonBox">
         <button type="submit">저장</button>

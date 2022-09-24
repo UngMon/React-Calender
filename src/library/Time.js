@@ -36,6 +36,9 @@ const Time = () => {
         lastTime = "오후" + (hour - 11);
         if (hour === 23) {
           lastTime = '오전 00';
+        } else {
+          currentTime = '오전 00';
+          lastTime = '오전 01';
         }
       }
     }
