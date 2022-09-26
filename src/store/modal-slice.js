@@ -34,14 +34,17 @@ const modalSlice = createSlice({
           if (item.idx === state.clickedDate) {
             item.todo = [
               ...item.todo,
-              [
-                action.payload.timeData,
-                action.payload.lastTime,
-                action.payload.inputList,
-              ],
+              {
+                firstTime: action.payload.timeData,
+                lastTime: action.payload.lastTime,
+                list: action.payload.inputList,
+                style: false,
+              },
             ];
           }
-          item.todo.sort((a, b) => a[0] < b[0] ? -1 : a[0] > b[0] ? 1 : 0 );
+          item.todo = item.todo.sort((a, b) =>
+            a.firstTime < b.firstTime ? -1 : a.firstTime > b.firstTime ? 1 : 0
+          );
           return state.schedule;
         });
       } else {
@@ -51,11 +54,12 @@ const modalSlice = createSlice({
           {
             idx: state.clickedDate,
             todo: [
-              [
-                action.payload.timeData,
-                action.payload.lastTime,
-                action.payload.inputList,
-              ],
+              {
+                firstTime: action.payload.timeData,
+                lastTime: action.payload.lastTime,
+                list: action.payload.inputList,
+                style: false,
+              },
             ],
           },
         ];
@@ -82,6 +86,16 @@ const modalSlice = createSlice({
 
     toggleChanged(state) {
       state.changed = false;
+    },
+
+    listDone(state, action) {
+      state.changed = true;
+      let arr = [...state.schedule];
+
+      arr[action.payload.index].todo[action.payload.listIndex].style =
+        !arr[action.payload.index].todo[action.payload.listIndex].style;
+
+      state.schedule = [...arr];
     },
   },
 });

@@ -10,10 +10,8 @@ const todayMonth = new Date().getMonth();
 const MakeCaledner = ({ year, month, firstDay, lastDate }) => {
   const dispatch = useDispatch();
   const schedule = useSelector((state) => state.modal.schedule);
-  const listStyle = useSelector(state => state.list.style);
-  console.log(schedule)
 
-  console.log("make렌더링");
+  console.log(schedule);
 
   const makeKey = (identy, year, month, date) => {
     if (identy === "prev") {
@@ -34,19 +32,22 @@ const MakeCaledner = ({ year, month, firstDay, lastDate }) => {
   };
 
   const listClickHandler = (
+    key,
     date,
     week,
     dayIdx,
-    item,
+    listName,
     listIndex,
     scheduleIndex
   ) => {
+    console.log(key)
     dispatch(
       listActions.clickedList({
+        key,
         date,
         week,
         dayIdx,
-        item,
+        listName,
         listIndex,
         scheduleIndex,
       })
@@ -63,28 +64,33 @@ const MakeCaledner = ({ year, month, firstDay, lastDate }) => {
 
     if (toDoList) {
       const scheduleIndex = schedule.indexOf(toDoList);
-      const todolength = toDoList.todo.length;
 
       return toDoList.todo.map((item, listIndex) =>
         listIndex <= 2 ? (
           <div
-            key={item[0]+listIndex}
-            id={item[0]}
-            className={`${classes.list} ${listStyle && classes.done}`}
+            key={item.firstTime + ' ' + item.lastTime + listIndex}
+            id={item.firstTime}
+            className={`${classes.list} ${
+              
+              item.style &&
+              classes.done
+            }`}
             onClick={(event) => {
               event.stopPropagation();
+              const key = item.firstTime + listIndex;
               listClickHandler(
+                key,
                 nowDate,
                 week,
                 dayIdx,
-                item,
+                item.list,
                 listIndex,
                 scheduleIndex
               );
             }}
             dayindex={dayIdx}
           >
-            {item[0] + ' ' + item[2]}
+            {item.firstTime + " " + item.list}
           </div>
         ) : (
           listIndex === 3 && (
@@ -95,7 +101,7 @@ const MakeCaledner = ({ year, month, firstDay, lastDate }) => {
                 event.stopPropagation();
                 allListClickHandler(nowDate, dayIdx, week, scheduleIndex);
               }}
-            >{` ${todolength - 3}개 더보기`}</div>
+            >{` ${toDoList.todo.length - 3}개 더보기`}</div>
           )
         )
       );

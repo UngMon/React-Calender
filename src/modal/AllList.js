@@ -11,9 +11,12 @@ const AllList = () => {
   console.log(allModal);
 
   const makeListHandler = () => {
-    return schedule[allModal.index].todo.map((item, index) => (
-      <li key={index} className="item-list">
-        {item}
+    return schedule[allModal.index].todo.map((item, listIndex) => (
+      <li
+        key={item.firstTime + " " + item.lastTime + listIndex}
+        className="item-list"
+      >
+        {item.firstTime + " " + item.list}
       </li>
     ));
   };

@@ -7,6 +7,7 @@ import "./AddEvent.css";
 import Time from "../library/Time";
 import TimeBox from "../library/TimeBox";
 import TimeBoxTwo from "../library/TimeBoxTwo";
+import { listActions } from "../store/list-slice";
 
 const AddEvent = () => {
   const dispatch = useDispatch();
@@ -41,6 +42,7 @@ const AddEvent = () => {
     }
 
     dispatch(modalActions.inputList({ timeData, lastTime, inputList }));
+    // dispatch(listActions.listStyle());
 
     inputRef.current.value = "";
     cancelHandler();
@@ -50,7 +52,7 @@ const AddEvent = () => {
   const cancelHandler = () => {
     console.log(`작동 캔슬`);
     dispatch(modalActions.toggle());
-    dispatch(timeState.closeModal());
+    // dispatch(timeState.closeModal());
   };
 
   const firstTimeSelectorHandler = () => {
