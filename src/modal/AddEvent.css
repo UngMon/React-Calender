@@ -33,10 +33,10 @@
 
 .time-area {
   width: 75%;
-  height: 15%;
+  height: 5%;
   display: flex;
   justify-content: center;
-  margin: 0 auto;
+  margin: 0 auto 16px;
   font-size: 0.8rem;
 }
 
@@ -46,7 +46,7 @@
 
 .time-area-label {
   width: 15%;
-  font-size: 0.8rem;
+  font-size: 0.7rem;
   font-weight: bold;
   line-height: 200%;
 }

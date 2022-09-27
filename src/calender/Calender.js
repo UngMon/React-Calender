@@ -5,10 +5,16 @@ import AllList from '../modal/AllList';
 import classes from "./Calender.module.css";
 import MakeCaledner from "./MakeCalender";
 
+const date = new Date();
+const fixYear = date.getFullYear();
+const fixMonth = date.getMonth();
+const fixDate = date.getDate()
+
 const Calender = ({ year, month, firstDay, lastDate }) => {
   const addModal = useSelector((state) => state.modal);
   const listModal = useSelector((state) => state.list);
   const allListModal = useSelector((state) => state.all);
+  const identify = fixYear + '.' + fixMonth + '.' + fixDate;
 
   return (
     <div className={classes.calender}>
@@ -28,7 +34,7 @@ const Calender = ({ year, month, firstDay, lastDate }) => {
           </tr>
         </thead>
         <tbody className={classes.presentation}>
-          {MakeCaledner({ year, month, firstDay, lastDate })}
+          {MakeCaledner({ year, month, firstDay, lastDate, identify })}
         </tbody>
       </table>
     </div>

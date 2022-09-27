@@ -3,12 +3,10 @@ import { createSlice } from "@reduxjs/toolkit";
 const today = new Date();
 const todayYear = today.getFullYear();
 const todayMonth = today.getMonth();
-const todayDate = today.getDate();
 
 const initialDateInfo = {
   year: todayYear,
   month: todayMonth,
-  date: todayDate,
   firstDay: new Date(todayYear, todayMonth, 1).getDay(),
   lastDate: new Date(todayYear, todayMonth + 1, 0).getDate(),
 };

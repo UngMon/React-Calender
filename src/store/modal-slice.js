@@ -22,7 +22,6 @@ const modalSlice = createSlice({
     },
 
     inputList(state, action) {
-      console.log(action.payload);
       state.changed = true;
       const result = state.schedule.find(
         (item) => item.idx === state.clickedDate
@@ -76,6 +75,21 @@ const modalSlice = createSlice({
       if (state.schedule[action.payload.index].todo.length === 0) {
         state.schedule.splice(action.payload.index, 1);
       }
+    },
+
+    editList(state, action) {
+      state.changed = true;
+      let arr = [...state.schedule];
+      arr[action.payload.index].todo[action.payload.listIndex] = {
+        firstTime: action.payload.timeData,
+        lastTime: action.payload.lastTime,
+        list: action.payload.inputList,
+        style: false,
+      };
+      arr[action.payload.index].todo.sort((a, b) =>
+        a.firstTime < b.firstTime ? -1 : a.firstTime > b.firstTime ? 1 : 0
+      );
+      state.schedule = [...arr];
     },
 
     fetchFromData(state, action) {

@@ -20,7 +20,7 @@ function App() {
       console.log("작동여부");
       dispatch(sendScheduleData(modal.schedule));
     }
-  }, [modal.changed, modal.schedule, dispatch]);
+  }, [modal, dispatch]);
 
   return (
     <Fragment>

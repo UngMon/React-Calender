@@ -4,10 +4,7 @@ import { listActions } from "../store/list-slice";
 import { modalActions } from "../store/modal-slice";
 import classes from "./Calender.module.css";
 
-const todayDate = new Date().getDate();
-const todayMonth = new Date().getMonth();
-
-const MakeCaledner = ({ year, month, firstDay, lastDate }) => {
+const MakeCaledner = ({ year, month, firstDay, lastDate, identify }) => {
   const dispatch = useDispatch();
   const schedule = useSelector((state) => state.modal.schedule);
 
@@ -40,7 +37,7 @@ const MakeCaledner = ({ year, month, firstDay, lastDate }) => {
     listIndex,
     scheduleIndex
   ) => {
-    console.log(key)
+    console.log(key);
     dispatch(
       listActions.clickedList({
         key,
@@ -68,13 +65,9 @@ const MakeCaledner = ({ year, month, firstDay, lastDate }) => {
       return toDoList.todo.map((item, listIndex) =>
         listIndex <= 2 ? (
           <div
-            key={item.firstTime + ' ' + item.lastTime + listIndex}
+            key={item.firstTime + " " + item.lastTime + listIndex}
             id={item.firstTime}
-            className={`${classes.list} ${
-              
-              item.style &&
-              classes.done
-            }`}
+            className={`${classes.list} ${item.style && classes.done}`}
             onClick={(event) => {
               event.stopPropagation();
               const key = item.firstTime + listIndex;
@@ -139,7 +132,7 @@ const MakeCaledner = ({ year, month, firstDay, lastDate }) => {
             >
               <div
                 className={`${classes.date} ${
-                  month === todayMonth && nowDate === todayDate && classes.Today
+                  identify === idx && classes.Today
                 }`}
               >
                 {nowDate}
@@ -163,7 +156,7 @@ const MakeCaledner = ({ year, month, firstDay, lastDate }) => {
             >
               <div
                 className={`${classes.date} ${
-                  month === todayMonth && nowDate === todayDate && classes.Today
+                  identify === idx && classes.Today
                 }`}
               >
                 {nowDate}
@@ -193,7 +186,7 @@ const MakeCaledner = ({ year, month, firstDay, lastDate }) => {
             >
               <div
                 className={`${classes.date} ${
-                  month === todayMonth && nowDate === todayDate && classes.Today
+                  identify === idx && classes.Today
                 }`}
               >
                 {nowDate}
@@ -217,7 +210,7 @@ const MakeCaledner = ({ year, month, firstDay, lastDate }) => {
             >
               <div
                 className={`${classes.date} ${
-                  month === todayMonth && nowDate === todayDate && classes.Today
+                  identify === idx && classes.Today
                 }`}
               >
                 {nowDate}

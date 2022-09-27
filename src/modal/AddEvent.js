@@ -4,10 +4,8 @@ import { modalActions } from "../store/modal-slice";
 import { timeActions } from "../store/time-slice";
 import ModalPosition from "../library/ModalPosition";
 import "./AddEvent.css";
-import Time from "../library/Time";
-import TimeBox from "../library/TimeBox";
-import TimeBoxTwo from "../library/TimeBoxTwo";
-import { listActions } from "../store/list-slice";
+import SetTime from "../library/Time/SetTime";
+import TimeSelector from "../library/Time/TimeSelector";
 
 const AddEvent = () => {
   const dispatch = useDispatch();
@@ -15,6 +13,8 @@ const AddEvent = () => {
   const timeState = useSelector((state) => state.time);
 
   const inputRef = useRef();
+  const currentTime = SetTime().currentTime;
+  const LastTime = SetTime().lastTime;
 
   const modalNameHandler = () => {
     let splitDateArray = modalState.clickedDate.split(".");
@@ -29,8 +29,9 @@ const AddEvent = () => {
     event.preventDefault();
 
     let inputList = inputRef.current.value;
-    let lastTime = timeState.lastTime;
-    let timeData = "";
+    let lastTime = timeState.lastTime || LastTime;
+    let timeData ;
+
     if (inputList.trim() === "") {
       inputList = "(제목 없음)";
     }
@@ -38,29 +39,19 @@ const AddEvent = () => {
     if (timeState.firstTime !== "") {
       timeData = timeState.firstTime;
     } else {
-      timeData = Time().currentTime;
+      timeData = currentTime;
     }
 
     dispatch(modalActions.inputList({ timeData, lastTime, inputList }));
-    // dispatch(listActions.listStyle());
 
     inputRef.current.value = "";
     cancelHandler();
-    dispatch(timeActions.closeModal());
+    dispatch(timeActions.resetTime());
   };
 
   const cancelHandler = () => {
     console.log(`작동 캔슬`);
     dispatch(modalActions.toggle());
-    // dispatch(timeState.closeModal());
-  };
-
-  const firstTimeSelectorHandler = () => {
-    dispatch(timeActions.firstTimetoggle());
-  };
-
-  const lastTimeSelectorHandler = () => {
-    dispatch(timeActions.lastTimetoggle());
   };
 
   return (
@@ -75,38 +66,7 @@ const AddEvent = () => {
         <h2 className="modalMonth">{modalNameHandler()}</h2>
         <input placeholder="(제목 없음)" type="text" ref={inputRef} />
       </div>
-      <div className="time-area">
-        <div className="time-area-label">
-          <h4>시간</h4>
-        </div>
-        <div className="time-one">
-          <input
-            type="text"
-            placeholder={timeState.firstTime || Time().currentTime}
-            onClick={firstTimeSelectorHandler}
-          />
-          {timeState.firstIsVisible && (
-            <div className="time-select">
-              <TimeBox />
-            </div>
-          )}
-        </div>
-        <div className="time-area-span">
-          <span>~</span>
-        </div>
-        <div className="time-two">
-          <input
-            type="text"
-            placeholder={timeState.lastTime || Time().lastTime}
-            onClick={lastTimeSelectorHandler}
-          />
-          {timeState.lastIsVisible && (
-            <div className="time-select">
-              <TimeBoxTwo />
-            </div>
-          )}
-        </div>
-      </div>
+      <TimeSelector />
       <div className="buttonBox">
         <button type="submit">저장</button>
         <button type="button" onClick={cancelHandler}>

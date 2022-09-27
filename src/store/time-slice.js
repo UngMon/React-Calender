@@ -19,15 +19,15 @@ const timeSlice = createSlice({
       state.firstIsVisible = false;
     },
 
-    selecFristTime(state, action) {
+    selectFristTime(state, action) {
       state.firstTime = action.payload;
     },
 
-    selecLastTime(state, action) {
+    selectLastTime(state, action) {
       state.lastTime = action.payload;
     },
 
-    closeModal(state) {
+    resetTime(state) {
       state.firstIsVisible = false;
       state.lastIsVisible = false;
       state.firstTime = '';
