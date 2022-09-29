@@ -11,8 +11,12 @@ const modalSlice = createSlice({
     changed: false,
   },
   reducers: {
-    toggle(state) {
-      state.isVisible = !state.isVisible;
+    onModal(state) {
+      state.isVisible = true;
+    },
+
+    offModal(state) {
+      state.isVisible = false;
     },
 
     clickedData(state, action) {

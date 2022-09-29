@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { listActions } from "../store/list-slice";
 import { modalActions } from "../store/modal-slice";
@@ -22,8 +22,28 @@ const List = () => {
   const timeState = useSelector((state) => state.time);
   const schedule = useSelector((state) => state.modal.schedule);
 
+  const modalRef = useRef();
+
+  const addModalCloseHandler = (e) => {
+    if (listState.isVisible && !modalRef.current.contains(e.target)) {
+      setTimeout(() => {
+        dispatch(listActions.offModal());
+        dispatch(modalActions.offModal());
+      }, 100);
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener("mousedown", addModalCloseHandler);
+    return () => {
+      document.removeEventListener("mousedown", addModalCloseHandler);
+    };
+  });
+
   const [listIsVisible, setListIsVisible] = useState(false);
   const inputRef = useRef();
+  const currentTime = SetTime().currentTime;
+  const LastTime = SetTime().lastTime;
 
   const removeListHandler = (listIndex, index) => {
     dispatch(modalActions.removeList({ listIndex, index }));
@@ -38,25 +58,23 @@ const List = () => {
     event.preventDefault();
 
     let inputList = inputRef.current.value;
-    let lastTime = timeState.lastTime;
+    console.log(inputList);
+
+    let timeData = timeState.firstTime || currentTime;
+    let lastTime = timeState.lastTime || LastTime;
+
     let index = listState.index;
     let listIndex = listState.listIndex;
-    let timeData;
-    if (inputList.trim() === "") {
-      inputList = "(제목 없음)";
-    }
 
-    if (timeState.firstTime !== "") {
-      timeData = timeState.firstTime;
-    } else {
-      timeData = SetTime().currentTime;
+    if (inputList.trim() === "") {
+      inputList = listState.listName;
     }
 
     dispatch(
       modalActions.editList({
+        inputList,
         timeData,
         lastTime,
-        inputList,
         index,
         listIndex,
       })
@@ -86,6 +104,7 @@ const List = () => {
         listState.dayIndex,
         listState.week
       )}`}
+      ref={modalRef}
     >
       <div className="option-box">
         <div onClick={listEditHandler}>

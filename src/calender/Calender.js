@@ -11,6 +11,7 @@ const fixMonth = date.getMonth();
 const fixDate = date.getDate()
 
 const Calender = ({ year, month, firstDay, lastDate }) => {
+
   const addModal = useSelector((state) => state.modal);
   const listModal = useSelector((state) => state.list);
   const allListModal = useSelector((state) => state.all);
@@ -18,9 +19,9 @@ const Calender = ({ year, month, firstDay, lastDate }) => {
 
   return (
     <div className={classes.calender}>
-      {addModal.isVisible && <AddEvent />}
-      {listModal.isVisible && <List />}
-      {allListModal.isVisible && <AllList />}
+      {addModal.isVisible && !listModal.isVisible && !allListModal.isVisible && <AddEvent/>}
+      {!addModal.isVisible && listModal.isVisible && !allListModal.isVisible && <List />}
+      {!addModal.isVisible && !listModal.isVisible && allListModal.isVisible && <AllList />}
       <table className={classes.table}>
         <thead className={classes.weekname}>
           <tr>

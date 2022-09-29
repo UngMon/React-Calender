@@ -1,14 +1,35 @@
+import { useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { allListActions } from "../store/all-list-slice";
 import "./AllList.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
+import { modalActions } from "../store/modal-slice";
+import { listActions } from "../store/list-slice";
 
 const AllList = () => {
   const dispatch = useDispatch();
   const schedule = useSelector((state) => state.modal.schedule);
   const allModal = useSelector((state) => state.all);
-  console.log(allModal);
+
+  const modalRef = useRef();
+
+  const addModalCloseHandler = (e) => {
+    if (allModal.isVisible && !modalRef.current.contains(e.target)) {
+      setTimeout(() => {
+        dispatch(allListActions.offModal());
+        dispatch(modalActions.offModal());
+        dispatch(listActions.offModal());
+      }, 100);
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener("mousedown", addModalCloseHandler);
+    return () => {
+      document.removeEventListener("mousedown", addModalCloseHandler);
+    };
+  });
 
   const makeListHandler = () => {
     return schedule[allModal.index].todo.map((item, listIndex) => (
@@ -22,7 +43,7 @@ const AllList = () => {
   };
 
   const cancelHandler = () => {
-    dispatch(allListActions.toggle());
+    dispatch(allListActions.offModal());
   };
 
   const dayChangeHandler = () => {
@@ -42,7 +63,10 @@ const AllList = () => {
   };
 
   return (
-    <div className={`all-list li-week-${allModal.week} li-day-${allModal.day}`}>
+    <div
+      className={`all-list li-week-${allModal.week} li-day-${allModal.day}`}
+      ref={modalRef}
+    >
       <div className="header-list-box">
         <h2>{dayChangeHandler()}</h2>
         <button onClick={cancelHandler}>

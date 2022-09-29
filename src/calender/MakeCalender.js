@@ -7,7 +7,8 @@ import classes from "./Calender.module.css";
 const MakeCaledner = ({ year, month, firstDay, lastDate, identify }) => {
   const dispatch = useDispatch();
   const schedule = useSelector((state) => state.modal.schedule);
-
+  const modalinfo = useSelector(state => state.modal);
+  console.log(`make 렌더 ${modalinfo.isVisible}`)
   console.log(schedule);
 
   const makeKey = (identy, year, month, date) => {
@@ -52,7 +53,7 @@ const MakeCaledner = ({ year, month, firstDay, lastDate, identify }) => {
   };
 
   const allListClickHandler = (date, day, week, scheduleIndex) => {
-    dispatch(allListActions.toggle());
+    dispatch(allListActions.onModal());
     dispatch(allListActions.clickedListBox({ date, day, week, scheduleIndex }));
   };
 
@@ -103,8 +104,11 @@ const MakeCaledner = ({ year, month, firstDay, lastDate, identify }) => {
   };
 
   const addClickHandler = (idx, dayIndex, week) => {
-    dispatch(modalActions.clickedData({ idx, dayIndex, week }));
-    dispatch(modalActions.toggle());
+    if (!modalinfo.isVisible) {
+      dispatch(modalActions.clickedData({ idx, dayIndex, week }));
+    }
+    console.log(`클릭핸들러 ${modalinfo.isVisible}`);
+    dispatch(modalActions.onModal());
   };
 
   const monthArray = [];

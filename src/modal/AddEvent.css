@@ -148,9 +148,14 @@
 }
 
 .week-5 {
-  top: 60%;
+  top: 65%;
 }
 
 .week-6 {
-  top: 68%;
+  top: 75%
+}
+
+.option-focus {
+  color: yellow;
+  background-color: yellow;
 }
