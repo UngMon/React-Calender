@@ -15,8 +15,6 @@ const listSlice = createSlice({
   },
   reducers: {
     clickedList(state, action) {
-      console.log(action.payload);
-      state.isVisible = true;
       state.key = action.payload.key;
       state.clickedDate = action.payload.date;
       state.week = action.payload.week;

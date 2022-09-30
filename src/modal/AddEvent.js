@@ -18,12 +18,13 @@ const AddEvent = () => {
 
   const addModalCloseHandler = (e) => {
     if (modalState.isVisible && !modalRef.current.contains(e.target)) {
-
+      
       setTimeout(() => {
         dispatch(modalActions.offModal());
         dispatch(allListActions.offModal());
         dispatch(listActions.offModal());
-      }, 100);
+        dispatch(timeActions.resetTime());
+      }, 150);
     }
   };
 
@@ -83,7 +84,7 @@ const AddEvent = () => {
     >
       <div className="inputArea">
         <h2 className="modalMonth">{modalNameHandler()}</h2>
-        <input placeholder="(제목 없음)" type="text" ref={inputRef} />
+        <input placeholder="(제목 없음)" type="text" ref={inputRef}/>
       </div>
       <TimeSelector />
       <div className="buttonBox">

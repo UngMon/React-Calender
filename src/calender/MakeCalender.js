@@ -7,9 +7,9 @@ import classes from "./Calender.module.css";
 const MakeCaledner = ({ year, month, firstDay, lastDate, identify }) => {
   const dispatch = useDispatch();
   const schedule = useSelector((state) => state.modal.schedule);
-  const modalinfo = useSelector(state => state.modal);
-  console.log(`make 렌더 ${modalinfo.isVisible}`)
-  console.log(schedule);
+  const modalinfo = useSelector((state) => state.modal);
+
+  console.log(`make 렌더링`);
 
   const makeKey = (identy, year, month, date) => {
     if (identy === "prev") {
@@ -50,6 +50,7 @@ const MakeCaledner = ({ year, month, firstDay, lastDate, identify }) => {
         scheduleIndex,
       })
     );
+    dispatch(listActions.onModal());
   };
 
   const allListClickHandler = (date, day, week, scheduleIndex) => {

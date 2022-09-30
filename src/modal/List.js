@@ -23,13 +23,15 @@ const List = () => {
   const schedule = useSelector((state) => state.modal.schedule);
 
   const modalRef = useRef();
-
+  
   const addModalCloseHandler = (e) => {
     if (listState.isVisible && !modalRef.current.contains(e.target)) {
+      // console.log(modalRef.current.contains());
       setTimeout(() => {
         dispatch(listActions.offModal());
         dispatch(modalActions.offModal());
-      }, 100);
+        dispatch(timeActions.resetTime());
+      }, 150);
     }
   };
 
@@ -90,7 +92,7 @@ const List = () => {
   };
 
   const closeModalHandler = () => {
-    dispatch(listActions.toggle());
+    dispatch(listActions.offModal());
   };
 
   const styleClass =
