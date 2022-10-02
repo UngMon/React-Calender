@@ -21,12 +21,17 @@ const List = () => {
   const listState = useSelector((state) => state.list);
   const timeState = useSelector((state) => state.time);
   const schedule = useSelector((state) => state.modal.schedule);
-
-  const modalRef = useRef();
+  const [listIsVisible, setListIsVisible] = useState(false);
   
-  const addModalCloseHandler = (e) => {
+  const modalRef = useRef();
+  const inputRef = useRef();
+
+  const setTime = SetTime()
+  const currentTime = setTime.currentTime;
+  const LastTime = setTime.lastTime;
+
+  const listModalCloseHandler = (e) => {
     if (listState.isVisible && !modalRef.current.contains(e.target)) {
-      // console.log(modalRef.current.contains());
       setTimeout(() => {
         dispatch(listActions.offModal());
         dispatch(modalActions.offModal());
@@ -36,20 +41,15 @@ const List = () => {
   };
 
   useEffect(() => {
-    document.addEventListener("mousedown", addModalCloseHandler);
+    document.addEventListener("mousedown", listModalCloseHandler);
     return () => {
-      document.removeEventListener("mousedown", addModalCloseHandler);
+      document.removeEventListener("mousedown", listModalCloseHandler);
     };
   });
 
-  const [listIsVisible, setListIsVisible] = useState(false);
-  const inputRef = useRef();
-  const currentTime = SetTime().currentTime;
-  const LastTime = SetTime().lastTime;
-
   const removeListHandler = (listIndex, index) => {
     dispatch(modalActions.removeList({ listIndex, index }));
-    dispatch(listActions.toggle());
+    dispatch(listActions.offModal());
   };
 
   const listEditHandler = () => {
@@ -60,7 +60,6 @@ const List = () => {
     event.preventDefault();
 
     let inputList = inputRef.current.value;
-    console.log(inputList);
 
     let timeData = timeState.firstTime || currentTime;
     let lastTime = timeState.lastTime || LastTime;
@@ -72,16 +71,21 @@ const List = () => {
       inputList = listState.listName;
     }
 
-    dispatch(
-      modalActions.editList({
-        inputList,
-        timeData,
-        lastTime,
-        index,
-        listIndex,
-      })
-    );
-
+    if (timeData > lastTime) {
+      alert("끝나는 시간이 시작 시간보다 작습니다!! ex) 00:30 ~ 01:30");
+      return;
+    } else {
+      dispatch(
+        modalActions.editList({
+          inputList,
+          timeData,
+          lastTime,
+          index,
+          listIndex,
+        })
+      );
+    }
+    
     inputRef.current.value = "";
     closeModalHandler();
     dispatch(timeActions.resetTime());
@@ -141,7 +145,12 @@ const List = () => {
               <button>저장</button>
             </div>
             <div className="edit-time-area">
-              <TimeSelector />
+              <TimeSelector
+                month={listState.month}
+                date={listState.date}
+                firstTime={currentTime}
+                lastTime={LastTime}
+              />
             </div>
           </form>
         )}
@@ -154,13 +163,19 @@ const List = () => {
           </>
         )}
       </div>
-      {!listIsVisible && <div className="list-time-area">
-        <div>{schedule[listState.index].todo[listState.listIndex].firstTime}</div>
-        <div>
-          <span>~</span>
+      {!listIsVisible && (
+        <div className="list-time-area">
+          <div>
+            {schedule[listState.index].todo[listState.listIndex].firstTime}
+          </div>
+          <div>
+            <span>~</span>
+          </div>
+          <div>
+            {schedule[listState.index].todo[listState.listIndex].lastTime}
+          </div>
         </div>
-        <div>{schedule[listState.index].todo[listState.listIndex].lastTime}</div>
-      </div>}
+      )}
     </div>
   );
 };

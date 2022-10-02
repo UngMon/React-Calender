@@ -5,8 +5,8 @@ const timeSlice = createSlice({
   initialState: {
     firstIsVisible: false,
     lastIsVisible: false,
-    firstTime: "",
-    lastTime: "",
+    firstTime: '',
+    lastTime: '',
   },
   reducers: {
     firstTimetoggle(state) {

@@ -9,16 +9,22 @@ import TimeSelector from "../library/Time/TimeSelector";
 import { allListActions } from "../store/all-list-slice";
 import { listActions } from "../store/list-slice";
 
+const setTime = SetTime();
+const currentTime = setTime.currentTime;
+const LastTime = setTime.lastTime;
+
 const AddEvent = () => {
   const dispatch = useDispatch();
   const modalState = useSelector((state) => state.modal);
   const timeState = useSelector((state) => state.time);
 
   const modalRef = useRef();
+  const inputRef = useRef();
+  const timeOneRef = useRef();
+  const timeTwoRef = useRef();
 
   const addModalCloseHandler = (e) => {
     if (modalState.isVisible && !modalRef.current.contains(e.target)) {
-      
       setTimeout(() => {
         dispatch(modalActions.offModal());
         dispatch(allListActions.offModal());
@@ -35,22 +41,9 @@ const AddEvent = () => {
     };
   });
 
-  const inputRef = useRef();
-  const currentTime = SetTime().currentTime;
-  const LastTime = SetTime().lastTime;
-
-  const modalNameHandler = () => {
-    let splitDateArray = modalState.clickedDate.split(".");
-
-    splitDateArray[1] = +splitDateArray[1] + 1;
-    return (
-      splitDateArray[0] + "." + splitDateArray[1] + "." + splitDateArray[2]
-    );
-  };
-
   const listSubmitHandler = (event) => {
     event.preventDefault();
-
+    const pattern = /^(오전|오후)\s(([0][0-9]|[1][0-2])):([0-5][0-9])$/;
     let inputList = inputRef.current.value;
 
     let timeData = timeState.firstTime || currentTime;
@@ -60,7 +53,29 @@ const AddEvent = () => {
       inputList = "(제목 없음)";
     }
 
-    dispatch(modalActions.inputList({ inputList, timeData, lastTime }));
+    if (timeOneRef.current.value !== '') {
+      if (!pattern.test(timeOneRef.current.value)) {
+        alert("시간을 제대로 입력해주세요! ex) 오후 01:30");
+        return;
+      }
+    }
+
+    if (timeTwoRef.current.value !== '') {
+      if (!pattern.test(timeTwoRef.current.value)) {
+        alert("시간을 제대로 입력해주세요! ex) 오후 01:30");
+        return;
+      }
+    }
+
+    timeData = timeOneRef.current.value || timeData;
+    lastTime = timeTwoRef.current.value || lastTime;
+
+    if (timeData > lastTime) {
+      alert("끝나는 시간이 시작 시간보다 작습니다!! ex) 00:30 ~ 01:30");
+      return;
+    } else {
+      dispatch(modalActions.inputList({ inputList, timeData, lastTime }));
+    }
 
     inputRef.current.value = "";
     cancelHandler();
@@ -68,8 +83,8 @@ const AddEvent = () => {
   };
 
   const cancelHandler = () => {
-    console.log(`작동 캔슬`);
     dispatch(modalActions.offModal());
+    dispatch(timeActions.resetTime());
   };
 
   return (
@@ -80,13 +95,20 @@ const AddEvent = () => {
       )}`}
       onSubmit={listSubmitHandler}
       ref={modalRef}
-      style={{display: !modalState.isVisible && "none"}}
+      style={{ display: !modalState.isVisible && "none" }}
     >
+      <div className="add-modal-name">일정 추가</div>
       <div className="inputArea">
-        <h2 className="modalMonth">{modalNameHandler()}</h2>
-        <input placeholder="(제목 없음)" type="text" ref={inputRef}/>
+        <input placeholder="(제목 없음)" type="text" ref={inputRef} />
       </div>
-      <TimeSelector />
+      <TimeSelector
+        month={modalState.month}
+        date={modalState.date}
+        firstTime={currentTime}
+        lastTime={LastTime}
+        timeOneRef={timeOneRef}
+        timeTwoRef={timeTwoRef}
+      />
       <div className="buttonBox">
         <button type="submit">저장</button>
         <button type="button" onClick={cancelHandler}>

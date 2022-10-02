@@ -7,7 +7,7 @@ import MakeCaledner from "./MakeCalender";
 
 const date = new Date();
 const fixYear = date.getFullYear();
-const fixMonth = date.getMonth();
+const fixMonth = date.getMonth() + 1;
 const fixDate = date.getDate()
 
 const Calender = ({ year, month, firstDay, lastDate }) => {

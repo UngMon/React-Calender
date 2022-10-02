@@ -33,7 +33,7 @@ const Month = () => {
       </div>
       <Calender
         year={monthInfo.year}
-        month={monthInfo.month}
+        month={monthInfo.month + 1}
         firstDay={monthInfo.firstDay}
         lastDate={monthInfo.lastDate}
       />

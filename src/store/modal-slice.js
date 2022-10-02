@@ -6,6 +6,8 @@ const modalSlice = createSlice({
     isVisible: false,
     clickedDate: "",
     week: "",
+    month: '',
+    date: '',
     dayIndex: "",
     schedule: [],
     changed: false,
@@ -23,6 +25,8 @@ const modalSlice = createSlice({
       state.clickedDate = action.payload.idx;
       state.week = action.payload.week;
       state.dayIndex = action.payload.dayIndex;
+      state.month = action.payload.month;
+      state.date = action.payload.date;
     },
 
     inputList(state, action) {

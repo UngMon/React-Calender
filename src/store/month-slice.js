@@ -3,6 +3,7 @@ import { createSlice } from "@reduxjs/toolkit";
 const today = new Date();
 const todayYear = today.getFullYear();
 const todayMonth = today.getMonth();
+console.log(`month 렌더?`)
 
 const initialDateInfo = {
   year: todayYear,
