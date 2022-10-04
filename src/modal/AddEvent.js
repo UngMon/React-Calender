@@ -25,6 +25,7 @@ const AddEvent = () => {
 
   const addModalCloseHandler = (e) => {
     if (modalState.isVisible && !modalRef.current.contains(e.target)) {
+      console.log(modalRef)
       setTimeout(() => {
         dispatch(modalActions.offModal());
         dispatch(allListActions.offModal());

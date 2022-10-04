@@ -56,7 +56,7 @@
 }
 
 .time-area-name {
-  width: 22%;
+  width: 25%;
   font-size: 0.8rem;
   line-height: 200%;
 }
@@ -69,6 +69,17 @@
   width: 25%;
   display: flex;
   flex-direction: column;
+  overflow-y: scroll;
+  overflow-x: hidden;
+}
+
+#time-one {
+  max-height: 30%;
+  overflow-y: scroll;
+}
+
+.none {
+  display: none;
 }
 
 .time-one input {
