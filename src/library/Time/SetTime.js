@@ -19,8 +19,8 @@ const SetTime = () => {
           currentTime = "오전 " + hour;
           lastTime = "오후 00";
         } else if (hour === 12) {
-          hour = "00";
-          currentTime = "오후 " + hour;
+          hour = "0";
+          currentTime = "오후 " + hour + '0';
           lastTime = "오후 " + (hour + 1);
         } else {
           currentTime = "오전 " + hour;
