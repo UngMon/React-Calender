@@ -1,96 +1,12 @@
+import MakeKey from "../MakeKey";
 import { useDispatch, useSelector } from "react-redux";
-import { allListActions } from "../store/all-list-slice";
-import { listActions } from "../store/list-slice";
-import { modalActions } from "../store/modal-slice";
-import MakeKey from "../library/MakeKey";
-import classes from "./Calender.module.css";
+import { modalActions } from "../../store/modal-slice";
+import classes from './second.module.css'
 
-const MakeCaledner = ({ year, month, firstDay, lastDate, identify }) => {
+const DatePicker = ({ year, month, firstDay, lastDate, identify }) => {
   const dispatch = useDispatch();
-  const schedule = useSelector((state) => state.modal.schedule);
-  const modalinfo = useSelector((state) => state.modal);
-
-  console.log(`make 렌더링`);
-
-  const listClickHandler = (
-    key,
-    clickedDate,
-    week,
-    month,
-    date,
-    dayIdx,
-    listName,
-    listIndex,
-    scheduleIndex
-  ) => {
-    dispatch(
-      listActions.clickedList({
-        key,
-        clickedDate,
-        week,
-        month,
-        date,
-        dayIdx,
-        listName,
-        listIndex,
-        scheduleIndex,
-      })
-    );
-    dispatch(listActions.onModal());
-  };
-
-  const allListClickHandler = (date, day, week, scheduleIndex) => {
-    dispatch(allListActions.onModal());
-    dispatch(allListActions.clickedListBox({ date, day, week, scheduleIndex }));
-  };
-
-  const scheduleHandler = (clickedDate, dayIdx, week, date) => {
-    const toDoList = schedule.find((item) => item.idx === clickedDate);
-
-    if (toDoList) {
-      const scheduleIndex = schedule.indexOf(toDoList);
-
-      return toDoList.todo.map((item, listIndex) =>
-        listIndex <= 2 ? (
-          <div
-            key={item.firstTime + " " + item.lastTime + listIndex}
-            id={item.firstTime}
-            className={`${classes.list} ${item.style && classes.done}`}
-            onClick={(event) => {
-              event.stopPropagation();
-              const key = item.firstTime + listIndex;
-              listClickHandler(
-                key,
-                clickedDate,
-                week,
-                month,
-                date,
-                dayIdx,
-                item.list,
-                listIndex,
-                scheduleIndex
-              );
-            }}
-            dayindex={dayIdx}
-          >
-            {item.firstTime + " " + item.list}
-          </div>
-        ) : (
-          listIndex === 3 && (
-            <div
-              key={listIndex}
-              className={classes.list}
-              onClick={(event) => {
-                event.stopPropagation();
-                allListClickHandler(clickedDate, dayIdx, week, scheduleIndex);
-              }}
-            >{` ${toDoList.todo.length - 3}개 더보기`}</div>
-          )
-        )
-      );
-    }
-    return;
-  };
+  
+  const monthInfo = useSelector((state) => state.month);
 
   const addClickHandler = (idx, dayIndex, week, month, date) => {
     if (!modalinfo.isVisible) {
@@ -129,9 +45,6 @@ const MakeCaledner = ({ year, month, firstDay, lastDate, identify }) => {
               >
                 {nowDate}
               </div>
-              <div className={classes.list_box}>
-                {scheduleHandler(idx, i, week, nowDate)}
-              </div>
             </td>
           );
         } else {
@@ -153,9 +66,6 @@ const MakeCaledner = ({ year, month, firstDay, lastDate, identify }) => {
               >
                 {nowDate}
               </div>
-              <div className={classes.list_box}>
-                {scheduleHandler(idx, i, week, nowDate)}
-              </div>
             </td>
           );
         }
@@ -172,7 +82,9 @@ const MakeCaledner = ({ year, month, firstDay, lastDate, identify }) => {
           thisMonthArray.push(
             <td
               key={idx}
-              onClick={() => addClickHandler(idx, (i % 7) + 1, week, month, nowDate)}
+              onClick={() =>
+                addClickHandler(idx, (i % 7) + 1, week, month, nowDate)
+              }
               className={classes.date_box}
               day-index={dayIdx}
             >
@@ -182,9 +94,6 @@ const MakeCaledner = ({ year, month, firstDay, lastDate, identify }) => {
                 }`}
               >
                 {nowDate}
-              </div>
-              <div className={classes.list_box}>
-                {scheduleHandler(idx, (i % 7) + 1, week, nowDate)}
               </div>
             </td>
           );
@@ -196,7 +105,9 @@ const MakeCaledner = ({ year, month, firstDay, lastDate, identify }) => {
           thisMonthArray.push(
             <td
               key={idx}
-              onClick={() => addClickHandler(idx, (i % 7) + 1, week, month, nowDate)}
+              onClick={() =>
+                addClickHandler(idx, (i % 7) + 1, week, month, nowDate)
+              }
               className={classes.date_box}
               day-index={dayIdx}
             >
@@ -206,9 +117,6 @@ const MakeCaledner = ({ year, month, firstDay, lastDate, identify }) => {
                 }`}
               >
                 {nowDate}
-              </div>
-              <div className={classes.list_box}>
-                {scheduleHandler(idx, (i % 7) + 1, week, nowDate)}
               </div>
             </td>
           );
@@ -230,4 +138,4 @@ const MakeCaledner = ({ year, month, firstDay, lastDate, identify }) => {
   return monthArray;
 };
 
-export default MakeCaledner;
+export default DatePicker;

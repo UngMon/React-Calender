@@ -14,7 +14,8 @@ const TimeSelector = ({
 }) => {
   const dispatch = useDispatch();
   const timeState = useSelector((state) => state.time);
-  const timeRef = useRef([]);
+  const OneRef = useRef([]);
+  const TwoRef = useRef([])
   const timeOneVisible = timeState.firstIsVisible;
   const timeTwoVisible = timeState.lastIsVisible;
 
@@ -42,7 +43,7 @@ const TimeSelector = ({
         />
         <TimeBox
           timeOneRef={timeOneRef}
-          timeRef={timeRef}
+          OneRef={OneRef}
           timeVisible={timeOneVisible}
         />
       </div>
@@ -59,7 +60,7 @@ const TimeSelector = ({
         {timeState.lastIsVisible && (
           <TimeBoxTwo
             timeTwoRef={timeTwoRef}
-            timeRef={timeRef}
+            TwoRef={TwoRef}
             timeVisible={timeTwoVisible}
           />
         )}
