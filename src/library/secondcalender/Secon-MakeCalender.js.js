@@ -5,11 +5,11 @@ import classes from './second.module.css'
 
 const DatePicker = ({ year, month, firstDay, lastDate, identify }) => {
   const dispatch = useDispatch();
-  
-  const monthInfo = useSelector((state) => state.month);
+
+  const modalInfo = useSelector(state => state.modal)
 
   const addClickHandler = (idx, dayIndex, week, month, date) => {
-    if (!modalinfo.isVisible) {
+    if (modalInfo.isVisible) {
       dispatch(modalActions.clickedData({ idx, dayIndex, week, month, date }));
     }
     dispatch(modalActions.onModal());
@@ -129,7 +129,7 @@ const DatePicker = ({ year, month, firstDay, lastDate, identify }) => {
   const week = Math.ceil((firstDay + lastDate) / 7);
   for (let i = 1; i <= week; i++) {
     monthArray.push(
-      <tr key={i} className={classes.list_box} weekindex={i}>
+      <tr key={i} className={classes['week-box']} weekindex={i}>
         {makeDay(i)}
       </tr>
     );

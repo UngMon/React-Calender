@@ -221,7 +221,7 @@ const MakeCaledner = ({ year, month, firstDay, lastDate, identify }) => {
   const week = Math.ceil((firstDay + lastDate) / 7);
   for (let i = 1; i <= week; i++) {
     monthArray.push(
-      <tr key={i} className={classes.list_box} weekindex={i}>
+      <tr key={i}  weekindex={i}>
         {makeDay(i)}
       </tr>
     );

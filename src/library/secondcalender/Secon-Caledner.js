@@ -1,7 +1,6 @@
-import { useSelector } from "react-redux";
-import AddEvent from "../modal/AddEvent";
+
 import classes from './second.module.css'
-import MakeCaledner from "./Secon-MakeCalender.js";
+import MakeCaledner from "./Secon-MakeCalender.js.js";
 
 const date = new Date();
 const fixYear = date.getFullYear();
@@ -9,12 +8,10 @@ const fixMonth = date.getMonth() + 1;
 const fixDate = date.getDate()
 
 const Calender = ({ year, month, firstDay, lastDate }) => {
-  const addModal = useSelector((state) => state.modal);
   const identify = fixYear + '.' + fixMonth + '.' + fixDate;
 
   return (
     <div className={classes.calender}>
-      {addModal.isVisible && <AddEvent/>}
       <table className={classes.table}>
         <thead className={classes.weekname}>
           <tr>

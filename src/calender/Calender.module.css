@@ -33,7 +33,7 @@
   height: 617px;
 }
 
-.week_fifth {
+/* .week_fifth {
   width: 100%;
   height: (617/5) px;
 }
@@ -48,7 +48,7 @@
 
 .week_six .date_box {
   height: (617/6) px;
-}
+} */
 
 .date_box {
   width: 14.2857142857%;

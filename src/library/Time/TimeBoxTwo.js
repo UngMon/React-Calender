@@ -6,6 +6,7 @@ const TimeBoxTwo = ({ timeTwoRef, TwoRef, timeVisible }) => {
   const dispatch = useDispatch();
 
   useEffect(() => {
+    console.log(TwoRef)
     TwoRef.current.map((item, index) =>
       item.innerText === timeTwoRef.current.placeholder
         ? TwoRef.current[index].scrollIntoView()

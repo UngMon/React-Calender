@@ -1,6 +1,6 @@
 import { useDispatch, useSelector } from "react-redux";
-import { monthActions } from "../store/month-slice";
-import Calender from './Secon-Calender';
+import { monthActions } from "../../store/month-slice";
+import Calender from './Secon-Caledner';
 import classes from './second.module.css';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSquareCaretLeft, faSquareCaretRight } from "@fortawesome/free-solid-svg-icons";
@@ -19,14 +19,14 @@ const Month = () => {
   };
 
   return (
-    <div className={classes['second-month-area']}>
+    <div className={classes['date-picker']}>
       <div className={classes['month-area']}>
-        <button onClick={movePrevMonthHandler}>
-          <FontAwesomeIcon icon={faSquareCaretLeft} />
-        </button>
         <span>
           {monthInfo.year}년 {monthInfo.month + 1}월
         </span>
+        <button onClick={movePrevMonthHandler}>
+          <FontAwesomeIcon icon={faSquareCaretLeft} />
+        </button>
         <button onClick={moveNextMonthHandler}>
           <FontAwesomeIcon icon={faSquareCaretRight} />
         </button>
