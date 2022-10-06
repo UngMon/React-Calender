@@ -8,7 +8,7 @@ import classes from "./Calender.module.css";
 const MakeCaledner = ({ year, month, firstDay, lastDate, identify }) => {
   const dispatch = useDispatch();
   const schedule = useSelector((state) => state.modal.schedule);
-  const modalinfo = useSelector((state) => state.modal);
+  const modaVisible = useSelector((state) => state.modal.isVisible);
 
   console.log(`make 렌더링`);
 
@@ -93,7 +93,7 @@ const MakeCaledner = ({ year, month, firstDay, lastDate, identify }) => {
   };
 
   const addClickHandler = (idx, dayIndex, week, month, date) => {
-    if (!modalinfo.isVisible) {
+    if (!modaVisible) {
       dispatch(modalActions.clickedData({ idx, dayIndex, week, month, date }));
     }
     dispatch(modalActions.onModal());
@@ -118,7 +118,7 @@ const MakeCaledner = ({ year, month, firstDay, lastDate, identify }) => {
           thisMonthArray.push(
             <td
               key={idx}
-              onClick={() => addClickHandler(idx, i, week, month, nowDate)}
+              onClick={() => addClickHandler(idx, i, week, month - 1, nowDate)}
               className={classes.date_box}
               day-index={dayIdx}
             >
@@ -196,7 +196,7 @@ const MakeCaledner = ({ year, month, firstDay, lastDate, identify }) => {
           thisMonthArray.push(
             <td
               key={idx}
-              onClick={() => addClickHandler(idx, (i % 7) + 1, week, month, nowDate)}
+              onClick={() => addClickHandler(idx, (i % 7) + 1, week, month + 1, nowDate)}
               className={classes.date_box}
               day-index={dayIdx}
             >

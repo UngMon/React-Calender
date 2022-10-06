@@ -105,6 +105,8 @@ const AddEvent = () => {
       <TimeSelector
         month={modalState.month}
         date={modalState.date}
+        secondMonth={modalState.secondMonth}
+        secondDate={modalState.secondDate}
         firstTime={currentTime}
         lastTime={LastTime}
         timeOneRef={timeOneRef}

@@ -5,7 +5,7 @@ import classes from './second.module.css';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSquareCaretLeft, faSquareCaretRight } from "@fortawesome/free-solid-svg-icons";
 
-const Month = () => {
+const Month = ({type}) => {
   const dispatch = useDispatch();
 
   const monthInfo = useSelector((state) => state.month);
@@ -36,6 +36,7 @@ const Month = () => {
         month={monthInfo.month + 1}
         firstDay={monthInfo.firstDay}
         lastDate={monthInfo.lastDate}
+        type={type}
       />
     </div>
   );

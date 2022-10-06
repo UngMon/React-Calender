@@ -1,16 +1,19 @@
 import MakeKey from "../MakeKey";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { modalActions } from "../../store/modal-slice";
-import classes from './second.module.css'
+import classes from "./second.module.css";
 
-const DatePicker = ({ year, month, firstDay, lastDate, identify }) => {
+const DatePicker = ({ year, month, firstDay, lastDate, identify, type }) => {
   const dispatch = useDispatch();
 
-  const modalInfo = useSelector(state => state.modal)
-
-  const addClickHandler = (idx, dayIndex, week, month, date) => {
-    if (modalInfo.isVisible) {
-      dispatch(modalActions.clickedData({ idx, dayIndex, week, month, date }));
+  const addClickHandler = (idx, dayIndex, week, month, date, type) => {
+    if (type === true) {
+      dispatch(
+        modalActions.clickedData({ idx, dayIndex, week, month, date })
+      );
+    }else {
+      console.log(month);
+      dispatch(modalActions.clickedSecondDate({month, date}))
     }
     dispatch(modalActions.onModal());
   };
@@ -28,13 +31,15 @@ const DatePicker = ({ year, month, firstDay, lastDate, identify }) => {
       for (let i = 1; i <= 7; i++) {
         if (i <= firstDay) {
           const nowDate = prevMonthLastDate - firstDay + i;
-          const idx = MakeKey("prev", year, month, nowDate);
+          const idx = MakeKey("prev", year, month , nowDate);
           const dayIdx = `day-${i}`; //모달창을 띄울 때 위치를 무슨 요일인지 저장
 
           thisMonthArray.push(
             <td
               key={idx}
-              onClick={() => addClickHandler(idx, i, week, month, nowDate)}
+              onClick={() =>
+                addClickHandler(idx, i, week, month - 1, nowDate, type)
+              }
               className={classes.date_box}
               day-index={dayIdx}
             >
@@ -55,7 +60,9 @@ const DatePicker = ({ year, month, firstDay, lastDate, identify }) => {
           thisMonthArray.push(
             <td
               key={idx}
-              onClick={() => addClickHandler(idx, i, week, month, nowDate)}
+              onClick={() =>
+                addClickHandler(idx, i, week, month, nowDate, type)
+              }
               className={classes.date_box}
               day-index={dayIdx}
             >
@@ -83,7 +90,7 @@ const DatePicker = ({ year, month, firstDay, lastDate, identify }) => {
             <td
               key={idx}
               onClick={() =>
-                addClickHandler(idx, (i % 7) + 1, week, month, nowDate)
+                addClickHandler(idx, (i % 7) + 1, week, month, nowDate, type)
               }
               className={classes.date_box}
               day-index={dayIdx}
@@ -106,7 +113,7 @@ const DatePicker = ({ year, month, firstDay, lastDate, identify }) => {
             <td
               key={idx}
               onClick={() =>
-                addClickHandler(idx, (i % 7) + 1, week, month, nowDate)
+                addClickHandler(idx, (i % 7) + 1, week, (month + 1), nowDate, type)
               }
               className={classes.date_box}
               day-index={dayIdx}
@@ -129,7 +136,7 @@ const DatePicker = ({ year, month, firstDay, lastDate, identify }) => {
   const week = Math.ceil((firstDay + lastDate) / 7);
   for (let i = 1; i <= week; i++) {
     monthArray.push(
-      <tr key={i} className={classes['week-box']} weekindex={i}>
+      <tr key={i} className={classes["week-box"]} weekindex={i}>
         {makeDay(i)}
       </tr>
     );

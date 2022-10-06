@@ -8,6 +8,8 @@ import { useRef, useState } from "react";
 const TimeSelector = ({
   month,
   date,
+  secondMonth,
+  secondDate,
   firstTime,
   lastTime,
   timeOneRef,
@@ -27,10 +29,12 @@ const TimeSelector = ({
 
   const firstDateHanlder = () => {
     setFirstDateIsVisible((prevState) => !prevState);
+    setLastDateIsVisible(false);
   };
 
   const lastDateHandler = () => {
     setLastDateIsVisible((prevState) => !prevState);
+    setFirstDateIsVisible(false);
   };
 
   const firstTimeSelectorHandler = () => {
@@ -45,15 +49,15 @@ const TimeSelector = ({
     <div className="time-date-box">
       <div className="time-area">
         <div className="time-area-name">
-          <h4 onClick={firstDateHanlder}>{month + "월 " + date + "일"}</h4>
+          <h4 onClick={firstDateHanlder}>
+            {month + "월 " + date + "일"}
+          </h4>
         </div>
         <div className="time-one">
           <input
             type="text"
             placeholder={timeState.firstTime || firstTime}
-            onClick={() => {
-              firstTimeSelectorHandler();
-            }}
+            onClick={firstTimeSelectorHandler}
             ref={timeOneRef}
           />
           <TimeBox
@@ -66,7 +70,7 @@ const TimeSelector = ({
           <span>~</span>
         </div>
         <div className="time-area-name">
-          <h4 onClick={lastDateHandler}>{month + "월 " + date + "일"}</h4>
+          <h4 onClick={lastDateHandler}>{secondMonth + "월 " + secondDate + "일"}</h4>
         </div>
         <div className="time-two">
           <input
@@ -84,8 +88,8 @@ const TimeSelector = ({
           )}
         </div>
       </div>
-        {fristDateIsVisible && <Month />}
-        {lastDateIsVisible && <Month />}
+      {fristDateIsVisible && <Month type={true} />}
+      {lastDateIsVisible && <Month type={false} />}
     </div>
   );
 };

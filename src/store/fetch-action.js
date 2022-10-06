@@ -4,7 +4,7 @@ export const fetchScheduleData = () => {
   return async (dispatch) => {
     const fetchData = async () => {
       const response = await fetch(
-        "https://calender-dab28-default-rtdb.firebaseio.com/schedule.json"
+        "https://react-9501f-default-rtdb.firebaseio.com/schedule.json"
       );
 
       if (!response.ok) {
@@ -25,7 +25,7 @@ export const sendScheduleData = (schedule) => {
   return async (dispatch) => {
     const sendData = async () => {
       const response = await fetch(
-        "https://calender-dab28-default-rtdb.firebaseio.com/schedule.json",
+        "https://react-9501f-default-rtdb.firebaseio.com/schedule.json",
         { method: "PUT", body: JSON.stringify(schedule) }
       );
 
