@@ -25,7 +25,7 @@ const AddEvent = () => {
 
   const addModalCloseHandler = (e) => {
     if (modalState.isVisible && !modalRef.current.contains(e.target)) {
-      console.log(modalRef)
+      console.log(modalRef);
       setTimeout(() => {
         dispatch(modalActions.offModal());
         dispatch(allListActions.offModal());
@@ -45,37 +45,51 @@ const AddEvent = () => {
   const listSubmitHandler = (event) => {
     event.preventDefault();
     const pattern = /^(오전|오후)\s(([0][0-9]|[1][0-2])):([0-5][0-9])$/;
-    let inputList = inputRef.current.value;
+    let list = inputRef.current.value;
 
-    let timeData = timeState.firstTime || currentTime;
+    let firstTime = timeState.firstTime || currentTime;
     let lastTime = timeState.lastTime || LastTime;
 
-    if (inputList.trim() === "") {
-      inputList = "(제목 없음)";
+    if (list.trim() === "") {
+      list = "(제목 없음)";
     }
 
-    if (timeOneRef.current.value !== '') {
+    if (timeOneRef.current.value !== "") {
       if (!pattern.test(timeOneRef.current.value)) {
         alert("시간을 제대로 입력해주세요! ex) 오후 01:30");
         return;
       }
     }
 
-    if (timeTwoRef.current.value !== '') {
+    if (timeTwoRef.current.value !== "") {
       if (!pattern.test(timeTwoRef.current.value)) {
         alert("시간을 제대로 입력해주세요! ex) 오후 01:30");
         return;
       }
     }
 
-    timeData = timeOneRef.current.value || timeData;
+    firstTime = timeOneRef.current.value || firstTime;
     lastTime = timeTwoRef.current.value || lastTime;
 
-    if (timeData > lastTime) {
+    if (firstTime > lastTime) {
       alert("끝나는 시간이 시작 시간보다 작습니다!! ex) 00:30 ~ 01:30");
       return;
     } else {
-      dispatch(modalActions.inputList({ inputList, timeData, lastTime }));
+      if (modalState.startDate === modalState.endDate) {
+        dispatch(modalActions.inputList({ list, firstTime, lastTime }));
+      } else if (modalState.startDate < modalState.endDate) {
+        const startDate = modalState.startDate;
+        const endDate = modalState.endDate;
+        dispatch(
+          modalActions.longDateList({
+            startDate,
+            endDate,
+            firstTime,
+            lastTime,
+            list,
+          })
+        );
+      }
     }
 
     inputRef.current.value = "";

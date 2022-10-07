@@ -4,7 +4,8 @@ const modalSlice = createSlice({
   name: "modal",
   initialState: {
     isVisible: false,
-    clickedDate: "",
+    startDate: "",
+    endDate: "",
     week: "",
     month: "",
     date: "",
@@ -22,18 +23,18 @@ const modalSlice = createSlice({
 
     offModal(state) {
       state.isVisible = false;
-      state.secondMonth = '';
-      state.secondDate = '';
+      state.secondMonth = "";
+      state.secondDate = "";
       state.type = true;
     },
 
     clickedData(state, action) {
-      state.clickedDate = action.payload.idx;
+      state.startDate = action.payload.idx;
       state.week = action.payload.week;
       state.dayIndex = action.payload.dayIndex;
       state.month = action.payload.month;
       state.date = action.payload.date;
-      if (state.type ===  true) {
+      if (state.type === true) {
         state.secondMonth = action.payload.month;
         state.secondDate = action.payload.date;
       }
@@ -43,6 +44,10 @@ const modalSlice = createSlice({
       state.type = false;
       state.secondMonth = action.payload.month;
       state.secondDate = action.payload.date;
+      state.endDate = action.payload.idx;
+      if (action.payload.idx === state.startDate) {
+        state.type = true; // 두 번째 날짜가 첫 번째 날자와 같을 시, 같은 날짜 변화
+      } 
     },
 
     inputList(state, action) {
@@ -58,7 +63,7 @@ const modalSlice = createSlice({
             item.todo = [
               ...item.todo,
               {
-                firstTime: action.payload.timeData,
+                firstTime: action.payload.firstTime,
                 lastTime: action.payload.lastTime,
                 list: action.payload.inputList,
                 style: false,
@@ -75,10 +80,10 @@ const modalSlice = createSlice({
         state.schedule = [
           ...state.schedule,
           {
-            idx: state.clickedDate,
+            idx: state.startDate,
             todo: [
               {
-                firstTime: action.payload.timeData,
+                firstTime: action.payload.firstTime,
                 lastTime: action.payload.lastTime,
                 list: action.payload.inputList,
                 style: false,
@@ -87,6 +92,10 @@ const modalSlice = createSlice({
           },
         ];
       }
+    },
+
+    longDateList(state, action) {
+
     },
 
     removeList(state, action) {
@@ -105,7 +114,7 @@ const modalSlice = createSlice({
       state.changed = true;
       let arr = [...state.schedule];
       arr[action.payload.index].todo[action.payload.listIndex] = {
-        firstTime: action.payload.timeData,
+        firstTime: action.payload.firstTime,
         lastTime: action.payload.lastTime,
         list: action.payload.inputList,
         style: false,

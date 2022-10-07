@@ -13,7 +13,7 @@ const DatePicker = ({ year, month, firstDay, lastDate, identify, type }) => {
       );
     }else {
       console.log(month);
-      dispatch(modalActions.clickedSecondDate({month, date}))
+      dispatch(modalActions.clickedSecondDate({idx, month, date}))
     }
     dispatch(modalActions.onModal());
   };
