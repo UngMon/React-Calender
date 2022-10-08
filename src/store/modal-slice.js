@@ -30,6 +30,7 @@ const modalSlice = createSlice({
 
     clickedData(state, action) {
       state.startDate = action.payload.idx;
+      state.endDate = action.payload.idx;
       state.week = action.payload.week;
       state.dayIndex = action.payload.dayIndex;
       state.month = action.payload.month;
@@ -47,25 +48,25 @@ const modalSlice = createSlice({
       state.endDate = action.payload.idx;
       if (action.payload.idx === state.startDate) {
         state.type = true; // 두 번째 날짜가 첫 번째 날자와 같을 시, 같은 날짜 변화
-      } 
+      }
     },
 
     inputList(state, action) {
       state.changed = true;
       const result = state.schedule.find(
-        (item) => item.idx === state.clickedDate
+        (item) => item.idx === state.startDate
       ); // schedule 배열에서 해당 날짜에 요소가 있을 때, true 와 해당 {} return
 
       if (result) {
         // 존재하면
         state.schedule.map((item) => {
-          if (item.idx === state.clickedDate) {
+          if (item.idx === state.startDate) {
             item.todo = [
               ...item.todo,
               {
                 firstTime: action.payload.firstTime,
                 lastTime: action.payload.lastTime,
-                list: action.payload.inputList,
+                list: action.payload.list,
                 style: false,
               },
             ];
@@ -85,7 +86,7 @@ const modalSlice = createSlice({
               {
                 firstTime: action.payload.firstTime,
                 lastTime: action.payload.lastTime,
-                list: action.payload.inputList,
+                list: action.payload.list,
                 style: false,
               },
             ],
@@ -94,8 +95,34 @@ const modalSlice = createSlice({
       }
     },
 
-    longDateList(state, action) {
-
+    longDateList(state) {
+      state.changed = true
+      state.schedule.map((item) =>
+        state.startDate <= item.idx <= state.endDate
+          ? item.todo.map((item) => {
+              item = [
+                ...item,
+                { firstTime: "1", lastTime: "", list: "", style: false },
+              ];
+              item.todo = item.todo.sort((a, b) =>
+                a.firstTime < b.firstTime
+                  ? -1
+                  : a.firstTime > b.firstTime
+                  ? 1
+                  : 0
+              );
+              return state.schedule;
+            })
+          : (state.schedule = [
+              ...state.schedule,
+              {
+                idx: state.startDate,
+                todo: [
+                  { firstTime: "1", lastTime: "", list: "", style: false },
+                ],
+              },
+            ])
+      );
     },
 
     removeList(state, action) {
