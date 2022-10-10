@@ -7,13 +7,16 @@ const modalSlice = createSlice({
     startDate: "",
     endDate: "",
     week: "",
+    year: "",
     month: "",
     date: "",
+    secondYear: "",
     secondMonth: "",
     secondDate: "",
     type: true,
     dayIndex: "",
     schedule: [],
+    longArr: [],
     changed: false,
   },
   reducers: {
@@ -33,6 +36,7 @@ const modalSlice = createSlice({
       state.endDate = action.payload.idx;
       state.week = action.payload.week;
       state.dayIndex = action.payload.dayIndex;
+      state.year = action.payload.year;
       state.month = action.payload.month;
       state.date = action.payload.date;
       if (state.type === true) {
@@ -43,24 +47,27 @@ const modalSlice = createSlice({
 
     clickedSecondDate(state, action) {
       state.type = false;
+      state.secondYear = action.payload.year;
       state.secondMonth = action.payload.month;
       state.secondDate = action.payload.date;
       state.endDate = action.payload.idx;
       if (action.payload.idx === state.startDate) {
         state.type = true; // 두 번째 날짜가 첫 번째 날자와 같을 시, 같은 날짜 변화
+      } else {
+        state.longArr = action.payload.longArr;
       }
     },
 
     inputList(state, action) {
       state.changed = true;
       const result = state.schedule.find(
-        (item) => item.idx === state.startDate
+        (item) => item.idx[0] === state.startDate
       ); // schedule 배열에서 해당 날짜에 요소가 있을 때, true 와 해당 {} return
 
       if (result) {
         // 존재하면
         state.schedule.map((item) => {
-          if (item.idx === state.startDate) {
+          if (item.idx[0] === state.startDate) {
             item.todo = [
               ...item.todo,
               {
@@ -68,6 +75,8 @@ const modalSlice = createSlice({
                 lastTime: action.payload.lastTime,
                 list: action.payload.list,
                 style: false,
+                length: 1,
+                isFake: false,
               },
             ];
           }
@@ -81,13 +90,15 @@ const modalSlice = createSlice({
         state.schedule = [
           ...state.schedule,
           {
-            idx: state.startDate,
+            idx: [state.startDate],
             todo: [
               {
                 firstTime: action.payload.firstTime,
                 lastTime: action.payload.lastTime,
                 list: action.payload.list,
                 style: false,
+                length: 1,
+                isFake: false,
               },
             ],
           },
@@ -95,34 +106,84 @@ const modalSlice = createSlice({
       }
     },
 
-    longDateList(state) {
-      state.changed = true
-      state.schedule.map((item) =>
-        state.startDate <= item.idx <= state.endDate
-          ? item.todo.map((item) => {
-              item = [
-                ...item,
-                { firstTime: "1", lastTime: "", list: "", style: false },
-              ];
-              item.todo = item.todo.sort((a, b) =>
-                a.firstTime < b.firstTime
-                  ? -1
-                  : a.firstTime > b.firstTime
-                  ? 1
-                  : 0
-              );
-              return state.schedule;
-            })
-          : (state.schedule = [
+    longDateList(state, action) {
+      state.changed = true;
+      let length = state.longArr.length - state.dayIndex;
+      for (let i of state.longArr) {
+        const result = state.schedule.find((item) => item.idx[0] === i);
+        const index = state.schedule.indexOf(result);
+
+        if (result) {
+          // schedule에서 longArr배열에 있는 i 가 존재할 때, 즉 일정이 있을 때!
+          if (i === state.startDate) {
+            // longDate의 첫 째날 일 때,
+            state.schedule[index].idx = state.longArr;
+            state.schedule[index].todo = [
+              ...state.schedule[index].todo,
+              {
+                firstTime: action.payload.firstTime,
+                lastTime: action.payload.lastTime,
+                list: action.payload.list,
+                style: false,
+                length: length,
+                isFake: false,
+              },
+            ];
+            state.schedule[index].todo.sort((a, b) =>
+              a.firstTime < b.firstTime ? -1 : a.firstTime > b.firstTime ? 1 : 0
+            );
+          } else {
+            // 첫 째날이 아닌 그 이후 Date일 때,
+            state.schedule[index].todo = [
+              ...state.schedule[index].todo,
+              {
+                firstTime: action.payload.firstTime,
+                lastTime: action.payload.lastTime,
+                list: action.payload.list,
+                length: state.longArr.length,
+                isFake: true,
+              },
+            ];
+          }
+        } else { // 다시 돌아와서, schedule에 longArr에 있는 날짜에 일정이 없을 때,
+          if (i === state.startDate) { // i가 longDate의 첫 째날 일 때,
+            state.schedule = [
               ...state.schedule,
               {
-                idx: state.startDate,
+                idx: state.longArr,
                 todo: [
-                  { firstTime: "1", lastTime: "", list: "", style: false },
+                  {
+                    firstTime: action.payload.firstTime,
+                    lastTime: action.payload.lastTime,
+                    list: action.payload.list,
+                    length: state.longArr.length,
+                    style: false,
+                    isFake: false,
+                  },
                 ],
               },
-            ])
-      );
+            ];
+          } else {
+            state.schedule = [
+              ...state.schedule,
+              {
+                idx: [i],
+                todo: [
+                  {
+                    firstTime: "1",
+                    lastTime: "1",
+                    list: "",
+                    length: state.longArr.length,
+                    style: false,
+                    isFake: true,
+                  },
+                ],
+              },
+            ];
+          }
+        }
+      }
+      console.log(state.schedule);
     },
 
     removeList(state, action) {

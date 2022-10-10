@@ -9,7 +9,7 @@ const MakeCaledner = ({ year, month, firstDay, lastDate, identify }) => {
   const dispatch = useDispatch();
   const schedule = useSelector((state) => state.modal.schedule);
   const modaVisible = useSelector((state) => state.modal.isVisible);
- 
+  console.log(schedule);
   console.log(`make 렌더링`);
 
   const listClickHandler = (
@@ -45,36 +45,46 @@ const MakeCaledner = ({ year, month, firstDay, lastDate, identify }) => {
   };
 
   const scheduleHandler = (startDate, dayIdx, week, date) => {
-    const toDoList = schedule.find((item) => item.idx === startDate);
+    const toDoList = schedule.find((item) => item.idx[0] === startDate);
 
     if (toDoList) {
       const scheduleIndex = schedule.indexOf(toDoList);
 
       return toDoList.todo.map((item, listIndex) =>
         listIndex <= 2 ? (
-          <div
-            key={item.firstTime + " " + item.lastTime + listIndex}
-            id={item.firstTime}
-            className={`${classes.list} ${item.style && classes.done}`}
-            onClick={(event) => {
-              event.stopPropagation();
-              const key = item.firstTime + listIndex;
-              listClickHandler(
-                key,
-                startDate,
-                week,
-                month,
-                date,
-                dayIdx,
-                item.list,
-                listIndex,
-                scheduleIndex
-              );
-            }}
-            dayindex={dayIdx}
-          >
-            {item.firstTime + " " + item.list}
-          </div>
+          item.isFake === false ? (
+            <div
+              key={item.firstTime + " " + item.lastTime + listIndex}
+              id={item.firstTime}
+              className={`${classes.list} ${item.style && classes.done}`}
+              style={{backgroundColor :'blue'}}
+              onClick={(event) => {
+                event.stopPropagation();
+                const key = item.firstTime + listIndex;
+                listClickHandler(
+                  key,
+                  startDate,
+                  week,
+                  month,
+                  date,
+                  dayIdx,
+                  item.list,
+                  listIndex,
+                  scheduleIndex
+                );
+              }}
+              dayindex={dayIdx}
+            >
+              {item.firstTime + " " + item.list}
+            </div>
+          ) : (
+            <div
+              key={listIndex}
+              id='nothing'
+              className={classes.list}
+              onClick={(event) => event.stopPropagation()}
+            ></div>
+          )
         ) : (
           listIndex === 3 && (
             <div
@@ -94,7 +104,9 @@ const MakeCaledner = ({ year, month, firstDay, lastDate, identify }) => {
 
   const addClickHandler = (idx, dayIndex, week, month, date) => {
     if (!modaVisible) {
-      dispatch(modalActions.clickedData({ idx, dayIndex, week, month, date }));
+      dispatch(
+        modalActions.clickedData({ idx, dayIndex, week, year, month, date })
+      );
     }
     dispatch(modalActions.onModal());
   };
@@ -172,7 +184,9 @@ const MakeCaledner = ({ year, month, firstDay, lastDate, identify }) => {
           thisMonthArray.push(
             <td
               key={idx}
-              onClick={() => addClickHandler(idx, (i % 7) + 1, week, month, nowDate)}
+              onClick={() =>
+                addClickHandler(idx, (i % 7) + 1, week, month, nowDate)
+              }
               className={classes.date_box}
               day-index={dayIdx}
             >
@@ -196,7 +210,9 @@ const MakeCaledner = ({ year, month, firstDay, lastDate, identify }) => {
           thisMonthArray.push(
             <td
               key={idx}
-              onClick={() => addClickHandler(idx, (i % 7) + 1, week, month + 1, nowDate)}
+              onClick={() =>
+                addClickHandler(idx, (i % 7) + 1, week, month + 1, nowDate)
+              }
               className={classes.date_box}
               day-index={dayIdx}
             >
@@ -221,7 +237,7 @@ const MakeCaledner = ({ year, month, firstDay, lastDate, identify }) => {
   const week = Math.ceil((firstDay + lastDate) / 7);
   for (let i = 1; i <= week; i++) {
     monthArray.push(
-      <tr key={i}  weekindex={i}>
+      <tr key={i} weekindex={i}>
         {makeDay(i)}
       </tr>
     );

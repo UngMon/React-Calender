@@ -1,21 +1,23 @@
 import MakeKey from "../MakeKey";
-import { useDispatch } from "react-redux";
+import MakeLongArr from "../MakeLongArr";
+import { useDispatch, useSelector } from "react-redux";
 import { modalActions } from "../../store/modal-slice";
 import classes from "./second.module.css";
 
 const DatePicker = ({ year, month, firstDay, lastDate, identify, type }) => {
   const dispatch = useDispatch();
 
-  const addClickHandler = (idx, dayIndex, week, month, date, type) => {
-    if (type === true) {
-      dispatch(
-        modalActions.clickedData({ idx, dayIndex, week, month, date })
-      );
-    }else {
-      console.log(month);
-      dispatch(modalActions.clickedSecondDate({idx, month, date}))
-    }
+  const modalState = useSelector((state) => state.modal);
+
+  const addClickHandler = (idx, dayIndex, week, year, month, date, type) => {
     dispatch(modalActions.onModal());
+
+    if (type === true) {
+      dispatch(modalActions.clickedData({ idx, dayIndex, week, month, date }));
+    } else {
+      const longArr = MakeLongArr( modalState.year, modalState.month, modalState.date, year, month, date);
+      dispatch(modalActions.clickedSecondDate({ idx, year, month, date, longArr}));
+    }
   };
 
   const monthArray = [];
@@ -31,14 +33,14 @@ const DatePicker = ({ year, month, firstDay, lastDate, identify, type }) => {
       for (let i = 1; i <= 7; i++) {
         if (i <= firstDay) {
           const nowDate = prevMonthLastDate - firstDay + i;
-          const idx = MakeKey("prev", year, month , nowDate);
+          const idx = MakeKey("prev", year, month, nowDate);
           const dayIdx = `day-${i}`; //모달창을 띄울 때 위치를 무슨 요일인지 저장
 
           thisMonthArray.push(
             <td
               key={idx}
               onClick={() =>
-                addClickHandler(idx, i, week, month - 1, nowDate, type)
+                addClickHandler(idx, i, week, year, month - 1, nowDate, type)
               }
               className={classes.date_box}
               day-index={dayIdx}
@@ -61,7 +63,7 @@ const DatePicker = ({ year, month, firstDay, lastDate, identify, type }) => {
             <td
               key={idx}
               onClick={() =>
-                addClickHandler(idx, i, week, month, nowDate, type)
+                addClickHandler(idx, i, week, year, month, nowDate, type)
               }
               className={classes.date_box}
               day-index={dayIdx}
@@ -90,7 +92,15 @@ const DatePicker = ({ year, month, firstDay, lastDate, identify, type }) => {
             <td
               key={idx}
               onClick={() =>
-                addClickHandler(idx, (i % 7) + 1, week, month, nowDate, type)
+                addClickHandler(
+                  idx,
+                  (i % 7) + 1,
+                  week,
+                  year,
+                  month,
+                  nowDate,
+                  type
+                )
               }
               className={classes.date_box}
               day-index={dayIdx}
@@ -113,7 +123,15 @@ const DatePicker = ({ year, month, firstDay, lastDate, identify, type }) => {
             <td
               key={idx}
               onClick={() =>
-                addClickHandler(idx, (i % 7) + 1, week, (month + 1), nowDate, type)
+                addClickHandler(
+                  idx,
+                  (i % 7) + 1,
+                  week,
+                  year,
+                  month + 1,
+                  nowDate,
+                  type
+                )
               }
               className={classes.date_box}
               day-index={dayIdx}

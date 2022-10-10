@@ -6,7 +6,7 @@ import { fetchScheduleData, sendScheduleData } from "./store/fetch-action";
 
 function App() {
   const dispatch = useDispatch();
-  
+
   const modal = useSelector((state) => state.modal);
 
   useEffect(() => {

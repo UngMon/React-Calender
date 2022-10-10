@@ -81,6 +81,7 @@
 
 .list_box .list {
   width: 100%;
+  /* background-color: #f8f82e; */
   height: 25%;
   box-sizing: border-box;
   padding: 0 5px;

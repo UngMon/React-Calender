@@ -20,10 +20,10 @@ const TimeSelector = ({
 
   const [fristDateIsVisible, setFirstDateIsVisible] = useState(false);
   const [lastDateIsVisible, setLastDateIsVisible] = useState(false);
-
+  
   const OneRef = useRef([]);
   // const TwoRef = useRef([]);
-
+  
   const timeOneVisible = timeState.firstIsVisible;
   const timeTwoVisible = timeState.lastIsVisible;
 
