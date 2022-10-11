@@ -80,19 +80,31 @@
 }
 
 .list_box .list {
-  width: 100%;
-  /* background-color: #f8f82e; */
+  background-color: white;
   height: 25%;
   box-sizing: border-box;
   padding: 0 5px;
   color: #506ee2;
   font-weight: bold;
-  display: flex;
+  line-height: 150%;
   align-items: center;
-  background-color: white;
-  white-space:nowrap;
+  white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+.list_box .long {
+  z-index: 4;
+  background-color: rgb(121, 134, 203);
+  border-radius: 5px 5px;
+  color: white;
+}
+
+.list_box .nothing {
+  background-color: transparent;
+  height: 25%;
+  box-sizing: border-box;
+  padding: 0 5px;
 }
 
 .list:hover {

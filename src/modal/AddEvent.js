@@ -42,6 +42,28 @@ const AddEvent = () => {
     };
   });
 
+  const comparisonHandler = () => {
+    return (
+      (+modalState.year <= +modalState.secondYear && 
+        // 시작 날짜의 연도가 마지막 날짜의 연도보다 작거나 같을 때,
+        +modalState.month < +modalState.secondMonth && 
+        // 시작 날짜의 달이 마지막 날짜의 달 보다 작을 때, true 
+        true) || // 또는 둘의 달이 같을 때, 
+      (modalState.month === modalState.secondMonth &&
+        modalState.date < modalState.secondDate &&
+        true)
+    );
+    // 시작 날이 마지막 날보다 크거나 작을 때 true 리턴 그 외 false
+  };
+  console.log(modalState.year);
+  console.log(modalState.secondYear);
+  console.log(modalState.month);
+  console.log(modalState.secondMonth);
+  console.log(modalState.date);
+  console.log(modalState.secondDate);
+
+  console.log(comparisonHandler());
+
   const listSubmitHandler = (event) => {
     event.preventDefault();
     const pattern = /^(오전|오후)\s(([0][0-9]|[1][0-2])):([0-5][0-9])$/;
@@ -70,14 +92,15 @@ const AddEvent = () => {
 
     firstTime = timeOneRef.current.value || firstTime;
     lastTime = timeTwoRef.current.value || lastTime;
- 
+
     if (firstTime > lastTime) {
       alert("끝나는 시간이 시작 시간보다 작습니다!! ex) 00:30 ~ 01:30");
       return;
     } else {
+      console.log(comparisonHandler());
       if (modalState.startDate === modalState.endDate) {
         dispatch(modalActions.inputList({ list, firstTime, lastTime }));
-      } else if (modalState.startDate < modalState.endDate) {
+      } else if (comparisonHandler()) {
         dispatch(
           modalActions.longDateList({
             firstTime,
@@ -123,7 +146,9 @@ const AddEvent = () => {
         timeTwoRef={timeTwoRef}
       />
       <div className="buttonBox">
-        <button type="submit">저장</button>
+        <button type="submit" disabled={comparisonHandler() ? false : true}>
+          저장
+        </button>
         <button type="button" onClick={cancelHandler}>
           취소
         </button>

@@ -56,8 +56,10 @@ const MakeCaledner = ({ year, month, firstDay, lastDate, identify }) => {
             <div
               key={item.firstTime + " " + item.lastTime + listIndex}
               id={item.firstTime}
-              className={`${classes.list} ${item.style && classes.done}`}
-              style={{backgroundColor :'blue'}}
+              className={`${classes.list} ${item.style && classes.done} ${
+                item.length > 1 && classes.long
+              }`}
+              style={{width: `${item.length}00%`}}
               onClick={(event) => {
                 event.stopPropagation();
                 const key = item.firstTime + listIndex;
@@ -80,10 +82,8 @@ const MakeCaledner = ({ year, month, firstDay, lastDate, identify }) => {
           ) : (
             <div
               key={listIndex}
-              id='nothing'
-              className={classes.list}
-              onClick={(event) => event.stopPropagation()}
-            ></div>
+              className={classes.nothing}
+            >{item.list}</div>
           )
         ) : (
           listIndex === 3 && (

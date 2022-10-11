@@ -26,6 +26,7 @@ const modalSlice = createSlice({
 
     offModal(state) {
       state.isVisible = false;
+      state.secondYear = '';
       state.secondMonth = "";
       state.secondDate = "";
       state.type = true;
@@ -40,6 +41,7 @@ const modalSlice = createSlice({
       state.month = action.payload.month;
       state.date = action.payload.date;
       if (state.type === true) {
+        state.secondYear = action.payload.year;
         state.secondMonth = action.payload.month;
         state.secondDate = action.payload.date;
       }
@@ -108,16 +110,20 @@ const modalSlice = createSlice({
 
     longDateList(state, action) {
       state.changed = true;
-      let length = state.longArr.length - state.dayIndex;
+      let length = state.longArr.length;
+      let count = state.dayIndex;
+      console.log('longDate')
       for (let i of state.longArr) {
         const result = state.schedule.find((item) => item.idx[0] === i);
         const index = state.schedule.indexOf(result);
 
         if (result) {
-          // schedule에서 longArr배열에 있는 i 가 존재할 때, 즉 일정이 있을 때!
+          // schedule에서 longArr배열에 있는 i 가 존재할 때, 즉 기존 일정이 있을 때!
           if (i === state.startDate) {
             // longDate의 첫 째날 일 때,
+
             state.schedule[index].idx = state.longArr;
+
             state.schedule[index].todo = [
               ...state.schedule[index].todo,
               {
@@ -125,28 +131,60 @@ const modalSlice = createSlice({
                 lastTime: action.payload.lastTime,
                 list: action.payload.list,
                 style: false,
-                length: length,
+                length:
+                  length >= 8 - state.dayIndex ? 8 - state.dayIndex : length,
                 isFake: false,
               },
             ];
             state.schedule[index].todo.sort((a, b) =>
               a.firstTime < b.firstTime ? -1 : a.firstTime > b.firstTime ? 1 : 0
             );
+            /* length의 값이 다음주로 넘어갈 정도로 길다면, 본래의 값에서 그 '주'의 토요일까지 차지한 길이를 빼고,
+  아니면 그냥 length*/
+            length = // length 계산
+              length >= 8 - state.dayIndex
+                ? length - 8 + state.dayIndex
+                : length - 1;
+            // 시작 날의 요일을 알기 위함
+            count = count === 7 ? 1 : count + 1;
           } else {
             // 첫 째날이 아닌 그 이후 Date일 때,
-            state.schedule[index].todo = [
-              ...state.schedule[index].todo,
-              {
-                firstTime: action.payload.firstTime,
-                lastTime: action.payload.lastTime,
-                list: action.payload.list,
-                length: state.longArr.length,
-                isFake: true,
-              },
-            ];
+
+            if (count === 1) {
+              // 시작 날 기준 다음주로 넘어갈 때, 일요일의 경우(count = 1) 남은 length만큼 표시
+              state.schedule[index].todo = [
+                ...state.schedule[index].todo,
+                {
+                  firstTime: action.payload.firstTime,
+                  lastTime: action.payload.lastTime,
+                  list: action.payload.list,
+                  length: length >= 7 ? 7 : length, //시작 날 기준 다다음주 까지 넘어가는지
+                  isFake: true,
+                },
+              ];
+            } else {
+              state.schedule[index].todo = [
+                ...state.schedule[index].todo,
+                {
+                  firstTime: 1,
+                  lastTime: 1,
+                  list: "",
+                  length: 1,
+                  isFake: true,
+                },
+              ];
+            }
+            state.schedule[index].todo.sort((a, b) =>
+              a.firstTime < b.firstTime ? -1 : a.firstTime > b.firstTime ? 1 : 0
+            );
+            length -= 1;
+            count = count === 7 ? 1 : count + 1;
           }
-        } else { // 다시 돌아와서, schedule에 longArr에 있는 날짜에 일정이 없을 때,
-          if (i === state.startDate) { // i가 longDate의 첫 째날 일 때,
+        } else {
+          // 다시 돌아와서, schedule에 longArr에 있는 날짜에 일정이 없을 때,
+          if (i === state.startDate) {
+            // i가 longDate의 첫 째날 일 때,
+
             state.schedule = [
               ...state.schedule,
               {
@@ -156,7 +194,10 @@ const modalSlice = createSlice({
                     firstTime: action.payload.firstTime,
                     lastTime: action.payload.lastTime,
                     list: action.payload.list,
-                    length: state.longArr.length,
+                    length:
+                      length >= 8 - state.dayIndex
+                        ? 8 - state.dayIndex
+                        : length,
                     style: false,
                     isFake: false,
                   },
@@ -164,23 +205,45 @@ const modalSlice = createSlice({
               },
             ];
           } else {
-            state.schedule = [
-              ...state.schedule,
-              {
-                idx: [i],
-                todo: [
-                  {
-                    firstTime: "1",
-                    lastTime: "1",
-                    list: "",
-                    length: state.longArr.length,
-                    style: false,
-                    isFake: true,
-                  },
-                ],
-              },
-            ];
+            if (count === 1) {
+              state.schedule = [
+                ...state.schedule,
+                {
+                  idx: [i],
+                  todo: [
+                    {
+                      firstTime: action.payload.firstTime,
+                      lastTime: action.payload.lastTime,
+                      list: action.payload.list,
+                      length: length >= 7 ? 7 : length,
+                      style: false,
+                      isFake: false,
+                    },
+                  ],
+                },
+              ];
+            } else {
+              state.schedule = [
+                ...state.schedule,
+                {
+                  idx: [i],
+                  todo: [
+                    {
+                      firstTime: "1",
+                      lastTime: "1",
+                      list: "",
+                      length: 1,
+                      style: false,
+                      isFake: true,
+                    },
+                  ],
+                },
+              ];
+            }
           }
+          length =
+          length >= 8 - state.dayIndex ? 8 - state.dayIndex : length - 1;
+        count = count === 7 ? 1 : count + 1;
         }
       }
       console.log(state.schedule);

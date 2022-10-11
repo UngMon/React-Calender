@@ -13,10 +13,19 @@ const DatePicker = ({ year, month, firstDay, lastDate, identify, type }) => {
     dispatch(modalActions.onModal());
 
     if (type === true) {
-      dispatch(modalActions.clickedData({ idx, dayIndex, week, month, date }));
+      dispatch(modalActions.clickedData({ idx, dayIndex, week, year, month, date }));
     } else {
-      const longArr = MakeLongArr( modalState.year, modalState.month, modalState.date, year, month, date);
-      dispatch(modalActions.clickedSecondDate({ idx, year, month, date, longArr}));
+      const longArr = MakeLongArr(
+        modalState.year,
+        modalState.month,
+        modalState.date,
+        year,
+        month,
+        date
+      );
+      dispatch(
+        modalActions.clickedSecondDate({ idx, year, month, date, longArr })
+      );
     }
   };
 
