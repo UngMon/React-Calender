@@ -45,14 +45,14 @@ const MakeCaledner = ({ year, month, firstDay, lastDate, identify }) => {
   };
 
   const scheduleHandler = (startDate, dayIdx, week, date) => {
-    const toDoList = schedule.find((item) => item.idx[0] === startDate);
+    const toDoList = schedule.find((item) => item.idx === startDate);
 
     if (toDoList) {
       const scheduleIndex = schedule.indexOf(toDoList);
 
       return toDoList.todo.map((item, listIndex) =>
         listIndex <= 2 ? (
-          item.isFake === false ? (console.log('렌더'),
+          item.isFake === false ? (
             <div
               key={item.firstTime + " " + item.lastTime + listIndex}
               id={item.firstTime}
