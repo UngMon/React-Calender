@@ -52,7 +52,7 @@ const MakeCaledner = ({ year, month, firstDay, lastDate, identify }) => {
 
       return toDoList.todo.map((item, listIndex) =>
         listIndex <= 2 ? (
-          item.isFake === false ? (
+          item.isFake === false ? (console.log('렌더'),
             <div
               key={item.firstTime + " " + item.lastTime + listIndex}
               id={item.firstTime}

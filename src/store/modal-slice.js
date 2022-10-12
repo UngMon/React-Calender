@@ -26,7 +26,7 @@ const modalSlice = createSlice({
 
     offModal(state) {
       state.isVisible = false;
-      state.secondYear = '';
+      state.secondYear = "";
       state.secondMonth = "";
       state.secondDate = "";
       state.type = true;
@@ -63,13 +63,13 @@ const modalSlice = createSlice({
     inputList(state, action) {
       state.changed = true;
       const result = state.schedule.find(
-        (item) => item.idx[0] === state.startDate
+        (item) => item.idx === state.startDate
       ); // schedule 배열에서 해당 날짜에 요소가 있을 때, true 와 해당 {} return
 
       if (result) {
         // 존재하면
         state.schedule.map((item) => {
-          if (item.idx[0] === state.startDate) {
+          if (item.idx === state.startDate) {
             item.todo = [
               ...item.todo,
               {
@@ -79,6 +79,7 @@ const modalSlice = createSlice({
                 style: false,
                 length: 1,
                 isFake: false,
+                isLong: false,
               },
             ];
           }
@@ -92,7 +93,7 @@ const modalSlice = createSlice({
         state.schedule = [
           ...state.schedule,
           {
-            idx: [state.startDate],
+            idx: state.startDate,
             todo: [
               {
                 firstTime: action.payload.firstTime,
@@ -101,6 +102,7 @@ const modalSlice = createSlice({
                 style: false,
                 length: 1,
                 isFake: false,
+                isLong: false,
               },
             ],
           },
@@ -110,9 +112,9 @@ const modalSlice = createSlice({
 
     longDateList(state, action) {
       state.changed = true;
-      let length = state.longArr.length;
+      let leng = state.longArr.length;
       let count = state.dayIndex;
-      console.log('longDate')
+
       for (let i of state.longArr) {
         const result = state.schedule.find((item) => item.idx[0] === i);
         const index = state.schedule.indexOf(result);
@@ -121,7 +123,7 @@ const modalSlice = createSlice({
           // schedule에서 longArr배열에 있는 i 가 존재할 때, 즉 기존 일정이 있을 때!
           if (i === state.startDate) {
             // longDate의 첫 째날 일 때,
-
+            const requireDate = 8 - state.dayIndex;
             state.schedule[index].idx = state.longArr;
 
             state.schedule[index].todo = [
@@ -132,34 +134,29 @@ const modalSlice = createSlice({
                 list: action.payload.list,
                 style: false,
                 length:
-                  length >= 8 - state.dayIndex ? 8 - state.dayIndex : length,
+                  leng - requireDate > 0 ? requireDate : leng,
                 isFake: false,
+                isLong: true,
               },
             ];
             state.schedule[index].todo.sort((a, b) =>
               a.firstTime < b.firstTime ? -1 : a.firstTime > b.firstTime ? 1 : 0
             );
-            /* length의 값이 다음주로 넘어갈 정도로 길다면, 본래의 값에서 그 '주'의 토요일까지 차지한 길이를 빼고,
-  아니면 그냥 length*/
-            length = // length 계산
-              length >= 8 - state.dayIndex
-                ? length - 8 + state.dayIndex
-                : length - 1;
-            // 시작 날의 요일을 알기 위함
-            count = count === 7 ? 1 : count + 1;
           } else {
             // 첫 째날이 아닌 그 이후 Date일 때,
 
             if (count === 1) {
               // 시작 날 기준 다음주로 넘어갈 때, 일요일의 경우(count = 1) 남은 length만큼 표시
+
               state.schedule[index].todo = [
                 ...state.schedule[index].todo,
                 {
                   firstTime: action.payload.firstTime,
                   lastTime: action.payload.lastTime,
                   list: action.payload.list,
-                  length: length >= 7 ? 7 : length, //시작 날 기준 다다음주 까지 넘어가는지
+                  length: leng >= 7 ? 7 : leng, //시작 날 기준 다다음주 까지 넘어가는지
                   isFake: true,
+                  isLong: true,
                 },
               ];
             } else {
@@ -171,35 +168,34 @@ const modalSlice = createSlice({
                   list: "",
                   length: 1,
                   isFake: true,
+                  isLong: false,
                 },
               ];
             }
             state.schedule[index].todo.sort((a, b) =>
               a.firstTime < b.firstTime ? -1 : a.firstTime > b.firstTime ? 1 : 0
             );
-            length -= 1;
-            count = count === 7 ? 1 : count + 1;
           }
         } else {
           // 다시 돌아와서, schedule에 longArr에 있는 날짜에 일정이 없을 때,
           if (i === state.startDate) {
             // i가 longDate의 첫 째날 일 때,
+            const requireDate = 8 - state.dayIndex;
 
             state.schedule = [
               ...state.schedule,
               {
-                idx: state.longArr,
+                idx: i,
                 todo: [
                   {
                     firstTime: action.payload.firstTime,
                     lastTime: action.payload.lastTime,
                     list: action.payload.list,
                     length:
-                      length >= 8 - state.dayIndex
-                        ? 8 - state.dayIndex
-                        : length,
+                      leng > requireDate ? requireDate : leng,
                     style: false,
                     isFake: false,
+                    isLong: true,
                   },
                 ],
               },
@@ -209,15 +205,16 @@ const modalSlice = createSlice({
               state.schedule = [
                 ...state.schedule,
                 {
-                  idx: [i],
+                  idx: i,
                   todo: [
                     {
                       firstTime: action.payload.firstTime,
                       lastTime: action.payload.lastTime,
                       list: action.payload.list,
-                      length: length >= 7 ? 7 : length,
+                      length: leng >= 7 ? 7 : leng,
                       style: false,
                       isFake: false,
+                      isLong: true,
                     },
                   ],
                 },
@@ -226,7 +223,7 @@ const modalSlice = createSlice({
               state.schedule = [
                 ...state.schedule,
                 {
-                  idx: [i],
+                  idx: i,
                   todo: [
                     {
                       firstTime: "1",
@@ -235,16 +232,16 @@ const modalSlice = createSlice({
                       length: 1,
                       style: false,
                       isFake: true,
+                      isLong: false,
                     },
                   ],
                 },
               ];
             }
           }
-          length =
-          length >= 8 - state.dayIndex ? 8 - state.dayIndex : length - 1;
-        count = count === 7 ? 1 : count + 1;
         }
+        leng -= 1;
+        count = count === 7 ? 1 : count + 1;
       }
       console.log(state.schedule);
     },

@@ -50,19 +50,11 @@ const AddEvent = () => {
         // 시작 날짜의 달이 마지막 날짜의 달 보다 작을 때, true 
         true) || // 또는 둘의 달이 같을 때, 
       (modalState.month === modalState.secondMonth &&
-        modalState.date < modalState.secondDate &&
+        modalState.date <= modalState.secondDate &&
         true)
     );
     // 시작 날이 마지막 날보다 크거나 작을 때 true 리턴 그 외 false
   };
-  console.log(modalState.year);
-  console.log(modalState.secondYear);
-  console.log(modalState.month);
-  console.log(modalState.secondMonth);
-  console.log(modalState.date);
-  console.log(modalState.secondDate);
-
-  console.log(comparisonHandler());
 
   const listSubmitHandler = (event) => {
     event.preventDefault();
