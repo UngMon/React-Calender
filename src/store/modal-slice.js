@@ -36,10 +36,10 @@ const modalSlice = createSlice({
       state.startDate = action.payload.idx;
       state.endDate = action.payload.idx;
       state.week = action.payload.week;
-      state.dayIndex = action.payload.dayIndex;
       state.year = action.payload.year;
       state.month = action.payload.month;
       state.date = action.payload.date;
+      state.dayIndex = action.payload.dayIndex;
       if (state.type === true) {
         state.secondYear = action.payload.year;
         state.secondMonth = action.payload.month;
@@ -114,9 +114,10 @@ const modalSlice = createSlice({
       state.changed = true;
       let leng = state.longArr.length;
       let count = state.dayIndex;
+      console.log(state.longArr)
 
       for (let i of state.longArr) {
-        const result = state.schedule.find((item) => item.idx[0] === i);
+        const result = state.schedule.find((item) => item.idx === i);
         const index = state.schedule.indexOf(result);
 
         if (result) {
@@ -124,8 +125,7 @@ const modalSlice = createSlice({
           if (i === state.startDate) {
             // longDate의 첫 째날 일 때,
             const requireDate = 8 - state.dayIndex;
-            state.schedule[index].idx = state.longArr;
-
+            
             state.schedule[index].todo = [
               ...state.schedule[index].todo,
               {
@@ -243,7 +243,6 @@ const modalSlice = createSlice({
         leng -= 1;
         count = count === 7 ? 1 : count + 1;
       }
-      console.log(state.schedule);
     },
 
     removeList(state, action) {

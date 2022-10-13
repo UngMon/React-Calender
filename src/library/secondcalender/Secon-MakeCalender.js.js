@@ -1,15 +1,20 @@
 import MakeKey from "../MakeKey";
 import MakeLongArr from "../MakeLongArr";
 import { useDispatch, useSelector } from "react-redux";
+import { monthActions } from "../../store/month-slice";
 import { modalActions } from "../../store/modal-slice";
 import classes from "./second.module.css";
 
-const DatePicker = ({ year, month, firstDay, lastDate, identify, type }) => {
+const MakeCaledner = ({ year, month, firstDay, lastDate, identify, type }) => {
   const dispatch = useDispatch();
 
   const modalState = useSelector((state) => state.modal);
 
   const addClickHandler = (idx, dayIndex, week, year, month, date, type) => {
+    if (modalState.startDate !== idx) {
+      const thisMonth = month - 1
+      dispatch(monthActions.setMonth({year, thisMonth}));
+    }
     dispatch(modalActions.onModal());
 
     if (type === true) {
@@ -172,4 +177,4 @@ const DatePicker = ({ year, month, firstDay, lastDate, identify, type }) => {
   return monthArray;
 };
 
-export default DatePicker;
+export default MakeCaledner;

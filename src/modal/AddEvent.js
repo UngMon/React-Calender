@@ -2,12 +2,13 @@ import { useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { modalActions } from "../store/modal-slice";
 import { timeActions } from "../store/time-slice";
-import ModalPosition from "../library/ModalPosition";
-import "./AddEvent.css";
-import SetTime from "../library/Time/SetTime";
-import TimeSelector from "../library/Time/TimeSelector";
 import { allListActions } from "../store/all-list-slice";
 import { listActions } from "../store/list-slice";
+import ModalPosition from "../library/ModalPosition";
+import SetTime from "../library/Time/SetTime";
+import TimeSelector from "../library/Time/TimeSelector";
+import { comparisonHandler } from "../library/Comparioson";
+import "./AddEvent.css";
 
 const setTime = SetTime();
 const currentTime = setTime.currentTime;
@@ -42,19 +43,14 @@ const AddEvent = () => {
     };
   });
 
-  const comparisonHandler = () => {
-    return (
-      (+modalState.year <= +modalState.secondYear && 
-        // 시작 날짜의 연도가 마지막 날짜의 연도보다 작거나 같을 때,
-        +modalState.month < +modalState.secondMonth && 
-        // 시작 날짜의 달이 마지막 날짜의 달 보다 작을 때, true 
-        true) || // 또는 둘의 달이 같을 때, 
-      (modalState.month === modalState.secondMonth &&
-        modalState.date <= modalState.secondDate &&
-        true)
-    );
-    // 시작 날이 마지막 날보다 크거나 작을 때 true 리턴 그 외 false
-  };
+  const comparison = comparisonHandler(
+    modalState.year,
+    modalState.month,
+    modalState.date,
+    modalState.secondYear,
+    modalState.secondMonth,
+    modalState.secondDate
+  );
 
   const listSubmitHandler = (event) => {
     event.preventDefault();
@@ -89,10 +85,9 @@ const AddEvent = () => {
       alert("끝나는 시간이 시작 시간보다 작습니다!! ex) 00:30 ~ 01:30");
       return;
     } else {
-      console.log(comparisonHandler());
       if (modalState.startDate === modalState.endDate) {
         dispatch(modalActions.inputList({ list, firstTime, lastTime }));
-      } else if (comparisonHandler()) {
+      } else if (comparison) {
         dispatch(
           modalActions.longDateList({
             firstTime,
@@ -128,8 +123,10 @@ const AddEvent = () => {
         <input placeholder="(제목 없음)" type="text" ref={inputRef} />
       </div>
       <TimeSelector
+        year={modalState.year}
         month={modalState.month}
         date={modalState.date}
+        secondYear={modalState.secondYear}
         secondMonth={modalState.secondMonth}
         secondDate={modalState.secondDate}
         firstTime={currentTime}
@@ -138,7 +135,7 @@ const AddEvent = () => {
         timeTwoRef={timeTwoRef}
       />
       <div className="buttonBox">
-        <button type="submit" disabled={comparisonHandler() ? false : true}>
+        <button type="submit" disabled={comparison ? false : true}>
           저장
         </button>
         <button type="button" onClick={cancelHandler}>

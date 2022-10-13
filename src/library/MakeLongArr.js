@@ -1,31 +1,58 @@
-const MakeLongArr = (firsYear, firsMonth, firsDate, year, month, date) => {
+const MakeLongArr = (
+  firstYear,
+  firstMonth,
+  firstDate,
+  secondYear,
+  secondMonth,
+  secondDate
+) => {
   const idxArr = [];
-  //   const monthArr = [];
 
-  let firstYear = +firsYear;
-  let firstMonth = +firsMonth;
-  let firstDate = +firsDate;
-
-  if (firstYear === year) {
-    if (firstMonth === month) {
-      for (let i = +firstDate; i <= +date; i++) {
+  if (firstYear === secondYear) {
+    if (firstMonth === secondMonth) {
+      // 같은 달에서 마지막 date까지 idxArr 배열에 push
+      for (let i = +firstDate; i <= +secondDate; i++) {
         idxArr.push(firstYear + "." + firstMonth + "." + i);
       }
-    } else {
-      /* 둘이 같지 않다는 것은 마지막 날이 다음 달 이상 */
+    } else if (firstMonth < secondMonth) {
       let k;
-      for (let i = +firstMonth; i <= +month; i++) {
-        if (i < +month) {
+      for (let i = +firstMonth; i <= +secondMonth; i++) {
+        if (i < +secondMonth) {
           // 선택한 달 보다 적을 때,
-          k = new Date(year, i, 0).getDate(); // month는 1~12이므로 +1을 해줄 필요 x
+          k = new Date(secondYear, i, 0).getDate(); // month는 1~12이므로 +1을 해줄 필요 x
 
           for (let j = +firstDate; j <= k; j++) {
             console.log(j);
-            idxArr.push(year + "." + i + "." + j);
+            idxArr.push(secondYear + "." + i + "." + j);
           }
         } else {
-          for (let j = 1; j <= +date; j++) {
-            idxArr.push(year + "." + i + "." + j);
+          for (let j = 1; j <= +secondDate; j++) {
+            idxArr.push(secondYear + "." + i + "." + j);
+          }
+        }
+      }
+    }
+  } else if (firstYear < secondYear) {
+    let k;
+    for (let y = firstYear; y <= secondYear; y++) {
+      if (y < secondYear) {
+        for (let m = firstMonth; m <= 12; m++) {
+          k = new Date(firstYear, m, 0).getDate();
+          if (m === firstMonth) {
+            for (let d = firstDate; d <= k; d++) {
+              idxArr.push(y + "." + m + "." + d);
+            }
+          } else {
+            for (let d = 1; d <= k; d++) {
+              idxArr.push(y + "." + m + "." + d);
+            }
+          }
+        }
+      } else {
+        for (let m = 1; m <= secondMonth; m++) {
+          k = new Date(secondYear, m, 0).getDate();
+          for (let d = 1; d <= secondDate; d++) {
+            idxArr.push(y + "." + m + "." + d);
           }
         }
       }

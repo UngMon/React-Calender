@@ -3,7 +3,6 @@ import { createSlice } from "@reduxjs/toolkit";
 const today = new Date();
 const todayYear = today.getFullYear();
 const todayMonth = today.getMonth();
-console.log(`month 렌더?`)
 
 const initialDateInfo = {
   year: todayYear,
@@ -11,9 +10,9 @@ const initialDateInfo = {
   firstDay: new Date(todayYear, todayMonth, 1).getDay(),
   lastDate: new Date(todayYear, todayMonth + 1, 0).getDate(),
 };
-
+console.log('month슬라이스 렌더링')
 const monthSlice = createSlice({
-  name: 'date',
+  name: 'month',
   initialState: initialDateInfo,
   reducers: {
     prevMonth(state) {
@@ -40,6 +39,13 @@ const monthSlice = createSlice({
         state.lastDate = new Date(state.year, state.month + 1, 0).getDate();
       }
     },
+
+    setMonth(state, action) {
+      state.year = action.payload.year;
+      state.month = action.payload.thisMonth;
+      state.firstDay = new Date(state.year, state.month, 1).getDay();
+      state.lastDate = new Date(state.year, state.month + 1, 0).getDate();
+    }
   },
 });
 

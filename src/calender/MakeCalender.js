@@ -57,7 +57,7 @@ const MakeCaledner = ({ year, month, firstDay, lastDate, identify }) => {
               key={item.firstTime + " " + item.lastTime + listIndex}
               id={item.firstTime}
               className={`${classes.list} ${item.style && classes.done} ${
-                item.length > 1 && classes.long
+                item.isLong && classes.long
               }`}
               style={{width: `${item.length}00%`}}
               onClick={(event) => {
