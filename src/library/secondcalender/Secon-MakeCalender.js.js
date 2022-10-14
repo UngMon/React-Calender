@@ -12,13 +12,15 @@ const MakeCaledner = ({ year, month, firstDay, lastDate, identify, type }) => {
 
   const addClickHandler = (idx, dayIndex, week, year, month, date, type) => {
     if (modalState.startDate !== idx) {
-      const thisMonth = month - 1
-      dispatch(monthActions.setMonth({year, thisMonth}));
+      const thisMonth = month - 1;
+      dispatch(monthActions.setMonth({ year, thisMonth }));
     }
     dispatch(modalActions.onModal());
 
     if (type === true) {
-      dispatch(modalActions.clickedData({ idx, dayIndex, week, year, month, date }));
+      dispatch(
+        modalActions.clickedData({ idx, dayIndex, week, year, month, date })
+      );
     } else {
       const longArr = MakeLongArr(
         modalState.year,
@@ -48,7 +50,7 @@ const MakeCaledner = ({ year, month, firstDay, lastDate, identify, type }) => {
         if (i <= firstDay) {
           const nowDate = prevMonthLastDate - firstDay + i;
           const idx = MakeKey("prev", year, month, nowDate);
-          const dayIdx = `day-${i}`; //모달창을 띄울 때 위치를 무슨 요일인지 저장
+          const dayIdx = i; //모달창을 띄울 때 위치를 무슨 요일인지 저장
 
           thisMonthArray.push(
             <td
@@ -63,6 +65,9 @@ const MakeCaledner = ({ year, month, firstDay, lastDate, identify, type }) => {
                 className={`${classes.date} ${
                   identify === idx && classes.Today
                 }`}
+                style={{
+                  color: `${i === 1 ? "red" : i === 7 && "blue"}`,
+                }}
               >
                 {nowDate}
               </div>
@@ -71,7 +76,7 @@ const MakeCaledner = ({ year, month, firstDay, lastDate, identify, type }) => {
         } else {
           const nowDate = i - firstDay;
           const idx = MakeKey("", year, month, nowDate);
-          const dayIdx = `day-${i}`;
+          const dayIdx = i;
 
           thisMonthArray.push(
             <td
@@ -86,6 +91,9 @@ const MakeCaledner = ({ year, month, firstDay, lastDate, identify, type }) => {
                 className={`${classes.date} ${
                   identify === idx && classes.Today
                 }`}
+                style={{
+                  color: `${dayIdx === 1 ? "red" : dayIdx === 7 && "blue"}`,
+                }}
               >
                 {nowDate}
               </div>
@@ -100,7 +108,7 @@ const MakeCaledner = ({ year, month, firstDay, lastDate, identify, type }) => {
         if (i - firstDay < lastDate) {
           const nowDate = i - firstDay + 1;
           const idx = MakeKey("", year, month, nowDate);
-          const dayIdx = `day-${(i % 7) + 1}`;
+          const dayIdx = (i % 7) + 1;
 
           thisMonthArray.push(
             <td
@@ -123,6 +131,9 @@ const MakeCaledner = ({ year, month, firstDay, lastDate, identify, type }) => {
                 className={`${classes.date} ${
                   identify === idx && classes.Today
                 }`}
+                style={{
+                  color: `${dayIdx === 1 ? "red" : dayIdx === 7 && "blue"}`,
+                }}
               >
                 {nowDate}
               </div>
@@ -131,7 +142,7 @@ const MakeCaledner = ({ year, month, firstDay, lastDate, identify, type }) => {
         } else {
           const nowDate = i - lastDate - firstDay + 1;
           const idx = MakeKey("next", year, month, nowDate);
-          const dayIdx = `day-${(i % 7) + 1}`;
+          const dayIdx = (i % 7) + 1;
 
           thisMonthArray.push(
             <td
@@ -154,6 +165,9 @@ const MakeCaledner = ({ year, month, firstDay, lastDate, identify, type }) => {
                 className={`${classes.date} ${
                   identify === idx && classes.Today
                 }`}
+                style={{
+                  color: `${dayIdx === 1 ? "red" : dayIdx === 7 && "blue"}`,
+                }}
               >
                 {nowDate}
               </div>

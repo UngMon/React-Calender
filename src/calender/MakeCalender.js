@@ -55,35 +55,43 @@ const MakeCaledner = ({ year, month, firstDay, lastDate, identify }) => {
           item.isFake === false ? (
             <div
               key={item.firstTime + " " + item.lastTime + listIndex}
-              id={item.firstTime}
-              className={`${classes.list} ${item.style && classes.done} ${
-                item.isLong && classes.long
-              }`}
-              style={{width: `${item.length}00%`}}
-              onClick={(event) => {
-                event.stopPropagation();
-                const key = item.firstTime + listIndex;
-                listClickHandler(
-                  key,
-                  startDate,
-                  week,
-                  month,
-                  date,
-                  dayIdx,
-                  item.list,
-                  listIndex,
-                  scheduleIndex
-                );
-              }}
-              dayindex={dayIdx}
+              className={`${classes["list-boundary"]}`}
+              style={{ width: `${item.length}00%` }}
             >
-              {item.firstTime + " " + item.list}
+              <div
+                key={item.firstTime + " " + item.lastTime + listIndex}
+                id={item.firstTime}
+                className={`${classes.list} ${item.style && classes.done} ${
+                  item.isLong && classes.long
+                }`}
+                onClick={(event) => {
+                  event.stopPropagation();
+                  const key = item.firstTime + listIndex;
+                  listClickHandler(
+                    key,
+                    startDate,
+                    week,
+                    month,
+                    date,
+                    dayIdx,
+                    item.list,
+                    listIndex,
+                    scheduleIndex
+                  );
+                }}
+                dayindex={dayIdx}
+              >
+                <span>{item.firstTime + " " + item.list}</span>
+              </div>
             </div>
           ) : (
             <div
               key={listIndex}
               className={classes.nothing}
-            >{item.list}</div>
+              style={{ pointerEvents: "none" }}
+            >
+              {item.list}
+            </div>
           )
         ) : (
           listIndex === 3 && (
@@ -125,7 +133,7 @@ const MakeCaledner = ({ year, month, firstDay, lastDate, identify }) => {
         if (i <= firstDay) {
           const nowDate = prevMonthLastDate - firstDay + i;
           const idx = MakeKey("prev", year, month, nowDate);
-          const dayIdx = `day-${i}`; //모달창을 띄울 때 위치를 무슨 요일인지 저장
+          const dayIdx = i; //모달창을 띄울 때 위치를 무슨 요일인지 저장
 
           thisMonthArray.push(
             <td
@@ -138,6 +146,7 @@ const MakeCaledner = ({ year, month, firstDay, lastDate, identify }) => {
                 className={`${classes.date} ${
                   identify === idx && classes.Today
                 }`}
+                style={{ color: i === 1 ? "red" : i === 7 && "blue" }}
               >
                 {nowDate}
               </div>
@@ -149,7 +158,7 @@ const MakeCaledner = ({ year, month, firstDay, lastDate, identify }) => {
         } else {
           const nowDate = i - firstDay;
           const idx = MakeKey("", year, month, nowDate);
-          const dayIdx = `day-${i}`;
+          const dayIdx = i;
 
           thisMonthArray.push(
             <td
@@ -162,6 +171,7 @@ const MakeCaledner = ({ year, month, firstDay, lastDate, identify }) => {
                 className={`${classes.date} ${
                   identify === idx && classes.Today
                 }`}
+                style={{ color: i === 1 ? "red" : i === 7 && "blue" }}
               >
                 {nowDate}
               </div>
@@ -179,7 +189,7 @@ const MakeCaledner = ({ year, month, firstDay, lastDate, identify }) => {
         if (i - firstDay < lastDate) {
           const nowDate = i - firstDay + 1;
           const idx = MakeKey("", year, month, nowDate);
-          const dayIdx = `day-${(i % 7) + 1}`;
+          const dayIdx = (i % 7) + 1;
 
           thisMonthArray.push(
             <td
@@ -194,6 +204,7 @@ const MakeCaledner = ({ year, month, firstDay, lastDate, identify }) => {
                 className={`${classes.date} ${
                   identify === idx && classes.Today
                 }`}
+                style={{ color: dayIdx === 1 ? "red" : dayIdx === 7 && "blue" }}
               >
                 {nowDate}
               </div>
@@ -205,7 +216,7 @@ const MakeCaledner = ({ year, month, firstDay, lastDate, identify }) => {
         } else {
           const nowDate = i - lastDate - firstDay + 1;
           const idx = MakeKey("next", year, month, nowDate);
-          const dayIdx = `day-${(i % 7) + 1}`;
+          const dayIdx = (i % 7) + 1;
 
           thisMonthArray.push(
             <td
@@ -217,6 +228,7 @@ const MakeCaledner = ({ year, month, firstDay, lastDate, identify }) => {
               day-index={dayIdx}
             >
               <div
+                style={{ color: dayIdx === 1 ? "red" : dayIdx === 7 && "blue" }}
                 className={`${classes.date} ${
                   identify === idx && classes.Today
                 }`}

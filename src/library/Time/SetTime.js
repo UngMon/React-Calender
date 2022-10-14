@@ -52,6 +52,8 @@ const SetTime = () => {
   if (minute === 60) {
     minute = '00';
     hourMakeHandler((hour + 1));
+  } else if( minute === 0) {
+    minute = '00';
   } else {
     hourMakeHandler(hour);
   }
