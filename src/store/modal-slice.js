@@ -315,15 +315,17 @@ const modalSlice = createSlice({
       } else {
         const arr = state.schedule[index].todo[listIndex].arr;
         const length = arr.length;
+        console.log(listIndex);
         arr.map((items) => {
           const result = state.schedule.find((item) => item.idx === items);
           const listObject = result.todo.find(
-            (item) => item.isLong === true && item.length === length
+            (item) => item.isLong ? item.length === length ? true : true : false 
           );
           const idx = state.schedule.indexOf(result);
           const listIdx = state.schedule[idx].todo.indexOf(listObject);
-          
+
           state.schedule[idx].todo.splice(listIdx, 1);
+          
           if (state.schedule[idx].todo.length === 0) {
             state.schedule.splice(idx, 1);
           }
