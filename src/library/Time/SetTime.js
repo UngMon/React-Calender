@@ -53,11 +53,12 @@ const SetTime = () => {
     minute = '00';
     hourMakeHandler((hour + 1));
   } else if( minute === 0) {
+    hourMakeHandler(hour);
     minute = '00';
   } else {
     hourMakeHandler(hour);
   }
-
+  console.log(currentTime)
   currentTime = currentTime + ":" + minute;
   lastTime = lastTime + ":" + minute;
 
