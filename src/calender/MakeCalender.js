@@ -146,7 +146,10 @@ const MakeCaledner = ({ year, month, firstDay, lastDate, identify }) => {
                 className={`${classes.date} ${
                   identify === idx && classes.Today
                 }`}
-                style={{ color: i === 1 ? "red" : i === 7 && "blue" }}
+                style={{
+                  color:
+                    identify !== idx && i === 1 ? "red" : i === 7 && "blue",
+                }}
               >
                 {nowDate}
               </div>
@@ -171,7 +174,10 @@ const MakeCaledner = ({ year, month, firstDay, lastDate, identify }) => {
                 className={`${classes.date} ${
                   identify === idx && classes.Today
                 }`}
-                style={{ color: i === 1 ? "red" : i === 7 && "blue" }}
+                style={{
+                  color:
+                    identify !== idx && i === 1 ? "red" : i === 7 && "blue",
+                }}
               >
                 {nowDate}
               </div>
@@ -204,7 +210,12 @@ const MakeCaledner = ({ year, month, firstDay, lastDate, identify }) => {
                 className={`${classes.date} ${
                   identify === idx && classes.Today
                 }`}
-                style={{ color: dayIdx === 1 ? "red" : dayIdx === 7 && "blue" }}
+                style={{
+                  color:
+                    identify !== idx && dayIdx === 1
+                      ? "red"
+                      : dayIdx === 7 && "blue",
+                }}
               >
                 {nowDate}
               </div>
@@ -228,7 +239,12 @@ const MakeCaledner = ({ year, month, firstDay, lastDate, identify }) => {
               day-index={dayIdx}
             >
               <div
-                style={{ color: dayIdx === 1 ? "red" : dayIdx === 7 && "blue" }}
+                style={{
+                  color:
+                    identify !== idx && dayIdx === 1
+                      ? "red"
+                      : dayIdx === 7 && "blue",
+                }}
                 className={`${classes.date} ${
                   identify === idx && classes.Today
                 }`}

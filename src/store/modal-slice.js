@@ -82,13 +82,20 @@ const modalSlice = createSlice({
                 isFake: false,
                 isLong: false,
                 index: action.payload.firstTime + action.payload.lastTime,
+                arr: [state.startDate],
               },
             ];
           }
           state.schedule[index].todo.sort((a, b) =>
-          a.index[0] === 'l' && b.index[0] === 'l'
-            ? a.index > b.index ? -1 : 1 : a.index < b.index ? -1 : 1);
-            
+            a.index[0] === "l" && b.index[0] === "l"
+              ? a.index > b.index
+                ? -1
+                : 1
+              : a.index < b.index
+              ? -1
+              : 1
+          );
+
           return state.schedule;
         });
       } else {
@@ -107,6 +114,7 @@ const modalSlice = createSlice({
                 isFake: false,
                 isLong: false,
                 index: action.payload.firstTime + action.payload.lastTime,
+                arr: [state.startDate],
               },
             ],
           },
@@ -145,8 +153,8 @@ const modalSlice = createSlice({
                   "long" +
                   action.payload.firstTime +
                   action.payload.lastTime +
-                  "-" +
-                  Leng,
+                  state.longArr.length,
+                arr: state.longArr,
               },
             ];
             state.schedule[index].todo.sort((a, b) =>
@@ -172,14 +180,14 @@ const modalSlice = createSlice({
                   lastTime: action.payload.lastTime,
                   list: action.payload.list,
                   length: Leng,
-                  isFake: true,
+                  isFake: false,
                   isLong: true,
                   index:
                     "long" +
                     action.payload.firstTime +
                     action.payload.lastTime +
-                    "-" +
-                    Leng,
+                    state.longArr.length,
+                  arr: state.longArr,
                 },
               ];
             } else {
@@ -193,11 +201,18 @@ const modalSlice = createSlice({
                   isFake: true,
                   isLong: false,
                   index: "1",
+                  arr: [i],
                 },
               ];
             }
             state.schedule[index].todo.sort((a, b) =>
-              a.index < b.index ? -1 : a.index > b.index ? 1 : 0
+              a.index[0] === "l" && b.index[0] === "l"
+                ? a.index > b.index
+                  ? -1
+                  : 1
+                : a.index < b.index
+                ? -1
+                : 1
             );
           }
         } else {
@@ -224,8 +239,8 @@ const modalSlice = createSlice({
                       "long" +
                       action.payload.firstTime +
                       action.payload.lastTime +
-                      "-" +
-                      Leng,
+                      state.longArr.length,
+                    arr: state.longArr,
                   },
                 ],
               },
@@ -250,8 +265,8 @@ const modalSlice = createSlice({
                         "long" +
                         action.payload.firstTime +
                         action.payload.lastTime +
-                        "-" +
-                        Leng,
+                        state.longArr.length,
+                      arr: state.longArr,
                     },
                   ],
                 },
@@ -271,6 +286,7 @@ const modalSlice = createSlice({
                       isFake: true,
                       isLong: false,
                       index: "1",
+                      arr: [i],
                     },
                   ],
                 },
@@ -285,13 +301,27 @@ const modalSlice = createSlice({
 
     removeList(state, action) {
       state.changed = true;
-      state.schedule[action.payload.index].todo.splice(
-        action.payload.listIndex,
-        1
-      );
+      const index = action.payload.index;
+      const listIndex = action.payload.listIndex;
+      if (state.schedule[index].todo[listIndex].arr.length === 1) {
+        state.schedule[index].todo.splice(listIndex, 1);
 
-      if (state.schedule[action.payload.index].todo.length === 0) {
-        state.schedule.splice(action.payload.index, 1);
+        if (state.schedule[action.payload.index].todo.length === 0) {
+          state.schedule.splice(action.payload.index, 1);
+        }
+      } else {
+        const arr = state.schedule[index].todo[listIndex].arr;
+        arr.map((items) => {
+          const result = state.schedule.find((item) => item.idx === items);
+          const listObject = result.todo.find((item) => item.isLong === true);
+          const idx = state.schedule.indexOf(result);
+          const listIdx = state.schedule[idx].todo.indexOf(listObject);
+          state.schedule[idx].todo.splice(listIdx, 1);
+          if (state.schedule[idx].todo.length === 0) {
+            state.schedule.splice(idx, 1);
+          }
+          return state.schedule;
+        });
       }
     },
 
