@@ -182,6 +182,7 @@ const modalSlice = createSlice({
                   length: Leng,
                   isFake: false,
                   isLong: true,
+                  style: false,
                   index:
                     "long" +
                     action.payload.firstTime +
@@ -200,6 +201,7 @@ const modalSlice = createSlice({
                   length: 1,
                   isFake: true,
                   isLong: false,
+                  style: false,
                   index: "1",
                   arr: [i],
                 },
@@ -303,6 +305,7 @@ const modalSlice = createSlice({
       state.changed = true;
       const index = action.payload.index;
       const listIndex = action.payload.listIndex;
+      console.log(listIndex);
       if (state.schedule[index].todo[listIndex].arr.length === 1) {
         state.schedule[index].todo.splice(listIndex, 1);
 
@@ -311,11 +314,15 @@ const modalSlice = createSlice({
         }
       } else {
         const arr = state.schedule[index].todo[listIndex].arr;
+        const length = arr.length;
         arr.map((items) => {
           const result = state.schedule.find((item) => item.idx === items);
-          const listObject = result.todo.find((item) => item.isLong === true);
+          const listObject = result.todo.find(
+            (item) => item.isLong === true && item.length === length
+          );
           const idx = state.schedule.indexOf(result);
           const listIdx = state.schedule[idx].todo.indexOf(listObject);
+          
           state.schedule[idx].todo.splice(listIdx, 1);
           if (state.schedule[idx].todo.length === 0) {
             state.schedule.splice(idx, 1);

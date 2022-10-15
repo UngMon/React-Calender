@@ -58,7 +58,6 @@ const SetTime = () => {
   } else {
     hourMakeHandler(hour);
   }
-  console.log(currentTime)
   currentTime = currentTime + ":" + minute;
   lastTime = lastTime + ":" + minute;
 

@@ -82,8 +82,10 @@ const AddEvent = () => {
     lastTime = timeTwoRef.current.value || lastTime;
 
     if (firstTime > lastTime) {
-      alert("끝나는 시간이 시작 시간보다 작습니다!! ex) 00:30 ~ 01:30");
-      return;
+      return (
+        modalState.startDate < modalState.endDate &&
+        alert("끝나는 시간이 시작 시간보다 작습니다!! ex) 00:30 ~ 01:30")
+      );
     } else {
       if (modalState.startDate === modalState.endDate) {
         dispatch(modalActions.inputList({ list, firstTime, lastTime }));
