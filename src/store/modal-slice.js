@@ -153,19 +153,10 @@ const modalSlice = createSlice({
                   "long" +
                   action.payload.firstTime +
                   action.payload.lastTime +
-                  state.longArr.length,
+                  (100 - state.longArr.length),
                 arr: state.longArr,
               },
             ];
-            state.schedule[index].todo.sort((a, b) =>
-              a.index[0] === "l" && b.index[0] === "l"
-                ? a.index > b.index
-                  ? -1
-                  : 1
-                : a.index < b.index
-                ? -1
-                : 1
-            );
           } else {
             // 첫 째날이 아닌 그 이후 Date일 때,
 
@@ -187,7 +178,7 @@ const modalSlice = createSlice({
                     "long" +
                     action.payload.firstTime +
                     action.payload.lastTime +
-                    state.longArr.length,
+                    (100 - state.longArr.length),
                   arr: state.longArr,
                 },
               ];
@@ -200,23 +191,17 @@ const modalSlice = createSlice({
                   list: "",
                   length: 1,
                   isFake: true,
-                  isLong: false,
+                  isLong: true,
                   style: false,
                   index: "1",
                   arr: [i],
                 },
               ];
             }
-            state.schedule[index].todo.sort((a, b) =>
-              a.index[0] === "l" && b.index[0] === "l"
-                ? a.index > b.index
-                  ? -1
-                  : 1
-                : a.index < b.index
-                ? -1
-                : 1
-            );
           }
+          state.schedule[index].todo.sort((a, b) =>
+            a.index < b.index ? -1 : 1
+          );
         } else {
           // 다시 돌아와서, schedule에 longArr에 있는 날짜에 일정이 없을 때,
           if (i === state.startDate) {
@@ -241,7 +226,7 @@ const modalSlice = createSlice({
                       "long" +
                       action.payload.firstTime +
                       action.payload.lastTime +
-                      state.longArr.length,
+                      (100 - state.longArr.length),
                     arr: state.longArr,
                   },
                 ],
@@ -267,7 +252,7 @@ const modalSlice = createSlice({
                         "long" +
                         action.payload.firstTime +
                         action.payload.lastTime +
-                        state.longArr.length,
+                        (100 - state.longArr.length),
                       arr: state.longArr,
                     },
                   ],
@@ -286,7 +271,7 @@ const modalSlice = createSlice({
                       length: 1,
                       style: false,
                       isFake: true,
-                      isLong: false,
+                      isLong: true,
                       index: "1",
                       arr: [i],
                     },
@@ -305,30 +290,37 @@ const modalSlice = createSlice({
       state.changed = true;
       const index = action.payload.index;
       const listIndex = action.payload.listIndex;
-      console.log(listIndex);
+
       if (state.schedule[index].todo[listIndex].arr.length === 1) {
         state.schedule[index].todo.splice(listIndex, 1);
 
-        if (state.schedule[action.payload.index].todo.length === 0) {
+        state.schedule[action.payload.index].todo.length === 0 &&
           state.schedule.splice(action.payload.index, 1);
-        }
       } else {
         const arr = state.schedule[index].todo[listIndex].arr;
-        const length = arr.length;
-        console.log(listIndex);
-        arr.map((items) => {
-          const result = state.schedule.find((item) => item.idx === items);
-          const listObject = result.todo.find(
-            (item) => item.isLong ? item.length === length ? true : true : false 
-          );
-          const idx = state.schedule.indexOf(result);
-          const listIdx = state.schedule[idx].todo.indexOf(listObject);
 
-          state.schedule[idx].todo.splice(listIdx, 1);
-          
-          if (state.schedule[idx].todo.length === 0) {
-            state.schedule.splice(idx, 1);
+        arr.map((items) => {
+          let result;
+          let listObject;
+          let idx;
+          if (items === arr[0]) {
+            state.schedule[index].todo.splice(listIndex, 1);
+
+            state.schedule[index].todo.length === 0 &&
+              state.schedule.splice(index, 1);
+          } else {
+            result = state.schedule.find((item) => item.idx === items);
+            listObject = result.todo.find((item) => item.isLong === true);
+
+            idx = state.schedule.indexOf(result);
+            const listIdx = result.todo.indexOf(listObject);
+
+            state.schedule[idx].todo.splice(listIdx, 1);
+
+            state.schedule[idx].todo.length === 0 &&
+              state.schedule.splice(idx, 1);
           }
+
           return state.schedule;
         });
       }

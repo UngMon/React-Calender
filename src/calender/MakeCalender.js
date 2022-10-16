@@ -62,7 +62,7 @@ const MakeCaledner = ({ year, month, firstDay, lastDate, identify }) => {
                 key={item.firstTime + " " + item.lastTime + listIndex}
                 id={item.firstTime}
                 className={`${classes.list} ${item.style && classes.done} ${
-                  item.isLong && classes.long
+                  item.length > 1 && classes.long
                 }`}
                 onClick={(event) => {
                   event.stopPropagation();
