@@ -7,7 +7,12 @@ import { comparisonHandler } from "../library/Comparioson";
 import ModalPosition from "../library/ModalPosition";
 import "./List.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faXmark, faTrash, faCheck, faEdit } from "@fortawesome/free-solid-svg-icons";
+import {
+  faXmark,
+  faTrash,
+  faCheck,
+  faEdit,
+} from "@fortawesome/free-solid-svg-icons";
 import TimeSelector from "../library/Time/TimeSelector";
 
 const List = () => {
@@ -92,17 +97,18 @@ const List = () => {
 
     if (firstTime > lastTime) {
       if (startDate > endDate) {
-        alert("끝나는 시간이 시작 시간보다 작습니다!! ex) 00:30 ~ 01:30");
+        alert("마지막 날이 시작날 보다 작습니다!!");
         return;
+      } else {
+        alert("끝나는 시간이 시작 시간보다 작습니다!! ex) 00:30 ~ 01:30");
       }
     } else {
       dispatch(modalActions.removeList({ index, listIndex }));
       if (comparison) {
         console.log("long?");
-        dispatch(modalActions.longDateList({ firstTime, lastTime, list }));
-      } else {
-        console.log("여기?");
-        dispatch(modalActions.inputList({ firstTime, lastTime, list }));
+        startDate < endDate
+          ? dispatch(modalActions.longDateList({ firstTime, lastTime, list }))
+          : dispatch(modalActions.inputList({firstTime, lastTime, list}));
       }
 
       inputRef.current.value = "";
