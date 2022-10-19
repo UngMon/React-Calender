@@ -44,12 +44,8 @@ const AddEvent = () => {
   });
 
   const comparison = comparisonHandler(
-    modalState.year,
-    modalState.month,
-    modalState.date,
-    modalState.secondYear,
-    modalState.secondMonth,
-    modalState.secondDate
+    modalState.startDate,
+    modalState.endDate
   );
 
   const listSubmitHandler = (event) => {
@@ -125,12 +121,8 @@ const AddEvent = () => {
         <input placeholder="(제목 없음)" type="text" ref={inputRef} />
       </div>
       <TimeSelector
-        year={modalState.year}
-        month={modalState.month}
-        date={modalState.date}
-        secondYear={modalState.secondYear}
-        secondMonth={modalState.secondMonth}
-        secondDate={modalState.secondDate}
+        startDate={modalState.startDate}
+        endDate={modalState.endDate}
         firstTime={currentTime}
         lastTime={LastTime}
         timeOneRef={timeOneRef}

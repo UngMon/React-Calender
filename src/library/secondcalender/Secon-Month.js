@@ -5,8 +5,8 @@ import {faSquareCaretLeft, faSquareCaretRight} from "@fortawesome/free-solid-svg
 import { useState } from "react";
 
 const Month = ({ type, year, month }) => {
-  const [thisYear, setYear] = useState(year);
-  const [thisMonth, setMonth] = useState(month);
+  const [thisYear, setYear] = useState(+year);
+  const [thisMonth, setMonth] = useState(+month);
 
   const firstDay = new Date(thisYear, thisMonth - 1, 1).getDay();
   const lastDate = new Date(thisYear, thisMonth - 1 + 1, 0).getDate();

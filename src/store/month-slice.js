@@ -10,7 +10,7 @@ const initialDateInfo = {
   firstDay: new Date(todayYear, todayMonth, 1).getDay(),
   lastDate: new Date(todayYear, todayMonth + 1, 0).getDate(),
 };
-console.log('month슬라이스 렌더링')
+
 const monthSlice = createSlice({
   name: 'month',
   initialState: initialDateInfo,
@@ -41,7 +41,7 @@ const monthSlice = createSlice({
     },
 
     setMonth(state, action) {
-      state.year = action.payload.year;
+      state.year = action.payload.날짜정보[0];
       state.month = action.payload.thisMonth;
       state.firstDay = new Date(state.year, state.month, 1).getDay();
       state.lastDate = new Date(state.year, state.month + 1, 0).getDate();

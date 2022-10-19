@@ -6,12 +6,8 @@ import { timeActions } from "../../store/time-slice";
 import { useRef, useState } from "react";
 
 const TimeSelector = ({
-  year,
-  month,
-  date,
-  secondYear,
-  secondMonth,
-  secondDate,
+  startDate,
+  endDate,
   firstTime,
   lastTime,
   timeOneRef,
@@ -20,7 +16,8 @@ const TimeSelector = ({
   const dispatch = useDispatch();
   const timeState = useSelector((state) => state.time);
 
-  console.log(month);
+  const 시작날 = startDate.split(".");
+  const 마지막날 = endDate.split(".");
 
   const [fristDateIsVisible, setFirstDateIsVisible] = useState(false);
   const [lastDateIsVisible, setLastDateIsVisible] = useState(false);
@@ -53,7 +50,9 @@ const TimeSelector = ({
     <div className="time-date-box">
       <div className="time-area">
         <div className="time-area-name">
-          <h4 onClick={firstDateHanlder}>{month + "월 " + date + "일"}</h4>
+          <h4 onClick={firstDateHanlder}>
+            {시작날[1] + "월 " + 시작날[2] + "일"}
+          </h4>
         </div>
         <div className="time-one">
           <input
@@ -73,7 +72,7 @@ const TimeSelector = ({
         </div>
         <div className="time-area-name">
           <h4 onClick={lastDateHandler}>
-            {secondMonth + "월 " + secondDate + "일"}
+            {마지막날[1] + "월 " + 마지막날[2] + "일"}
           </h4>
         </div>
         <div className="time-two">
@@ -92,9 +91,11 @@ const TimeSelector = ({
           )}
         </div>
       </div>
-      {fristDateIsVisible && <Month type={true} year={year} month={month} />}
+      {fristDateIsVisible && (
+        <Month type={true} year={시작날[0]} month={시작날[1]} />
+      )}
       {lastDateIsVisible && (
-        <Month type={false} year={secondYear} month={secondMonth} />
+        <Month type={false} year={마지막날[0]} month={마지막날[1]} />
       )}
     </div>
   );

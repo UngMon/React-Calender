@@ -7,13 +7,6 @@ const modalSlice = createSlice({
     startDate: "",
     endDate: "",
     week: "",
-    year: "",
-    month: "",
-    date: "",
-    secondYear: "",
-    secondMonth: "",
-    secondDate: "",
-    type: true,
     dayIndex: "",
     schedule: [],
     longArr: [],
@@ -26,38 +19,32 @@ const modalSlice = createSlice({
 
     offModal(state) {
       state.isVisible = false;
-      state.secondYear = "";
-      state.secondMonth = "";
-      state.secondDate = "";
-      state.type = true;
+      state.startDate = '';
+      state.endDate = '';
     },
 
-    clickedData(state, action) {
+    clickedStartDate(state, action) {
       state.startDate = action.payload.idx;
-      state.endDate = action.payload.idx;
+      console.log(action.payload.idx);
       state.week = action.payload.week;
-      state.year = action.payload.year;
-      state.month = action.payload.month;
-      state.date = action.payload.date;
       state.dayIndex = action.payload.dayIndex;
-      if (state.type === true) {
-        state.secondYear = action.payload.year;
-        state.secondMonth = action.payload.month;
-        state.secondDate = action.payload.date;
+      state.longArr  = action.payload.longArr;
+      if (state.endDate === action.payload.idx || state.endDate.length === 0) {
+        state.endDate = action.payload.idx;
       }
     },
 
-    clickedSecondDate(state, action) {
-      state.type = false;
-      state.secondYear = action.payload.year;
-      state.secondMonth = action.payload.month;
-      state.secondDate = action.payload.date;
+    clickedLastDate(state, action) {
+      console.log(state.startDate)
       state.endDate = action.payload.idx;
-      if (action.payload.idx === state.startDate) {
-        state.type = true; // 두 번째 날짜가 첫 번째 날자와 같을 시, 같은 날짜 변화
-      } else {
+      if (state.startDate !== action.payload.idx) {
         state.longArr = action.payload.longArr;
       }
+    },
+
+    setDate(state, action) {
+      state.startDate = action.payload.startDate;
+      state.endDate = action.payload.endDate;
     },
 
     inputList(state, action) {
@@ -74,6 +61,8 @@ const modalSlice = createSlice({
             item.todo = [
               ...item.todo,
               {
+                startDate: state.startDate,
+                endDate: state.endDate,
                 firstTime: action.payload.firstTime,
                 lastTime: action.payload.lastTime,
                 list: action.payload.list,
@@ -87,13 +76,7 @@ const modalSlice = createSlice({
             ];
           }
           state.schedule[index].todo.sort((a, b) =>
-            a.index[0] === "l" && b.index[0] === "l"
-              ? a.index > b.index
-                ? -1
-                : 1
-              : a.index < b.index
-              ? -1
-              : 1
+            a.index < b.index ? -1 : 1
           );
 
           return state.schedule;
@@ -106,6 +89,8 @@ const modalSlice = createSlice({
             idx: state.startDate,
             todo: [
               {
+                startDate: state.startDate,
+                endDate: state.endDate,
                 firstTime: action.payload.firstTime,
                 lastTime: action.payload.lastTime,
                 list: action.payload.list,
@@ -126,7 +111,9 @@ const modalSlice = createSlice({
       state.changed = true;
       let leng = state.longArr.length;
       let count = state.dayIndex;
-      console.log(state.longArr);
+
+      console.log(state.startDate)
+      console.log(state.endDate)
 
       for (let i of state.longArr) {
         const result = state.schedule.find((item) => item.idx === i);
@@ -142,6 +129,8 @@ const modalSlice = createSlice({
             state.schedule[index].todo = [
               ...state.schedule[index].todo,
               {
+                startDate: state.startDate,
+                endDate: state.endDate,
                 firstTime: action.payload.firstTime,
                 lastTime: action.payload.lastTime,
                 list: action.payload.list,
@@ -157,6 +146,7 @@ const modalSlice = createSlice({
                 arr: state.longArr,
               },
             ];
+            console.log('이곳인가??')
           } else {
             // 첫 째날이 아닌 그 이후 Date일 때,
 
@@ -167,6 +157,8 @@ const modalSlice = createSlice({
               state.schedule[index].todo = [
                 ...state.schedule[index].todo,
                 {
+                  startDate: state.startDate,
+                  endDate: state.endDate,
                   firstTime: action.payload.firstTime,
                   lastTime: action.payload.lastTime,
                   list: action.payload.list,
@@ -182,13 +174,16 @@ const modalSlice = createSlice({
                   arr: state.longArr,
                 },
               ];
+              console.log('이곳인가??')
             } else {
               state.schedule[index].todo = [
                 ...state.schedule[index].todo,
                 {
-                  firstTime: 1,
-                  lastTime: 1,
-                  list: "",
+                  startDate: state.startDate,
+                  endDate: state.endDate,
+                  firstTime: action.payload.firstTime,
+                  lastTime: action.payload.lastTime,
+                  list: action.payload.list,
                   length: 1,
                   isFake: true,
                   isLong: true,
@@ -197,6 +192,7 @@ const modalSlice = createSlice({
                   arr: [i],
                 },
               ];
+              console.log('이곳인가??')
             }
           }
           state.schedule[index].todo.sort((a, b) =>
@@ -215,6 +211,8 @@ const modalSlice = createSlice({
                 idx: i,
                 todo: [
                   {
+                    startDate: state.startDate,
+                    endDate: state.endDate,
                     firstTime: action.payload.firstTime,
                     lastTime: action.payload.lastTime,
                     list: action.payload.list,
@@ -241,6 +239,8 @@ const modalSlice = createSlice({
                   idx: i,
                   todo: [
                     {
+                      startDate: state.startDate,
+                      endDate: state.endDate,
                       firstTime: action.payload.firstTime,
                       lastTime: action.payload.lastTime,
                       list: action.payload.list,
@@ -258,6 +258,7 @@ const modalSlice = createSlice({
                   ],
                 },
               ];
+              console.log('hi!')
             } else {
               state.schedule = [
                 ...state.schedule,
@@ -265,9 +266,11 @@ const modalSlice = createSlice({
                   idx: i,
                   todo: [
                     {
-                      firstTime: "1",
-                      lastTime: "1",
-                      list: "",
+                      startDate: state.startDate,
+                      endDate: state.endDate,
+                      firstTime: action.payload.firstTime,
+                      lastTime: action.payload.lastTime,
+                      list: action.payload.list,
                       length: 1,
                       style: false,
                       isFake: true,
@@ -278,6 +281,7 @@ const modalSlice = createSlice({
                   ],
                 },
               ];
+              console.log('hi!')
             }
           }
         }
@@ -290,6 +294,9 @@ const modalSlice = createSlice({
       state.changed = true;
       const index = action.payload.index;
       const listIndex = action.payload.listIndex;
+
+      console.log(state.startDate)
+      console.log(state.endDate)
 
       if (state.schedule[index].todo[listIndex].arr.length === 1) {
         state.schedule[index].todo.splice(listIndex, 1);
@@ -309,8 +316,11 @@ const modalSlice = createSlice({
             state.schedule[index].todo.length === 0 &&
               state.schedule.splice(index, 1);
           } else {
+            console.log(items)
             result = state.schedule.find((item) => item.idx === items);
+            console.log(result)
             listObject = result.todo.find((item) => item.isLong === true);
+            console.log(listObject)
 
             idx = state.schedule.indexOf(result);
             const listIdx = result.todo.indexOf(listObject);
@@ -324,20 +334,31 @@ const modalSlice = createSlice({
           return state.schedule;
         });
       }
+
     },
 
     editList(state, action) {
       state.changed = true;
       let arr = [...state.schedule];
+
       arr[action.payload.index].todo[action.payload.listIndex] = {
+        startDate: action.payload.startDate,
+        endDate: action.payload.endDate,
         firstTime: action.payload.firstTime,
         lastTime: action.payload.lastTime,
         list: action.payload.inputList,
+        length: "1",
         style: false,
+        isFake: false,
+        isLong: false,
+        index: action.payload.firstTime + action.payload.lastTime,
+        arr: [action.payload.startDate],
       };
+
       arr[action.payload.index].todo.sort((a, b) =>
         a.firstTime < b.firstTime ? -1 : a.firstTime > b.firstTime ? 1 : 0
       );
+
       state.schedule = [...arr];
     },
 

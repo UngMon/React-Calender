@@ -9,30 +9,34 @@ const MakeCaledner = ({ year, month, firstDay, lastDate, identify, type }) => {
   const dispatch = useDispatch();
 
   const modalState = useSelector((state) => state.modal);
+  const listState = useSelector((state) => state.list);
 
-  const addClickHandler = (idx, dayIndex, week, year, month, date, type) => {
+  const clickHandler = (idx, dayIndex, week, type) => {
+    // 미니 캘린더에서 다음달로 넘어가면 메인 캘린더도 같이 다음달과 넘어가기 위함.
+    const 날짜정보 = idx.split("."); // ['year', 'month', 'date']
+
     if (modalState.startDate !== idx) {
+      // 기존 modalState를 갱신해줌..
       const thisMonth = month - 1;
-      dispatch(monthActions.setMonth({ year, thisMonth }));
+      dispatch(monthActions.setMonth({ 날짜정보, thisMonth }));
     }
-    dispatch(modalActions.onModal());
 
+    if (!listState.isVisible) {
+      dispatch(modalActions.onModal());
+    }
+
+    // 첫 번째 미니 달력 선택의 경우...
     if (type === true) {
-      dispatch(
-        modalActions.clickedData({ idx, dayIndex, week, year, month, date })
-      );
+      const 마지막날 = modalState.endDate.split(".");
+      const longArr = MakeLongArr(날짜정보, 마지막날);
+      dispatch(modalActions.clickedStartDate({ idx, dayIndex, week, longArr }));
+
     } else {
-      const longArr = MakeLongArr(
-        modalState.year,
-        modalState.month,
-        modalState.date,
-        year,
-        month,
-        date
-      );
-      dispatch(
-        modalActions.clickedSecondDate({ idx, year, month, date, longArr })
-      );
+      // 두 번째 미니 달력 선택의 경우...
+      const 시작날 = modalState.startDate.split(".");
+      const longArr = MakeLongArr(시작날, 날짜정보);
+      dispatch(modalActions.clickedLastDate({ idx, longArr }));
+
     }
   };
 
@@ -55,9 +59,7 @@ const MakeCaledner = ({ year, month, firstDay, lastDate, identify, type }) => {
           thisMonthArray.push(
             <td
               key={idx}
-              onClick={() =>
-                addClickHandler(idx, i, week, year, month - 1, nowDate, type)
-              }
+              onClick={() => clickHandler(idx, i, week, type)}
               className={classes.date_box}
               day-index={dayIdx}
             >
@@ -81,9 +83,7 @@ const MakeCaledner = ({ year, month, firstDay, lastDate, identify, type }) => {
           thisMonthArray.push(
             <td
               key={idx}
-              onClick={() =>
-                addClickHandler(idx, i, week, year, month, nowDate, type)
-              }
+              onClick={() => clickHandler(idx, i, week, type)}
               className={classes.date_box}
               day-index={dayIdx}
             >
@@ -113,17 +113,7 @@ const MakeCaledner = ({ year, month, firstDay, lastDate, identify, type }) => {
           thisMonthArray.push(
             <td
               key={idx}
-              onClick={() =>
-                addClickHandler(
-                  idx,
-                  (i % 7) + 1,
-                  week,
-                  year,
-                  month,
-                  nowDate,
-                  type
-                )
-              }
+              onClick={() => clickHandler(idx, dayIdx, week, type)}
               className={classes.date_box}
               day-index={dayIdx}
             >
@@ -141,23 +131,13 @@ const MakeCaledner = ({ year, month, firstDay, lastDate, identify, type }) => {
           );
         } else {
           const nowDate = i - lastDate - firstDay + 1;
-          const idx = MakeKey("next", year, month, nowDate);
+          const idx = MakeKey("next", year, +month, nowDate);
           const dayIdx = (i % 7) + 1;
 
           thisMonthArray.push(
             <td
               key={idx}
-              onClick={() =>
-                addClickHandler(
-                  idx,
-                  (i % 7) + 1,
-                  week,
-                  year,
-                  month + 1,
-                  nowDate,
-                  type
-                )
-              }
+              onClick={() => clickHandler(idx, dayIdx, week, type)}
               className={classes.date_box}
               day-index={dayIdx}
             >

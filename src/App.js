@@ -13,7 +13,6 @@ function App() {
     dispatch(fetchScheduleData());
     console.log("fetch");
   }, [dispatch]);
-  console.log("app렌더링");
 
   useEffect(() => {
     if (modal.changed) {

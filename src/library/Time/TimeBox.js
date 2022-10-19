@@ -8,8 +8,7 @@ const TimeBox = ({ timeOneRef, OneRef, timeVisible }) => {
   useEffect(() => {
     OneRef.current.map((item, index) =>
       item.innerText === timeOneRef.current.placeholder
-        ? OneRef.current[index].scrollIntoView()
-        : null
+        && OneRef.current[index].scrollIntoView()
     );
   })
 
