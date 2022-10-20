@@ -95,16 +95,16 @@ const List = () => {
     }
 
     if (firstTime > lastTime) {
-      if (comparison === 5) {
-        return alert("마지막 날이 시작날 보다 작습니다!!");
-      }
-
       return alert("시작시간이 끝나는 시간보다 큽니다!!");
     }
 
+    if (comparison === 5) {
+      return alert("마지막 날이 시작날 보다 작습니다!!");
+    }
+
     // firstTime < lastTime 이면서...
-    dispatch(modalActions.removeList({index, listIndex}))
-    
+    dispatch(modalActions.removeList({ index, listIndex }));
+
     if (comparison === 4) {
       dispatch(modalActions.inputList({ firstTime, lastTime, list }));
     }
@@ -114,7 +114,9 @@ const List = () => {
     }
 
     inputRef.current.value = "";
+
     closeModalHandler();
+
     dispatch(modalActions.offModal());
     dispatch(timeActions.resetTime());
   };
