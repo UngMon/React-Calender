@@ -73,7 +73,7 @@ const List = () => {
     const pattern = /^(오전|오후)\s(([0][0-9]|[1][0-2])):([0-5][0-9])$/;
 
     let list = inputRef.current.value;
-
+    console.log(comparison)
     let firstTime = timeState.firstTime || 날짜정보.firstTime;
     let lastTime = timeState.lastTime || 날짜정보.lastTime;
 
@@ -104,10 +104,10 @@ const List = () => {
       }
     } else {
       dispatch(modalActions.removeList({ index, listIndex }));
-      if (comparison.result <= 3) {
+      if (comparison <= 3) {
         console.log("long?");
         dispatch(modalActions.longDateList({ firstTime, lastTime, list }));
-      } else if (comparison.result === 4) {
+      } else if (comparison === 4) {
         dispatch(modalActions.inputList({ firstTime, lastTime, list }));
       }
       console.log(modalState.startDate);
