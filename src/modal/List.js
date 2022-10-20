@@ -19,7 +19,6 @@ const List = () => {
   const dispatch = useDispatch();
 
   const listState = useSelector((state) => state.list);
-  const timeState = useSelector((state) => state.time);
   const modalState = useSelector((state) => state.modal);
 
   const [editArea, setEditArea] = useState(false);
@@ -75,8 +74,8 @@ const List = () => {
 
     const pattern = /^(오전|오후)\s(([0][0-9]|[1][0-2])):([0-5][0-9])$/;
     let list = inputRef.current.value;
-    let firstTime = timeState.firstTime || 리스트날짜정보.firstTime;
-    let lastTime = timeState.lastTime || 리스트날짜정보.lastTime;
+    let firstTime = timeOneRef.current.value || 리스트날짜정보.firstTime;
+    let lastTime = timeTwoRef.current.value || 리스트날짜정보.lastTime;
 
     if (list.trim() === "") {
       list = listState.listName;

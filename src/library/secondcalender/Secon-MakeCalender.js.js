@@ -26,7 +26,7 @@ const MakeCaledner = ({ year, month, firstDay, lastDate, identify, type }) => {
     }
 
     // 첫 번째 미니 달력 선택의 경우...
-    if (type === true) {
+    if (type) {
       const 마지막날 = modalState.endDate.split(".");
       const longArr = MakeLongArr(날짜정보, 마지막날);
       dispatch(modalActions.clickedStartDate({ idx, dayIndex, week, longArr }));
@@ -59,7 +59,7 @@ const MakeCaledner = ({ year, month, firstDay, lastDate, identify, type }) => {
           thisMonthArray.push(
             <td
               key={idx}
-              onClick={() => clickHandler(idx, i, week, type)}
+              onClick={() => clickHandler(idx, dayIdx, week, type)}
               className={classes.date_box}
               day-index={dayIdx}
             >
@@ -83,7 +83,7 @@ const MakeCaledner = ({ year, month, firstDay, lastDate, identify, type }) => {
           thisMonthArray.push(
             <td
               key={idx}
-              onClick={() => clickHandler(idx, i, week, type)}
+              onClick={() => clickHandler(idx, dayIdx, week, type)}
               className={classes.date_box}
               day-index={dayIdx}
             >
