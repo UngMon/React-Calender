@@ -104,13 +104,14 @@ const List = () => {
       }
     } else {
       dispatch(modalActions.removeList({ index, listIndex }));
-      if (comparison) {
+      if (comparison.result <= 3) {
         console.log("long?");
-        startDate < endDate
-          ? dispatch(modalActions.longDateList({ firstTime, lastTime, list }))
-          : dispatch(modalActions.inputList({firstTime, lastTime, list}));
+        dispatch(modalActions.longDateList({ firstTime, lastTime, list }));
+      } else if (comparison.result === 4) {
+        dispatch(modalActions.inputList({ firstTime, lastTime, list }));
       }
-
+      console.log(modalState.startDate);
+      console.log(modalState.endDate);
       inputRef.current.value = "";
       closeModalHandler();
       dispatch(modalActions.offModal());

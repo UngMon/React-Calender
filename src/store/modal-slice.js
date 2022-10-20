@@ -316,11 +316,8 @@ const modalSlice = createSlice({
             state.schedule[index].todo.length === 0 &&
               state.schedule.splice(index, 1);
           } else {
-            console.log(items)
             result = state.schedule.find((item) => item.idx === items);
-            console.log(result)
             listObject = result.todo.find((item) => item.isLong === true);
-            console.log(listObject)
 
             idx = state.schedule.indexOf(result);
             const listIdx = result.todo.indexOf(listObject);
