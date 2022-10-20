@@ -301,8 +301,8 @@ const modalSlice = createSlice({
       if (state.schedule[index].todo[listIndex].arr.length === 1) {
         state.schedule[index].todo.splice(listIndex, 1);
 
-        state.schedule[action.payload.index].todo.length === 0 &&
-          state.schedule.splice(action.payload.index, 1);
+        state.schedule[index].todo.length === 0 &&
+          state.schedule.splice(index, 1);
       } else {
         const arr = state.schedule[index].todo[listIndex].arr;
 

@@ -22,13 +22,13 @@ const List = () => {
   const timeState = useSelector((state) => state.time);
   const modalState = useSelector((state) => state.modal);
 
-  const [listIsVisible, setListIsVisible] = useState(false);
+  const [editArea, setEditArea] = useState(false);
 
   const index = listState.index;
   const listIndex = listState.listIndex;
 
   const schedule = modalState.schedule;
-  const 날짜정보 = schedule[index].todo[listIndex];
+  const 리스트날짜정보 = schedule[index].todo[listIndex];
 
   const startDate = modalState.startDate;
   const endDate = modalState.endDate;
@@ -41,8 +41,8 @@ const List = () => {
 
   const comparison = comparisonHandler(startDate, endDate);
 
-  const listModalCloseHandler = (e) => {
-    if (listState.isVisible && !modalRef.current.contains(e.target)) {
+  const modalCloseHandler = (e) => {
+    if (!modalRef.current.contains(e.target)) {
       setTimeout(() => {
         dispatch(listActions.offModal());
         dispatch(modalActions.offModal());
@@ -52,71 +52,71 @@ const List = () => {
   };
 
   useEffect(() => {
-    document.addEventListener("mousedown", listModalCloseHandler);
+    document.addEventListener("mousedown", modalCloseHandler);
     return () => {
-      document.removeEventListener("mousedown", listModalCloseHandler);
+      document.removeEventListener("mousedown", modalCloseHandler);
     };
   });
 
-  const removeListHandler = (listIndex, index) => {
-    dispatch(modalActions.removeList({ listIndex, index }));
+  const removeListHandler = (index, listIndex) => {
+    dispatch(modalActions.removeList({ index, listIndex }));
     dispatch(listActions.offModal());
   };
 
   const listEditHandler = (startDate, endDate) => {
-    setListIsVisible((prevState) => !prevState);
+    setEditArea((prevState) => !prevState);
+    // 리스트 클릭시 modla-slice의 startDate와 endDate값이 원하는 값이 아니기에
+    // 클릭할 때 값을 갱신해줘야 함.
     dispatch(modalActions.setDate({ startDate, endDate }));
   };
 
   const editListSubmitHandler = (event) => {
     event.preventDefault();
-    const pattern = /^(오전|오후)\s(([0][0-9]|[1][0-2])):([0-5][0-9])$/;
 
+    const pattern = /^(오전|오후)\s(([0][0-9]|[1][0-2])):([0-5][0-9])$/;
     let list = inputRef.current.value;
-    console.log(comparison)
-    let firstTime = timeState.firstTime || 날짜정보.firstTime;
-    let lastTime = timeState.lastTime || 날짜정보.lastTime;
+    let firstTime = timeState.firstTime || 리스트날짜정보.firstTime;
+    let lastTime = timeState.lastTime || 리스트날짜정보.lastTime;
 
     if (list.trim() === "") {
       list = listState.listName;
     }
 
-    if (timeOneRef.current.value !== "") {
+    if (!timeOneRef.current.value.length === 0) {
       if (!pattern.test(timeOneRef.current.value)) {
-        alert("시간을 제대로 입력해주세요! ex) 오후 01:30");
-        return;
+        return alert("시간을 제대로 입력해주세요! ex) 오후 02:30");
       }
     }
 
-    if (timeTwoRef.current.value !== "") {
+    if (!timeTwoRef.current.value.length === 0) {
       if (!pattern.test(timeTwoRef.current.value)) {
-        alert("시간을 제대로 입력해주세요! ex) 오후 01:30");
-        return;
+        return alert("시간을 제대로 입력해주세요! ex) 오후 01:30");
       }
     }
 
     if (firstTime > lastTime) {
-      if (startDate > endDate) {
-        alert("마지막 날이 시작날 보다 작습니다!!");
-        return;
-      } else {
-        alert("끝나는 시간이 시작 시간보다 작습니다!! ex) 00:30 ~ 01:30");
+      if (comparison === 5) {
+        return alert("마지막 날이 시작날 보다 작습니다!!");
       }
-    } else {
-      dispatch(modalActions.removeList({ index, listIndex }));
-      if (comparison <= 3) {
-        console.log("long?");
-        dispatch(modalActions.longDateList({ firstTime, lastTime, list }));
-      } else if (comparison === 4) {
-        dispatch(modalActions.inputList({ firstTime, lastTime, list }));
-      }
-      console.log(modalState.startDate);
-      console.log(modalState.endDate);
-      inputRef.current.value = "";
-      closeModalHandler();
-      dispatch(modalActions.offModal());
-      dispatch(timeActions.resetTime());
+
+      return alert("시작시간이 끝나는 시간보다 큽니다!!");
     }
+
+    // firstTime < lastTime 이면서...
+    dispatch(modalActions.removeList({index, listIndex}))
+    
+    if (comparison === 4) {
+      dispatch(modalActions.inputList({ firstTime, lastTime, list }));
+    }
+
+    if (comparison <= 3) {
+      dispatch(modalActions.longDateList({ firstTime, lastTime, list }));
+    }
+
+    inputRef.current.value = "";
+    closeModalHandler();
+    dispatch(modalActions.offModal());
+    dispatch(timeActions.resetTime());
   };
 
   const listDoneHandler = (index, listIndex) => {
@@ -128,9 +128,7 @@ const List = () => {
   };
 
   const styleClass =
-    schedule[listState.index].todo[listState.listIndex].style &&
-    !listIsVisible &&
-    "done";
+    schedule[index].todo[listIndex].style && !editArea && "done";
 
   return (
     <div
@@ -142,20 +140,18 @@ const List = () => {
     >
       <div className="option-box">
         <div
-          onClick={() => listEditHandler(날짜정보.startDate, 날짜정보.endDate)}
+          onClick={() =>
+            listEditHandler(리스트날짜정보.startDate, 리스트날짜정보.endDate)
+          }
         >
           <FontAwesomeIcon icon={faEdit} />
         </div>
-        <div
-          onClick={() =>
-            removeListHandler(listState.listIndex, listState.index)
-          }
-        >
+        <div onClick={() => removeListHandler(index, listIndex)}>
           <FontAwesomeIcon icon={faTrash} />
         </div>
         <div
           className="fa-check"
-          onClick={() => listDoneHandler(listState.index, listState.listIndex)}
+          onClick={() => listDoneHandler(index, listIndex)}
         >
           <FontAwesomeIcon icon={faCheck} />
         </div>
@@ -164,7 +160,7 @@ const List = () => {
         </div>
       </div>
       <div className="list-area">
-        {listIsVisible && (
+        {editArea && (
           <form onSubmit={editListSubmitHandler}>
             <div className="edit-list">
               <input
@@ -176,17 +172,17 @@ const List = () => {
             </div>
             <div className="edit-time-area">
               <TimeSelector
-                startDate={modalState.startDate}
-                endDate={modalState.endDate}
-                firstTime={날짜정보.firstTime}
-                lastTime={날짜정보.lastTime}
+                startDate={startDate}
+                endDate={endDate}
+                firstTime={리스트날짜정보.firstTime}
+                lastTime={리스트날짜정보.lastTime}
                 timeOneRef={timeOneRef}
                 timeTwoRef={timeTwoRef}
               />
             </div>
           </form>
         )}
-        {!listIsVisible && (
+        {!editArea && (
           <>
             <div className="edit-list-colorbox"></div>
             <div className={`listName  ${styleClass}`}>
@@ -195,17 +191,13 @@ const List = () => {
           </>
         )}
       </div>
-      {!listIsVisible && (
+      {!editArea && (
         <div className="list-time-area">
-          <div>
-            {schedule[listState.index].todo[listState.listIndex].firstTime}
-          </div>
+          <div>{schedule[index].todo[listIndex].firstTime}</div>
           <div>
             <span>~</span>
           </div>
-          <div>
-            {schedule[listState.index].todo[listState.listIndex].lastTime}
-          </div>
+          <div>{schedule[index].todo[listIndex].lastTime}</div>
         </div>
       )}
     </div>

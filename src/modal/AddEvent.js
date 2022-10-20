@@ -129,7 +129,7 @@ const AddEvent = () => {
         timeTwoRef={timeTwoRef}
       />
       <div className="buttonBox">
-        <button type="submit" disabled={comparison ? false : true}>
+        <button type="submit" >
           저장
         </button>
         <button type="button" onClick={cancelHandler}>
