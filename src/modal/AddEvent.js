@@ -17,16 +17,18 @@ const LastTime = setTime.lastTime;
 const AddEvent = () => {
   const dispatch = useDispatch();
   const modalState = useSelector((state) => state.modal);
-  const timeState = useSelector((state) => state.time);
+
+  const startDate = modalState.startDate;
+  const endDate = modalState.endDate;
 
   const modalRef = useRef();
   const inputRef = useRef();
+  
   const timeOneRef = useRef();
   const timeTwoRef = useRef();
 
-  const addModalCloseHandler = (e) => {
-    if (modalState.isVisible && !modalRef.current.contains(e.target)) {
-      console.log(modalRef);
+  const modalCloseHandler = (e) => {
+    if (!modalRef.current.contains(e.target)) {
       setTimeout(() => {
         dispatch(modalActions.offModal());
         dispatch(allListActions.offModal());
@@ -37,24 +39,22 @@ const AddEvent = () => {
   };
 
   useEffect(() => {
-    document.addEventListener("mousedown", addModalCloseHandler);
+    document.addEventListener("mousedown", modalCloseHandler);
     return () => {
-      document.removeEventListener("mousedown", addModalCloseHandler);
+      document.removeEventListener("mousedown", modalCloseHandler);
     };
   });
 
-  const comparison = comparisonHandler(
-    modalState.startDate,
-    modalState.endDate
-  );
+  const comparison = comparisonHandler(startDate, endDate);
 
   const listSubmitHandler = (event) => {
     event.preventDefault();
-    const pattern = /^(오전|오후)\s(([0][0-9]|[1][0-2])):([0-5][0-9])$/;
-    let list = inputRef.current.value;
 
-    let firstTime = timeState.firstTime || currentTime;
-    let lastTime = timeState.lastTime || LastTime;
+    const pattern = /^(오전|오후)\s(([0][0-9]|[1][0-2])):([0-5][0-9])$/;
+
+    let list = inputRef.current.value;
+    let firstTime = timeOneRef.current.value || currentTime;
+    let lastTime = timeTwoRef.current.value || LastTime;
 
     if (list.trim() === "") {
       list = "(제목 없음)";
@@ -62,41 +62,34 @@ const AddEvent = () => {
 
     if (timeOneRef.current.value !== "") {
       if (!pattern.test(timeOneRef.current.value)) {
-        alert("시간을 제대로 입력해주세요! ex) 오후 01:30");
-        return;
+        return alert("시간을 제대로 입력해주세요! ex) 오후 01:30");
       }
     }
 
     if (timeTwoRef.current.value !== "") {
       if (!pattern.test(timeTwoRef.current.value)) {
-        alert("시간을 제대로 입력해주세요! ex) 오후 01:30");
-        return;
+        return alert("시간을 제대로 입력해주세요! ex) 오후 01:30");
       }
     }
 
-    firstTime = timeOneRef.current.value || firstTime;
-    lastTime = timeTwoRef.current.value || lastTime;
-
     if (firstTime > lastTime) {
-      return (
-        modalState.startDate < modalState.endDate &&
-        alert("끝나는 시간이 시작 시간보다 작습니다!! ex) 00:30 ~ 01:30")
-      );
-    } else {
-      if (modalState.startDate === modalState.endDate) {
-        dispatch(modalActions.inputList({ list, firstTime, lastTime }));
-      } else if (comparison) {
-        dispatch(
-          modalActions.longDateList({
-            firstTime,
-            lastTime,
-            list,
-          })
-        );
-      }
+      return alert("끝나는 시간이 시작 시간보다 작습니다!! ex) 00:30 ~ 01:30");
+    }
+
+    if (comparison === 5) {
+      return alert('시작 날이 마지막 날 보다 큽니다!!');
+    }
+
+    if (comparison === 4) {
+      dispatch(modalActions.inputList({list, firstTime, lastTime}))
+    }
+
+    if (comparison <= 3) {
+      dispatch(modalActions.longDateList({list, firstTime, lastTime}))
     }
 
     inputRef.current.value = "";
+
     cancelHandler();
     dispatch(timeActions.resetTime());
   };
@@ -121,17 +114,15 @@ const AddEvent = () => {
         <input placeholder="(제목 없음)" type="text" ref={inputRef} />
       </div>
       <TimeSelector
-        startDate={modalState.startDate}
-        endDate={modalState.endDate}
+        startDate={startDate}
+        endDate={endDate}
         firstTime={currentTime}
         lastTime={LastTime}
         timeOneRef={timeOneRef}
         timeTwoRef={timeTwoRef}
       />
       <div className="buttonBox">
-        <button type="submit" >
-          저장
-        </button>
+        <button type="submit">저장</button>
         <button type="button" onClick={cancelHandler}>
           취소
         </button>
