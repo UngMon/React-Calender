@@ -12,6 +12,7 @@ import "./AddEvent.css";
 
 const setTime = SetTime();
 const currentTime = setTime.currentTime;
+console.log(currentTime)
 const LastTime = setTime.lastTime;
 
 const AddEvent = () => {
