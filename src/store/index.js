@@ -4,6 +4,7 @@ import modalSlice from "./modal-slice";
 import listSlice from "./list-slice";
 import allListSlice from "./all-list-slice";
 import timeSlice from "./time-slice";
+import userSlice from "./userSlice";
 
 const store = configureStore({
   reducer: {
@@ -12,6 +13,7 @@ const store = configureStore({
     list: listSlice.reducer,
     all: allListSlice.reducer,
     time: timeSlice.reducer,
+    user: userSlice.reducer,
   },
 });
 

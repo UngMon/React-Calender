@@ -9,7 +9,7 @@ const Month = ({ type, year, month }) => {
   const [thisMonth, setMonth] = useState(+month);
 
   const firstDay = new Date(thisYear, thisMonth - 1, 1).getDay();
-  const lastDate = new Date(thisYear, thisMonth - 1 + 1, 0).getDate();
+  const lastDate = new Date(thisYear, thisMonth, 0).getDate();
 
   const movePrevMonthHandler = () => {
     if (thisMonth === 1) {
