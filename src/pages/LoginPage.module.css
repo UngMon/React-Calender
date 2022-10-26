@@ -1,0 +1,27 @@
+.login-box {
+  margin: 10% auto;
+  width: 30%;
+  height: 50%;
+  border: 1px solid black;
+  background-color: rgb(223, 234, 244);
+  text-align: center;
+}
+
+.login-box-title {
+  margin: 10% 0;
+}
+
+.login-form {
+  margin: 0 auto;
+  width: 90%;
+  height: 80%;
+}
+
+.login-id {
+  display: flex;
+  flex-direction: column;
+}
+
+.login-selector button {
+  background-color: white;
+}

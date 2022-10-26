@@ -4,7 +4,8 @@ import Month from "./calender/Month";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchScheduleData, sendScheduleData } from "./store/fetch-action";
 import { Navigate, Route, Routes } from "react-router-dom";
-import CalenderLogin from './pages/CalenderLogin'
+import CalenderLogin from "./pages/LoginPage";
+import StartPage from "./pages/StartPage";
 
 function App() {
   const dispatch = useDispatch();
@@ -26,14 +27,15 @@ function App() {
   return (
     <>
       <Routes>
-      <Route path='/' element={<Navigate replace to='/login'/>} />
-        <Route path="/login" element={<CalenderLogin />} >
-          <Route path="your-calender-login"/>
-          <Route path='google-login'/>
+        <Route path="/" element={<Navigate replace to="/start" />} />
+        <Route path="/start" element={<StartPage />} />
+        <Route path="/login" element={<CalenderLogin />}>
+          <Route path="your-calender-login" />
+          <Route path="google-login" />
         </Route>
         <Route path="/header" element={<Header />} />
         <Route path="/month" element={<Month />} />
-        <Route path="*" element={<Navigate replace to='/login'/>}/>
+        <Route path="*" element={<Navigate replace to="/login" />} />
       </Routes>
     </>
   );
