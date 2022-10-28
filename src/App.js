@@ -1,11 +1,12 @@
 import { useEffect } from "react";
-import Header from "./navigation/Header";
+
 import Month from "./calender/Month";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchScheduleData, sendScheduleData } from "./store/fetch-action";
 import { Navigate, Route, Routes } from "react-router-dom";
 import StartPage from "./pages/StartPage";
 import LoginPage from "./pages/LoginPage";
+import NotFound from "./pages/NotFound";
 
 
 function App() {
@@ -31,9 +32,8 @@ function App() {
         <Route path="/" element={<Navigate replace to="/start" />} />
         <Route path="/start" element={<StartPage />} />
         <Route path="/login" element={<LoginPage />} />
-        <Route path="/header" element={<Header />} />
-        <Route path="/month" element={<Month />} />
-        <Route path="*" element={<Navigate replace to="/login" />} />
+        <Route path="/calender:userId" element={<Month />} />
+        <Route path="*" element={<NotFound/>} />
       </Routes>
     </>
   );
