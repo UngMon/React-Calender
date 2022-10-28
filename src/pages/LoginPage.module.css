@@ -1,6 +1,15 @@
-.login-box {
-  margin: 7% auto;
-  width: 30%;
+ .login-area {
+  position: relative;
+  width: 100%;
+  height: 100%;
+ }
+ 
+ .login-box {
+  position: absolute;
+  top: 15%;
+  left: 36%;
+  margin: 0 auto;
+  width: 28%;
   height: 70%;
   border: 1px solid black;
   background-color: white;
@@ -10,11 +19,11 @@
 
 .login-box-title {
   width: 95%;
-  height: 20%;
+  height: 15%;
+  padding: 0;
   margin: 5% auto;
   display: flex;
-  /* justify-content: left; */
-  align-items: center;
+  align-items: left;
 }
 
 .login-box-title .back {
@@ -32,7 +41,7 @@
   max-width: 100%;
   max-height: 100%;
   margin: auto;
-  padding-right: 30%;
+  padding-right: 29%;
   text-align: center;
   font-size: 1.5rem;
   font-weight: bold;
@@ -41,85 +50,98 @@
 .login-form {
   margin: 0 auto;
   width: 100%;
-  height: 100%;
+  height: 80%;
 }
 
-.login-id {
-  margin: auto;
+.login-info-area {
+  margin: 0 auto;
   width: 80%;
-  height: 20%;
+  height: 50%;
+  padding: auto 0;
   display: flex;
   flex-direction: column;
+  justify-content: space-evenly;
 }
 
-.login-id label {
-  margin-bottom: 0.5rem;
+.login-info-area p {
+  margin: 0.2rem auto;
+  font-size: 0.8rem;
 }
 
-.login-id input {
+.login-info-area label {
+  text-align: left;
+  margin-bottom: 0.3rem;
+  font-size: 0.8rem;
+}
+
+.login-info-area input {
   cursor: pointer;
-  margin: 0 auto;
-  width: 95%;
-  height: 20%;
-  padding-left: 5px;
-  border-radius: 5px;
-}
-
-.login-id p {
-  margin-top: 0.3rem;
-  font-size: 0.9rem;
+  max-width: 100%;
+  max-height: 40%;
+  padding: 0.2rem 0.3rem;
+  border: 0;
+  border-bottom: 1px solid rgb(39, 39, 39);
 }
 
 .login-box input:hover {
-  border: 1px solid rgb(71, 71, 242);
+  border: 1px solid rgb(28, 82, 241);
 }
 
-.login-password {
-  margin: auto;
-  width: 80%;
-  height: 20%;
-  display: flex;
-  flex-direction: column;
+.form-button {
+  margin: 1rem auto;
+  height: 8%;
 }
 
-.login-password label {
-  margin-bottom: 0.5rem;
-}
-
-.login-password input{
+.form-button button {
+  width: 50%;
+  height: 100%;
   cursor: pointer;
-  margin: 0 auto;
-  width: 95%;
-  height: 20%;
-  padding-left: 5px;
-  border-radius: 5px;
-}
-
-.login-password input:hover {
-  border: 1px solid rgb(71, 71, 242);
-}
-
-.login-password p {
-  margin-top: 0.3rem;
-  font-size: 0.9rem;
-}
-
-.login-selector {
-  margin: auto;
-  height: 20%;
-  display: flex;
-  flex-direction: column;
-}
-
-.login-selector button {
-  cursor: pointer;
-  margin: 1% auto;
-  background-color: #f59e35;
-  border: 1px solid #f59e35;
+  border: 0;
+  background-image: linear-gradient(
+    to right,
+    #ae33fa 0%,
+    #678df6 40%,
+    #84fab0 100%
+  );
   border-radius: 6px;
   color: white;
+  font-size: 0.8rem;
   font-weight: bold;
   padding: 0.5rem 2.5rem;
 }
 
+.social-login-area {
+  display: flex;
+  flex-direction: column;
+}
+
+.social-login-area span {
+  margin-bottom: 1rem;
+  font-size: 0.9rem;
+}
+
+.goolge-Logo {
+  cursor: pointer;
+  margin: 0 auto;
+}
+
+.isLogin {
+  width: 100%;
+  position: absolute;
+  bottom: 3%;
+}
+
+.isLogin span {
+  margin-right: 1.7rem;
+  font-size: 0.8rem;
+}
+
+.isLogin button {
+  cursor: pointer;
+  width: 20%;
+  font-size: 0.8rem;
+  font-weight: bold;
+  background-color: transparent;
+  border: 0;
+}
 

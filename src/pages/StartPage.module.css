@@ -1,24 +1,23 @@
   .section {
-    width: 100%;  
+    margin: 0 auto;
+    padding: 0;
+    width: inherit;  
     height: 100%;
-    background: #8aaef5;
+    background-color: transparent;
     -webkit-font-smoothing: antialiased;
     display: flex;
     justify-content: center;
     align-items: center;
   }
 
-  .animation-area {
-    top: -20%;
-  }
-
   .start-button {
     margin: 5% auto;
-    width: 30%;
+    width: 100%;
   }
   
   h1 {
     height: 100px;
+    background-color: transparent;
   }
   
   h1 span {
@@ -50,8 +49,8 @@
   h1 span:nth-child(8) { animation-delay: .7s; } /*e*/
   h1 span:nth-child(9) { animation-delay: .8s; } /*n*/
   h1 span:nth-child(10) { animation-delay: .9s; } /*d*/
-  h1 span:nth-child(11) { animation-delay: .15s; } /*e*/
-  h1 span:nth-child(12) { animation-delay: .30s; } /*r*/
+  h1 span:nth-child(11) { animation-delay: .10s; } /*e*/
+  h1 span:nth-child(12) { animation-delay: .3s; } /*r*/
 
   
   @keyframes bounce {

@@ -8,6 +8,8 @@ import { createUserWithEmailAndPassword } from "firebase/auth";
 import { useDispatch } from "react-redux";
 import { userActions } from "../store/userSlice";
 import { Link } from "react-router-dom";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 import classes from "./LoginPage.module.css";
 
 const LoginPage = () => {
@@ -42,7 +44,7 @@ const LoginPage = () => {
     if (e.target.value.length < 2 || e.target.value.length > 5) {
       setNameMessage("2글자 이상 5글자 미만으로 입력해주세요.");
       setIsName(false);
-      setName('');
+      setName("");
     } else {
       setNameMessage("올바른 이름 형식입니다 ");
       setIsName(true);
@@ -91,12 +93,13 @@ const LoginPage = () => {
         "숫자+영문자+특수문자 조합으로 8자리 이상 입력해주세요!"
       );
       setIsPassword(false);
-      setPassword(e.target.value);
+      setPassword("");
     } else {
       setPasswordMessage("안전한 비밀번호에요!");
       setIsPassword(true);
-      setPassword("");
+      setPassword(e.target.value);
     }
+    console.log();
   }, []);
 
   const googleSignIn = (event) => {
@@ -109,17 +112,21 @@ const LoginPage = () => {
       .then((data) => {
         console.log(data);
         setUserData(data.user);
-        dispatch(userActions(data.user.email));
+        // dispatch(userActions(data.user.email));
         navigagte("/month");
       })
       .catch((err) => {
+        alert('로그인 실패')
         console.log(err);
       });
   };
 
   const loginFormHandler = (email, password, e) => {
     e.preventDefault();
-    console.log(auth);
+
+    if (!isEmail || !isPassword) {
+      return alert('올바른 양식을 기입해주세요!')
+    }
 
     signInWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
@@ -137,9 +144,14 @@ const LoginPage = () => {
   };
 
   const createAccount = (email, password) => {
+    console.log(auth);
+    console.log(email);
+    console.log(password);
     createUserWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
         const user = userCredential;
+        console.log(user);
+        navigagte("/header");
       })
       .catch((error) => {
         alert("계정 생성 중 오류가 발생했습니다.");
@@ -152,98 +164,102 @@ const LoginPage = () => {
   };
 
   return (
-    <section className={classes["login-box"]}>
-      <div className={classes["login-box-title"]}>
-        <div className={classes["back"]}>
-          <Link to="/start">뒤로가기</Link>
+    <section className={classes["login-area"]}>
+      <div className={classes["login-box"]}>
+        <div className={classes["login-box-title"]}>
+          <div className={classes["back"]}>
+            <Link to="/start"><FontAwesomeIcon icon={faArrowLeft} /></Link>
+          </div>
+          <div className={classes["title"]}>
+            <span>{creatingUser ? "회원 가입" : "로그인"}</span>
+          </div>
         </div>
-        <div className={classes["title"]}>
-          <span>Your Calender</span>
-        </div>
-      </div>
-      <form
-        className={classes["login-form"]}
-        onSubmit={(event) => loginFormHandler(email, password, event)}
-      >
-        <div className={classes["login-id"]}>
-          {creatingUser && <label htmlFor="name">이름</label>}
-          {creatingUser && (
+        <form
+          className={classes["login-form"]}
+          onSubmit={(event) => loginFormHandler(email, password, event)}
+        >
+          <div className={classes["login-info-area"]}>
+            {creatingUser && <label htmlFor="name">이름</label>}
+            {creatingUser && (
+              <input
+                type="text"
+                id="name"
+                placeholder="이름"
+                required
+                onChange={onChangeName}
+              />
+            )}
+            {creatingUser && (
+              <p style={{ color: isEmail ? "lightgrey" : "red" }}>
+                {nameMessage}
+              </p>
+            )}
+            <label htmlFor="email">이메일</label>
             <input
               type="text"
-              id="name"
-              placeholder="이름"
+              id="emial"
+              placeholder="이메일"
               required
-              onChange={onChangeName}
+              onChange={onConfirmEmail}
             />
-          )}
-          {creatingUser && (
-            <p style={{ color: isEmail ? "lightgrey" : "red" }}>
-              {nameMessage}
+            <p style={{ color: isEmail ? "lightgray" : "red" }}>
+              {emailMessage}
             </p>
-          )}
-          <label htmlFor="email">이메일</label>
-          <input
-            type="text"
-            id="emial"
-            placeholder="이메일"
-            required
-            onChange={onConfirmEmail}
-          />
-          <p style={{ color: isEmail ? "lightgray" : "red" }}>{emailMessage}</p>
-        </div>
-        <div className={classes["login-password"]}>
-          <label htmlFor="password">패스워드</label>
-          <input
-            type="password"
-            id="password"
-            placeholder="패스워드"
-            required
-            onChange={(e) =>
-              creatingUser ? createPassword(e) : confirmPassword(e)
-            }
-          />
-          <p style={{ color: isPassword ? "black" : "red" }}>
-            {passwordMessage}
-          </p>
-        </div>
-        <div className={classes["login-selector"]}>
-          {creatingUser ? (
-            <button
-              type="button"
-              onClick={() => createAccount(email, password)}
-            >
-              계정 생성
+            <label htmlFor="password">패스워드</label>
+            <input
+              type="password"
+              id="password"
+              placeholder="패스워드"
+              required
+              onChange={(e) =>
+                creatingUser ? createPassword(e) : confirmPassword(e)
+              }
+            />
+            <p style={{ color: isPassword ? "black" : "red" }}>
+              {passwordMessage}
+            </p>
+          </div>
+          <div className={classes["form-button"]}>
+            {creatingUser ? (
+              <button
+                type="button"
+                onClick={() => createAccount(email, password)}
+              >
+                계정 생성
+              </button>
+            ) : (
+              <button
+                type="submit"
+                onClick={(e) => loginFormHandler(email, password, e)}
+              >
+                확인
+              </button>
+            )}
+          </div>
+          <div className={classes["social-login-area"]}>
+            <span>소셜 로그인</span>
+            <img
+              style={{ display: "blcok" }}
+              className={classes['goolge-Logo']}
+              onClick={googleSignIn}
+              width='40'
+              height='40'
+              src="img/Google.jpeg"
+              alt="Google"
+            />
+          </div>
+          <div className={classes["isLogin"]}>
+            <span>
+              {creatingUser
+                ? "이미 계정이 있으신가요?"
+                : "아직 회원이 아니신가요?"}
+            </span>
+            <button type="button" onClick={toggleButtonHandler}>
+              {creatingUser ? "로그인" : "회원 가입"}
             </button>
-          ) : (
-            <button
-              type="submit"
-              onClick={(e) => loginFormHandler(email, password, e)}
-            >
-              로그인
-            </button>
-          )}
-        </div>
-        <span>소셜 로그인</span>
-        <div className={classes["social-login-area"]}>
-          <button
-            type="button"
-            style={{ display: "block" }}
-            onClick={googleSignIn}
-          >
-            Google 로그인
-          </button>
-        </div>
-        <div className={classes["isLogin"]}>
-          <span>
-            {creatingUser
-              ? "이미 계정이 있으신가요?"
-              : "아직 회원이 아니신가요?"}
-          </span>
-          <button type="button" onClick={toggleButtonHandler}>
-            {creatingUser ? "로그인" : "회원 가입"}
-          </button>
-        </div>
-      </form>
+          </div>
+        </form>
+      </div>
     </section>
   );
 };

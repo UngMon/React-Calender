@@ -50,7 +50,7 @@ const TimeSelector = ({
     <div className="time-date-box">
       <div className="time-area">
         <div className="time-area-name">
-          <h4 onClick={firstDateHanlder}>
+          <h4 onClick={firstDateHanlder} >
             {시작날[1] + "월 " + 시작날[2] + "일"}
           </h4>
         </div>
