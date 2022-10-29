@@ -9,7 +9,6 @@ const MakeCaledner = ({ year, month, firstDay, lastDate, identify }) => {
   const dispatch = useDispatch();
   const schedule = useSelector((state) => state.modal.schedule);
   const modaVisible = useSelector((state) => state.modal.isVisible);
-  console.log(schedule);
 
   const listClickHandler = (
     key,
@@ -91,8 +90,7 @@ const MakeCaledner = ({ year, month, firstDay, lastDate, identify }) => {
               key={listIndex}
               className={classes.nothing}
               style={{ pointerEvents: "none" }}
-            >
-            </div>
+            ></div>
           )
         ) : (
           listIndex === 3 && (
@@ -113,9 +111,7 @@ const MakeCaledner = ({ year, month, firstDay, lastDate, identify }) => {
 
   const addClickHandler = (idx, dayIndex, week) => {
     if (!modaVisible) {
-      dispatch(
-        modalActions.clickedStartDate({ idx, dayIndex, week })
-      );
+      dispatch(modalActions.clickedStartDate({ idx, dayIndex, week }));
     }
     dispatch(modalActions.onModal());
   };
@@ -146,11 +142,11 @@ const MakeCaledner = ({ year, month, firstDay, lastDate, identify }) => {
               <div
                 className={`${classes.date} ${
                   identify === idx && classes.Today
+                } ${
+                  identify !== idx && i === 1
+                    ? classes.sunday
+                    : i === 7 && classes.saturday
                 }`}
-                style={{
-                  color:
-                    identify !== idx && i === 1 ? "red" : i === 7 && "blue",
-                }}
               >
                 {nowDate}
               </div>
@@ -174,11 +170,11 @@ const MakeCaledner = ({ year, month, firstDay, lastDate, identify }) => {
               <div
                 className={`${classes.date} ${
                   identify === idx && classes.Today
+                } ${
+                  identify !== idx && dayIdx === 1
+                    ? classes.sunday
+                    : i === 7 ? classes.saturday : false
                 }`}
-                style={{
-                  color:
-                    identify !== idx && i === 1 ? "red" : i === 7 && "blue",
-                }}
               >
                 {nowDate}
               </div>
@@ -201,22 +197,18 @@ const MakeCaledner = ({ year, month, firstDay, lastDate, identify }) => {
           thisMonthArray.push(
             <td
               key={idx}
-              onClick={() =>
-                addClickHandler(idx, dayIdx, week)
-              }
+              onClick={() => addClickHandler(idx, dayIdx, week)}
               className={classes.date_box}
               day-index={dayIdx}
             >
               <div
                 className={`${classes.date} ${
                   identify === idx && classes.Today
+                } ${
+                  identify !== idx && dayIdx === 1
+                    ? classes.sunday
+                    : dayIdx === 7 && classes.saturday
                 }`}
-                style={{
-                  color:
-                    identify !== idx && dayIdx === 1
-                      ? "red"
-                      : dayIdx === 7 && "blue",
-                }}
               >
                 {nowDate}
               </div>
@@ -229,25 +221,21 @@ const MakeCaledner = ({ year, month, firstDay, lastDate, identify }) => {
           const nowDate = i - lastDate - firstDay + 1;
           const idx = MakeKey("next", year, month, nowDate);
           const dayIdx = (i % 7) + 1;
-          
+          console.log(dayIdx)
           thisMonthArray.push(
             <td
               key={idx}
-              onClick={() =>
-                addClickHandler(idx, dayIdx, week)
-              }
+              onClick={() => addClickHandler(idx, dayIdx, week)}
               className={classes.date_box}
               day-index={dayIdx}
             >
               <div
-                style={{
-                  color:
-                    identify !== idx && dayIdx === 1
-                      ? "red"
-                      : dayIdx === 7 && "blue",
-                }}
                 className={`${classes.date} ${
                   identify === idx && classes.Today
+                } ${
+                  identify !== idx && dayIdx === 1
+                    ? classes.sunday
+                    : dayIdx === 7 && classes.saturday
                 }`}
               >
                 {nowDate}

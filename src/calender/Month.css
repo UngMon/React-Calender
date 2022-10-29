@@ -5,7 +5,7 @@
   width: 98%;
   height: 95%;
   margin: 0 auto 0;
-  background-color: rgba(246, 246, 246, 0.9);
+  background-color: rgba(252, 252, 252, 0.8);
   border-radius: 15px;
 }
 
@@ -56,4 +56,8 @@
   border-radius: 5px;
   border: 1px;
   font-size: 1.5rem;
+}
+
+.calender-view {
+  height: 90%;
 }
