@@ -1,6 +1,17 @@
+.view-area {
+  position: absolute;
+  top: 1rem;
+  left: 0.9rem;
+  width: 98%;
+  height: 95%;
+  margin: 0 auto 0;
+  background-color: rgba(246, 246, 246, 0.9);
+  border-radius: 15px;
+}
+
 .header {
   width: 95%;
-  height: 5%;
+  height: 8%;
   margin: 0 1.2rem 0;
   display: flex;
   justify-content: space-between;
@@ -8,9 +19,10 @@
   align-items: center;
 }
 
-.header div {
+.header-name {
   font-size: 1.2rem;
   font-weight: bold;
+  margin-left: 8px;
 }
 
 .header ul {

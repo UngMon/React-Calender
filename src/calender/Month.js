@@ -6,8 +6,8 @@ import Calender from "./Calender";
 import "./Month.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
-  faSquareCaretLeft,
-  faSquareCaretRight,
+  faAngleLeft,
+  faAngleRight,
 } from "@fortawesome/free-solid-svg-icons";
 
 const Month = () => {
@@ -33,27 +33,28 @@ const Month = () => {
   };
 
   return (
-    <header className='header'>
-      <div>Your Calender</div>
-      <div></div>
-      <nav>
-        <ul>
-          <li>프로필</li>
-          <li onClick={logoutHandler}>Logout</li>
-        </ul>
-      </nav>
-      <div className="month-area">
-        <button onClick={movePrevMonthHandler}>
-          <FontAwesomeIcon icon={faSquareCaretLeft} />
-        </button>
-        <span>
-          {monthInfo.year}년 {monthInfo.month + 1}월
-        </span>
-        <button onClick={moveNextMonthHandler}>
-          <FontAwesomeIcon icon={faSquareCaretRight} />
-        </button>
-      </div>
-      <main>
+    <div className="view-area">
+      <header className="header">
+        <div className="header-name">Your Calender</div>
+        <div className="month-area">
+          <button onClick={movePrevMonthHandler}>
+            <FontAwesomeIcon icon={faAngleLeft} />
+          </button>
+          <span>
+            {monthInfo.year}년 {monthInfo.month + 1}월
+          </span>
+          <button onClick={moveNextMonthHandler}>
+            <FontAwesomeIcon icon={faAngleRight} />
+          </button>
+        </div>
+        <nav className="header-nav">
+          <ul>
+            <li>프로필</li>
+            <li onClick={logoutHandler}>Logout</li>
+          </ul>
+        </nav>
+      </header>
+      <main className="calender-view">
         <Calender
           year={monthInfo.year}
           month={monthInfo.month + 1}
@@ -61,7 +62,7 @@ const Month = () => {
           lastDate={monthInfo.lastDate}
         />
       </main>
-    </header>
+    </div>
   );
 };
 

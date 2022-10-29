@@ -190,7 +190,7 @@ const LoginPage = () => {
               />
             )}
             {creatingUser && (
-              <p style={{ color: isEmail ? "lightgrey" : "red" }}>
+              <p style={{ color: isEmail ? "grey" : "red" }}>
                 {nameMessage}
               </p>
             )}
