@@ -32,7 +32,7 @@ function App() {
         <Route path="/" element={<Navigate replace to="/start" />} />
         <Route path="/start" element={<StartPage />} />
         <Route path="/login" element={<LoginPage />} />
-        <Route path="/calender:userId" element={<Month />} />
+        <Route path="/calender" element={<Month />} />
         <Route path="*" element={<NotFound/>} />
       </Routes>
     </>

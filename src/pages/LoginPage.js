@@ -113,7 +113,7 @@ const LoginPage = () => {
         console.log(data);
         setUserData(data.user);
         // dispatch(userActions(data.user.email));
-        navigagte("/month");
+        navigagte("/calender");
       })
       .catch((err) => {
         alert('로그인 실패')
@@ -132,7 +132,7 @@ const LoginPage = () => {
       .then((userCredential) => {
         // Signed in
         const user = userCredential.user;
-        navigagte("/header");
+        navigagte("/calender");
         console.log(user);
       })
       .catch((error) => {

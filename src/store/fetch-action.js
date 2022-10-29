@@ -17,7 +17,10 @@ export const fetchScheduleData = () => {
     try {
       const scheduleData = await fetchData();
       dispatch(modalActions.fetchFromData(scheduleData));
-    } catch (error) {}
+    } catch (error) {
+      alert('데이터 불러오기 실패')
+      throw new Error(error);
+    }
   };
 };
 
@@ -36,6 +39,9 @@ export const sendScheduleData = (schedule) => {
     try {
       await sendData();
       dispatch(modalActions.toggleChanged())
-    } catch (error) {}
+    } catch (error) {
+      alert('데이터 전송 실패')
+      throw new Error(error)
+    }
   };
 };
