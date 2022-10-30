@@ -5,15 +5,13 @@ import { signOut } from "firebase/auth";
 import Calender from "./Calender";
 import "./Month.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faAngleLeft,
-  faAngleRight,
-} from "@fortawesome/free-solid-svg-icons";
+import { faAngleLeft, faAngleRight } from "@fortawesome/free-solid-svg-icons";
 
 const Month = () => {
   const dispatch = useDispatch();
-
+  
   const monthInfo = useSelector((state) => state.month);
+  const userInfo = useSelector((state) => state.user);
 
   const movePrevMonthHandler = () => {
     dispatch(monthActions.prevMonth());
@@ -24,12 +22,10 @@ const Month = () => {
   };
 
   const logoutHandler = () => {
-    signOut(auth)
-      .then((data) => console.log(data))
-      .catch((err) => {
-        alert("로그아웃 실패");
-        console.log(err);
-      });
+    signOut(auth).catch((err) => {
+      alert("로그아웃 실패");
+      console.log(err);
+    });
   };
 
   return (
@@ -49,7 +45,7 @@ const Month = () => {
         </div>
         <nav className="header-nav">
           <ul>
-            <li>프로필</li>
+            <li className="profile">{userInfo.name}</li>
             <li onClick={logoutHandler}>Logout</li>
           </ul>
         </nav>

@@ -221,7 +221,7 @@ const MakeCaledner = ({ year, month, firstDay, lastDate, identify }) => {
           const nowDate = i - lastDate - firstDay + 1;
           const idx = MakeKey("next", year, month, nowDate);
           const dayIdx = (i % 7) + 1;
-          console.log(dayIdx)
+
           thisMonthArray.push(
             <td
               key={idx}

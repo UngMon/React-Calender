@@ -22,8 +22,8 @@
 }
 
 .weekname th {
-  border-top: 1px solid white;
-  border-bottom: 1px solid white;
+  border-top: 1px solid rgb(193, 192, 192, 1);
+  border-bottom: 1px solid rgb(193, 192, 192, 1);
   padding: 0 0 0 5px;
 }
 
@@ -36,7 +36,9 @@
   width: 14.2857142857%;
   box-sizing: border-box;
   vertical-align: text-top;
-  border: 1px solid #f4f4f4;
+  border: 1px solid rgb(193, 192, 192, 0.5);
+  border-left: 0;
+  border-right: 0;
   position: relative;
 }
 
@@ -50,10 +52,12 @@
 
 .sunday {
   color: red;
+  border-left: 0;
 }
 
 .saturday {
   color: blue;
+  border-right: 0;
 }
 
 .Today {

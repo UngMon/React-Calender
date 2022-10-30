@@ -1,5 +1,4 @@
 import { useEffect } from "react";
-
 import Month from "./calender/Month";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchScheduleData, sendScheduleData } from "./store/fetch-action";
@@ -7,7 +6,6 @@ import { Navigate, Route, Routes } from "react-router-dom";
 import StartPage from "./pages/StartPage";
 import LoginPage from "./pages/LoginPage";
 import NotFound from "./pages/NotFound";
-
 
 function App() {
   const dispatch = useDispatch();

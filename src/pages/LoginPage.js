@@ -16,8 +16,6 @@ const LoginPage = () => {
   const dispatch = useDispatch();
   const navigagte = useNavigate();
 
-  const [userData, setUserData] = useState(null);
-
   // 회원가입 인지 아닌지~
   const [creatingUser, setCreatingUser] = useState(false);
 
@@ -111,9 +109,10 @@ const LoginPage = () => {
     signInWithPopup(auth, provider)
       .then((data) => {
         console.log(data);
-        setUserData(data.user);
-        // dispatch(userActions(data.user.email));
+        const name = data.user.name;
+        const email = data.user.email;
         navigagte("/calender");
+        dispatch(userActions.setUser({data, name, email}));
       })
       .catch((err) => {
         alert('로그인 실패')
@@ -134,6 +133,9 @@ const LoginPage = () => {
         const user = userCredential.user;
         navigagte("/calender");
         console.log(user);
+        const email = user.email;
+
+        dispatch(userActions.setUser({user, name, email}));
       })
       .catch((error) => {
         console.log(error);
@@ -144,9 +146,7 @@ const LoginPage = () => {
   };
 
   const createAccount = (email, password) => {
-    console.log(auth);
-    console.log(email);
-    console.log(password);
+
     createUserWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
         const user = userCredential;
