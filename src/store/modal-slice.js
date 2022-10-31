@@ -3,12 +3,16 @@ import { createSlice } from "@reduxjs/toolkit";
 const modalSlice = createSlice({
   name: "modal",
   initialState: {
+    name: "",
+    email: "",
+    userIndex: "",
     isVisible: false,
     startDate: "",
     endDate: "",
     week: "",
     dayIndex: "",
-    schedule: [],
+    usersData: [],
+    userSchedule: [],
     longArr: [],
     changed: false,
   },
@@ -19,8 +23,8 @@ const modalSlice = createSlice({
 
     offModal(state) {
       state.isVisible = false;
-      state.startDate = '';
-      state.endDate = '';
+      state.startDate = "";
+      state.endDate = "";
     },
 
     clickedStartDate(state, action) {
@@ -28,14 +32,14 @@ const modalSlice = createSlice({
       console.log(action.payload.idx);
       state.week = action.payload.week;
       state.dayIndex = action.payload.dayIndex;
-      state.longArr  = action.payload.longArr;
+      state.longArr = action.payload.longArr;
       if (state.endDate === action.payload.idx || state.endDate.length === 0) {
         state.endDate = action.payload.idx;
       }
     },
 
     clickedLastDate(state, action) {
-      console.log(state.startDate)
+      console.log(state.startDate);
       state.endDate = action.payload.idx;
       if (state.startDate !== action.payload.idx) {
         state.longArr = action.payload.longArr;
@@ -49,42 +53,42 @@ const modalSlice = createSlice({
 
     inputList(state, action) {
       state.changed = true;
-      const result = state.schedule.find(
+      const arr = [...state.usersData];
+
+      // return { idx : '~~', todo: []} or undefined
+      const result = arr[state.userIndex].schedule.find(
         (item) => item.idx === state.startDate
-      ); // schedule 배열에서 해당 날짜에 요소가 있을 때, true 와 해당 {} return
-      const index = state.schedule.indexOf(result);
+      );
+
+      const index = arr[state.userIndex].schedule.indexOf(result);
 
       if (result) {
         // 존재하면
-        state.schedule.map((item) => {
-          if (item.idx === state.startDate) {
-            item.todo = [
-              ...item.todo,
-              {
-                startDate: state.startDate,
-                endDate: state.endDate,
-                firstTime: action.payload.firstTime,
-                lastTime: action.payload.lastTime,
-                list: action.payload.list,
-                style: false,
-                length: 1,
-                isFake: false,
-                isLong: false,
-                index: action.payload.firstTime + action.payload.lastTime,
-                arr: [state.startDate],
-              },
-            ];
-          }
-          state.schedule[index].todo.sort((a, b) =>
-            a.index < b.index ? -1 : 1
-          );
+        result.todo = [
+          ...result.todo,
+          {
+            startDate: state.startDate,
+            endDate: state.endDate,
+            firstTime: action.payload.firstTime,
+            lastTime: action.payload.lastTime,
+            list: action.payload.list,
+            style: false,
+            length: 1,
+            isFake: false,
+            isLong: false,
+            index: action.payload.firstTime + action.payload.lastTime,
+            arr: [state.startDate],
+          },
+        ];
 
-          return state.schedule;
-        });
+        result.todo.sort((a, b) => (a.index < b.index ? -1 : 1));
+        arr[state.userIndex].schedule[index] = result;
+
       } else {
         // 해당 날짜가 schedule 배열에 없을 때, 즉 처음
-        state.schedule = [
-          ...state.schedule,
+
+        arr[state.userIndex].schedule = [
+          ...arr[state.userIndex].schedule,
           {
             idx: state.startDate,
             todo: [
@@ -105,6 +109,8 @@ const modalSlice = createSlice({
           },
         ];
       }
+      state.usersData = [...arr];
+      state.userSchedule = [...arr[state.userIndex]];
     },
 
     longDateList(state, action) {
@@ -112,8 +118,8 @@ const modalSlice = createSlice({
       let leng = state.longArr.length;
       let count = state.dayIndex;
 
-      console.log(state.startDate)
-      console.log(state.endDate)
+      console.log(state.startDate);
+      console.log(state.endDate);
 
       for (let i of state.longArr) {
         const result = state.schedule.find((item) => item.idx === i);
@@ -146,7 +152,7 @@ const modalSlice = createSlice({
                 arr: state.longArr,
               },
             ];
-            console.log('이곳인가??')
+            console.log("이곳인가??");
           } else {
             // 첫 째날이 아닌 그 이후 Date일 때,
 
@@ -174,7 +180,7 @@ const modalSlice = createSlice({
                   arr: state.longArr,
                 },
               ];
-              console.log('이곳인가??')
+              console.log("이곳인가??");
             } else {
               state.schedule[index].todo = [
                 ...state.schedule[index].todo,
@@ -192,7 +198,7 @@ const modalSlice = createSlice({
                   arr: [i],
                 },
               ];
-              console.log('이곳인가??')
+              console.log("이곳인가??");
             }
           }
           state.schedule[index].todo.sort((a, b) =>
@@ -258,7 +264,7 @@ const modalSlice = createSlice({
                   ],
                 },
               ];
-              console.log('hi!')
+              console.log("hi!");
             } else {
               state.schedule = [
                 ...state.schedule,
@@ -281,7 +287,7 @@ const modalSlice = createSlice({
                   ],
                 },
               ];
-              console.log('hi!')
+              console.log("hi!");
             }
           }
         }
@@ -295,8 +301,8 @@ const modalSlice = createSlice({
       const index = action.payload.index;
       const listIndex = action.payload.listIndex;
 
-      console.log(state.startDate)
-      console.log(state.endDate)
+      console.log(state.startDate);
+      console.log(state.endDate);
 
       if (state.schedule[index].todo[listIndex].arr.length === 1) {
         state.schedule[index].todo.splice(listIndex, 1);
@@ -331,7 +337,6 @@ const modalSlice = createSlice({
           return state.schedule;
         });
       }
-
     },
 
     editList(state, action) {
@@ -361,7 +366,32 @@ const modalSlice = createSlice({
 
     fetchFromData(state, action) {
       if (action.payload.length !== 0) {
-        state.schedule = action.payload;
+        state.usersData = action.payload;
+      }
+    },
+
+    setUser(state, action) {
+      state.changed = true;
+      state.name = action.payload.name;
+      state.email = action.payload.email;
+      const userIndex = state.usersData.findIndex(
+        (item) => item.email === action.payload.email
+      );
+
+      if (userIndex === -1) {
+        // 신규 가입자 일 때,
+        state.userIndex = state.usersData.length;
+
+        state.usersData = [
+          ...state.usersData,
+          {
+            email: action.payload.email,
+            name: action.payload.name,
+            schedule: [],
+          },
+        ];
+      } else {
+        state.userIndex = userIndex;
       }
     },
 

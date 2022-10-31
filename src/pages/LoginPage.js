@@ -7,6 +7,7 @@ import { signInWithEmailAndPassword } from "firebase/auth";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { useDispatch } from "react-redux";
 import { userActions } from "../store/userSlice";
+import { modalActions } from "../store/modal-slice";
 import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
@@ -109,10 +110,11 @@ const LoginPage = () => {
     signInWithPopup(auth, provider)
       .then((data) => {
         console.log(data);
-        const name = data.user.name;
+        const name = data.user.displayName;
         const email = data.user.email;
+        dispatch(userActions.setUser({name, email}));
+        dispatch(modalActions.setUser({name, email}))
         navigagte("/calender");
-        dispatch(userActions.setUser({data, name, email}));
       })
       .catch((err) => {
         alert('로그인 실패')
@@ -120,7 +122,7 @@ const LoginPage = () => {
       });
   };
 
-  const loginFormHandler = (email, password, e) => {
+  const loginFormHandler = (email, password, name, e) => {
     e.preventDefault();
 
     if (!isEmail || !isPassword) {
@@ -131,11 +133,12 @@ const LoginPage = () => {
       .then((userCredential) => {
         // Signed in
         const user = userCredential.user;
-        navigagte("/calender");
+        
         console.log(user);
         const email = user.email;
-
-        dispatch(userActions.setUser({user, name, email}));
+        dispatch(userActions.setUser({name, email}));
+        dispatch(modalActions.setUser({name, email}))
+        navigagte("/calender");
       })
       .catch((error) => {
         console.log(error);
@@ -147,11 +150,17 @@ const LoginPage = () => {
 
   const createAccount = (email, password) => {
 
+    if (!isName || !isEmail || !isPassword ) {
+      return alert('올바른 양식을 기입해주세요!')
+    }
+
     createUserWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
         const user = userCredential;
         console.log(user);
-        navigagte("/header");
+        dispatch(userActions.setUser({name, email}));
+        dispatch(modalActions.setUser({name, email}))
+        navigagte("/calender");
       })
       .catch((error) => {
         alert("계정 생성 중 오류가 발생했습니다.");
@@ -176,7 +185,7 @@ const LoginPage = () => {
         </div>
         <form
           className={classes["login-form"]}
-          onSubmit={(event) => loginFormHandler(email, password, event)}
+          onSubmit={(event) => loginFormHandler(email, password, name, event)}
         >
           <div className={classes["login-info-area"]}>
             {creatingUser && <label htmlFor="name">이름</label>}

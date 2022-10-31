@@ -4,7 +4,7 @@ export const fetchScheduleData = () => {
   return async (dispatch) => {
     const fetchData = async () => {
       const response = await fetch(
-        "https://react-9501f-default-rtdb.firebaseio.com/schedule.json"
+        "https://react-9501f-default-rtdb.firebaseio.com/userData.json"
       );
 
       if (!response.ok) {
@@ -18,6 +18,7 @@ export const fetchScheduleData = () => {
       const scheduleData = await fetchData();
       dispatch(modalActions.fetchFromData(scheduleData));
     } catch (error) {
+      dispatch(modalActions)
       alert('데이터 불러오기 실패')
       throw new Error(error);
     }
@@ -28,7 +29,7 @@ export const sendScheduleData = (schedule) => {
   return async (dispatch) => {
     const sendData = async () => {
       const response = await fetch(
-        "https://react-9501f-default-rtdb.firebaseio.com/schedule.json",
+        "https://react-9501f-default-rtdb.firebaseio.com/userData.json",
         { method: "PUT", body: JSON.stringify(schedule) }
       );
 

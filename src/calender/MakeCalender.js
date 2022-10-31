@@ -7,7 +7,8 @@ import classes from "./Calender.module.css";
 
 const MakeCaledner = ({ year, month, firstDay, lastDate, identify }) => {
   const dispatch = useDispatch();
-  const schedule = useSelector((state) => state.modal.schedule);
+
+  const schedule = useSelector((state) => state.modal.userSchedule);
   const modaVisible = useSelector((state) => state.modal.isVisible);
 
   const listClickHandler = (

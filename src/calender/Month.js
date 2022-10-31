@@ -6,12 +6,17 @@ import Calender from "./Calender";
 import "./Month.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAngleLeft, faAngleRight } from "@fortawesome/free-solid-svg-icons";
+import { NavLink } from "react-router-dom";
 
 const Month = () => {
   const dispatch = useDispatch();
-  
+
   const monthInfo = useSelector((state) => state.month);
   const userInfo = useSelector((state) => state.user);
+
+  console.log(userInfo.user);
+  console.log(userInfo.name);
+  console.log(userInfo.email);
 
   const movePrevMonthHandler = () => {
     dispatch(monthActions.prevMonth());
@@ -46,7 +51,7 @@ const Month = () => {
         <nav className="header-nav">
           <ul>
             <li className="profile">{userInfo.name}</li>
-            <li onClick={logoutHandler}>Logout</li>
+            <NavLink to='/start' onClick={logoutHandler}>Logout</NavLink>
           </ul>
         </nav>
       </header>
