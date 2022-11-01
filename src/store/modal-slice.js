@@ -4,8 +4,6 @@ const modalSlice = createSlice({
   name: "modal",
   initialState: {
     isStart: false,
-    name: "",
-    email: "",
     isVisible: false,
     startDate: "",
     endDate: "",
@@ -374,12 +372,12 @@ const modalSlice = createSlice({
       console.log(state.userData);
     },
 
-    setUser(state, action) {
+    createUser(state, action) {
       state.changed = true;
       state.isStart = true;
       state.name = action.payload.name;
       state.email = action.payload.email;
-      const userIndex = state.userData.findIndex(
+      const userIndex = state.userData.findIndex( 
         (item) => item.email === action.payload.email
       );
 
@@ -399,17 +397,21 @@ const modalSlice = createSlice({
       } else {
         state.userIndex = userIndex;
       }
-      state.userSchedule = [...state.userData[state.userIndex]]
+      state.userSchedule = state.userData[state.userIndex]
+      console.log(state.userSchedule)
     },
 
     loginUser(state, action) {
-      state.isStart = true;
+      console.log('login 작동')
+      // state.isStart = true;
       state.userIndex = state.userData.findIndex(
         (item) => item.email === action.payload.email);
-      
+      console.log(state.userIndex);
       state.name = state.userData[state.userIndex].name;
       state.email = action.payload.email;
-      state.userSchedule = [...state.userData[state.userIndex]];
+      state.userSchedule = state.userData[state.userIndex];
+      console.log(state.userIndex);
+      console.log(state.userSchedule);
     },
 
     toggleChanged(state) {

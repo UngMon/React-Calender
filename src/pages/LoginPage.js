@@ -6,12 +6,12 @@ import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { useDispatch } from "react-redux";
-import { userActions } from "../store/userSlice";
 import { modalActions } from "../store/modal-slice";
 import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 import classes from "./LoginPage.module.css";
+import { userActions } from "../store/userSlice";
 
 const LoginPage = () => {
   const dispatch = useDispatch();
@@ -110,10 +110,10 @@ const LoginPage = () => {
     signInWithPopup(auth, provider)
       .then((data) => {
         console.log(data);
+        console.log('로그인 작동')
         const name = data.user.displayName;
         const email = data.user.email;
-        dispatch(userActions.setUser({ name, email }));
-        dispatch(modalActions.setUser({ name, email }));
+        dispatch(modalActions.confirmUser({ name, email }));
         navigagte("/calender");
       })
       .catch((err) => {
@@ -122,9 +122,9 @@ const LoginPage = () => {
       });
   };
 
-  const loginFormHandler = (name, email, password, e) => {
+  const loginFormHandler = (email, password, e) => {
     e.preventDefault();
-
+    console.log('작동1')
     if (!isEmail || !isPassword) {
       return alert("올바른 양식을 기입해주세요!");
     }
@@ -133,16 +133,8 @@ const LoginPage = () => {
       .then((userCredential) => {
         // Signed in
         const user = userCredential.user;
-        const email = user.email;
-        console.log(user);
 
-        if (name === "") {
-          dispatch(userActions.setUser({ email }));
-        } else {
-          dispatch(userActions.setUser({ name, email }));
-          dispatch(userActions.loginUser({ email }));
-        }
-
+        dispatch(modalActions.confirmUser({ email }));
         navigagte("/calender");
       })
       .catch((error) => {
@@ -162,8 +154,7 @@ const LoginPage = () => {
       .then((userCredential) => {
         const user = userCredential;
         console.log(user);
-        dispatch(userActions.setUser({ name, email }));
-        dispatch(modalActions.setUser({ name, email }));
+        dispatch(modalActions.createUser({ name, email }));
         navigagte("/calender");
       })
       .catch((error) => {
@@ -191,7 +182,7 @@ const LoginPage = () => {
         </div>
         <form
           className={classes["login-form"]}
-          onSubmit={(event) => loginFormHandler(name, email, password, event)}
+          onSubmit={(event) => loginFormHandler(email, password, event)}
         >
           <div className={classes["login-info-area"]}>
             {creatingUser && <label htmlFor="name">이름</label>}

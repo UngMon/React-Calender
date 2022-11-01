@@ -8,7 +8,12 @@ import classes from "./Calender.module.css";
 const MakeCaledner = ({ year, month, firstDay, lastDate, identify }) => {
   const dispatch = useDispatch();
 
-  const schedule = useSelector((state) => state.modal.userSchedule);
+   // {email: '', name: '', schedule: []}
+  const userData = useSelector((state) => state.modal.userSchedule);
+  
+  // {idx: '', todo: [ ... {}...]}
+  const schedule = userData.schedule;
+  console.log(schedule)
   const modaVisible = useSelector((state) => state.modal.isVisible);
 
   const listClickHandler = (
@@ -107,7 +112,7 @@ const MakeCaledner = ({ year, month, firstDay, lastDate, identify }) => {
         )
       );
     }
-    return;
+    return; 
   };
 
   const addClickHandler = (idx, dayIndex, week) => {
