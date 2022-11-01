@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
-import Month from "./calender/Month";
 import { useDispatch, useSelector } from "react-redux";
+import { modalActions } from "./store/modal-slice";
 import { fetchScheduleData, sendScheduleData } from "./store/fetch-action";
 import { Navigate, Route, Routes } from "react-router-dom";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "./Auth/firebase";
+import Month from "./calender/Month";
 import StartPage from "./pages/StartPage";
 import LoginPage from "./pages/LoginPage";
 import NotFound from "./pages/NotFound";
@@ -18,8 +19,9 @@ function App() {
   useEffect(() => {
     onAuthStateChanged(auth, (user) => {
       if (user) {
-        console.log(user)
+        const userEmail = user.email
         setIsLoggedIn(user);
+        dispatch(modalActions.setUserInfo({userEmail}))
       } else {
         setIsLoggedIn(false);
       }
@@ -41,10 +43,14 @@ function App() {
   return (
     <>
       <Routes>
-        {!isLoggedIn && <Route path="/" element={<Navigate replace to="/start" />} />}
+        {!isLoggedIn && (
+          <Route path="/" element={<Navigate replace to="/start" />} />
+        )}
         <Route path="/start" element={<StartPage />} />
         {!isLoggedIn && <Route path="/login" element={<LoginPage />} />}
-        {isLoggedIn && <Route path="/calender" element={<Month userInfo={isLoggedIn}/>} />}
+        {isLoggedIn && (
+          <Route path="/calender" element={<Month userInfo={isLoggedIn} />} />
+        )}
         <Route path="*" element={<NotFound />} />
       </Routes>
     </>
