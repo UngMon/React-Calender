@@ -3,15 +3,16 @@ import { createSlice } from "@reduxjs/toolkit";
 const modalSlice = createSlice({
   name: "modal",
   initialState: {
+    isStart: false,
     name: "",
     email: "",
-    userIndex: "",
     isVisible: false,
     startDate: "",
     endDate: "",
     week: "",
     dayIndex: "",
-    usersData: [],
+    userIndex: "",
+    userData: [],
     userSchedule: [],
     longArr: [],
     changed: false,
@@ -53,8 +54,11 @@ const modalSlice = createSlice({
 
     inputList(state, action) {
       state.changed = true;
-      const arr = [...state.usersData];
-
+      const arr = [...state.userData];
+      console.log(state.userData);
+      console.log(arr);
+      console.log(state.userIndex);
+      console.log(arr[state.userIndex]);
       // return { idx : '~~', todo: []} or undefined
       const result = arr[state.userIndex].schedule.find(
         (item) => item.idx === state.startDate
@@ -83,7 +87,6 @@ const modalSlice = createSlice({
 
         result.todo.sort((a, b) => (a.index < b.index ? -1 : 1));
         arr[state.userIndex].schedule[index] = result;
-
       } else {
         // 해당 날짜가 schedule 배열에 없을 때, 즉 처음
 
@@ -109,8 +112,8 @@ const modalSlice = createSlice({
           },
         ];
       }
-      state.usersData = [...arr];
-      state.userSchedule = [...arr[state.userIndex]];
+      state.userData = [...arr];
+      state.userSchedule = arr[state.userIndex];
     },
 
     longDateList(state, action) {
@@ -366,37 +369,52 @@ const modalSlice = createSlice({
 
     fetchFromData(state, action) {
       if (action.payload.length !== 0) {
-        state.usersData = action.payload;
+        state.userData = action.payload;
       }
+      console.log(state.userData);
     },
 
     setUser(state, action) {
       state.changed = true;
+      state.isStart = true;
       state.name = action.payload.name;
       state.email = action.payload.email;
-      const userIndex = state.usersData.findIndex(
+      const userIndex = state.userData.findIndex(
         (item) => item.email === action.payload.email
       );
 
       if (userIndex === -1) {
         // 신규 가입자 일 때,
-        state.userIndex = state.usersData.length;
 
-        state.usersData = [
-          ...state.usersData,
+        state.userData = [
+          ...state.userData,
           {
             email: action.payload.email,
             name: action.payload.name,
-            schedule: [],
+            schedule: [""],
           },
         ];
+
+        state.userIndex = state.userData.length - 1;
       } else {
         state.userIndex = userIndex;
       }
+      state.userSchedule = [...state.userData[state.userIndex]]
+    },
+
+    loginUser(state, action) {
+      state.isStart = true;
+      state.userIndex = state.userData.findIndex(
+        (item) => item.email === action.payload.email);
+      
+      state.name = state.userData[state.userIndex].name;
+      state.email = action.payload.email;
+      state.userSchedule = [...state.userData[state.userIndex]];
     },
 
     toggleChanged(state) {
       state.changed = false;
+      state.isStart = false;
     },
 
     listDone(state, action) {

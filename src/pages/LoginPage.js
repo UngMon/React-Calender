@@ -112,32 +112,37 @@ const LoginPage = () => {
         console.log(data);
         const name = data.user.displayName;
         const email = data.user.email;
-        dispatch(userActions.setUser({name, email}));
-        dispatch(modalActions.setUser({name, email}))
+        dispatch(userActions.setUser({ name, email }));
+        dispatch(modalActions.setUser({ name, email }));
         navigagte("/calender");
       })
       .catch((err) => {
-        alert('로그인 실패')
+        alert("로그인 실패");
         console.log(err);
       });
   };
 
-  const loginFormHandler = (email, password, name, e) => {
+  const loginFormHandler = (name, email, password, e) => {
     e.preventDefault();
 
     if (!isEmail || !isPassword) {
-      return alert('올바른 양식을 기입해주세요!')
+      return alert("올바른 양식을 기입해주세요!");
     }
 
     signInWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
         // Signed in
         const user = userCredential.user;
-        
-        console.log(user);
         const email = user.email;
-        dispatch(userActions.setUser({name, email}));
-        dispatch(modalActions.setUser({name, email}))
+        console.log(user);
+
+        if (name === "") {
+          dispatch(userActions.setUser({ email }));
+        } else {
+          dispatch(userActions.setUser({ name, email }));
+          dispatch(userActions.loginUser({ email }));
+        }
+
         navigagte("/calender");
       })
       .catch((error) => {
@@ -148,18 +153,17 @@ const LoginPage = () => {
       });
   };
 
-  const createAccount = (email, password) => {
-
-    if (!isName || !isEmail || !isPassword ) {
-      return alert('올바른 양식을 기입해주세요!')
+  const createAccount = (name, email, password) => {
+    if (!isName || !isEmail || !isPassword) {
+      return alert("올바른 양식을 기입해주세요!");
     }
 
     createUserWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
         const user = userCredential;
         console.log(user);
-        dispatch(userActions.setUser({name, email}));
-        dispatch(modalActions.setUser({name, email}))
+        dispatch(userActions.setUser({ name, email }));
+        dispatch(modalActions.setUser({ name, email }));
         navigagte("/calender");
       })
       .catch((error) => {
@@ -177,7 +181,9 @@ const LoginPage = () => {
       <div className={classes["login-box"]}>
         <div className={classes["login-box-title"]}>
           <div className={classes["back"]}>
-            <Link to="/start"><FontAwesomeIcon icon={faArrowLeft} /></Link>
+            <Link to="/start">
+              <FontAwesomeIcon icon={faArrowLeft} />
+            </Link>
           </div>
           <div className={classes["title"]}>
             <span>{creatingUser ? "회원 가입" : "로그인"}</span>
@@ -185,7 +191,7 @@ const LoginPage = () => {
         </div>
         <form
           className={classes["login-form"]}
-          onSubmit={(event) => loginFormHandler(email, password, name, event)}
+          onSubmit={(event) => loginFormHandler(name, email, password, event)}
         >
           <div className={classes["login-info-area"]}>
             {creatingUser && <label htmlFor="name">이름</label>}
@@ -199,9 +205,7 @@ const LoginPage = () => {
               />
             )}
             {creatingUser && (
-              <p style={{ color: isEmail ? "grey" : "red" }}>
-                {nameMessage}
-              </p>
+              <p style={{ color: isEmail ? "grey" : "red" }}>{nameMessage}</p>
             )}
             <label htmlFor="email">이메일</label>
             <input
@@ -232,27 +236,22 @@ const LoginPage = () => {
             {creatingUser ? (
               <button
                 type="button"
-                onClick={() => createAccount(email, password)}
+                onClick={() => createAccount(name, email, password)}
               >
                 계정 생성
               </button>
             ) : (
-              <button
-                type="submit"
-                onClick={(e) => loginFormHandler(email, password, e)}
-              >
-                확인
-              </button>
+              <button type="submit">확인</button>
             )}
           </div>
           <div className={classes["social-login-area"]}>
             <span>소셜 로그인</span>
             <img
               style={{ display: "blcok" }}
-              className={classes['goolge-Logo']}
+              className={classes["goolge-Logo"]}
               onClick={googleSignIn}
-              width='40'
-              height='40'
+              width="40"
+              height="40"
               src="img/Google.jpeg"
               alt="Google"
             />

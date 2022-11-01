@@ -13,14 +13,16 @@ function App() {
   const modal = useSelector((state) => state.modal);
 
   useEffect(() => {
-    dispatch(fetchScheduleData());
+    if (modal.isStart) {
+      dispatch(fetchScheduleData());
+    }
     console.log("fetch");
-  }, [dispatch]);
+  }, [modal, dispatch]);
 
   useEffect(() => {
     if (modal.changed) {
       console.log("작동여부");
-      dispatch(sendScheduleData(modal.schedule));
+      dispatch(sendScheduleData(modal.userData));
     }
   }, [modal, dispatch]);
 
