@@ -12,7 +12,7 @@ const Month = ({userInfo}) => {
   const dispatch = useDispatch();
 
   const monthInfo = useSelector((state) => state.month);
-  const modalInfo = useSelector(state => state.modal)
+  const scheduleInfo = useSelector(state => state.modal.userSchedule);
 
 
   const movePrevMonthHandler = () => {
@@ -27,6 +27,8 @@ const Month = ({userInfo}) => {
     signOut(auth).catch((err) => {
       alert("로그아웃 실패");
       console.log(err);
+      localStorage.clear()
+      
     });
   };
 
@@ -47,7 +49,7 @@ const Month = ({userInfo}) => {
         </div>
         <nav className="header-nav">
           <ul>
-            <li className="profile">{}</li>
+            <li className="profile">{scheduleInfo.name}</li>
             <NavLink to='/start' onClick={logoutHandler}>Logout</NavLink>
           </ul>
         </nav>

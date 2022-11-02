@@ -26,7 +26,7 @@ function App() {
         setIsLoggedIn(false);
       }
     });
-  }, []);
+  }, [dispatch]);
 
   useEffect(() => {
     dispatch(fetchScheduleData());
