@@ -127,8 +127,7 @@ const modalSlice = createSlice({
       let userSchedule = state.userData[state.userIndex];
       console.log(current(userSchedule));
 
-
-      if (userSchedule.schedule[0] === '') {
+      if (userSchedule.schedule[0] === "") {
         userSchedule.schedule.splice(0, 1);
       }
 
@@ -206,7 +205,7 @@ const modalSlice = createSlice({
                   isLong: true,
                   style: false,
                   index: "1",
-                  arr: [i], 
+                  arr: [i],
                 },
               ];
               console.log("이곳인가??");
@@ -215,7 +214,7 @@ const modalSlice = createSlice({
           console.log(current(userSchedule.schedule));
           userSchedule.schedule[index].todo.sort((a, b) =>
             a.index < b.index ? -1 : 1
-         );
+          );
         } else {
           // 다시 돌아와서, schedule에 longArr에 있는 날짜에 일정이 없을 때,
           if (i === state.startDate) {
@@ -311,43 +310,57 @@ const modalSlice = createSlice({
 
     removeList(state, action) {
       state.changed = true;
-      const index = action.payload.index;
-      const listIndex = action.payload.listIndex;
 
-      console.log(state.startDate);
-      console.log(state.endDate);
+      let dummyUserData = [...state.userData];
+      //{email: '', name: '', schedule: [~~]} 에서 schedule
+      // [... {idx: '', todo: [...] }, ...]
+      let userSchedule = state.userSchedule.schedule;
 
-      if (state.schedule[index].todo[listIndex].arr.length === 1) {
-        state.schedule[index].todo.splice(listIndex, 1);
+      const index = action.payload.index; // schedule 내부 {idx: '', todo: []} 인덱스
+      const listIndex = action.payload.listIndex; // todo 내부 {~~} 인덱스
 
-        state.schedule[index].todo.length === 0 &&
-          state.schedule.splice(index, 1);
+      //하루를 삭제할 때,
+      if (userSchedule[index].todo[listIndex].arr.length === 1) {
+        userSchedule[index].todo.splice(listIndex, 1);
+
+        // todo가 비어있는 배열이라면 {idx: '', todo: []} 삭제
+        userSchedule[index].todo.length === 0 && userSchedule.splice(index, 1);
       } else {
-        const arr = state.schedule[index].todo[listIndex].arr;
+        // 하루가 아닌 여러 날짜를 삭제할 때,
+        const Array = userSchedule[index].todo[listIndex].arr;
 
-        arr.map((items) => {
-          let result;
-          let listObject;
-          let idx;
-          if (items === arr[0]) {
-            state.schedule[index].todo.splice(listIndex, 1);
+        let result;
+        let listObject;
+        let idx;
 
-            state.schedule[index].todo.length === 0 &&
-              state.schedule.splice(index, 1);
+        Array.forEach((items) => {
+
+          if (items === Array[0]) {
+            // Array[0] === startDate, 즉 시작 날일 때 삭제
+            userSchedule[index].todo.splice(listIndex, 1);
+
+            // todo가 비어있는 배열이라면 {idx: '', todo: []} 삭제
+            userSchedule[index].todo.length === 0 &&
+              userSchedule.splice(index, 1);
           } else {
-            result = state.schedule.find((item) => item.idx === items);
+            result = userSchedule.find((item) => item.idx === items);
+            
             listObject = result.todo.find((item) => item.isLong === true);
+            
+            idx = userSchedule.indexOf(result);
 
-            idx = state.schedule.indexOf(result);
             const listIdx = result.todo.indexOf(listObject);
 
-            state.schedule[idx].todo.splice(listIdx, 1);
+            userSchedule[idx].todo.splice(listIdx, 1);
 
-            state.schedule[idx].todo.length === 0 &&
-              state.schedule.splice(idx, 1);
+            userSchedule[idx].todo.length === 0 &&
+              userSchedule.splice(idx, 1);
           }
+          
+          dummyUserData[state.userIndex] = userSchedule;
 
-          return state.schedule;
+          state.userData = [...dummyUserData];
+          state.userSchedule = userSchedule;
         });
       }
     },
