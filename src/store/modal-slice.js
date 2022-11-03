@@ -1,4 +1,4 @@
-import { createSlice, current } from "@reduxjs/toolkit";
+import { createSlice } from "@reduxjs/toolkit";
 
 const modalSlice = createSlice({
   name: "modal",
@@ -28,7 +28,6 @@ const modalSlice = createSlice({
 
     clickedStartDate(state, action) {
       state.startDate = action.payload.idx;
-      console.log(action.payload.idx);
       state.week = action.payload.week;
       state.dayIndex = action.payload.dayIndex;
       state.longArr = action.payload.longArr;
@@ -38,7 +37,6 @@ const modalSlice = createSlice({
     },
 
     clickedLastDate(state, action) {
-      console.log(state.startDate);
       state.endDate = action.payload.idx;
       if (state.startDate !== action.payload.idx) {
         state.longArr = action.payload.longArr;
@@ -66,9 +64,6 @@ const modalSlice = createSlice({
 
       if (index !== -1) {
         // 존재하면
-        console.log(index);
-        console.log(state.userIndex);
-        console.log(current(arr[state.userIndex].schedule));
         arr[state.userIndex].schedule[index].todo = [
           ...arr[state.userIndex].schedule[index].todo,
           {
@@ -125,7 +120,6 @@ const modalSlice = createSlice({
 
       // {email: '', name: '', schedule: [...]}
       let userSchedule = state.userData[state.userIndex];
-      console.log(current(userSchedule));
 
       if (userSchedule.schedule[0] === "") {
         userSchedule.schedule.splice(0, 1);
@@ -133,7 +127,6 @@ const modalSlice = createSlice({
 
       for (let i of state.longArr) {
         const index = userSchedule.schedule.findIndex((item) => item.idx === i);
-        console.log(index);
 
         if (index !== -1) {
           // schedule에서 longArr배열에 있는 i 가 존재할 때, 즉 기존 일정이 있을 때!
@@ -162,7 +155,6 @@ const modalSlice = createSlice({
                 arr: state.longArr,
               },
             ];
-            console.log("이곳인가??");
           } else {
             // 첫 째날이 아닌 그 이후 Date일 때,
 
@@ -190,7 +182,6 @@ const modalSlice = createSlice({
                   arr: state.longArr,
                 },
               ];
-              console.log("이곳인가??");
             } else {
               userSchedule.schedule[index].todo = [
                 ...userSchedule.schedule[index].todo,
@@ -208,10 +199,9 @@ const modalSlice = createSlice({
                   arr: [i],
                 },
               ];
-              console.log("이곳인가??");
             }
           }
-          console.log(current(userSchedule.schedule));
+
           userSchedule.schedule[index].todo.sort((a, b) =>
             a.index < b.index ? -1 : 1
           );
@@ -275,7 +265,6 @@ const modalSlice = createSlice({
                   ],
                 },
               ];
-              console.log("hi!");
             } else {
               userSchedule.schedule = [
                 ...userSchedule.schedule,
@@ -298,7 +287,6 @@ const modalSlice = createSlice({
                   ],
                 },
               ];
-              console.log("hi!");
             }
           }
         }
@@ -334,7 +322,6 @@ const modalSlice = createSlice({
         let idx;
 
         Array.map((items) => {
-
           if (items === Array[0]) {
             // Array[0] === startDate, 즉 시작 날일 때 삭제
             userSchedule[index].todo.splice(listIndex, 1);
@@ -342,27 +329,25 @@ const modalSlice = createSlice({
             // todo가 비어있는 배열이라면 {idx: '', todo: []} 삭제
             userSchedule[index].todo.length === 0 &&
               userSchedule.splice(index, 1);
-              console.log(current(userSchedule))
           } else {
             result = userSchedule.find((item) => item.idx === items);
-            
+
             listObject = result.todo.find((item) => item.isLong === true);
-            
+
             idx = userSchedule.indexOf(result);
 
             const listIdx = result.todo.indexOf(listObject);
 
             userSchedule[idx].todo.splice(listIdx, 1);
 
-            userSchedule[idx].todo.length === 0 &&
-              userSchedule.splice(idx, 1);
+            userSchedule[idx].todo.length === 0 && userSchedule.splice(idx, 1);
           }
           return userSchedule;
         });
       }
 
       if (userSchedule.length === 0) {
-        userSchedule = [''];
+        userSchedule = [""];
       }
 
       dummyUserData[state.userIndex].schedule = userSchedule;
@@ -372,9 +357,14 @@ const modalSlice = createSlice({
 
     editList(state, action) {
       state.changed = true;
-      let arr = [...state.schedule];
 
-      arr[action.payload.index].todo[action.payload.listIndex] = {
+      const index = action.payload.index;
+      const listIndex = action.payload.listIndex;
+      const userIndex = state.userIndex;
+
+      let dummyUserData = [...state.userData];
+
+      dummyUserData[userIndex].schedule[index].todo[listIndex] = {
         startDate: action.payload.startDate,
         endDate: action.payload.endDate,
         firstTime: action.payload.firstTime,
@@ -388,11 +378,12 @@ const modalSlice = createSlice({
         arr: [action.payload.startDate],
       };
 
-      arr[action.payload.index].todo.sort((a, b) =>
+      dummyUserData[userIndex].schedule[index].todo.sort((a, b) =>
         a.firstTime < b.firstTime ? -1 : a.firstTime > b.firstTime ? 1 : 0
       );
 
-      state.schedule = [...arr];
+      state.userData = [...dummyUserData];
+      state.userSchedule = dummyUserData[userIndex];
     },
 
     fetchFromData(state, action) {
@@ -429,7 +420,6 @@ const modalSlice = createSlice({
         state.userIndex = userIndex;
       }
       state.userSchedule = state.userData[state.userIndex];
-      console.log(state.userSchedule);
     },
 
     confirmUser(state, action) {
@@ -441,10 +431,6 @@ const modalSlice = createSlice({
 
       state.userIndex = userIndex;
       state.userSchedule = state.userData[userIndex];
-
-      console.log(state.userIndex);
-      console.log(state.userIndex);
-      console.log(state.userSchedule);
     },
 
     setUserInfo(state, action) {
@@ -463,12 +449,17 @@ const modalSlice = createSlice({
 
     listDone(state, action) {
       state.changed = true;
-      let arr = [...state.schedule];
+      const index = action.payload.index;
+      const listIndex = action.payload.listIndex;
+      const userIndex = state.userIndex;
+      let dummyUserData = [...state.userData];
 
-      arr[action.payload.index].todo[action.payload.listIndex].style =
-        !arr[action.payload.index].todo[action.payload.listIndex].style;
 
-      state.schedule = [...arr];
+      dummyUserData[userIndex].schedule[index].todo[listIndex].style =
+        !dummyUserData[userIndex].schedule[index].todo[listIndex].style;
+      
+      state.userData = [...dummyUserData];
+      state.userSchedule = dummyUserData[userIndex];
     },
   },
 });

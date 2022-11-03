@@ -13,7 +13,7 @@ const MakeCaledner = ({ year, month, firstDay, lastDate, identify }) => {
   
   // {idx: '', todo: [ ... {}...]}
   const schedule = userData.schedule;
-  console.log(schedule)
+
   const modaVisible = useSelector((state) => state.modal.isVisible);
 
   const listClickHandler = (
