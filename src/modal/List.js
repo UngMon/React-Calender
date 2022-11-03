@@ -94,7 +94,9 @@ const List = () => {
     }
 
     if (firstTime > lastTime) {
-      return alert("시작시간이 끝나는 시간보다 큽니다!!");
+      if (comparison === 4) {
+        return alert("시작시간이 끝나는 시간보다 큽니다!!");
+      }
     }
 
     if (comparison === 5) {
@@ -141,9 +143,7 @@ const List = () => {
     >
       <div className="option-box">
         <div
-          onClick={() =>
-            listEditHandler(listInfo.startDate, listInfo.endDate)
-          }
+          onClick={() => listEditHandler(listInfo.startDate, listInfo.endDate)}
         >
           <FontAwesomeIcon icon={faEdit} />
         </div>
@@ -179,6 +179,7 @@ const List = () => {
                 lastTime={listInfo.lastTime}
                 timeOneRef={timeOneRef}
                 timeTwoRef={timeTwoRef}
+                comparison={comparison}
               />
             </div>
           </form>

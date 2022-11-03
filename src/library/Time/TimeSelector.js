@@ -12,6 +12,7 @@ const TimeSelector = ({
   lastTime,
   timeOneRef,
   timeTwoRef,
+  comparison,
 }) => {
   const dispatch = useDispatch();
   const timeState = useSelector((state) => state.time);
@@ -50,8 +51,10 @@ const TimeSelector = ({
     <div className="time-date-box">
       <div className="time-area">
         <div className="time-area-name">
-          <h4 onClick={firstDateHanlder} >
-            {시작날[1] + "월 " + 시작날[2] + "일"}
+          <h4 onClick={firstDateHanlder}>
+            {comparison !== 1 && 시작날[1] + "월 " + 시작날[2] + "일"}
+            {comparison === 1 &&
+              시작날[0] + "년" + 시작날[1] + "월" + 시작날[2] + "일"}
           </h4>
         </div>
         <div className="time-one">
@@ -72,7 +75,9 @@ const TimeSelector = ({
         </div>
         <div className="time-area-name">
           <h4 onClick={lastDateHandler}>
-            {마지막날[1] + "월 " + 마지막날[2] + "일"}
+            {comparison !== 1 && 마지막날[1] + "월 " + 마지막날[2] + "일"}
+            {comparison === 1 &&
+              마지막날[0] + "년" + 마지막날[1] + "월" + 마지막날[2] + "일"}
           </h4>
         </div>
         <div className="time-two">

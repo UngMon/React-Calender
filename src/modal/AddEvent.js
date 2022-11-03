@@ -12,7 +12,7 @@ import "./AddEvent.css";
 
 const setTime = SetTime();
 const currentTime = setTime.currentTime;
-console.log(currentTime)
+console.log(currentTime);
 const LastTime = setTime.lastTime;
 
 const AddEvent = () => {
@@ -24,7 +24,7 @@ const AddEvent = () => {
 
   const modalRef = useRef();
   const inputRef = useRef();
-  
+
   const timeOneRef = useRef();
   const timeTwoRef = useRef();
 
@@ -73,20 +73,24 @@ const AddEvent = () => {
       }
     }
 
-    if (firstTime > lastTime) {
-      return alert("끝나는 시간이 시작 시간보다 작습니다!! ex) 00:30 ~ 01:30");
-    }
-
     if (comparison === 5) {
-      return alert('시작 날이 마지막 날 보다 큽니다!!');
+      return alert("시작 날이 마지막 날 보다 큽니다!!");
     }
 
+    if (firstTime > lastTime) {
+      if (comparison === 4) {
+        return alert("종료 시간이 시작 시간보다 작습니다!! ex) 00:30 ~ 01:30");
+      }
+    }
+
+    // 시작날과 마지막 날 일치
     if (comparison === 4) {
-      dispatch(modalActions.inputList({list, firstTime, lastTime}))
+      dispatch(modalActions.inputList({ list, firstTime, lastTime }));
     }
 
+    // 마지막 날이 시작날 보다 큼.
     if (comparison <= 3) {
-      dispatch(modalActions.longDateList({list, firstTime, lastTime}))
+      dispatch(modalActions.longDateList({ list, firstTime, lastTime }));
     }
 
     inputRef.current.value = "";
@@ -121,6 +125,7 @@ const AddEvent = () => {
         lastTime={LastTime}
         timeOneRef={timeOneRef}
         timeTwoRef={timeTwoRef}
+        comparison={comparison}
       />
       <div className="buttonBox">
         <button type="submit">저장</button>
