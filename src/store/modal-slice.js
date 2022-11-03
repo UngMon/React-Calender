@@ -333,7 +333,7 @@ const modalSlice = createSlice({
         let listObject;
         let idx;
 
-        Array.forEach((items) => {
+        Array.map((items) => {
 
           if (items === Array[0]) {
             // Array[0] === startDate, 즉 시작 날일 때 삭제
@@ -342,6 +342,7 @@ const modalSlice = createSlice({
             // todo가 비어있는 배열이라면 {idx: '', todo: []} 삭제
             userSchedule[index].todo.length === 0 &&
               userSchedule.splice(index, 1);
+              console.log(current(userSchedule))
           } else {
             result = userSchedule.find((item) => item.idx === items);
             
@@ -356,13 +357,17 @@ const modalSlice = createSlice({
             userSchedule[idx].todo.length === 0 &&
               userSchedule.splice(idx, 1);
           }
-          
-          dummyUserData[state.userIndex] = userSchedule;
-
-          state.userData = [...dummyUserData];
-          state.userSchedule = userSchedule;
+          return userSchedule;
         });
       }
+
+      if (userSchedule.length === 0) {
+        userSchedule = [''];
+      }
+
+      dummyUserData[state.userIndex].schedule = userSchedule;
+      state.userData = [...dummyUserData];
+      state.userSchedule.schedule = userSchedule;
     },
 
     editList(state, action) {

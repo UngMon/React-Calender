@@ -26,8 +26,8 @@ const List = () => {
   const index = listState.index;
   const listIndex = listState.listIndex;
 
-  const schedule = modalState.schedule;
-  const 리스트날짜정보 = schedule[index].todo[listIndex];
+  const schedule = modalState.userSchedule.schedule;
+  const listInfo = schedule[index].todo[listIndex];
 
   const startDate = modalState.startDate;
   const endDate = modalState.endDate;
@@ -74,8 +74,8 @@ const List = () => {
 
     const pattern = /^(오전|오후)\s(([0][0-9]|[1][0-2])):([0-5][0-9])$/;
     let list = inputRef.current.value;
-    let firstTime = timeOneRef.current.value || 리스트날짜정보.firstTime;
-    let lastTime = timeTwoRef.current.value || 리스트날짜정보.lastTime;
+    let firstTime = timeOneRef.current.value || listInfo.firstTime;
+    let lastTime = timeTwoRef.current.value || listInfo.lastTime;
 
     if (list.trim() === "") {
       list = listState.listName;
@@ -142,7 +142,7 @@ const List = () => {
       <div className="option-box">
         <div
           onClick={() =>
-            listEditHandler(리스트날짜정보.startDate, 리스트날짜정보.endDate)
+            listEditHandler(listInfo.startDate, listInfo.endDate)
           }
         >
           <FontAwesomeIcon icon={faEdit} />
@@ -175,8 +175,8 @@ const List = () => {
               <TimeSelector
                 startDate={startDate}
                 endDate={endDate}
-                firstTime={리스트날짜정보.firstTime}
-                lastTime={리스트날짜정보.lastTime}
+                firstTime={listInfo.firstTime}
+                lastTime={listInfo.lastTime}
                 timeOneRef={timeOneRef}
                 timeTwoRef={timeTwoRef}
               />
