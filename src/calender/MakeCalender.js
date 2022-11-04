@@ -63,29 +63,30 @@ const MakeCaledner = ({ year, month, firstDay, lastDate, identify }) => {
               key={item.firstTime + " " + item.lastTime + listIndex}
               className={`${classes["list-boundary"]}`}
               style={{ width: `${item.length}00%` }}
+              onClick={(event) => {
+                event.stopPropagation();
+                const key = item.firstTime + listIndex;
+                listClickHandler(
+                  key,
+                  startDate,
+                  week,
+                  year,
+                  month,
+                  date,
+                  dayIdx,
+                  item.list,
+                  listIndex,
+                  scheduleIndex
+                );
+              }}
             >
               <div
                 key={item.firstTime + " " + item.lastTime + listIndex}
                 id={item.firstTime}
                 className={`${classes.list} ${item.style && classes.done} ${
-                  item.length > 1 && classes.long
+                  item.isLong && classes.long
                 }`}
-                onClick={(event) => {
-                  event.stopPropagation();
-                  const key = item.firstTime + listIndex;
-                  listClickHandler(
-                    key,
-                    startDate,
-                    week,
-                    year,
-                    month,
-                    date,
-                    dayIdx,
-                    item.list,
-                    listIndex,
-                    scheduleIndex
-                  );
-                }}
+                
                 dayindex={dayIdx}
               >
                 <span>{item.firstTime + " " + item.list}</span>

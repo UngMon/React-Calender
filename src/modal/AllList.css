@@ -54,6 +54,24 @@
   margin-top: 10px;
 }
 
+.start-date {
+  height: 100%;
+  background-color: rgb(121, 134, 203);
+  border-right: 50% solid transparent;
+  border-top: 50% solid transparent;
+  border-bottom: 50% solid transparent;
+}
+
+.fake-date {
+  background-color: rgb(121, 134, 203);
+  border-radius: 10px 10px 10px 10px;
+}
+
+.end-date {
+  background-color: rgb(121, 134, 203);
+  border-radius: 10px 0 0 10px;
+}
+
 .li-day-1 {
   left: 1%;
 }

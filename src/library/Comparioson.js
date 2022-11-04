@@ -2,9 +2,6 @@ export const comparisonHandler = (startDate, endDate) => {
   const 시작날 = startDate.split(".");
   const 마지막날 = endDate.split(".");
 
-  console.log(시작날)
-  console.log(마지막날)
-
   // 시작날 = ['year', 'month', 'date'];
   // 마지막날 = ['year', 'month', 'date'];
 
@@ -48,7 +45,5 @@ export const comparisonHandler = (startDate, endDate) => {
     }
   }
 
-  
-  console.log(result)
   return result;
 };

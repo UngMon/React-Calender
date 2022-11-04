@@ -26,6 +26,9 @@ const List = () => {
   const index = listState.index;
   const listIndex = listState.listIndex;
 
+  console.log(index)
+  console.log(listIndex);
+
   const schedule = modalState.userSchedule.schedule;
   const listInfo = schedule[index].todo[listIndex];
 
@@ -107,10 +110,12 @@ const List = () => {
     dispatch(modalActions.removeList({ index, listIndex }));
 
     if (comparison === 4) {
+      console.log('여기?')
       dispatch(modalActions.inputList({ firstTime, lastTime, list }));
     }
 
     if (comparison <= 3) {
+      console.log('여기?')
       dispatch(modalActions.longDateList({ firstTime, lastTime, list }));
     }
 

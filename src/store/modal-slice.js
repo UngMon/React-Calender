@@ -145,6 +145,8 @@ const modalSlice = createSlice({
                 list: action.payload.list,
                 style: false,
                 length: Leng,
+                isStart: true,
+                isEnd: false,
                 isFake: false,
                 isLong: true,
                 index:
@@ -171,7 +173,9 @@ const modalSlice = createSlice({
                   lastTime: action.payload.lastTime,
                   list: action.payload.list,
                   length: Leng,
+                  isStart: false,
                   isFake: false,
+                  isEnd: leng === 1 ? true : false,
                   isLong: true,
                   style: false,
                   index:
@@ -192,8 +196,10 @@ const modalSlice = createSlice({
                   lastTime: action.payload.lastTime,
                   list: action.payload.list,
                   length: 1,
+                  isStart: false,
+                  isEnd: leng === 1 ? true : false,
                   isFake: true,
-                  isLong: true,
+                  isLong: false,
                   style: false,
                   index: "1",
                   arr: [i],
@@ -225,6 +231,8 @@ const modalSlice = createSlice({
                     list: action.payload.list,
                     length: Leng,
                     style: false,
+                    isStart: true,
+                    isEnd: false,
                     isFake: false,
                     isLong: true,
                     index:
@@ -253,6 +261,8 @@ const modalSlice = createSlice({
                       list: action.payload.list,
                       length: Leng,
                       style: false,
+                      isStart: false,
+                      isEnd: leng === 1 ? true : false,
                       isFake: false,
                       isLong: true,
                       index:
@@ -279,8 +289,10 @@ const modalSlice = createSlice({
                       list: action.payload.list,
                       length: 1,
                       style: false,
+                      isStart: false,
+                      isEnd: leng === 1 ? true : false,
                       isFake: true,
-                      isLong: true,
+                      isLong: false,
                       index: "1",
                       arr: [i],
                     },
@@ -355,36 +367,38 @@ const modalSlice = createSlice({
       state.userSchedule.schedule = userSchedule;
     },
 
-    editList(state, action) {
-      state.changed = true;
+    // editList(state, action) {
+    //   state.changed = true;
 
-      const index = action.payload.index;
-      const listIndex = action.payload.listIndex;
-      const userIndex = state.userIndex;
+    //   const index = action.payload.index;
+    //   const listIndex = action.payload.listIndex;
+    //   console.log(index)
+    //   console.log(listIndex);
+    //   const userIndex = state.userIndex;
 
-      let dummyUserData = [...state.userData];
+    //   let dummyUserData = [...state.userData];
 
-      dummyUserData[userIndex].schedule[index].todo[listIndex] = {
-        startDate: action.payload.startDate,
-        endDate: action.payload.endDate,
-        firstTime: action.payload.firstTime,
-        lastTime: action.payload.lastTime,
-        list: action.payload.inputList,
-        length: "1",
-        style: false,
-        isFake: false,
-        isLong: false,
-        index: action.payload.firstTime + action.payload.lastTime,
-        arr: [action.payload.startDate],
-      };
+    //   dummyUserData[userIndex].schedule[index].todo[listIndex] = {
+    //     startDate: action.payload.startDate,
+    //     endDate: action.payload.endDate,
+    //     firstTime: action.payload.firstTime,
+    //     lastTime: action.payload.lastTime,
+    //     list: action.payload.inputList,
+    //     length: "1",
+    //     style: false,
+    //     isFake: false,
+    //     isLong: false,
+    //     index: action.payload.firstTime + action.payload.lastTime,
+    //     arr: [action.payload.startDate],
+    //   };
 
-      dummyUserData[userIndex].schedule[index].todo.sort((a, b) =>
-        a.firstTime < b.firstTime ? -1 : a.firstTime > b.firstTime ? 1 : 0
-      );
+    //   dummyUserData[userIndex].schedule[index].todo.sort((a, b) =>
+    //     a.firstTime < b.firstTime ? -1 : a.firstTime > b.firstTime ? 1 : 0
+    //   );
 
-      state.userData = [...dummyUserData];
-      state.userSchedule = dummyUserData[userIndex];
-    },
+    //   state.userData = [...dummyUserData];
+    //   state.userSchedule = dummyUserData[userIndex];
+    // },
 
     fetchFromData(state, action) {
       if (action.payload.length !== 0) {

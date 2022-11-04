@@ -9,7 +9,8 @@ import { listActions } from "../store/list-slice";
 
 const AllList = () => {
   const dispatch = useDispatch();
-  const schedule = useSelector((state) => state.modal.schedule);
+
+  const schedule = useSelector((state) => state.modal.userSchedule.schedule);
   const allModal = useSelector((state) => state.all);
 
   const modalRef = useRef();
@@ -35,7 +36,9 @@ const AllList = () => {
     return schedule[allModal.index].todo.map((item, listIndex) => (
       <li
         key={item.firstTime + " " + item.lastTime + listIndex}
-        className="item-list"
+        className={`item-list ${item.isStart && "start-date"} ${
+          item.isFake && "fake-date"
+        } ${item.isEnd === "end-date"}`}
       >
         {item.firstTime + " " + item.list}
       </li>
