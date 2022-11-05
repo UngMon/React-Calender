@@ -8,9 +8,9 @@ import classes from "./Calender.module.css";
 const MakeCaledner = ({ year, month, firstDay, lastDate, identify }) => {
   const dispatch = useDispatch();
 
-   // {email: '', name: '', schedule: []}
+  // {email: '', name: '', schedule: []}
   const userData = useSelector((state) => state.modal.userSchedule);
-  
+
   // {idx: '', todo: [ ... {}...]}
   const schedule = userData.schedule;
 
@@ -86,7 +86,6 @@ const MakeCaledner = ({ year, month, firstDay, lastDate, identify }) => {
                 className={`${classes.list} ${item.style && classes.done} ${
                   item.isLong && classes.long
                 }`}
-                
                 dayindex={dayIdx}
               >
                 <span>{item.firstTime + " " + item.list}</span>
@@ -102,18 +101,23 @@ const MakeCaledner = ({ year, month, firstDay, lastDate, identify }) => {
         ) : (
           listIndex === 3 && (
             <div
-              key={listIndex}
-              className={classes.list}
-              onClick={(event) => {
-                event.stopPropagation();
-                allListClickHandler(startDate, dayIdx, week, scheduleIndex);
-              }}
-            >{` ${toDoList.todo.length - 3}개 더보기`}</div>
+              key={item.firstTime + " " + item.lastTime + listIndex}
+              className={`${classes["list-boundary"]}`}
+            >
+              <div
+                key={listIndex}
+                className={classes.list}
+                onClick={(event) => {
+                  event.stopPropagation();
+                  allListClickHandler(startDate, dayIdx, week, scheduleIndex);
+                }}
+              >{`${toDoList.todo.length - 3}개 더보기`}</div>
+            </div>
           )
         )
       );
     }
-    return; 
+    return;
   };
 
   const addClickHandler = (idx, dayIndex, week) => {
@@ -180,7 +184,9 @@ const MakeCaledner = ({ year, month, firstDay, lastDate, identify }) => {
                 } ${
                   identify !== idx && dayIdx === 1
                     ? classes.sunday
-                    : i === 7 ? classes.saturday : false
+                    : i === 7
+                    ? classes.saturday
+                    : false
                 }`}
               >
                 {nowDate}

@@ -77,10 +77,6 @@
   height: 25%;
 }
 
-.list-boundary:hover {
-  background-color: lightblue;
-}
-
 .list {
   width: 100%;
   height: 95%;
@@ -106,12 +102,18 @@
 .list_box .nothing {
   background-color: transparent;
   height: 25%;
-  box-sizing: border-box;
   padding: 0 5px;
 }
 
+.list-more {
+  height: 25%;
+}
+
 .list:hover {
-  background-color: rgb(238, 236, 236);
+  background-color: rgb(193, 193, 193);
+}
+.list-more:hover {
+  background-color: rgb(193, 193, 193);
 }
 
 .done {

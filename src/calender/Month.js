@@ -8,7 +8,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAngleLeft, faAngleRight } from "@fortawesome/free-solid-svg-icons";
 import { NavLink } from "react-router-dom";
 
-const Month = ({userInfo}) => {
+const Month = () => {
   const dispatch = useDispatch();
 
   const monthInfo = useSelector((state) => state.month);
@@ -37,14 +37,15 @@ const Month = ({userInfo}) => {
       <header className="header">
         <div className="header-name">Your Calender</div>
         <div className="month-area">
-          <button onClick={movePrevMonthHandler}>
+          <button onClick={movePrevMonthHandler} style={{backgroundColor: "transparent"}}>
+            {/* <span className="move-button">{'<'}</span> */}
             <FontAwesomeIcon icon={faAngleLeft} />
           </button>
           <span>
             {monthInfo.year}년 {monthInfo.month + 1}월
           </span>
-          <button onClick={moveNextMonthHandler}>
-            <FontAwesomeIcon icon={faAngleRight} />
+          <button onClick={moveNextMonthHandler} style={{backgroundColor: "transparent"}}>
+          <FontAwesomeIcon icon={faAngleRight} />
           </button>
         </div>
         <nav className="header-nav">

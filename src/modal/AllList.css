@@ -3,7 +3,7 @@
   z-index: 5;
   width: 15%;
   height: 30%;
-  background-color:white;
+  background-color: white;
   border-radius: 10px;
   box-shadow: 5px 5px 10px rgb(224, 224, 224);
   text-align: center;
@@ -55,21 +55,21 @@
 }
 
 .start-date {
-  height: 100%;
   background-color: rgb(121, 134, 203);
-  border-right: 50% solid transparent;
-  border-top: 50% solid transparent;
-  border-bottom: 50% solid transparent;
+  border: 0 10px 10px 0;
+  color: white;
 }
 
 .fake-date {
   background-color: rgb(121, 134, 203);
   border-radius: 10px 10px 10px 10px;
+  color: white;
 }
 
 .end-date {
   background-color: rgb(121, 134, 203);
   border-radius: 10px 0 0 10px;
+  color: white;
 }
 
 .li-day-1 {
