@@ -11,7 +11,6 @@ import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 import classes from "./LoginPage.module.css";
-import { userActions } from "../store/userSlice";
 
 const LoginPage = () => {
   const dispatch = useDispatch();
@@ -158,6 +157,7 @@ const LoginPage = () => {
         navigagte("/calender");
       })
       .catch((error) => {
+        console.log(error)
         alert("계정 생성 중 오류가 발생했습니다.");
         throw new Error(error);
       });

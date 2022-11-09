@@ -1,5 +1,5 @@
 import classes from './second.module.css'
-import MakeCaledner from "./Secon-MakeCalender.js.js";
+import MakeCaledner from "./Secon-MakeCalender";
 
 const date = new Date();
 const fixYear = date.getFullYear();

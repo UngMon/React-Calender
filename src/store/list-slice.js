@@ -4,12 +4,8 @@ const listSlice = createSlice({
   name: "list",
   initialState: {
     isVisible: false,
-    key: "",
     clickedDate: "",
     week: "",
-    year: '',
-    month: '',
-    date: '',
     dayIndex: "",
     listName: "",
     listIndex: "",
@@ -18,13 +14,9 @@ const listSlice = createSlice({
   },
   reducers: {
     clickedList(state, action) {
-      state.key = action.payload.key;
       state.clickedDate = action.payload.clickedDate;
       state.week = action.payload.week;
-      state.year = action.payload.year;
-      state.month = action.payload.month;
-      state.date = action.payload.date;
-      state.dayIndex = action.payload.dayIdx;
+      state.dayIndex = action.payload.dayIndex;
       state.listName = action.payload.listName;
       state.listIndex = action.payload.listIndex;
       state.index = action.payload.scheduleIndex;

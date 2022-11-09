@@ -24,7 +24,7 @@ const TimeSelector = ({
   const [lastDateIsVisible, setLastDateIsVisible] = useState(false);
 
   const OneRef = useRef([]);
-  // const TwoRef = useRef([]);
+  const TwoRef = useRef([]);
 
   const timeOneVisible = timeState.firstIsVisible;
   const timeTwoVisible = timeState.lastIsVisible;
@@ -90,7 +90,7 @@ const TimeSelector = ({
           {timeState.lastIsVisible && (
             <TimeBoxTwo
               timeTwoRef={timeTwoRef}
-              TwoRef={OneRef}
+              TwoRef={TwoRef}
               timeVisible={timeTwoVisible}
             />
           )}

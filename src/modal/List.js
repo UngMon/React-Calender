@@ -25,9 +25,7 @@ const List = () => {
 
   const index = listState.index;
   const listIndex = listState.listIndex;
-
-  console.log(index)
-  console.log(listIndex);
+  const dayIndex = listState.dayIndex;
 
   const schedule = modalState.userSchedule.schedule;
   const listInfo = schedule[index].todo[listIndex];
@@ -76,12 +74,12 @@ const List = () => {
     event.preventDefault();
 
     const pattern = /^(오전|오후)\s(([0][0-9]|[1][0-2])):([0-5][0-9])$/;
-    let list = inputRef.current.value;
-    let firstTime = timeOneRef.current.value || listInfo.firstTime;
-    let lastTime = timeTwoRef.current.value || listInfo.lastTime;
+    let title = inputRef.current.value;
+    let startTime = timeOneRef.current.value || listInfo.startTime;
+    let endTime = timeTwoRef.current.value || listInfo.endTime;
 
-    if (list.trim() === "") {
-      list = listState.listName;
+    if (title.trim() === "") {
+      title = listState.listName;
     }
 
     if (!timeOneRef.current.value.length === 0) {
@@ -96,7 +94,7 @@ const List = () => {
       }
     }
 
-    if (firstTime > lastTime) {
+    if (startTime > endTime) {
       if (comparison === 4) {
         return alert("시작시간이 끝나는 시간보다 큽니다!!");
       }
@@ -106,17 +104,17 @@ const List = () => {
       return alert("마지막 날이 시작날 보다 작습니다!!");
     }
 
-    // firstTime < lastTime 이면서...
+    // startTime < endTime 이면서...
     dispatch(modalActions.removeList({ index, listIndex }));
 
     if (comparison === 4) {
-      console.log('여기?')
-      dispatch(modalActions.inputList({ firstTime, lastTime, list }));
+      dispatch(modalActions.inputList({ startTime, endTime, title }));
     }
 
     if (comparison <= 3) {
       console.log('여기?')
-      dispatch(modalActions.longDateList({ firstTime, lastTime, list }));
+      console.log(dayIndex)
+      dispatch(modalActions.longDateList({ startTime, endTime, title, dayIndex }));
     }
 
     inputRef.current.value = "";
@@ -180,8 +178,8 @@ const List = () => {
               <TimeSelector
                 startDate={startDate}
                 endDate={endDate}
-                firstTime={listInfo.firstTime}
-                lastTime={listInfo.lastTime}
+                firstTime={listInfo.startTime}
+                lastTime={listInfo.endTime}
                 timeOneRef={timeOneRef}
                 timeTwoRef={timeTwoRef}
                 comparison={comparison}
@@ -200,11 +198,11 @@ const List = () => {
       </div>
       {!editArea && (
         <div className="list-time-area">
-          <div>{schedule[index].todo[listIndex].firstTime}</div>
+          <div>{schedule[index].todo[listIndex].startTime}</div>
           <div>
             <span>~</span>
           </div>
-          <div>{schedule[index].todo[listIndex].lastTime}</div>
+          <div>{schedule[index].todo[listIndex].endTime}</div>
         </div>
       )}
     </div>

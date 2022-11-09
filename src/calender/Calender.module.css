@@ -75,6 +75,7 @@
 
 .list_box .list-boundary {
   height: 25%;
+  pointer-events: auto;
 }
 
 .list {
@@ -89,14 +90,15 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  pointer-events: auto;
 }
 
 .list_box .long {
   z-index: 7;
-  pointer-events: auto;
   background-color: rgb(121, 134, 203);
   border-radius: 5px 5px;
   color: white;
+  pointer-events: auto;
 }
 
 .list_box .nothing {

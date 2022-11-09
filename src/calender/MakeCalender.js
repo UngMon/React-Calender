@@ -1,7 +1,7 @@
 import { useDispatch, useSelector } from "react-redux";
 import { allListActions } from "../store/all-list-slice";
-import { listActions } from "../store/list-slice";
 import { modalActions } from "../store/modal-slice";
+import { listActions } from "../store/list-slice";
 import MakeKey from "../library/MakeKey";
 import classes from "./Calender.module.css";
 
@@ -9,34 +9,25 @@ const MakeCaledner = ({ year, month, firstDay, lastDate, identify }) => {
   const dispatch = useDispatch();
 
   // {email: '', name: '', schedule: []}
-  const userData = useSelector((state) => state.modal.userSchedule);
+  const modalState = useSelector((state) => state.modal);
 
   // {idx: '', todo: [ ... {}...]}
-  const schedule = userData.schedule;
-
-  const modaVisible = useSelector((state) => state.modal.isVisible);
+  const schedule = modalState.userSchedule.schedule;
+  const modalVisible = modalState.isVisible;
 
   const listClickHandler = (
-    key,
     startDate,
     week,
-    year,
-    month,
-    date,
-    dayIdx,
+    dayIndex,
     listName,
     listIndex,
     scheduleIndex
   ) => {
     dispatch(
       listActions.clickedList({
-        key,
         startDate,
         week,
-        year,
-        month,
-        date,
-        dayIdx,
+        dayIndex,
         listName,
         listIndex,
         scheduleIndex,
@@ -50,7 +41,7 @@ const MakeCaledner = ({ year, month, firstDay, lastDate, identify }) => {
     dispatch(allListActions.clickedListBox({ date, day, week, scheduleIndex }));
   };
 
-  const scheduleHandler = (startDate, dayIdx, week, date) => {
+  const scheduleHandler = (startDate, dayIdx, week) => {
     const toDoList = schedule.find((item) => item.idx === startDate);
 
     if (toDoList) {
@@ -60,35 +51,30 @@ const MakeCaledner = ({ year, month, firstDay, lastDate, identify }) => {
         listIndex <= 2 ? (
           item.isFake === false ? (
             <div
-              key={item.firstTime + " " + item.lastTime + listIndex}
+              key={item.startTime + " " + item.endTime + listIndex}
               className={`${classes["list-boundary"]}`}
               style={{ width: `${item.length}00%` }}
               onClick={(event) => {
                 event.stopPropagation();
-                const key = item.firstTime + listIndex;
                 listClickHandler(
-                  key,
                   startDate,
                   week,
-                  year,
-                  month,
-                  date,
                   dayIdx,
-                  item.list,
+                  item.title,
                   listIndex,
                   scheduleIndex
                 );
               }}
             >
               <div
-                key={item.firstTime + " " + item.lastTime + listIndex}
-                id={item.firstTime}
+                key={item.startTime + " " + item.endTime + listIndex}
+                id={item.startTime}
                 className={`${classes.list} ${item.style && classes.done} ${
                   item.isLong && classes.long
                 }`}
                 dayindex={dayIdx}
               >
-                <span>{item.firstTime + " " + item.list}</span>
+                <span>{item.startTime + " " + item.title}</span>
               </div>
             </div>
           ) : (
@@ -101,18 +87,13 @@ const MakeCaledner = ({ year, month, firstDay, lastDate, identify }) => {
         ) : (
           listIndex === 3 && (
             <div
-              key={item.firstTime + " " + item.lastTime + listIndex}
-              className={`${classes["list-boundary"]}`}
-            >
-              <div
-                key={listIndex}
-                className={classes.list}
-                onClick={(event) => {
-                  event.stopPropagation();
-                  allListClickHandler(startDate, dayIdx, week, scheduleIndex);
-                }}
-              >{`${toDoList.todo.length - 3}개 더보기`}</div>
-            </div>
+              key={listIndex}
+              className={classes["list-more"]}
+              onClick={(event) => {
+                event.stopPropagation();
+                allListClickHandler(startDate, dayIdx, week, scheduleIndex);
+              }}
+            >{`${toDoList.todo.length - 3}개 더보기`}</div>
           )
         )
       );
@@ -121,7 +102,7 @@ const MakeCaledner = ({ year, month, firstDay, lastDate, identify }) => {
   };
 
   const addClickHandler = (idx, dayIndex, week) => {
-    if (!modaVisible) {
+    if (!modalVisible) {
       dispatch(modalActions.clickedStartDate({ idx, dayIndex, week }));
     }
     dispatch(modalActions.onModal());

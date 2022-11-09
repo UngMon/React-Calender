@@ -11,8 +11,8 @@ import { comparisonHandler } from "../library/Comparioson";
 import "./AddEvent.css";
 
 const setTime = SetTime();
-const currentTime = setTime.currentTime;
-console.log(currentTime);
+const firstTime = setTime.currentTime;
+
 const LastTime = setTime.lastTime;
 
 const AddEvent = () => {
@@ -53,12 +53,12 @@ const AddEvent = () => {
 
     const pattern = /^(오전|오후)\s(([0][0-9]|[1][0-2])):([0-5][0-9])$/;
 
-    let list = inputRef.current.value;
-    let firstTime = timeOneRef.current.value || currentTime;
-    let lastTime = timeTwoRef.current.value || LastTime;
+    let title = inputRef.current.value;
+    let startTime = timeOneRef.current.value || firstTime;
+    let endTime = timeTwoRef.current.value || LastTime;
 
-    if (list.trim() === "") {
-      list = "(제목 없음)";
+    if (title.trim() === "") {
+      title = "(제목 없음)";
     }
 
     if (timeOneRef.current.value !== "") {
@@ -77,7 +77,7 @@ const AddEvent = () => {
       return alert("시작 날이 마지막 날 보다 큽니다!!");
     }
 
-    if (firstTime > lastTime) {
+    if (startTime > endTime) {
       if (comparison === 4) {
         return alert("종료 시간이 시작 시간보다 작습니다!! ex) 00:30 ~ 01:30");
       }
@@ -85,12 +85,12 @@ const AddEvent = () => {
 
     // 시작날과 마지막 날 일치
     if (comparison === 4) {
-      dispatch(modalActions.inputList({ list, firstTime, lastTime }));
+      dispatch(modalActions.inputList({ title, startTime, endTime }));
     }
 
     // 마지막 날이 시작날 보다 큼.
     if (comparison <= 3) {
-      dispatch(modalActions.longDateList({ list, firstTime, lastTime }));
+      dispatch(modalActions.longDateList({ title, startTime, endTime }));
     }
 
     inputRef.current.value = "";
@@ -121,7 +121,7 @@ const AddEvent = () => {
       <TimeSelector
         startDate={startDate}
         endDate={endDate}
-        firstTime={currentTime}
+        firstTime={firstTime}
         lastTime={LastTime}
         timeOneRef={timeOneRef}
         timeTwoRef={timeTwoRef}
