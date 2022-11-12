@@ -128,8 +128,8 @@ const modalSlice = createSlice({
     longDateList(state, action) {
       state.changed = true;
       let leng = state.longArr.length;
-      let count = action.payload.dayIndex || state.dayIndex;
-      const fixDayIndex = action.payload.dayIndex || state.dayIndex;
+      let count = state.dayIndex;
+      const fixDayIndex = state.dayIndex;
 
       // {email: '', name: '', schedule: [...]}
       let userSchedule = state.userData[state.userIndex];
@@ -355,8 +355,6 @@ const modalSlice = createSlice({
         const Array = userSchedule[index].todo[listIndex].arr;
         const identifyIndex = userSchedule[index].todo[listIndex].index;
 
-        const indexConfirm = [0, 0, 0]; // 인덱스 확인용도
-
         let result;
         let listObject;
         let idx;
@@ -441,7 +439,6 @@ const modalSlice = createSlice({
         state.userData = action.payload;
       }
       console.log(action.payload);
-      console.log(state.userData);
     },
 
     createUser(state, action) {

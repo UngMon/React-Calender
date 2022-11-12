@@ -25,7 +25,7 @@ const List = () => {
 
   const index = listState.index;
   const listIndex = listState.listIndex;
-  const dayIndex = listState.dayIndex;
+  const dayIndex = modalState.dayIndex;
 
   const schedule = modalState.userSchedule.schedule;
   const listInfo = schedule[index].todo[listIndex];

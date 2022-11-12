@@ -41,64 +41,94 @@ const MakeCaledner = ({ year, month, firstDay, lastDate, identify }) => {
     dispatch(allListActions.clickedListBox({ date, day, week, scheduleIndex }));
   };
 
-  const scheduleHandler = (startDate, dayIdx, week) => {
-    const toDoList = schedule.find((item) => item.idx === startDate);
-
-    if (toDoList) {
-      const scheduleIndex = schedule.indexOf(toDoList);
-
-      return toDoList.todo.map((item, listIndex) =>
-        listIndex <= 2 ? (
-          item.isFake === false ? (
-            <div
-              key={item.startTime + " " + item.endTime + listIndex}
-              className={`${classes["list-boundary"]}`}
-              style={{ width: `${item.length}00%` }}
-              onClick={(event) => {
-                event.stopPropagation();
-                listClickHandler(
-                  startDate,
-                  week,
-                  dayIdx,
-                  item.title,
-                  listIndex,
-                  scheduleIndex
-                );
-              }}
-            >
-              <div
-                key={item.startTime + " " + item.endTime + listIndex}
-                id={item.startTime}
-                className={`${classes.list} ${item.style && classes.done} ${
-                  item.isLong && classes.long
-                }`}
-                dayindex={dayIdx}
-              >
-                <span>{item.startTime + " " + item.title}</span>
-              </div>
-            </div>
-          ) : (
-            <div
-              key={listIndex}
-              className={classes.nothing}
-              style={{ pointerEvents: "none" }}
-            ></div>
-          )
-        ) : (
-          listIndex === 3 && (
-            <div
-              key={listIndex}
-              className={classes["list-more"]}
-              onClick={(event) => {
-                event.stopPropagation();
-                allListClickHandler(startDate, dayIdx, week, scheduleIndex);
-              }}
-            >{`${toDoList.todo.length - 3}개 더보기`}</div>
-          )
-        )
-      );
+  const scheduleHandler = (date, dayIdx, week, array) => {
+    // {idx: 'date..', todo: [~~]}의 인덱스
+    const todoIndex = schedule.findIndex((item) => item.idx === date);
+    if (todoIndex === -1) {
+      // console.log(`스케쥴 작동 ${date}`);
+      return;
     }
-    return;
+
+    // [... , { arr: [~~], startDate: '', isLong: 'true', ...}] or undefined
+    const todoInfo = schedule[todoIndex].todo;
+
+    let positionIndex; // 화면에 보일 일정들의 위치를 저장하는 변수.
+
+    todoInfo.map((item, tdIdx) => {
+      // 화면에 보일 일정들이 최대 4개 이므로..
+      // if (tdIdx > 3) {
+      //   return;
+      // }
+
+      // todo 안의 요소가 dummy일정이 아닌 하루 일정과 긴 일정들 일 때,
+      if (!item.isFake) {
+        // [0, 0, 0, 0]
+
+        array[dayIdx].some((arrItem, arrIdx) => {
+          // 다른 일정이 채워져 있지 않은 상태에서만..
+          if (arrItem !== 0) return false;
+
+          // isLong이 true일 때, array의 요일칸에 index값을 부여해줌.
+          if (item.isLong) {
+            for (let i = dayIdx; i < item.length + dayIdx; i++) {
+              array[i][arrIdx] = item.index;
+            }
+          }
+          // 하루 일정일 때,
+          if (!item.isLong) {
+            array[dayIdx][arrIdx] = item.index;
+          }
+          positionIndex = arrIdx;
+          console.log(dayIdx)
+          console.log(arrIdx)
+          console.log(array)
+          return true;
+        });
+      }
+      
+      return tdIdx < 3 ? (
+        <div
+          key={todoInfo[tdIdx].index + tdIdx}
+          className={`${classes["list-boundary"]}`}
+          style={{ maxWidth: `${todoInfo[tdIdx].length}00%` }}
+          onClick={(event) => {
+            event.stopPropagation();
+            listClickHandler(
+              date,
+              week,
+              dayIdx,
+              todoInfo[tdIdx].title,
+              tdIdx,
+              todoIndex
+            );
+          }}
+        >
+          <div
+            key={todoInfo[tdIdx].index + tdIdx}
+            className={`${classes.list} ${
+              todoInfo[tdIdx].style && classes.done
+            } ${todoInfo[tdIdx].isLong && classes.long} ${
+              classes[`listIndex-${positionIndex}`]
+            }`}
+            dayindex={dayIdx}
+          >
+            <span>
+              {todoInfo[tdIdx].startTime + " " + todoInfo[tdIdx].title}
+            </span>
+          </div>
+        </div>
+      ) : (
+        // todo안의 요소가 5개 이상이면 더보기란 생성.
+        <div
+          key={tdIdx}
+          className={`classes["list-more"]  ${classes[`listIndex-3`]}`}
+          onClick={(event) => {
+            event.stopPropagation();
+            allListClickHandler(date, dayIdx, week, todoIndex);
+          }}
+        >{`${todoInfo.length - 3}개 더보기`}</div>
+      );
+    });
   };
 
   const addClickHandler = (idx, dayIndex, week) => {
@@ -111,7 +141,7 @@ const MakeCaledner = ({ year, month, firstDay, lastDate, identify }) => {
   const monthArray = [];
 
   /* 날짜 생성하기 */
-  const makeDay = (week) => {
+  const makeDay = (week, array) => {
     const thisMonthArray = [];
 
     /* 첫 주에선 그 전 달과 이번 달을 표시하기 */
@@ -143,7 +173,7 @@ const MakeCaledner = ({ year, month, firstDay, lastDate, identify }) => {
                 {nowDate}
               </div>
               <div className={classes.list_box}>
-                {scheduleHandler(idx, dayIdx, week, nowDate)}
+                {scheduleHandler(idx, dayIdx, week, array)}
               </div>
             </td>
           );
@@ -173,7 +203,7 @@ const MakeCaledner = ({ year, month, firstDay, lastDate, identify }) => {
                 {nowDate}
               </div>
               <div className={classes.list_box}>
-                {scheduleHandler(idx, dayIdx, week, nowDate)}
+                {scheduleHandler(idx, dayIdx, week, array)}
               </div>
             </td>
           );
@@ -207,7 +237,7 @@ const MakeCaledner = ({ year, month, firstDay, lastDate, identify }) => {
                 {nowDate}
               </div>
               <div className={classes.list_box}>
-                {scheduleHandler(idx, dayIdx, week, nowDate)}
+                {scheduleHandler(idx, dayIdx, week, array)}
               </div>
             </td>
           );
@@ -235,7 +265,7 @@ const MakeCaledner = ({ year, month, firstDay, lastDate, identify }) => {
                 {nowDate}
               </div>
               <div className={classes.list_box}>
-                {scheduleHandler(idx, dayIdx, week, nowDate)}
+                {scheduleHandler(idx, dayIdx, week, array)}
               </div>
             </td>
           );
@@ -247,9 +277,20 @@ const MakeCaledner = ({ year, month, firstDay, lastDate, identify }) => {
   /* 주 만들기, 달 마다 5주 6주 다르므로...*/
   const week = Math.ceil((firstDay + lastDate) / 7);
   for (let i = 1; i <= week; i++) {
+    let array = [
+      "", // 0
+      [0, 0, 0, 0], //dayIndex = 1
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+    ];
+
     monthArray.push(
       <tr key={i} weekindex={i}>
-        {makeDay(i)}
+        {makeDay(i, array)}
       </tr>
     );
   }
@@ -258,3 +299,160 @@ const MakeCaledner = ({ year, month, firstDay, lastDate, identify }) => {
 };
 
 export default MakeCaledner;
+
+// if (todoIndex !== -1) {
+//   return schedule[todoIndex].todo.map((item, listIndex) =>
+//     listIndex <= 3 ? (
+//       item.isFake === false && array[listIndex] === 0 ? (
+//         ((array[listIndex] = 1),
+//         (
+//           <div
+//             key={item.startTime + " " + item.endTime + listIndex}
+//             className={`${classes["list-boundary"]}`}
+//             style={{ width: `${item.length}00%` }}
+//             onClick={(event) => {
+//               event.stopPropagation();
+//               listClickHandler(
+//                 date,
+//                 week,
+//                 dayIdx,
+//                 item.title,
+//                 listIndex,
+//                 scheduleIndex
+//               );
+//             }}
+//           >
+//             <div
+//               key={item.startTime + " " + item.endTime + listIndex}
+//               id={item.startTime}
+//               className={`${classes.list} ${item.style && classes.done} ${
+//                 item.isLong && classes.long
+//               }`}
+//               dayindex={dayIdx}
+//             >
+//               <span>{item.startTime + " " + item.title}</span>
+//             </div>
+//           </div>
+//         ))
+//       ) : (
+//         <div
+//           key={listIndex}
+//           className={classes.nothing}
+//           style={{ pointerEvents: "none" }}
+//         ></div>
+//       )
+//     ) : (
+//       listIndex === 4 && (
+//         <div
+//           key={listIndex}
+//           className={classes["list-more"]}
+//           onClick={(event) => {
+//             event.stopPropagation();
+//             allListClickHandler(date, dayIdx, week, scheduleIndex);
+//           }}
+//         >{`${toDoList.todo.length - 3}개 더보기`}</div>
+//       )
+//     )
+//   );
+// }
+// return;
+
+
+
+    // array[dayIdx].map((item, idx) => {
+    // [0, 0, 0, 0]
+
+    // const todoInfo = schedule[todoIndex].todo[idx];
+
+    // if (todoInfo === undefined) {
+    //   return null;
+    // }
+
+    // if (todoInfo.isFake) {
+    //   return null;
+    // }
+
+    // if (item === 0) {
+    //   array[dayIdx][idx] = todoInfo.index;
+
+    //   if (todoInfo.isLong) {
+    //     for (let i = dayIdx + 1; i < todoInfo.length + dayIdx - 1; i++) {
+    //       array[i][idx] = todoInfo.index;
+    //     }
+    //   }
+
+    // return (
+    //   <div
+    //     key={todoInfo.index + idx}
+    //     className={`${classes["list-boundary"]}`}
+    //     style={{ width: `${todoInfo.length}00%` }}
+    //     onClick={(event) => {
+    //       event.stopPropagation();
+    //       listClickHandler(
+    //         date,
+    //         week,
+    //         dayIdx,
+    //         todoInfo.title,
+    //         idx,
+    //         todoIndex
+    //       );
+    //     }}
+    //   >
+    //     <div
+    //       key={todoInfo.index + idx}
+    //       className={`${classes.list} ${todoInfo.style && classes.done} ${
+    //         todoInfo.isLong && classes.long
+    //       } ${classes[`listIndex-${idx}`]}`}
+    //       dayindex={dayIdx}
+    //     >
+    //       <span>{todoInfo.startTime + " " + todoInfo.title}</span>
+    //     </div>
+    //   </div>
+    // );
+
+    // 입력된 리스트 개수가 4개 이상일 때, 더보기란 생성
+    //   if (idx === 3) {
+    //     if (schedule[todoIndex].todo.length > 4) {
+    //       return (
+    //         <div
+    //           key={idx}
+    //           className={`classes["list-more"]  ${classes[`listIndex-${idx}`]}`}
+    //           onClick={(event) => {
+    //             event.stopPropagation();
+    //             allListClickHandler(date, dayIdx, week, todoIndex);
+    //           }}
+    //         >{`${todoInfo.length - 3}개 더보기`}</div>
+    //       );
+    //     } else {
+    //       return (
+    //         <div
+    //           key={todoInfo.index + idx}
+    //           className={`${classes["list-boundary"]}`}
+    //           style={{ width: `${todoInfo.length}00%` }}
+    //           onClick={(event) => {
+    //             event.stopPropagation();
+    //             listClickHandler(
+    //               date,
+    //               week,
+    //               dayIdx,
+    //               todoInfo.title,
+    //               idx,
+    //               todoIndex
+    //             );
+    //           }}
+    //         >
+    //           <div
+    //             key={todoInfo.index + idx}
+    //             className={`${classes.list} ${todoInfo.style && classes.done} ${
+    //               todoInfo.isLong && classes.long
+    //             } ${classes[`listIndex-${idx}`]}`}
+    //             dayindex={dayIdx}
+    //           >
+    //             <span>{todoInfo.startTime + " " + todoInfo.title}</span>
+    //           </div>
+    //         </div>
+    //       );
+    //     }
+    //   }
+    //   return todoInfo;
+    // });
