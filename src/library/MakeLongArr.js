@@ -9,6 +9,9 @@ const MakeLongArr = (startInfo, endInfo) => {
   const secondMonth = endInfo[1];
   const secondDate = endInfo[2];
 
+  console.log(startInfo)
+  console.log(endInfo)
+
   if (firstYear === secondYear) {
     if (+firstMonth === +secondMonth) {
       // 같은 달에서 마지막 date까지 idxArr 배열에 push

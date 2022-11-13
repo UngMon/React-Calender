@@ -85,18 +85,23 @@ const AddEvent = () => {
 
     // 시작날과 마지막 날 일치
     if (comparison === 4) {
-      dispatch(modalActions.inputList({ title, startTime, endTime }));
+      dispatch(
+        modalActions.inputList({ title, startTime, endTime })
+      );
     }
 
     // 마지막 날이 시작날 보다 큼.
     if (comparison <= 3) {
-      dispatch(modalActions.longDateList({ title, startTime, endTime }));
+      dispatch(
+        modalActions.longDateList({ title, startTime, endTime })
+      );
     }
 
     inputRef.current.value = "";
 
     cancelHandler();
     dispatch(timeActions.resetTime());
+    dispatch(modalActions.resetState());
   };
 
   const cancelHandler = () => {

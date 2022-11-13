@@ -25,7 +25,9 @@ const List = () => {
 
   const index = listState.index;
   const listIndex = listState.listIndex;
-  const dayIndex = modalState.dayIndex;
+  const dayIndex = listState.dayIndex;
+
+  console.log(dayIndex);
 
   const schedule = modalState.userSchedule.schedule;
   const listInfo = schedule[index].todo[listIndex];
@@ -78,10 +80,6 @@ const List = () => {
     let startTime = timeOneRef.current.value || listInfo.startTime;
     let endTime = timeTwoRef.current.value || listInfo.endTime;
 
-    if (title.trim() === "") {
-      title = listState.listName;
-    }
-
     if (!timeOneRef.current.value.length === 0) {
       if (!pattern.test(timeOneRef.current.value)) {
         return alert("시간을 제대로 입력해주세요! ex) 오후 02:30");
@@ -104,17 +102,31 @@ const List = () => {
       return alert("마지막 날이 시작날 보다 작습니다!!");
     }
 
+    if (title.trim() === "") {
+      title = inputRef.current.placeholder;
+    }
+
     // startTime < endTime 이면서...
     dispatch(modalActions.removeList({ index, listIndex }));
-
+    console.log("remove하는중");
     if (comparison === 4) {
       dispatch(modalActions.inputList({ startTime, endTime, title }));
     }
 
     if (comparison <= 3) {
-      console.log('여기?')
-      console.log(dayIndex)
-      dispatch(modalActions.longDateList({ startTime, endTime, title, dayIndex }));
+      console.log("여기?");
+
+      const longArr = !modalState.longArrChanged ? listInfo.arr : undefined; 
+
+      dispatch(
+        modalActions.longDateList({
+          startTime,
+          endTime,
+          title,
+          dayIndex,
+          longArr,
+        })
+      );
     }
 
     inputRef.current.value = "";
@@ -131,6 +143,7 @@ const List = () => {
 
   const closeModalHandler = () => {
     dispatch(listActions.offModal());
+    dispatch(modalActions.resetState());
   };
 
   const styleClass =

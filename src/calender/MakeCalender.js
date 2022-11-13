@@ -54,7 +54,7 @@ const MakeCaledner = ({ year, month, firstDay, lastDate, identify }) => {
 
     let positionIndex; // 화면에 보일 일정들의 위치를 저장하는 변수.
 
-    todoInfo.map((item, tdIdx) => {
+    return todoInfo.map((item, tdIdx) => {
       // 화면에 보일 일정들이 최대 4개 이므로..
       // if (tdIdx > 3) {
       //   return;
@@ -63,34 +63,36 @@ const MakeCaledner = ({ year, month, firstDay, lastDate, identify }) => {
       // todo 안의 요소가 dummy일정이 아닌 하루 일정과 긴 일정들 일 때,
       if (!item.isFake) {
         // [0, 0, 0, 0]
-
+      
         array[dayIdx].some((arrItem, arrIdx) => {
           // 다른 일정이 채워져 있지 않은 상태에서만..
-          if (arrItem !== 0) return false;
+          if (arrItem !== 0) return false; //continue
+
+          array[dayIdx][arrIdx] = item.index;
 
           // isLong이 true일 때, array의 요일칸에 index값을 부여해줌.
           if (item.isLong) {
-            for (let i = dayIdx; i < item.length + dayIdx; i++) {
-              array[i][arrIdx] = item.index;
+            for (let i = dayIdx + 1; i < item.length + dayIdx; i++) {
+              // console.log(i)
+              // console.log(item.length)
+              // console.log(array)
+              array[i][arrIdx] = item.index + tdIdx;
             }
           }
-          // 하루 일정일 때,
-          if (!item.isLong) {
-            array[dayIdx][arrIdx] = item.index;
-          }
+
           positionIndex = arrIdx;
-          console.log(dayIdx)
-          console.log(arrIdx)
-          console.log(array)
+
           return true;
         });
       }
-      
-      return tdIdx < 3 ? (
+ 
+      return !item.isFake && tdIdx < 3 ? (
         <div
-          key={todoInfo[tdIdx].index + tdIdx}
-          className={`${classes["list-boundary"]}`}
-          style={{ maxWidth: `${todoInfo[tdIdx].length}00%` }}
+          key={item.index + tdIdx}
+          className={`${classes["list-boundary"]} ${
+            classes[`listIndex-${positionIndex}`]
+          }`}
+          style={{ width: item.isLong && `${item.length}00%` }}
           onClick={(event) => {
             event.stopPropagation();
             listClickHandler(
@@ -107,9 +109,7 @@ const MakeCaledner = ({ year, month, firstDay, lastDate, identify }) => {
             key={todoInfo[tdIdx].index + tdIdx}
             className={`${classes.list} ${
               todoInfo[tdIdx].style && classes.done
-            } ${todoInfo[tdIdx].isLong && classes.long} ${
-              classes[`listIndex-${positionIndex}`]
-            }`}
+            } ${todoInfo[tdIdx].isLong && classes.long}`}
             dayindex={dayIdx}
           >
             <span>
@@ -117,7 +117,7 @@ const MakeCaledner = ({ year, month, firstDay, lastDate, identify }) => {
             </span>
           </div>
         </div>
-      ) : (
+      ) : todoInfo[tdIdx].length > 4 && (
         // todo안의 요소가 5개 이상이면 더보기란 생성.
         <div
           key={tdIdx}
@@ -357,102 +357,100 @@ export default MakeCaledner;
 // }
 // return;
 
+// array[dayIdx].map((item, idx) => {
+// [0, 0, 0, 0]
 
+// const todoInfo = schedule[todoIndex].todo[idx];
 
-    // array[dayIdx].map((item, idx) => {
-    // [0, 0, 0, 0]
+// if (todoInfo === undefined) {
+//   return null;
+// }
 
-    // const todoInfo = schedule[todoIndex].todo[idx];
+// if (todoInfo.isFake) {
+//   return null;
+// }
 
-    // if (todoInfo === undefined) {
-    //   return null;
-    // }
+// if (item === 0) {
+//   array[dayIdx][idx] = todoInfo.index;
 
-    // if (todoInfo.isFake) {
-    //   return null;
-    // }
+//   if (todoInfo.isLong) {
+//     for (let i = dayIdx + 1; i < todoInfo.length + dayIdx - 1; i++) {
+//       array[i][idx] = todoInfo.index;
+//     }
+//   }
 
-    // if (item === 0) {
-    //   array[dayIdx][idx] = todoInfo.index;
+// return (
+//   <div
+//     key={todoInfo.index + idx}
+//     className={`${classes["list-boundary"]}`}
+//     style={{ width: `${todoInfo.length}00%` }}
+//     onClick={(event) => {
+//       event.stopPropagation();
+//       listClickHandler(
+//         date,
+//         week,
+//         dayIdx,
+//         todoInfo.title,
+//         idx,
+//         todoIndex
+//       );
+//     }}
+//   >
+//     <div
+//       key={todoInfo.index + idx}
+//       className={`${classes.list} ${todoInfo.style && classes.done} ${
+//         todoInfo.isLong && classes.long
+//       } ${classes[`listIndex-${idx}`]}`}
+//       dayindex={dayIdx}
+//     >
+//       <span>{todoInfo.startTime + " " + todoInfo.title}</span>
+//     </div>
+//   </div>
+// );
 
-    //   if (todoInfo.isLong) {
-    //     for (let i = dayIdx + 1; i < todoInfo.length + dayIdx - 1; i++) {
-    //       array[i][idx] = todoInfo.index;
-    //     }
-    //   }
-
-    // return (
-    //   <div
-    //     key={todoInfo.index + idx}
-    //     className={`${classes["list-boundary"]}`}
-    //     style={{ width: `${todoInfo.length}00%` }}
-    //     onClick={(event) => {
-    //       event.stopPropagation();
-    //       listClickHandler(
-    //         date,
-    //         week,
-    //         dayIdx,
-    //         todoInfo.title,
-    //         idx,
-    //         todoIndex
-    //       );
-    //     }}
-    //   >
-    //     <div
-    //       key={todoInfo.index + idx}
-    //       className={`${classes.list} ${todoInfo.style && classes.done} ${
-    //         todoInfo.isLong && classes.long
-    //       } ${classes[`listIndex-${idx}`]}`}
-    //       dayindex={dayIdx}
-    //     >
-    //       <span>{todoInfo.startTime + " " + todoInfo.title}</span>
-    //     </div>
-    //   </div>
-    // );
-
-    // 입력된 리스트 개수가 4개 이상일 때, 더보기란 생성
-    //   if (idx === 3) {
-    //     if (schedule[todoIndex].todo.length > 4) {
-    //       return (
-    //         <div
-    //           key={idx}
-    //           className={`classes["list-more"]  ${classes[`listIndex-${idx}`]}`}
-    //           onClick={(event) => {
-    //             event.stopPropagation();
-    //             allListClickHandler(date, dayIdx, week, todoIndex);
-    //           }}
-    //         >{`${todoInfo.length - 3}개 더보기`}</div>
-    //       );
-    //     } else {
-    //       return (
-    //         <div
-    //           key={todoInfo.index + idx}
-    //           className={`${classes["list-boundary"]}`}
-    //           style={{ width: `${todoInfo.length}00%` }}
-    //           onClick={(event) => {
-    //             event.stopPropagation();
-    //             listClickHandler(
-    //               date,
-    //               week,
-    //               dayIdx,
-    //               todoInfo.title,
-    //               idx,
-    //               todoIndex
-    //             );
-    //           }}
-    //         >
-    //           <div
-    //             key={todoInfo.index + idx}
-    //             className={`${classes.list} ${todoInfo.style && classes.done} ${
-    //               todoInfo.isLong && classes.long
-    //             } ${classes[`listIndex-${idx}`]}`}
-    //             dayindex={dayIdx}
-    //           >
-    //             <span>{todoInfo.startTime + " " + todoInfo.title}</span>
-    //           </div>
-    //         </div>
-    //       );
-    //     }
-    //   }
-    //   return todoInfo;
-    // });
+// 입력된 리스트 개수가 4개 이상일 때, 더보기란 생성
+//   if (idx === 3) {
+//     if (schedule[todoIndex].todo.length > 4) {
+//       return (
+//         <div
+//           key={idx}
+//           className={`classes["list-more"]  ${classes[`listIndex-${idx}`]}`}
+//           onClick={(event) => {
+//             event.stopPropagation();
+//             allListClickHandler(date, dayIdx, week, todoIndex);
+//           }}
+//         >{`${todoInfo.length - 3}개 더보기`}</div>
+//       );
+//     } else {
+//       return (
+//         <div
+//           key={todoInfo.index + idx}
+//           className={`${classes["list-boundary"]}`}
+//           style={{ width: `${todoInfo.length}00%` }}
+//           onClick={(event) => {
+//             event.stopPropagation();
+//             listClickHandler(
+//               date,
+//               week,
+//               dayIdx,
+//               todoInfo.title,
+//               idx,
+//               todoIndex
+//             );
+//           }}
+//         >
+//           <div
+//             key={todoInfo.index + idx}
+//             className={`${classes.list} ${todoInfo.style && classes.done} ${
+//               todoInfo.isLong && classes.long
+//             } ${classes[`listIndex-${idx}`]}`}
+//             dayindex={dayIdx}
+//           >
+//             <span>{todoInfo.startTime + " " + todoInfo.title}</span>
+//           </div>
+//         </div>
+//       );
+//     }
+//   }
+//   return todoInfo;
+// });

@@ -74,8 +74,10 @@
 }
 
 .list_box .list-boundary {
-  height: 25%;
-  pointer-events: auto;
+  height: 20%;
+  pointer-events: none;
+  margin-bottom: 5px;
+  line-height: 100%;
 }
 
 .list {
@@ -101,14 +103,15 @@
   pointer-events: auto;
 }
 
-.list_box .nothing {
+/* .list_box .nothing {
   background-color: transparent;
-  height: 25%;
+  height: 20%;
   padding: 0 5px;
-}
+} */
 
 .list-more {
-  height: 25%;
+  top: 80%;
+  height: 20%;
 }
 
 .listIndex-1 {
