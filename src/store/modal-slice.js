@@ -145,14 +145,14 @@ const modalSlice = createSlice({
       // AddEvent.js에서는 리스트를 첫 생성하므로 state.dayIndex의 값을 사용.
       // List.js는 클릭한 리스트의 dayIndex를 받아와야 함. 안 그러면 마지막으로 생성했던 state.dayIndex 값이 사용됨.
       let count = state.longArrChanged
-        ? state.dayIndex
+        ? state.dayIndex || action.payload.dayIndex
         : action.payload.dayIndex;
       const fixDayIndex = state.longArrChanged
-        ? state.dayIndex
+        ? state.dayIndex || action.payload.dayIndex
         : action.payload.dayIndex;
 
       console.log(action.payload.longArr);
-      console.log(arr);
+      console.log(current(state.longArr));
       console.log(leng);
       console.log(action.payload.dayIndex);
       console.log(state.dayIndex);
@@ -173,7 +173,7 @@ const modalSlice = createSlice({
           if (i === state.startDate) {
             // longDate의 첫 째날 일 때,
             const Leng = leng - 8 + count > 0 ? 8 - count : leng;
-
+            console.log(count)
             // { idx: '', todo: [~~] }
             userSchedule.schedule[index].todo = [
               ...userSchedule.schedule[index].todo,
@@ -206,7 +206,7 @@ const modalSlice = createSlice({
             if (count === 1) {
               // 시작 날 기준 다음주로 넘어갈 때, 일요일의 경우(count = 1) 남은 length만큼 표시
               const Leng = leng >= 7 ? 7 : leng; //시작 날 기준 다다음주 까지 넘어가는지
-
+            
               userSchedule.schedule[index].todo = [
                 ...userSchedule.schedule[index].todo,
                 {
@@ -522,6 +522,7 @@ const modalSlice = createSlice({
 
     resetState(state) {
       state.longArr = "";
+      state.dayIndex = '';
       state.endDate = '';
     },
   },

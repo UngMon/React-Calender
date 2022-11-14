@@ -72,11 +72,15 @@ const MakeCaledner = ({ year, month, firstDay, lastDate, identify }) => {
 
           // isLong이 true일 때, array의 요일칸에 index값을 부여해줌.
           if (item.isLong) {
-            for (let i = dayIdx + 1; i < item.length + dayIdx; i++) {
+            for (let i = dayIdx + 1; i < dayIdx + item.length; i++) {
+              if (i === 8) break;
+              // console.log(week)
               // console.log(i)
               // console.log(item.length)
               // console.log(array)
-              array[i][arrIdx] = item.index + tdIdx;
+              // console.log(item.index);
+              // console.log(tdIdx);
+              array[i][arrIdx] = item.index;
             }
           }
 
@@ -86,7 +90,7 @@ const MakeCaledner = ({ year, month, firstDay, lastDate, identify }) => {
         });
       }
  
-      return !item.isFake && tdIdx < 3 ? (
+      return !item.isFake && tdIdx < 4 ? (
         <div
           key={item.index + tdIdx}
           className={`${classes["list-boundary"]} ${
@@ -117,7 +121,7 @@ const MakeCaledner = ({ year, month, firstDay, lastDate, identify }) => {
             </span>
           </div>
         </div>
-      ) : todoInfo[tdIdx].length > 4 && (
+      ) : todoInfo[tdIdx].length > 5 && (
         // todo안의 요소가 5개 이상이면 더보기란 생성.
         <div
           key={tdIdx}
