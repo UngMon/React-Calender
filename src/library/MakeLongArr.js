@@ -9,72 +9,101 @@ const MakeLongArr = (startInfo, endInfo) => {
   const secondMonth = endInfo[1];
   const secondDate = endInfo[2];
 
-  console.log(startInfo)
-  console.log(endInfo)
+  console.log(endInfo);
 
-  if (firstYear === secondYear) {
+  if (+firstYear === +secondYear) {
     if (+firstMonth === +secondMonth) {
-      // 같은 달에서 마지막 date까지 idxArr 배열에 push
+      // 같은 년도 같은 달이면, secondDate 까지 idxArr에 push
       for (let i = +firstDate; i <= +secondDate; i++) {
         idxArr.push(firstYear + "." + firstMonth + "." + i);
       }
-    } else {
-      // firstMonth < secondMonth
+      console.log(idxArr);
+    }
+
+    if (+firstMonth < +secondMonth) {
       let k;
+
       for (let m = +firstMonth; m <= +secondMonth; m++) {
-        k = new Date(firstYear, m, 0).getDate(); // month는 1~12이므로 +1을 해줄 필요 x
-        if (m === +firstMonth) {
-          // 시작 날짜의 달 부터,
-          // 여기 j 값 수정 바람
+        //  1 <= m <= 12이므로 m-1 할 필요 없음.
+        console.log(m);
+        k = new Date(firstYear, m, 0).getDate(); // 그 달의 마지막 날
+
+        if (m !== +secondMonth) {
           for (let d = +firstDate; d <= k; d++) {
             idxArr.push(firstYear + "." + m + "." + d);
           }
-        } else if (m === +secondMonth) {
-          for (let d = 1; d <= +secondDate; d++) {
-            idxArr.push(firstYear + "." + m + "." + d);
-          }
-        } else {
-          for (let d = 1; d <= k; d++) {
-            idxArr.push(firstYear + "." + m + "." + d);
-          }
+          // continue;
         }
+
+        if (m === +secondMonth) {
+          for (let d = 1; d <= secondDate; d++) {
+            idxArr.push(firstYear + "." + m + "." + d);
+          }
+          // break;
+        }
+        console.log(idxArr);
       }
     }
-  } else if (firstYear < secondYear) {
+  }
+
+  if (+firstYear < +secondYear) {
     let k;
-    for (let y = firstYear; y <= secondYear; y++) {
-      if (y === firstYear) {
-        // 현재 연도가 다음 연도보다 적을 때,
+    for (let y = +firstYear; y <= +secondYear; y++) {
+      console.log(y);
+      if (y === +firstYear) {
         for (let m = +firstMonth; m <= 12; m++) {
-          k = new Date(firstYear, m, 0).getDate();
+          k = new Date(y, m, 0).getDate();
+
           if (m === +firstMonth) {
             for (let d = +firstDate; d <= k; d++) {
               idxArr.push(y + "." + m + "." + d);
             }
-          } else {
-            for (let d = 1; d <= k; d++) {
+            continue;
+          }
+
+          for (let d = 1; d <= k; d++) {
+            idxArr.push(y + "." + m + "." + d);
+          }
+        }
+        console.log(idxArr);
+        continue;
+      }
+
+      if (y === +secondYear) {
+        console.log('여기?')
+        for (let m = 1; m <= +secondMonth; m++) {
+          console.log(m)
+          k = new Date(y, m, 0).getDate();
+
+          if (m === +secondMonth) {
+            console.log('m === secondMonth')
+            for (let d = 1; d <= +secondDate; d++) {
               idxArr.push(y + "." + m + "." + d);
             }
+            break;
           }
-        }
-      } else if (y === secondYear) {
-        for (let m = 1; m <= +secondMonth; m++) {
-          k = new Date(secondYear, m, 0).getDate();
+
           for (let d = 1; d <= k; d++) {
             idxArr.push(y + "." + m + "." + d);
           }
+          continue; 
         }
-      } else {
-        for (let m = 1; m <= 12; m++) {
-          k = new Date(y, m, 0).getDate();
-          for (let d = 1; d <= k; d++) {
-            idxArr.push(y + "." + m + "." + d);
-          }
+        console.log(idxArr);
+        break;
+      }
+
+      // y가 firstYear, secondYear 사이일 때,
+      for (let m = 1; m <= 12; m++) {
+        k = new Date(y, m, 0).getDate();
+
+        for (let d = 1; d <= k; d++) {
+          idxArr.push(y + "." + m + "." + d);
         }
       }
+      console.log(idxArr);
     }
   }
-  console.log(idxArr);
+
   return idxArr;
 };
 
