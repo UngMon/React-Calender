@@ -55,6 +55,9 @@ const modalSlice = createSlice({
       state.changed = true;
       const arr = [...state.userData];
 
+      // ['year', 'month', 'date']
+      const startDateArr = state.startDate.split(".");
+
       //우선 파이어베이스 realtime db때문에 schedule: ['']라고 정의한 첫 번째 요소 삭제
       if (arr[state.userIndex].schedule[0] === "") {
         arr[state.userIndex].schedule.splice(0, 1);
@@ -82,11 +85,12 @@ const modalSlice = createSlice({
             isEnd: false,
             isLong: false,
             index:
-              state.dayIndex +
+              startDateArr[0] +
+              (87 + +startDateArr[1]) +
+              (68 + +startDateArr[2]) +
               "99" +
               action.payload.startTime +
               action.payload.endTime +
-              state.endDate +
               action.payload.title,
             arr: [state.startDate],
           },
@@ -116,11 +120,12 @@ const modalSlice = createSlice({
                 isEnd: false,
                 isLong: false,
                 index:
-                  state.dayIndex +
+                  startDateArr[0] +
+                  (87 + +startDateArr[1]) +
+                  (68 + +startDateArr[2]) +
                   "99" +
                   action.payload.startTime +
                   action.payload.endTime +
-                  state.endDate +
                   action.payload.title,
                 arr: [state.startDate],
               },
@@ -138,8 +143,12 @@ const modalSlice = createSlice({
 
       let dummyUserData = [...state.userData];
       // 일정을 입력할 때, 날짜 조정이 없을 경우 액션값, 날짜 조정을 하면 state.longArr의 값을..
-      const arr = action.payload.longArr || state.longArr;
+      const arr = state.longArrChanged
+        ? state.longArr || action.payload.longArr
+        : action.payload.longArr;
       let leng = arr.length;
+
+      const startDateArr = arr[0].split(".");
 
       // longDateList는 AddEvent와 List.js에서 사용됨
       // AddEvent.js에서는 리스트를 첫 생성하므로 state.dayIndex의 값을 사용.
@@ -151,12 +160,12 @@ const modalSlice = createSlice({
         ? state.dayIndex || action.payload.dayIndex
         : action.payload.dayIndex;
 
-      console.log(action.payload.longArr);
-      console.log(current(state.longArr));
-      console.log(leng);
-      console.log(action.payload.dayIndex);
-      console.log(state.dayIndex);
-      console.log(count);
+      // console.log(action.payload.longArr);
+      // console.log(current(state.longArr));
+      // console.log(leng);
+      // console.log(action.payload.dayIndex);
+      // console.log(state.dayIndex);
+      // console.log(count);
 
       // {email: '', name: '', schedule: [...]}
       let userSchedule = JSON.parse(JSON.stringify(state.userSchedule));
@@ -167,13 +176,13 @@ const modalSlice = createSlice({
 
       for (let i of arr) {
         const index = userSchedule.schedule.findIndex((item) => item.idx === i);
-        console.log(i);
+        // console.log(i);
         if (index !== -1) {
           // schedule에서 longArr배열에 있는 i 가 존재할 때, 즉 기존 일정이 있을 때!
           if (i === state.startDate) {
             // longDate의 첫 째날 일 때,
             const Leng = leng - 8 + count > 0 ? 8 - count : leng;
-            console.log(count)
+            // console.log(count);
             // { idx: '', todo: [~~] }
             userSchedule.schedule[index].todo = [
               ...userSchedule.schedule[index].todo,
@@ -206,7 +215,7 @@ const modalSlice = createSlice({
             if (count === 1) {
               // 시작 날 기준 다음주로 넘어갈 때, 일요일의 경우(count = 1) 남은 length만큼 표시
               const Leng = leng >= 7 ? 7 : leng; //시작 날 기준 다다음주 까지 넘어가는지
-            
+
               userSchedule.schedule[index].todo = [
                 ...userSchedule.schedule[index].todo,
                 {
@@ -222,7 +231,9 @@ const modalSlice = createSlice({
                   isLong: true,
                   style: false,
                   index:
-                    `${fixDayIndex}` +
+                    startDateArr[0] +
+                    (87 + +startDateArr[1]) +
+                    (68 + +startDateArr[2]) +
                     (100 - arr.length) +
                     action.payload.startTime +
                     action.payload.endTime +
@@ -248,7 +259,9 @@ const modalSlice = createSlice({
                   isLong: false,
                   style: false,
                   index:
-                    `${fixDayIndex}` +
+                    startDateArr[0] +
+                    (87 + +startDateArr[1]) +
+                    (68 + +startDateArr[2]) +
                     (100 - arr.length) +
                     action.payload.startTime +
                     action.payload.endTime +
@@ -289,7 +302,9 @@ const modalSlice = createSlice({
                     isFake: false,
                     isLong: true,
                     index:
-                      `${fixDayIndex}` +
+                      startDateArr[0] +
+                      (87 + +startDateArr[1]) +
+                      (68 + +startDateArr[2]) +
                       (100 - arr.length) +
                       action.payload.startTime +
                       action.payload.endTime +
@@ -303,7 +318,6 @@ const modalSlice = createSlice({
             // console.log(current(schedule));
           } else {
             if (count === 1) {
-
               const Leng = leng >= 7 ? 7 : leng;
               userSchedule.schedule = [
                 ...userSchedule.schedule,
@@ -323,7 +337,9 @@ const modalSlice = createSlice({
                       isFake: false,
                       isLong: true,
                       index:
-                        `${fixDayIndex}` +
+                        startDateArr[0] +
+                        (87 + +startDateArr[1]) +
+                        (68 + +startDateArr[2]) +
                         (100 - arr.length) +
                         action.payload.startTime +
                         action.payload.endTime +
@@ -336,7 +352,6 @@ const modalSlice = createSlice({
               ];
               // console.log(current(schedule));
             } else {
-
               userSchedule.schedule = [
                 ...userSchedule.schedule,
                 {
@@ -355,7 +370,9 @@ const modalSlice = createSlice({
                       isFake: true,
                       isLong: false,
                       index:
-                        `${fixDayIndex}` +
+                        startDateArr[0] +
+                        (87 + +startDateArr[1]) +
+                        (68 + +startDateArr[2]) +
                         (100 - arr.length) +
                         action.payload.startTime +
                         action.payload.endTime +
@@ -522,8 +539,8 @@ const modalSlice = createSlice({
 
     resetState(state) {
       state.longArr = "";
-      state.dayIndex = '';
-      state.endDate = '';
+      state.dayIndex = "";
+      state.endDate = "";
     },
   },
 });
