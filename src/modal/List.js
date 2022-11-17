@@ -134,6 +134,7 @@ const List = () => {
     closeModalHandler();
 
     dispatch(modalActions.offModal());
+    dispatch(modalActions.resetState());
     dispatch(timeActions.resetTime());
   };
 

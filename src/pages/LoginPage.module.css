@@ -110,19 +110,20 @@
   padding: 0.5rem 2.5rem;
 }
 
-.social-login-area {
-  display: flex;
-  flex-direction: column;
-}
-
-.social-login-area span {
+.span {
   margin-bottom: 1rem;
   font-size: 0.9rem;
 }
 
-.goolge-Logo {
+.social-login-area {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.social-Logo {
   cursor: pointer;
-  margin: 0 auto;
+  margin: 0.7rem 0.8rem;
 }
 
 .isLogin {

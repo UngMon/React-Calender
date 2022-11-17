@@ -3,6 +3,7 @@ import React, { useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { auth } from "../Auth/firebase";
 import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
+import { FacebookAuthProvider, TwitterAuthProvider } from "firebase/auth";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { useDispatch } from "react-redux";
@@ -100,30 +101,43 @@ const LoginPage = () => {
     console.log();
   }, []);
 
-  const googleSignIn = (event) => {
+  const socialLoginHandler = (event, type) => {
     // 구글 로그인을 위한 구글 provider 객체 생성
-    const provider = new GoogleAuthProvider();
     event.preventDefault();
-    console.log(auth);
-    console.log(provider);
+
+    let provider;
+
+    if (type === "Google") {
+      provider = new GoogleAuthProvider();
+    }
+
+    if (type === "Facebook") {
+      provider = new FacebookAuthProvider();
+    }
+
+    if (type === "Twitter") {
+      provider = new TwitterAuthProvider();
+    }
+
     signInWithPopup(auth, provider)
       .then((data) => {
         console.log(data);
-        console.log('로그인 작동')
         const name = data.user.displayName;
         const email = data.user.email;
-        dispatch(modalActions.confirmUser({ name, email }));
+
+        dispatch(modalActions.createUser({ name, email }));
+
         navigagte("/calender");
       })
       .catch((err) => {
-        alert("로그인 실패");
+        alert("로그인하는데 실패했습니다.");
         console.log(err);
       });
   };
 
   const loginFormHandler = (email, password, e) => {
     e.preventDefault();
-    console.log('작동1')
+    console.log("작동1");
     if (!isEmail || !isPassword) {
       return alert("올바른 양식을 기입해주세요!");
     }
@@ -136,11 +150,15 @@ const LoginPage = () => {
         dispatch(modalActions.confirmUser({ email }));
         navigagte("/calender");
       })
-      .catch((error) => {
-        console.log(error);
-        const errorMessage = "회원 정보가 없습니다!";
-        alert(errorMessage);
-        throw new Error(errorMessage);
+      .catch((err) => {
+        if (err.message === "Firebase: Error (auth/wrong-password).") {
+          alert("패스워드가 틀렸습니다!");
+        }
+
+        if (err.message === "Firebase: Error (auth/user-not-found).") {
+          alert("회원정보가 없습니다!");
+        }
+        console.log(err.message);
       });
   };
 
@@ -156,10 +174,12 @@ const LoginPage = () => {
         dispatch(modalActions.createUser({ name, email }));
         navigagte("/calender");
       })
-      .catch((error) => {
-        console.log(error)
-        alert("계정 생성 중 오류가 발생했습니다.");
-        throw new Error(error);
+      .catch((err) => {
+        if (err.message === "Firebase: Error (auth/email-already-in-use).") {
+          alert("기입한 이메일이 이미 존재합니다.");
+        } else {
+          alert("계정 생성 중 오류가 발생했습니다.");
+        }
       });
   };
 
@@ -235,15 +255,22 @@ const LoginPage = () => {
               <button type="submit">확인</button>
             )}
           </div>
+          <span>소셜 로그인</span>
           <div className={classes["social-login-area"]}>
-            <span>소셜 로그인</span>
             <img
-              style={{ display: "blcok" }}
-              className={classes["goolge-Logo"]}
-              onClick={googleSignIn}
+              className={classes["social-Logo"]}
+              onClick={(e) => socialLoginHandler(e, "Google")}
               width="40"
               height="40"
               src="img/Google.jpeg"
+              alt="Google"
+            />
+            <img
+              className={classes["social-Logo"]}
+              onClick={(e) => socialLoginHandler(e, "Facebook")}
+              width="35"
+              height="35"
+              src="img/Facebook_Logo.png"
               alt="Google"
             />
           </div>
