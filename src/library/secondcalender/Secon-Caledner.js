@@ -6,7 +6,7 @@ const fixYear = date.getFullYear();
 const fixMonth = date.getMonth() + 1;
 const fixDate = date.getDate()
 
-const Calender = ({ year, month, firstDay, lastDate, type }) => {
+const Calender = ({ year, month, firstDay, lastDate, type, dateRef }) => {
   const identify = fixYear + '.' + fixMonth + '.' + fixDate;
 
   return (
@@ -24,7 +24,7 @@ const Calender = ({ year, month, firstDay, lastDate, type }) => {
           </tr>
         </thead>
         <tbody className={classes.presentation}>
-          {MakeCaledner({ year, month, firstDay, lastDate, identify, type})}
+          {MakeCaledner({ year, month, firstDay, lastDate, identify, type, dateRef})}
         </tbody>
       </table>
     </div>

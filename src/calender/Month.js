@@ -35,10 +35,9 @@ const Month = () => {
   return (
     <div className="view-area">
       <header className="header">
-        <div className="header-name">Your Calender</div>
+        <div className="header-name"><span>{scheduleInfo.name} Calender</span></div>
         <div className="month-area">
           <button onClick={movePrevMonthHandler} style={{backgroundColor: "transparent"}}>
-            {/* <span className="move-button">{'<'}</span> */}
             <FontAwesomeIcon icon={faAngleLeft} />
           </button>
           <span>
@@ -50,8 +49,8 @@ const Month = () => {
         </div>
         <nav className="header-nav">
           <ul>
-            <li className="profile">{scheduleInfo.name}</li>
-            <NavLink to='/start' onClick={logoutHandler}>Logout</NavLink>
+            {/* <li className="profile">{scheduleInfo.name}</li> */}
+            <NavLink className={'Logout'} to='/start' onClick={logoutHandler}>Logout</NavLink>
           </ul>
         </nav>
       </header>

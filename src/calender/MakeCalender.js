@@ -145,7 +145,7 @@ const MakeCaledner = ({ year, month, firstDay, lastDate, identify }) => {
   const monthArray = [];
 
   /* 날짜 생성하기 */
-  const makeDay = (week, array) => {
+  const makeDay = (week, array, listCount) => {
     const thisMonthArray = [];
 
     /* 첫 주에선 그 전 달과 이번 달을 표시하기 */
@@ -177,7 +177,7 @@ const MakeCaledner = ({ year, month, firstDay, lastDate, identify }) => {
                 {nowDate}
               </div>
               <div className={classes.list_box}>
-                {scheduleHandler(idx, dayIdx, week, array)}
+                {scheduleHandler(idx, dayIdx, week, array, listCount)}
               </div>
             </td>
           );
@@ -207,7 +207,7 @@ const MakeCaledner = ({ year, month, firstDay, lastDate, identify }) => {
                 {nowDate}
               </div>
               <div className={classes.list_box}>
-                {scheduleHandler(idx, dayIdx, week, array)}
+                {scheduleHandler(idx, dayIdx, week, array, listCount)}
               </div>
             </td>
           );
@@ -241,7 +241,7 @@ const MakeCaledner = ({ year, month, firstDay, lastDate, identify }) => {
                 {nowDate}
               </div>
               <div className={classes.list_box}>
-                {scheduleHandler(idx, dayIdx, week, array)}
+                {scheduleHandler(idx, dayIdx, week, array, listCount)}
               </div>
             </td>
           );
@@ -269,7 +269,7 @@ const MakeCaledner = ({ year, month, firstDay, lastDate, identify }) => {
                 {nowDate}
               </div>
               <div className={classes.list_box}>
-                {scheduleHandler(idx, dayIdx, week, array)}
+                {scheduleHandler(idx, dayIdx, week, array, listCount)}
               </div>
             </td>
           );
@@ -293,7 +293,7 @@ const MakeCaledner = ({ year, month, firstDay, lastDate, identify }) => {
     ];
 
     monthArray.push(
-      <tr key={i} weekindex={i}>
+      <tr key={i} weekindex={i} className='week'>
         {makeDay(i, array)}
       </tr>
     );

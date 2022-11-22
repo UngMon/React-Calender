@@ -9,24 +9,17 @@ html,
 body {
   width: 100%;
   height: 100%;
-    /* background-image: linear-gradient(
-      #771af9 0%,
-      #678df6 40%,
-      #7a9bf8 70%,
-      #cafbdb 100%
-  ); */
   background-image: linear-gradient( #3B2667 10%, #BC78EC 100%);
 }
 
 body {
-  position: relative;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
 #root {
+  position: relative;
   height: 100%;
-
 }
 
 code {

@@ -1,10 +1,10 @@
 import Calender from "./Secon-Caledner";
 import classes from "./second.module.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {faSquareCaretLeft, faSquareCaretRight} from "@fortawesome/free-solid-svg-icons";
+import { faAngleLeft, faAngleRight } from "@fortawesome/free-solid-svg-icons";
 import { useState } from "react";
 
-const Month = ({ type, year, month }) => {
+const Month = ({ type, year, month, dateRef }) => {
   const [thisYear, setYear] = useState(+year);
   const [thisMonth, setMonth] = useState(+month);
 
@@ -16,30 +16,39 @@ const Month = ({ type, year, month }) => {
       setMonth(12);
       setYear((prevState) => prevState - 1);
     } else {
-      setMonth(prevState => prevState - 1 );
+      setMonth((prevState) => prevState - 1);
     }
   };
 
   const moveNextMonthHandler = () => {
     if (thisMonth === 12) {
-      setYear(prevState => prevState + 1);
+      setYear((prevState) => prevState + 1);
       setMonth(1);
     } else {
-      setMonth(prevState => prevState + 1);
+      setMonth((prevState) => prevState + 1);
     }
   };
 
   return (
-    <div className={classes["date-picker"]}>
-      <div className={classes["month-area"]}>
+    <div className={classes["second-month-box"]}>
+      <div
+        className={classes["month-area"]}
+        ref={(el) => (dateRef.current[0] = el)}
+      >
         <span>
           {thisYear}년 {thisMonth}월
         </span>
-        <button onClick={movePrevMonthHandler} type='button'>
-          <FontAwesomeIcon icon={faSquareCaretLeft} />
+        <button onClick={movePrevMonthHandler} type="button">
+          <FontAwesomeIcon
+            icon={faAngleLeft}
+            style={{ backgroundColor: "white" }}
+          />
         </button>
-        <button onClick={moveNextMonthHandler} type='button'>
-          <FontAwesomeIcon icon={faSquareCaretRight} />
+        <button onClick={moveNextMonthHandler} type="button">
+          <FontAwesomeIcon
+            icon={faAngleRight}
+            style={{ backgroundColor: "white" }}
+          />
         </button>
       </div>
       <Calender
@@ -48,6 +57,7 @@ const Month = ({ type, year, month }) => {
         firstDay={firstDay}
         lastDate={lastDate}
         type={type}
+        dateRef={dateRef}
       />
     </div>
   );

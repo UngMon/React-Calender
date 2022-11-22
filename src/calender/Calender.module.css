@@ -1,6 +1,7 @@
 .calender {
   width: 100%;
   height: 100%;
+  box-sizing: border-box;
 }
 
 .table {
@@ -14,26 +15,33 @@
 }
 
 .weekname {
+  width: 100%;
   height: 5%;
 }
 
 .weekname tr {
   width: 100%;
+  height: 100%;
 }
 
 .weekname th {
   border-top: 1px solid rgb(193, 192, 192, 1);
   border-bottom: 1px solid rgb(193, 192, 192, 1);
-  padding: 0 0 0 5px;
+  padding-left: 5px;
 }
 
 .presentation {
   width: 100%;
-  height: 100%;
+  height: 95%;
+}
+
+.week {
+  height: 8em;
 }
 
 .date_box {
   width: 14.2857142857%;
+  height: 20%;
   box-sizing: border-box;
   vertical-align: text-top;
   border: 1px solid rgb(193, 192, 192, 0.5);
@@ -73,29 +81,29 @@
   height: 80%;
 }
 
-.list_box .list-boundary {
-  height: 20%;
+.list-boundary {
+  height: 22%;
   pointer-events: none;
-  margin-bottom: 5px;
-  line-height: 100%;
+  /* line-height: 180%; */
 }
 
 .list {
   width: 100%;
-  height: 95%;
+  height: 100%;
   box-sizing: border-box;
-  padding: auto 5px;
+  padding-left: 10px;
   color: #506ee2;
+  font-size: 0.8rem;
   font-weight: bold;
-  line-height: 150%;
   align-items: center;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
   pointer-events: auto;
+  line-height: 170%;
 }
 
-.list_box .long {
+.long {
   z-index: 7;
   background-color: rgb(121, 134, 203);
   border-radius: 5px 5px;
@@ -103,11 +111,11 @@
   pointer-events: auto;
 }
 
-/* .list_box .nothing {
+.list_box .nothing {
   background-color: transparent;
   height: 20%;
   padding: 0 5px;
-} */
+}
 
 .list-more {
   top: 80%;
@@ -116,22 +124,17 @@
 
 .listIndex-1 {
   position: absolute;
-  top: 20%;
+  top: 25%;
 }
 
 .listIndex-2 {
   position: absolute;
-  top: 40%;
+  top: 50%;
 }
 
 .listIndex-3 {
   position: absolute;
-  top: 60%;
-}
-
-.listIndex-4 {
-  position: absolute;
-  top: 80%;
+  top: 75%;
 }
 
 .list:hover {

@@ -1,6 +1,6 @@
-.date-picker {
-  width: 50%;
-  height: 70%;
+.second-month-box {
+  width: 160px;
+  height: 60%;
   font-size: 0.6rem;
   font-weight: bold;
   margin-left: 8%;
@@ -10,9 +10,11 @@
 }
 
 .month-area {
-  height: 2%;
+  width: 95%;
+  height: 5%;
+  margin: 5px auto;
   display: flex;
-  justify-content: left;
+  justify-content: center;
   align-items: center;
 }
 
@@ -28,32 +30,32 @@
 
 .calender {
   width: 95%;
-  height: 100%;
+  height: 95%;
   margin: 0 auto;
 }
 
 .table {
   width: 100%;
-  height: 10rem;
+  height: 95%;
 }
 
 .weekname {
-  height: 10%;
-  margin: 0;
+  height: 20%;
+  margin: 0 auto;
 }
 
 .presentation {
-  height: 100px;
+  height: 80%
 }
 
 .week-box {
   width: 100%;
-  height: 25%
+  height: 20%
 }
 
 .date_box {
   width: 100%;
-  height: 100%;
+  height: 80%;
 }
 
 .date_box .date {
@@ -61,10 +63,17 @@
   height: 1.2rem;
   line-height: 200%;
   text-align: center;
+  cursor: pointer;
 }
 
 .Today {
   background-color: #1a73e8;
   color: white;
   border-radius: 100%;
+}
+
+@media screen and (max-width: 1300px) {
+  .second-month-bo {
+    width: 140px;
+  }
 }

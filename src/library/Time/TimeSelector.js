@@ -3,7 +3,8 @@ import TimeBoxTwo from "./TimeBoxTwo";
 import Month from "../secondcalender/Secon-Month";
 import { useDispatch, useSelector } from "react-redux";
 import { timeActions } from "../../store/time-slice";
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect, useCallback } from "react";
+import "./TimeSelector.css";
 
 const TimeSelector = ({
   startDate,
@@ -23,21 +24,22 @@ const TimeSelector = ({
   const [fristDateIsVisible, setFirstDateIsVisible] = useState(false);
   const [lastDateIsVisible, setLastDateIsVisible] = useState(false);
 
+  const dateRef = useRef([]);
   const OneRef = useRef([]);
   const TwoRef = useRef([]);
-
+  console.log(dateRef);
   const timeOneVisible = timeState.firstIsVisible;
   const timeTwoVisible = timeState.lastIsVisible;
 
-  const firstDateHanlder = () => {
+  const startDateOpenHandler = useCallback(() => {
     setFirstDateIsVisible((prevState) => !prevState);
     setLastDateIsVisible(false);
-  };
+  }, []);
 
-  const lastDateHandler = () => {
-    setLastDateIsVisible((prevState) => !prevState);
+  const endDateOpenHandler = useCallback(() => {
     setFirstDateIsVisible(false);
-  };
+    setLastDateIsVisible((prevState) => !prevState);
+  }, []);
 
   const firstTimeSelectorHandler = () => {
     dispatch(timeActions.firstTimetoggle());
@@ -47,15 +49,42 @@ const TimeSelector = ({
     dispatch(timeActions.lastTimetoggle());
   };
 
+  const datePickerCloseHandler = useCallback((e) => {
+    console.log(e.target);
+    console.log(dateRef.current);
+    let boolean = true;
+    for (let i = 0; i < dateRef.current.length; i++) {
+      console.log(dateRef.current[i])
+      if (dateRef.current[i].contanis(e.target)) {
+        boolean = false;
+      } else {
+        boolean = true;
+      }
+    }
+
+    if (!boolean) {
+      setFirstDateIsVisible(false);
+      setLastDateIsVisible(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    document.addEventListener("mousedown", datePickerCloseHandler);
+    console.log("작동");
+    return () => {
+      document.removeEventListener("mousedown", datePickerCloseHandler);
+    };
+  });
+
   return (
     <div className="time-date-box">
       <div className="time-area">
         <div className="time-area-name">
-          <h4 onClick={firstDateHanlder}>
+          <div onClick={startDateOpenHandler}>
             {comparison !== 1 && 시작날[1] + "월 " + 시작날[2] + "일"}
             {comparison === 1 &&
               시작날[0] + "년" + 시작날[1] + "월" + 시작날[2] + "일"}
-          </h4>
+          </div>
         </div>
         <div className="time-one">
           <input
@@ -74,11 +103,11 @@ const TimeSelector = ({
           <span>~</span>
         </div>
         <div className="time-area-name">
-          <h4 onClick={lastDateHandler}>
+          <div onClick={endDateOpenHandler}>
             {comparison !== 1 && 마지막날[1] + "월 " + 마지막날[2] + "일"}
             {comparison === 1 &&
               마지막날[0] + "년" + 마지막날[1] + "월" + 마지막날[2] + "일"}
-          </h4>
+          </div>
         </div>
         <div className="time-two">
           <input
@@ -96,12 +125,28 @@ const TimeSelector = ({
           )}
         </div>
       </div>
-      {fristDateIsVisible && (
-        <Month type={true} year={시작날[0]} month={시작날[1]} />
-      )}
-      {lastDateIsVisible && (
-        <Month type={false} year={마지막날[0]} month={마지막날[1]} />
-      )}
+      <div className="date-area">
+        <div className="start_date">
+          {fristDateIsVisible && (
+            <Month
+              type={true}
+              year={시작날[0]}
+              month={시작날[1]}
+              dateRef={dateRef}
+            />
+          )}
+        </div>
+        <div className="end_date">
+          {lastDateIsVisible && (
+            <Month
+              type={false}
+              year={마지막날[0]}
+              month={마지막날[1]}
+              dateRef={dateRef}
+            />
+          )}
+        </div>
+      </div>
     </div>
   );
 };

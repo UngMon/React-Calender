@@ -1,7 +1,6 @@
 .addMordal {
   position: absolute;
   z-index: 5;
-  width: 30%;
   max-height: 60%;
   background-color: white;
   border-radius: 10px;
@@ -42,82 +41,6 @@
   border-right: 0;
 }
 
-.time-date-box {
-  height: 50%;
-}
-
-.time-area {
-  width: 85%;
-  height: 5%;
-  display: flex;
-  justify-content: center;
-  margin: 0 auto 1px;
-  font-size: 0.8rem;
-}
-
-.time-area-span {
-  margin: 3px 1rem 3px 0.5rem;
-}
-
-.time-area-name {
-  width: 25%;
-  font-size: 0.8rem;
-  line-height: 200%;
-}
-
-.time-area-name h4 {
-  margin-right: 10px;
-}
-
-.time-one {
-  width: 25%;
-  max-height: 7rem;
-  display: flex;
-  flex-direction: column;
-}
-
-.none {
-  display: none;
-}
-
-.time-one input {
-  margin-top: 3px;
-  width: 90%;
-}
-
-.time-two {
-  width: 25%;
-  max-height: 7rem;
-  display: flex;
-  flex-direction: column;
-}
-
-.time-two input {
-  margin-top: 3px;
-  width: 90%;
-}
-
-.time-area input::placeholder {
-  color: black;
-  font-size: 0.8rem;
-  text-align: center;
-}
-
-.time-select {
-  width: 95%;
-  height: 100%;
-}
-
-#time-one {
-  max-height: 100%;
-  overflow-y: scroll;
-  margin-bottom: 10px;
-}
-
-#time-one div:hover {
-  background-color: lightgray;
-}
-
 .buttonBox {
   width: 90%;
   max-height: 10%;
@@ -126,13 +49,13 @@
 }
 
 .buttonBox button {
-  background-color: white;
   width: 2rem;
   height: 2rem;
   margin-left: 1rem;
   border: 0;
   font-size: 0.8rem;
   font-weight: bold;
+  background-color: transparent;
 }
 
 .buttonBox button:hover {
@@ -190,4 +113,17 @@
 
 .week-6 {
   top: 60%
+}
+
+@media screen and (min-width: 955px) {
+  .addMordal {
+    width: 400px;
+  }
+}
+
+@media screen and (max-width: 955px) {
+  .addMordal {
+    width: 40%;
+    font-size: 0.5rem;
+  }
 }

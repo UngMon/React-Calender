@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { modalActions } from "../store/modal-slice";
 import { timeActions } from "../store/time-slice";
@@ -18,6 +18,9 @@ const LastTime = setTime.lastTime;
 const AddEvent = () => {
   const dispatch = useDispatch();
   const modalState = useSelector((state) => state.modal);
+  
+  const [color, setColor] = useState();
+
 
   const startDate = modalState.startDate;
   const endDate = modalState.endDate;
@@ -47,6 +50,10 @@ const AddEvent = () => {
   });
 
   const comparison = comparisonHandler(startDate, endDate);
+
+  const selectedColor = (cl) => {
+    setColor(cl);
+  }
 
   const listSubmitHandler = (event) => {
     event.preventDefault();
@@ -122,6 +129,22 @@ const AddEvent = () => {
       <div className="add-modal-name">일정 추가</div>
       <div className="inputArea">
         <input placeholder="(제목 없음)" type="text" ref={inputRef} />
+      </div>
+      <div className="color-picker">
+        <span>컬러</span>
+        <div className={`${color}`}></div>
+        <div className="color-box">
+          <div onClick={() => selectedColor('토마토')} className='토마토'>토마토</div>
+          <div onClick={() => selectedColor('연분홍')} className='연분홍'>연분홍</div>
+          <div onClick={() => selectedColor('바나나')} className='바나나'>바나나</div>
+          <div onClick={() => selectedColor('세이지')} className='세이지'>세이지</div>
+          <div onClick={() => selectedColor('바질')} className='바질'>바질</div>
+          <div onClick={() => selectedColor('공작')} className='공작'>공작</div>
+          <div onClick={() => selectedColor('블루베리')} className='블루베리'>블루베리</div>
+          <div onClick={() => selectedColor('라벤더')} className='라벤더'>라벤더</div>
+          <div onClick={() => selectedColor('포도')} className='포도'>포도</div>
+          <div onClick={() => selectedColor('흑연')} className='흑연'>흑연</div>
+        </div>
       </div>
       <TimeSelector
         startDate={startDate}
