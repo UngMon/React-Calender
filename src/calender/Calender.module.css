@@ -1,7 +1,6 @@
 .calender {
   width: 100%;
   height: 100%;
-  box-sizing: border-box;
 }
 
 .table {
@@ -9,9 +8,9 @@
   margin: 0 auto;
   height: 100%;
   border-spacing: 0;
-  font-size: 0.8rem;
   border-collapse: collapse;
   text-align: left;
+  font-size: 0.8em;
 }
 
 .weekname {
@@ -21,7 +20,6 @@
 
 .weekname tr {
   width: 100%;
-  height: 100%;
 }
 
 .weekname th {
@@ -33,15 +31,11 @@
 .presentation {
   width: 100%;
   height: 95%;
-}
-
-.week {
-  height: 8em;
+  box-sizing: border-box;
 }
 
 .date_box {
   width: 14.2857142857%;
-  height: 20%;
   box-sizing: border-box;
   vertical-align: text-top;
   border: 1px solid rgb(193, 192, 192, 0.5);

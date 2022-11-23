@@ -49,16 +49,23 @@ const TimeSelector = ({
     dispatch(timeActions.lastTimetoggle());
   };
 
-  const datePickerCloseHandler = useCallback((e) => {
+  const datePickerCloseHandler = (e) => {
     console.log(e.target);
     console.log(dateRef.current);
     let boolean = true;
     for (let i = 0; i < dateRef.current.length; i++) {
       console.log(dateRef.current[i])
-      if (dateRef.current[i].contanis(e.target)) {
+      
+      if (dateRef.current[i] === null) {
+        break;
+      }
+
+      if (!dateRef.current[i].contains(e.target)) {
         boolean = false;
+        console.log('here?')
       } else {
         boolean = true;
+        console.loh('??')
       }
     }
 
@@ -66,7 +73,7 @@ const TimeSelector = ({
       setFirstDateIsVisible(false);
       setLastDateIsVisible(false);
     }
-  }, []);
+  };
 
   useEffect(() => {
     document.addEventListener("mousedown", datePickerCloseHandler);

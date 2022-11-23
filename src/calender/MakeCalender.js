@@ -293,7 +293,7 @@ const MakeCaledner = ({ year, month, firstDay, lastDate, identify }) => {
     ];
 
     monthArray.push(
-      <tr key={i} weekindex={i} className='week'>
+      <tr key={i} weekindex={i}>
         {makeDay(i, array)}
       </tr>
     );

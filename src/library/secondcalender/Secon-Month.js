@@ -31,20 +31,25 @@ const Month = ({ type, year, month, dateRef }) => {
 
   return (
     <div className={classes["second-month-box"]}>
-      <div
-        className={classes["month-area"]}
-        ref={(el) => (dateRef.current[0] = el)}
-      >
+      <div className={classes["month-area"]}>
         <span>
           {thisYear}년 {thisMonth}월
         </span>
-        <button onClick={movePrevMonthHandler} type="button">
+        <button
+          onClick={movePrevMonthHandler}
+          type="button"
+          ref={(el) => (dateRef.current[0] = el)}
+        >
           <FontAwesomeIcon
             icon={faAngleLeft}
             style={{ backgroundColor: "white" }}
           />
         </button>
-        <button onClick={moveNextMonthHandler} type="button">
+        <button
+          onClick={moveNextMonthHandler}
+          type="button"
+          ref={(el) => (dateRef.current[1] = el)}
+        >
           <FontAwesomeIcon
             icon={faAngleRight}
             style={{ backgroundColor: "white" }}
