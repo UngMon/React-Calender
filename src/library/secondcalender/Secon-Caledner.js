@@ -1,13 +1,21 @@
-import classes from './second.module.css'
+import classes from "./second.module.css";
 import MakeCaledner from "./Secon-MakeCalender";
 
 const date = new Date();
 const fixYear = date.getFullYear();
 const fixMonth = date.getMonth() + 1;
-const fixDate = date.getDate()
+const fixDate = date.getDate();
 
-const Calender = ({ year, month, firstDay, lastDate, type, dateRef }) => {
-  const identify = fixYear + '.' + fixMonth + '.' + fixDate;
+const Calender = ({
+  year,
+  month,
+  firstDay,
+  lastDate,
+  type,
+  dateRef,
+  dateClose,
+}) => {
+  const identify = fixYear + "." + fixMonth + "." + fixDate;
 
   return (
     <div className={classes.calender}>
@@ -24,7 +32,16 @@ const Calender = ({ year, month, firstDay, lastDate, type, dateRef }) => {
           </tr>
         </thead>
         <tbody className={classes.presentation}>
-          {MakeCaledner({ year, month, firstDay, lastDate, identify, type, dateRef})}
+          {MakeCaledner({
+            year,
+            month,
+            firstDay,
+            lastDate,
+            identify,
+            type,
+            dateRef,
+            dateClose,
+          })}
         </tbody>
       </table>
     </div>

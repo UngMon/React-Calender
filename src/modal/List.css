@@ -68,21 +68,10 @@
   font-size: 0.5rem;
 }
 
-.edit-list-colorbox {
-  width: 16px;
-  height: 16px;
-  border-radius: 100%;
-  background-color: blue;
-}
-
 .edit-time-area {
   width: 100%;
   height: 25%;
 }
-
-/* .edit-time-area span {
-
-} */
 
 .list-time-area {
   width: 80%;

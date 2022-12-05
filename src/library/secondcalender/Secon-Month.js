@@ -4,7 +4,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAngleLeft, faAngleRight } from "@fortawesome/free-solid-svg-icons";
 import { useState } from "react";
 
-const Month = ({ type, year, month, dateRef }) => {
+const Month = ({ type, year, month, dateRef, dateClose }) => {
   const [thisYear, setYear] = useState(+year);
   const [thisMonth, setMonth] = useState(+month);
 
@@ -63,6 +63,7 @@ const Month = ({ type, year, month, dateRef }) => {
         lastDate={lastDate}
         type={type}
         dateRef={dateRef}
+        dateClose={dateClose}
       />
     </div>
   );

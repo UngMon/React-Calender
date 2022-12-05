@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { timeActions } from "../../store/time-slice";
 
-const TimeBoxTwo = ({ timeTwoRef, TwoRef, timeVisible }) => {
+const TimeBoxTwo = ({ timeTwoRef, TwoRef, timeVisible, timeRef }) => {
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -21,7 +21,10 @@ const TimeBoxTwo = ({ timeTwoRef, TwoRef, timeVisible }) => {
   };
 
   return (
-    <div className={`time-select ${!timeVisible && "none"}`}>
+    <div
+      className={`time-select-two ${!timeVisible && "none"}`}
+      ref={(el) => (timeRef.current[1] = el)}
+    >
       <div id="time-one">
         <div ref={(el) => (TwoRef.current[0] = el)} onClick={clickHandler}>
           오전 00:30

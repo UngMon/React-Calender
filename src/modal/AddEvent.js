@@ -18,42 +18,58 @@ const LastTime = setTime.lastTime;
 const AddEvent = () => {
   const dispatch = useDispatch();
   const modalState = useSelector((state) => state.modal);
-  
-  const [color, setColor] = useState();
 
+  const [color, setColor] = useState("라벤더");
+  const [openColor, setOpenColor] = useState(false);
 
   const startDate = modalState.startDate;
   const endDate = modalState.endDate;
 
   const modalRef = useRef();
   const inputRef = useRef();
+  const colorRef = useRef();
 
   const timeOneRef = useRef();
   const timeTwoRef = useRef();
 
-  const modalCloseHandler = (e) => {
+  const closeHandler = (e) => {
+    if (openColor) {
+      // 색상 선택 on, off
+      if (!colorRef.current.contains(e.target)) {
+        setTimeout(() => {
+          setOpenColor(false);
+        }, [100]);
+      }
+    }
+
+    // AddEvent modal on, off
     if (!modalRef.current.contains(e.target)) {
       setTimeout(() => {
         dispatch(modalActions.offModal());
         dispatch(allListActions.offModal());
         dispatch(listActions.offModal());
         dispatch(timeActions.resetTime());
-      }, 150);
+      }, 100);
     }
   };
 
   useEffect(() => {
-    document.addEventListener("mousedown", modalCloseHandler);
+    document.addEventListener("mousedown", closeHandler);
     return () => {
-      document.removeEventListener("mousedown", modalCloseHandler);
+      document.removeEventListener("mousedown", closeHandler);
     };
   });
 
   const comparison = comparisonHandler(startDate, endDate);
 
-  const selectedColor = (cl) => {
-    setColor(cl);
-  }
+  const openColorSelector = () => {
+    setOpenColor((prevState) => !prevState);
+  };
+
+  const selectedColor = (컬러) => {
+    setColor(컬러);
+    setOpenColor(false);
+  };
 
   const listSubmitHandler = (event) => {
     event.preventDefault();
@@ -92,16 +108,12 @@ const AddEvent = () => {
 
     // 시작날과 마지막 날 일치
     if (comparison === 4) {
-      dispatch(
-        modalActions.inputList({ title, startTime, endTime })
-      );
+      dispatch(modalActions.inputList({ title, startTime, endTime, color }));
     }
 
     // 마지막 날이 시작날 보다 큼.
     if (comparison <= 3) {
-      dispatch(
-        modalActions.longDateList({ title, startTime, endTime })
-      );
+      dispatch(modalActions.longDateList({ title, startTime, endTime, color }));
     }
 
     inputRef.current.value = "";
@@ -118,7 +130,7 @@ const AddEvent = () => {
 
   return (
     <form
-      className={`addMordal ${ModalPosition(
+      className={`addModal ${ModalPosition(
         modalState.dayIndex,
         modalState.week
       )}`}
@@ -128,23 +140,8 @@ const AddEvent = () => {
     >
       <div className="add-modal-name">일정 추가</div>
       <div className="inputArea">
-        <input placeholder="(제목 없음)" type="text" ref={inputRef} />
-      </div>
-      <div className="color-picker">
-        <span>컬러</span>
-        <div className={`${color}`}></div>
-        <div className="color-box">
-          <div onClick={() => selectedColor('토마토')} className='토마토'>토마토</div>
-          <div onClick={() => selectedColor('연분홍')} className='연분홍'>연분홍</div>
-          <div onClick={() => selectedColor('바나나')} className='바나나'>바나나</div>
-          <div onClick={() => selectedColor('세이지')} className='세이지'>세이지</div>
-          <div onClick={() => selectedColor('바질')} className='바질'>바질</div>
-          <div onClick={() => selectedColor('공작')} className='공작'>공작</div>
-          <div onClick={() => selectedColor('블루베리')} className='블루베리'>블루베리</div>
-          <div onClick={() => selectedColor('라벤더')} className='라벤더'>라벤더</div>
-          <div onClick={() => selectedColor('포도')} className='포도'>포도</div>
-          <div onClick={() => selectedColor('흑연')} className='흑연'>흑연</div>
-        </div>
+        <img src="img/memo.png" alt="memo" width="17" className="input-icon" />
+        <input placeholder="(제목 추가)" type="text" ref={inputRef} />
       </div>
       <TimeSelector
         startDate={startDate}
@@ -155,6 +152,59 @@ const AddEvent = () => {
         timeTwoRef={timeTwoRef}
         comparison={comparison}
       />
+      <div className="color-picker">
+        <img
+          src="img/palette.png"
+          alt="memo"
+          width="20"
+          className="color-icon"
+        />
+        <div className={`${color} circle`} onClick={openColorSelector}></div>
+        {openColor && (
+          <div className="color-box" ref={colorRef}>
+            <div
+              onClick={() => selectedColor("토마토")}
+              className={`토마토 circle`}
+            ></div>
+            <div
+              onClick={() => selectedColor("연분홍")}
+              className={`연분홍 circle`}
+            ></div>
+            <div
+              onClick={() => selectedColor("세이지")}
+              className={`세이지 circle`}
+            ></div>
+            <div
+              onClick={() => selectedColor("바나나")}
+              className={`바나나 circle`}
+            ></div>
+            <div
+              onClick={() => selectedColor("바질")}
+              className={`바질 circle`}
+            ></div>
+            <div
+              onClick={() => selectedColor("공작")}
+              className={`공작 circle`}
+            ></div>
+            <div
+              onClick={() => selectedColor("블루베리")}
+              className={`블루베리 circle`}
+            ></div>
+            <div
+              onClick={() => selectedColor("라벤더")}
+              className={`라벤더 circle`}
+            ></div>
+            <div
+              onClick={() => selectedColor("포도")}
+              className={`포도 circle`}
+            ></div>
+            <div
+              onClick={() => selectedColor("흑연")}
+              className={`흑연 circle`}
+            ></div>
+          </div>
+        )}
+      </div>
       <div className="buttonBox">
         <button type="submit">저장</button>
         <button type="button" onClick={cancelHandler}>

@@ -7,13 +7,14 @@ import "./Month.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAngleLeft, faAngleRight } from "@fortawesome/free-solid-svg-icons";
 import { NavLink } from "react-router-dom";
+import { modalActions } from "../store/modal-slice";
 
 const Month = () => {
+  console.log('month')
   const dispatch = useDispatch();
 
   const monthInfo = useSelector((state) => state.month);
   const scheduleInfo = useSelector(state => state.modal.userSchedule);
-
 
   const movePrevMonthHandler = () => {
     dispatch(monthActions.prevMonth());
@@ -24,11 +25,11 @@ const Month = () => {
   };
 
   const logoutHandler = () => {
-    signOut(auth).catch((err) => {
+    signOut(auth).then((res) => {
+      dispatch(modalActions.logout());
+    }).catch((err) => {
       alert("로그아웃 실패");
-      console.log(err);
       localStorage.clear()
-      
     });
   };
 

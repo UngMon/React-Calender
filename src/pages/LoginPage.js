@@ -3,7 +3,7 @@ import React, { useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { auth } from "../Auth/firebase";
 import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
-import { FacebookAuthProvider, TwitterAuthProvider } from "firebase/auth";
+import { FacebookAuthProvider } from "firebase/auth";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { useDispatch } from "react-redux";
@@ -114,11 +114,7 @@ const LoginPage = () => {
     if (type === "Facebook") {
       provider = new FacebookAuthProvider();
     }
-
-    if (type === "Twitter") {
-      provider = new TwitterAuthProvider();
-    }
-
+    
     signInWithPopup(auth, provider)
       .then((data) => {
         console.log(data);

@@ -19,6 +19,11 @@ const timeSlice = createSlice({
       state.firstIsVisible = false;
     },
 
+    timeToggle(state) {
+      state.firstIsVisible = false;
+      state.lastIsVisible = false;
+    },
+
     selectFristTime(state, action) {
       state.firstTime = action.payload;
     },

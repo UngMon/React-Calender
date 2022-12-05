@@ -203,7 +203,7 @@ const List = () => {
         )}
         {!editArea && (
           <>
-            <div className="edit-list-colorbox"></div>
+            <div className={listInfo.color}></div>
             <div className={`listName  ${styleClass}`}>
               {listState.listName}
             </div>

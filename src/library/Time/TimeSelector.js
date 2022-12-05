@@ -25,18 +25,21 @@ const TimeSelector = ({
   const [lastDateIsVisible, setLastDateIsVisible] = useState(false);
 
   const dateRef = useRef([]);
+  const timeRef = useRef([]);
   const OneRef = useRef([]);
   const TwoRef = useRef([]);
-  console.log(dateRef);
+
   const timeOneVisible = timeState.firstIsVisible;
   const timeTwoVisible = timeState.lastIsVisible;
 
   const startDateOpenHandler = useCallback(() => {
+    // console.log("??");
     setFirstDateIsVisible((prevState) => !prevState);
     setLastDateIsVisible(false);
   }, []);
 
   const endDateOpenHandler = useCallback(() => {
+    // console.log("??");
     setFirstDateIsVisible(false);
     setLastDateIsVisible((prevState) => !prevState);
   }, []);
@@ -49,31 +52,34 @@ const TimeSelector = ({
     dispatch(timeActions.lastTimetoggle());
   };
 
-  const datePickerCloseHandler = (e) => {
-    console.log(e.target);
-    console.log(dateRef.current);
+  const datePickerCloseHandler = useCallback((e) => {
+    // console.log(e.target);
+    // console.log(dateRef.current);
     let boolean = true;
     for (let i = 0; i < dateRef.current.length; i++) {
-      console.log(dateRef.current[i])
-      
+      // 5주와 6주 사이를 왔다갔다하면 ref의 마지막 인덱스가 null이 생성되어있음.
       if (dateRef.current[i] === null) {
-        break;
+        break; //반복문 탈출
       }
-
+      // console.log(dateRef.current[i]);
       if (!dateRef.current[i].contains(e.target)) {
+        console.log("포함 x");
         boolean = false;
-        console.log('here?')
       } else {
+        console.log("포함 o");
         boolean = true;
-        console.loh('??')
+        break;
       }
     }
 
     if (!boolean) {
-      setFirstDateIsVisible(false);
-      setLastDateIsVisible(false);
+      console.log("작동?");
+      setTimeout(() => {
+        setFirstDateIsVisible(false);
+        setLastDateIsVisible(false);
+      }, 100);
     }
-  };
+  }, []);
 
   useEffect(() => {
     document.addEventListener("mousedown", datePickerCloseHandler);
@@ -83,14 +89,66 @@ const TimeSelector = ({
     };
   });
 
+  const timePickerCloseHandler = (e) => {
+    let boolean = true;
+    console.log(timeRef.current);
+    for (let i = 0; i < timeRef.current.length; i++) {
+      if (timeRef.current[i] === null) {
+        continue;
+      }
+
+      if (!timeRef.current[i].contains(e.target)) {
+        boolean = false;
+      } else {
+        boolean = true;
+        break;
+      }
+    }
+
+    if (!boolean) {
+      setTimeout(() => {
+        dispatch(timeActions.timeToggle());
+      }, 100);
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener("mousedown", timePickerCloseHandler);
+    return () => {
+      document.removeEventListener("mousedown", timePickerCloseHandler);
+    };
+  });
+
   return (
     <div className="time-date-box">
       <div className="time-area">
-        <div className="time-area-name">
-          <div onClick={startDateOpenHandler}>
-            {comparison !== 1 && 시작날[1] + "월 " + 시작날[2] + "일"}
-            {comparison === 1 &&
-              시작날[0] + "년" + 시작날[1] + "월" + 시작날[2] + "일"}
+        <img
+          src="img/clock.png"
+          alt="clock"
+          width="19"
+          className="clock-icon"
+        />
+        <div className="time-area-date">
+          {comparison !== 1 && (
+            <span onClick={startDateOpenHandler}>
+              {시작날[1] + "월 " + 시작날[2] + "일"}
+            </span>
+          )}
+          {comparison === 1 && (
+            <span onClick={startDateOpenHandler}>
+              {시작날[0] + "년" + 시작날[1] + "월" + 시작날[2] + "일"}
+            </span>
+          )}
+          <div className="date-area">
+            {fristDateIsVisible && (
+              <Month
+                type={true}
+                year={시작날[0]}
+                month={시작날[1]}
+                dateRef={dateRef}
+                dateClose={startDateOpenHandler}
+              />
+            )}
           </div>
         </div>
         <div className="time-one">
@@ -100,20 +158,39 @@ const TimeSelector = ({
             onClick={firstTimeSelectorHandler}
             ref={timeOneRef}
           />
-          <TimeBox
-            timeOneRef={timeOneRef}
-            OneRef={OneRef}
-            timeVisible={timeOneVisible}
-          />
+          {timeState.firstIsVisible && (
+            <TimeBox
+              timeOneRef={timeOneRef}
+              OneRef={OneRef}
+              timeVisible={timeOneVisible}
+              timeRef={timeRef}
+            />
+          )}
         </div>
         <div className="time-area-span">
           <span>~</span>
         </div>
-        <div className="time-area-name">
-          <div onClick={endDateOpenHandler}>
-            {comparison !== 1 && 마지막날[1] + "월 " + 마지막날[2] + "일"}
-            {comparison === 1 &&
-              마지막날[0] + "년" + 마지막날[1] + "월" + 마지막날[2] + "일"}
+        <div className="time-area-date">
+          {comparison !== 1 && (
+            <span onClick={endDateOpenHandler}>
+              {마지막날[1] + "월 " + 마지막날[2] + "일"}
+            </span>
+          )}
+          {comparison === 1 && (
+            <span onClick={endDateOpenHandler}>
+              {마지막날[0] + "년" + 마지막날[1] + "월" + 마지막날[2] + "일"}
+            </span>
+          )}
+          <div className="date-area">
+            {lastDateIsVisible && (
+              <Month
+                type={false}
+                year={마지막날[0]}
+                month={마지막날[1]}
+                dateRef={dateRef}
+                dateClose={endDateOpenHandler}
+              />
+            )}
           </div>
         </div>
         <div className="time-two">
@@ -128,28 +205,7 @@ const TimeSelector = ({
               timeTwoRef={timeTwoRef}
               TwoRef={TwoRef}
               timeVisible={timeTwoVisible}
-            />
-          )}
-        </div>
-      </div>
-      <div className="date-area">
-        <div className="start_date">
-          {fristDateIsVisible && (
-            <Month
-              type={true}
-              year={시작날[0]}
-              month={시작날[1]}
-              dateRef={dateRef}
-            />
-          )}
-        </div>
-        <div className="end_date">
-          {lastDateIsVisible && (
-            <Month
-              type={false}
-              year={마지막날[0]}
-              month={마지막날[1]}
-              dateRef={dateRef}
+              timeRef={timeRef}
             />
           )}
         </div>

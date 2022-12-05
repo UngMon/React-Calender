@@ -11,6 +11,7 @@ const fixMonth = date.getMonth() + 1;
 const fixDate = date.getDate()
 
 const Calender = ({ year, month, firstDay, lastDate }) => {
+  console.log('calender')
 
   const addModal = useSelector((state) => state.modal);
   const listModal = useSelector((state) => state.list);

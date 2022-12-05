@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { timeActions } from "../../store/time-slice";
 
-const TimeBox = ({ timeOneRef, OneRef, timeVisible }) => {
+const TimeBox = ({ timeOneRef, OneRef, timeVisible, timeRef }) => {
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -19,8 +19,8 @@ const TimeBox = ({ timeOneRef, OneRef, timeVisible }) => {
   };
 
   return (
-    <div className={`time-select ${!timeVisible && 'none'}`}>
-      <div id="time-one" >
+    <div className={`time-select-one ${!timeVisible && 'none'}`}>
+      <div id="time-one" ref={(el) => (timeRef.current[0] = el)}>
         <div ref={el => OneRef.current[0] = el} onClick={clickHandler}>오전 00:15</div>
         <div ref={el => OneRef.current[1] = el} onClick={clickHandler}>오전 00:30</div>
         <div ref={el => OneRef.current[2] = el} onClick={clickHandler}>오전 00:45</div>

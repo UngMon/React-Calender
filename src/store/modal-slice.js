@@ -1,10 +1,11 @@
-import { createSlice, current } from "@reduxjs/toolkit";
+import { createSlice } from "@reduxjs/toolkit";
 
 const modalSlice = createSlice({
   name: "modal",
   initialState: {
-    isStart: false,
     isVisible: false,
+    isLogin: false,
+    isLoading: false,
     startDate: "",
     endDate: "",
     week: "",
@@ -17,6 +18,91 @@ const modalSlice = createSlice({
     changed: false,
   },
   reducers: {
+    fetchFromData(state, action) {
+      console.log('패치')
+      if (action.payload.length !== 0) {
+        state.userData = action.payload;
+      }
+      console.log(action.payload);
+    },
+
+    createUser(state, action) {
+      state.changed = true;
+      state.name = action.payload.name;
+      state.email = action.payload.email;
+      state.isLogin = true;
+
+      const userIndex = state.userData.findIndex(
+        (item) => item.email === action.payload.email
+      );
+
+      if (userIndex === -1) {
+        // 신규 가입자 일 때,
+
+        state.userData = [
+          ...state.userData,
+          {
+            email: action.payload.email,
+            name: action.payload.name,
+            schedule: [""],
+          },
+        ];
+
+        state.userIndex = state.userData.length - 1;
+      } else {
+        state.userIndex = userIndex;
+      }
+      state.userSchedule = state.userData[state.userIndex];
+    },
+
+    confirmUser(state, action) {
+      const userIndex = state.userData.findIndex(
+        (item) => item.email === action.payload.email
+      );
+      console.log(state.userData)
+      console.log(action.payload.email);
+      console.log(userIndex);
+
+      if (userIndex !== -1) {
+        state.isLogin = true;
+        state.userIndex = userIndex;
+        state.userSchedule = state.userData[userIndex];
+        state.isLoading = false;
+      }
+    },
+    
+    toggleChanged(state) {
+      state.changed = false;
+    },
+
+    logout(state) {
+      state.isLogin = false;
+    },
+
+    LoadigState(state) {
+      state.isLoading = true;
+    },
+
+    listDone(state, action) {
+      state.changed = true;
+      const index = action.payload.index;
+      const listIndex = action.payload.listIndex;
+      const userIndex = state.userIndex;
+      let dummyUserData = [...state.userData];
+
+      dummyUserData[userIndex].schedule[index].todo[listIndex].style =
+        !dummyUserData[userIndex].schedule[index].todo[listIndex].style;
+
+      state.userData = [...dummyUserData];
+      state.userSchedule = dummyUserData[userIndex];
+    },
+
+    resetState(state) {
+      state.longArr = "";
+      state.dayIndex = "";
+      state.endDate = "";
+    },
+
     onModal(state) {
       state.isVisible = true;
     },
@@ -25,6 +111,11 @@ const modalSlice = createSlice({
       state.isVisible = false;
       state.startDate = "";
       state.endDate = "";
+    },
+
+    setDate(state, action) {
+      state.startDate = action.payload.startDate;
+      state.endDate = action.payload.endDate;
     },
 
     clickedStartDate(state, action) {
@@ -46,11 +137,6 @@ const modalSlice = createSlice({
       }
     },
 
-    setDate(state, action) {
-      state.startDate = action.payload.startDate;
-      state.endDate = action.payload.endDate;
-    },
-
     inputList(state, action) {
       state.changed = true;
       const arr = [...state.userData];
@@ -68,6 +154,15 @@ const modalSlice = createSlice({
         (item) => item.idx === state.startDate
       );
 
+      const key =
+        startDateArr[0] +
+        (87 + +startDateArr[1]) +
+        (68 + +startDateArr[2]) +
+        "99" +
+        action.payload.startTime +
+        action.payload.endTime +
+        action.payload.title;
+
       if (index !== -1) {
         // 존재하면
         arr[state.userIndex].schedule[index].todo = [
@@ -79,19 +174,13 @@ const modalSlice = createSlice({
             endTime: action.payload.endTime,
             title: action.payload.title,
             style: false,
+            color: action.payload.color,
             length: 99,
             isStart: false,
             isFake: false,
             isEnd: false,
             isLong: false,
-            index:
-              startDateArr[0] +
-              (87 + +startDateArr[1]) +
-              (68 + +startDateArr[2]) +
-              "99" +
-              action.payload.startTime +
-              action.payload.endTime +
-              action.payload.title,
+            index: key,
             arr: [state.startDate],
           },
         ];
@@ -114,19 +203,13 @@ const modalSlice = createSlice({
                 endTime: action.payload.endTime,
                 title: action.payload.title,
                 style: false,
+                color: action.payload.color,
                 length: 1,
                 isStart: false,
                 isFake: false,
                 isEnd: false,
                 isLong: false,
-                index:
-                  startDateArr[0] +
-                  (87 + +startDateArr[1]) +
-                  (68 + +startDateArr[2]) +
-                  "99" +
-                  action.payload.startTime +
-                  action.payload.endTime +
-                  action.payload.title,
+                index: key,
                 arr: [state.startDate],
               },
             ],
@@ -200,6 +283,7 @@ const modalSlice = createSlice({
                 endTime: action.payload.endTime,
                 title: action.payload.title,
                 style: false,
+                color: action.payload.color,
                 length: Leng,
                 isStart: true,
                 isEnd: false,
@@ -231,6 +315,7 @@ const modalSlice = createSlice({
                   isEnd: leng === 1 ? true : false,
                   isLong: true,
                   style: false,
+                  color: action.payload.color,
                   index: key,
                   arr,
                 },
@@ -251,6 +336,7 @@ const modalSlice = createSlice({
                   isFake: true,
                   isLong: false,
                   style: false,
+                  color: action.payload.color,
                   index: key,
                   arr: [i],
                 },
@@ -282,6 +368,7 @@ const modalSlice = createSlice({
                     title: action.payload.title,
                     length: Leng,
                     style: false,
+                    color: action.payload.color,
                     isStart: true,
                     isEnd: false,
                     isFake: false,
@@ -309,6 +396,7 @@ const modalSlice = createSlice({
                       title: action.payload.title,
                       length: Leng,
                       style: false,
+                      color: action.payload.color,
                       isStart: false,
                       isEnd: leng === 1 ? true : false,
                       isFake: false,
@@ -334,6 +422,7 @@ const modalSlice = createSlice({
                       title: action.payload.title,
                       length: 1,
                       style: false,
+                      color: action.payload.color,
                       isStart: false,
                       isEnd: leng === 1 ? true : false,
                       isFake: true,
@@ -421,87 +510,6 @@ const modalSlice = createSlice({
       dummyUserData[state.userIndex].schedule = userSchedule;
       state.userData = [...dummyUserData];
       state.userSchedule.schedule = userSchedule;
-    },
-
-    fetchFromData(state, action) {
-      if (action.payload.length !== 0) {
-        state.userData = action.payload;
-      }
-      console.log(action.payload);
-    },
-
-    createUser(state, action) {
-      state.changed = true;
-      state.isStart = true;
-      state.name = action.payload.name;
-      state.email = action.payload.email;
-
-      const userIndex = state.userData.findIndex(
-        (item) => item.email === action.payload.email
-      );
-
-      if (userIndex === -1) {
-        // 신규 가입자 일 때,
-
-        state.userData = [
-          ...state.userData,
-          {
-            email: action.payload.email,
-            name: action.payload.name,
-            schedule: [""],
-          },
-        ];
-
-        state.userIndex = state.userData.length - 1;
-      } else {
-        state.userIndex = userIndex;
-      }
-      state.userSchedule = state.userData[state.userIndex];
-    },
-
-    confirmUser(state, action) {
-      console.log("login 작동");
-      // state.isStart = true;
-      const userIndex = state.userData.findIndex(
-        (item) => item.email === action.payload.email
-      );
-
-      state.userIndex = userIndex;
-      state.userSchedule = state.userData[userIndex];
-    },
-
-    setUserInfo(state, action) {
-      const userIndex = state.userData.findIndex(
-        (item) => item.email === action.payload.userEmail
-      );
-
-      state.userIndex = userIndex;
-      state.userSchedule = state.userData[userIndex];
-    },
-
-    toggleChanged(state) {
-      state.changed = false;
-      state.isStart = false;
-    },
-
-    listDone(state, action) {
-      state.changed = true;
-      const index = action.payload.index;
-      const listIndex = action.payload.listIndex;
-      const userIndex = state.userIndex;
-      let dummyUserData = [...state.userData];
-
-      dummyUserData[userIndex].schedule[index].todo[listIndex].style =
-        !dummyUserData[userIndex].schedule[index].todo[listIndex].style;
-
-      state.userData = [...dummyUserData];
-      state.userSchedule = dummyUserData[userIndex];
-    },
-
-    resetState(state) {
-      state.longArr = "";
-      state.dayIndex = "";
-      state.endDate = "";
     },
   },
 });
