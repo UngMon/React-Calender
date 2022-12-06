@@ -6,10 +6,10 @@ import MakeKey from "../library/MakeKey";
 import classes from "./Calender.module.css";
 
 const MakeCaledner = ({ year, month, firstDay, lastDate, identify }) => {
-  console.log('makecalender')
+  console.log("makecalender");
   const dispatch = useDispatch();
   const browserWidth = window.innerWidth;
-  console.log(browserWidth)
+  console.log(browserWidth);
 
   // {email: '', name: '', schedule: []}
   const modalState = useSelector((state) => state.modal);
@@ -58,7 +58,6 @@ const MakeCaledner = ({ year, month, firstDay, lastDate, identify }) => {
     let positionIndex; // 화면에 보일 일정들의 위치를 저장하는 변수.
 
     return todoInfo.map((item, tdIdx) => {
-
       // todo 안의 요소가 dummy일정이 아닌 하루 일정과 긴 일정들 일 때,
       if (tdIdx < 4 && !item.isFake) {
         // [0, 0, 0, 0]
@@ -190,16 +189,16 @@ const MakeCaledner = ({ year, month, firstDay, lastDate, identify }) => {
               className={classes.date_box}
               day-index={dayIdx}
             >
-              <div
-                className={`${classes.date} ${
-                  identify === idx && classes.Today
-                } ${
-                  identify !== idx && i === 1
-                    ? classes.sunday
-                    : i === 7 && classes.saturday
-                }`}
-              >
-                {nowDate}
+              <div className={classes.date}>
+                <h2
+                  className={`${identify === idx && classes.Today} ${
+                    identify !== idx && dayIdx === 1
+                      ? classes.sunday
+                      : dayIdx === 7 && classes.saturday
+                  }`}
+                >
+                  {nowDate}
+                </h2>
               </div>
               <div className={classes.list_box}>
                 {scheduleHandler(idx, dayIdx, week, array, listCount)}
@@ -218,18 +217,16 @@ const MakeCaledner = ({ year, month, firstDay, lastDate, identify }) => {
               className={classes.date_box}
               day-index={dayIdx}
             >
-              <div
-                className={`${classes.date} ${
-                  identify === idx && classes.Today
-                } ${
-                  identify !== idx && dayIdx === 1
-                    ? classes.sunday
-                    : i === 7
-                    ? classes.saturday
-                    : false
-                }`}
-              >
-                {nowDate}
+              <div className={classes.date}>
+                <h2
+                  className={`${identify === idx && classes.Today} ${
+                    identify !== idx && dayIdx === 1
+                      ? classes.sunday
+                      : dayIdx === 7 && classes.saturday
+                  }`}
+                >
+                  {nowDate}
+                </h2>
               </div>
               <div className={classes.list_box}>
                 {scheduleHandler(idx, dayIdx, week, array, listCount)}
@@ -254,16 +251,16 @@ const MakeCaledner = ({ year, month, firstDay, lastDate, identify }) => {
               className={classes.date_box}
               day-index={dayIdx}
             >
-              <div
-                className={`${classes.date} ${
-                  identify === idx && classes.Today
-                } ${
-                  identify !== idx && dayIdx === 1
-                    ? classes.sunday
-                    : dayIdx === 7 && classes.saturday
-                }`}
-              >
-                {nowDate}
+              <div className={classes.date}>
+                <h2
+                  className={`${identify === idx && classes.Today} ${
+                    identify !== idx && dayIdx === 1
+                      ? classes.sunday
+                      : dayIdx === 7 && classes.saturday
+                  }`}
+                >
+                  {nowDate}
+                </h2>
               </div>
               <div className={classes.list_box}>
                 {scheduleHandler(idx, dayIdx, week, array, listCount)}
@@ -282,16 +279,16 @@ const MakeCaledner = ({ year, month, firstDay, lastDate, identify }) => {
               className={classes.date_box}
               day-index={dayIdx}
             >
-              <div
-                className={`${classes.date} ${
-                  identify === idx && classes.Today
-                } ${
-                  identify !== idx && dayIdx === 1
-                    ? classes.sunday
-                    : dayIdx === 7 && classes.saturday
-                }`}
-              >
-                {nowDate}
+              <div className={classes.date}>
+                <h2
+                  className={`${identify === idx && classes.Today} ${
+                    identify !== idx && dayIdx === 1
+                      ? classes.sunday
+                      : dayIdx === 7 && classes.saturday
+                  }`}
+                >
+                  {nowDate}
+                </h2>
               </div>
               <div className={classes.list_box}>
                 {scheduleHandler(idx, dayIdx, week, array, listCount)}
@@ -328,4 +325,3 @@ const MakeCaledner = ({ year, month, firstDay, lastDate, identify }) => {
 };
 
 export default MakeCaledner;
-
