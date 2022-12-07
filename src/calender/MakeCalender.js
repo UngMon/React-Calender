@@ -124,9 +124,7 @@ const MakeCaledner = ({ year, month, firstDay, lastDate, identify }) => {
               }`}
               dayindex={dayIdx}
             >
-              <span>
                 {todoInfo[tdIdx].startTime + " " + todoInfo[tdIdx].title}
-              </span>
             </div>
           </div>
         ) : (
@@ -135,7 +133,7 @@ const MakeCaledner = ({ year, month, firstDay, lastDate, identify }) => {
             // todo안의 요소가 5개 이상이면 더보기란 생성.
             <div
               key={tdIdx}
-              className={`classes["list-more"]  ${classes[`listIndex-3`]}`}
+              className={`${classes["list-more"]} ${classes[`listIndex-3`]}`}
               onClick={(event) => {
                 event.stopPropagation();
                 allListClickHandler(date, dayIdx, week, todoIndex);
@@ -200,8 +198,10 @@ const MakeCaledner = ({ year, month, firstDay, lastDate, identify }) => {
                   {nowDate}
                 </h2>
               </div>
-              <div className={classes.list_box}>
-                {scheduleHandler(idx, dayIdx, week, array, listCount)}
+              <div className={classes['list-box']}>
+                <div className={classes['list-area']}>
+                  {scheduleHandler(idx, dayIdx, week, array, listCount)}
+                </div>
               </div>
             </td>
           );
@@ -228,8 +228,10 @@ const MakeCaledner = ({ year, month, firstDay, lastDate, identify }) => {
                   {nowDate}
                 </h2>
               </div>
-              <div className={classes.list_box}>
-                {scheduleHandler(idx, dayIdx, week, array, listCount)}
+              <div className={classes['list-box']}>
+                <div className={classes['list-area']}>
+                  {scheduleHandler(idx, dayIdx, week, array, listCount)}
+                </div>
               </div>
             </td>
           );
@@ -262,8 +264,10 @@ const MakeCaledner = ({ year, month, firstDay, lastDate, identify }) => {
                   {nowDate}
                 </h2>
               </div>
-              <div className={classes.list_box}>
-                {scheduleHandler(idx, dayIdx, week, array, listCount)}
+              <div className={classes['list-box']}>
+                <div className={classes['list-area']}>
+                  {scheduleHandler(idx, dayIdx, week, array, listCount)}
+                </div>
               </div>
             </td>
           );
@@ -290,8 +294,10 @@ const MakeCaledner = ({ year, month, firstDay, lastDate, identify }) => {
                   {nowDate}
                 </h2>
               </div>
-              <div className={classes.list_box}>
-                {scheduleHandler(idx, dayIdx, week, array, listCount)}
+              <div className={classes['list-box']}>
+                <div className={classes['list-area']}>
+                  {scheduleHandler(idx, dayIdx, week, array, listCount)}
+                </div>
               </div>
             </td>
           );

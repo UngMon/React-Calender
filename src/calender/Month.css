@@ -78,7 +78,7 @@
   height: 90%;
 }
 
-@media screen and (min-width: 1200px) {
+/* @media screen and (min-width: 1200px) {
   .month-area {
     font-size: 1.3em;
   }
@@ -94,4 +94,4 @@
   .calender-view {
     height: 93%;
   }
-}
+} */

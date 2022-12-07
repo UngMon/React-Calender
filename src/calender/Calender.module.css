@@ -39,13 +39,13 @@
   width: 14.2857142857%;
   box-sizing: border-box;
   vertical-align: text-top;
-  border: 1px solid rgb(193, 192, 192, 0.5);
+  border: 1px solid rgba(180, 179, 179, 0.5);
   border-left: 0;
   border-right: 0;
   position: relative;
 }
 
-.date_box .date {
+.date {
   position: absolute;
   width: 100%;
   height: 100%;
@@ -77,78 +77,86 @@
   color: white;
 }
 
-.list_box {
+.list-box {
   position: absolute;
-  top: 20%;
+  margin-top: 26px;
   width: 100%;
   height: 80%;
+  font-size: 24px;
+}
+
+.list-area {
+  position: relative;
+  width: 100%;
+  height: 100%; /* 여기 동적으로.*/
 }
 
 .list-boundary-short {
   width: 98%;
-  height: 22%;
-  pointer-events: none;
+  height: 22px;
   display: flex;
 }
 
 .list-boundary-long {
-  height: 22%;
-  pointer-events: none;
+  width: 100%;
+  height: 24px;
   display: flex;
+  box-sizing: border-box;
+  line-height: 24px;
 }
 
 .color-bar {
-  height: 100%;
-  width: 2.5%;
+  box-sizing: border-box;
+  margin: 2px 0;
+  height: 18px;
+  width: 4px;
 }
 
 .list {
   width: 100%;
-  height: 100%;
-  padding-left: 0.3em;
+  height: 22px;
+  margin: 1px 5px 1px 0;
+  padding-left: 3px;
   color: #506ee2;
   font-weight: bold;
-  font-size: 0.8em;
+  line-height: 22px;
+  font-size: 11px;
   align-items: center;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
   pointer-events: auto;
-  line-height: 200%;
 }
 
 .long {
   z-index: 3;
-  padding-left: 0.55em;
+  padding-left: 0.50em;
   border-radius: 5px 5px;
   color: white;
   pointer-events: auto;
 }
 
-.list_box .nothing {
-  background-color: transparent;
-  height: 20%;
-  padding: 0 0.6em;
-}
-
 .list-more {
   top: 80%;
-  height: 20%;
+  width: 100%;
+  height: 24px;
+  font-size: 12px;
+  line-height: 24px;
 }
 
 .listIndex-1 {
   position: absolute;
-  top: 25%;
+  top: 24px;
 }
 
 .listIndex-2 {
   position: absolute;
-  top: 50%;
+  top: 48px
 }
 
 .listIndex-3 {
   position: absolute;
-  top: 75%;
+  top: 72px;
 }
 
 .list:hover {
@@ -162,8 +170,8 @@
   text-decoration: line-through;
 }
 
-@media screen and (max-width: 980px) {
+/* @media screen and (max-width: 980px) {
   .calender-view {
     height: 93%;
   }
-}
+} */
