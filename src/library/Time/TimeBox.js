@@ -20,7 +20,7 @@ const TimeBox = ({ timeOneRef, OneRef, timeVisible, timeRef }) => {
 
   return (
     <div className={`time-select-one ${!timeVisible && 'none'}`}>
-      <div id="time-one" ref={(el) => (timeRef.current[0] = el)}>
+      <div id="time-selector" ref={(el) => (timeRef.current[0] = el)}>
         <div ref={el => OneRef.current[0] = el} onClick={clickHandler}>오전 00:15</div>
         <div ref={el => OneRef.current[1] = el} onClick={clickHandler}>오전 00:30</div>
         <div ref={el => OneRef.current[2] = el} onClick={clickHandler}>오전 00:45</div>

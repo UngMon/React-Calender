@@ -14,6 +14,7 @@ import {
   faEdit,
 } from "@fortawesome/free-solid-svg-icons";
 import TimeSelector from "../library/Time/TimeSelector";
+import ColorBox from "../library/ColorBox";
 
 const List = () => {
   const dispatch = useDispatch();
@@ -27,16 +28,18 @@ const List = () => {
   const listIndex = listState.listIndex;
   const dayIndex = listState.dayIndex;
 
-  console.log(dayIndex);
-
   const schedule = modalState.userSchedule.schedule;
   const listInfo = schedule[index].todo[listIndex];
+
+  const [color, setColor] = useState(listInfo.color);
+  const [openColor, setOpenColor] = useState(false);
 
   const startDate = modalState.startDate;
   const endDate = modalState.endDate;
 
   const modalRef = useRef();
   const inputRef = useRef();
+  const colorRef = useRef();
 
   const timeOneRef = useRef();
   const timeTwoRef = useRef();
@@ -49,7 +52,7 @@ const List = () => {
         dispatch(listActions.offModal());
         dispatch(modalActions.offModal());
         dispatch(timeActions.resetTime());
-      }, 150);
+      }, 100);
     }
   };
 
@@ -116,7 +119,7 @@ const List = () => {
     if (comparison <= 3) {
       console.log("여기?");
 
-      const longArr = !modalState.longArrChanged ? listInfo.arr : undefined; 
+      const longArr = !modalState.longArrChanged ? listInfo.arr : undefined;
 
       dispatch(
         modalActions.longDateList({
@@ -179,31 +182,37 @@ const List = () => {
       </div>
       <div className="list-area">
         {editArea && (
-          <form onSubmit={editListSubmitHandler}>
+          <form className="list-form" onSubmit={editListSubmitHandler}>
             <div className="edit-list">
-              <input
-                placeholder={listState.listName}
-                type="text"
-                ref={inputRef}
+              <img
+                src="img/memo.png"
+                alt="memo"
+                width="17"
+                className="input-icon"
               />
-              <button>저장</button>
+              <input placeholder={listState.listName} type="text" ref={inputRef} />
             </div>
-            <div className="edit-time-area">
-              <TimeSelector
-                startDate={startDate}
-                endDate={endDate}
-                firstTime={listInfo.startTime}
-                lastTime={listInfo.endTime}
-                timeOneRef={timeOneRef}
-                timeTwoRef={timeTwoRef}
-                comparison={comparison}
-              />
-            </div>
+            <TimeSelector
+              startDate={startDate}
+              endDate={endDate}
+              firstTime={listInfo.startTime}
+              lastTime={listInfo.endTime}
+              timeOneRef={timeOneRef}
+              timeTwoRef={timeTwoRef}
+              comparison={comparison}
+            />
+            <ColorBox
+              color={color}
+              setColor={setColor}
+              openColor={openColor}
+              setOpenColor={setOpenColor}
+              colorRef={colorRef}
+            />
           </form>
         )}
         {!editArea && (
           <>
-            <div className={listInfo.color}></div>
+            <div className={`list-color-box ${listInfo.color}`}></div>
             <div className={`listName  ${styleClass}`}>
               {listState.listName}
             </div>

@@ -121,94 +121,87 @@ const TimeSelector = ({
 
   return (
     <div className="time-date-box">
-      <div className="time-area">
-        <img
-          src="img/clock.png"
-          alt="clock"
-          width="19"
-          className="clock-icon"
+      <img src="img/clock.png" alt="clock" width="19" className="clock-icon" />
+      <div className="time-area-date">
+        {comparison !== 1 && (
+          <span onClick={startDateOpenHandler}>
+            {시작날[1] + "월 " + 시작날[2] + "일"}
+          </span>
+        )}
+        {comparison === 1 && (
+          <span onClick={startDateOpenHandler}>
+            {시작날[0] + "년" + 시작날[1] + "월" + 시작날[2] + "일"}
+          </span>
+        )}
+        <div className="date-area">
+          {fristDateIsVisible && (
+            <Month
+              type={true}
+              year={시작날[0]}
+              month={시작날[1]}
+              dateRef={dateRef}
+              dateClose={startDateOpenHandler}
+            />
+          )}
+        </div>
+      </div>
+      <div className="time-one">
+        <input
+          type="text"
+          placeholder={timeState.firstTime || firstTime}
+          onClick={firstTimeSelectorHandler}
+          ref={timeOneRef}
         />
-        <div className="time-area-date">
-          {comparison !== 1 && (
-            <span onClick={startDateOpenHandler}>
-              {시작날[1] + "월 " + 시작날[2] + "일"}
-            </span>
-          )}
-          {comparison === 1 && (
-            <span onClick={startDateOpenHandler}>
-              {시작날[0] + "년" + 시작날[1] + "월" + 시작날[2] + "일"}
-            </span>
-          )}
-          <div className="date-area">
-            {fristDateIsVisible && (
-              <Month
-                type={true}
-                year={시작날[0]}
-                month={시작날[1]}
-                dateRef={dateRef}
-                dateClose={startDateOpenHandler}
-              />
-            )}
-          </div>
-        </div>
-        <div className="time-one">
-          <input
-            type="text"
-            placeholder={timeState.firstTime || firstTime}
-            onClick={firstTimeSelectorHandler}
-            ref={timeOneRef}
+        {timeState.firstIsVisible && (
+          <TimeBox
+            timeOneRef={timeOneRef}
+            OneRef={OneRef}
+            timeVisible={timeOneVisible}
+            timeRef={timeRef}
           />
-          {timeState.firstIsVisible && (
-            <TimeBox
-              timeOneRef={timeOneRef}
-              OneRef={OneRef}
-              timeVisible={timeOneVisible}
-              timeRef={timeRef}
+        )}
+      </div>
+      <div className="time-area-span">
+        <span>~</span>
+      </div>
+      <div className="time-area-date">
+        {comparison !== 1 && (
+          <span onClick={endDateOpenHandler}>
+            {마지막날[1] + "월 " + 마지막날[2] + "일"}
+          </span>
+        )}
+        {comparison === 1 && (
+          <span onClick={endDateOpenHandler}>
+            {마지막날[0] + "년" + 마지막날[1] + "월" + 마지막날[2] + "일"}
+          </span>
+        )}
+        <div className="date-area">
+          {lastDateIsVisible && (
+            <Month
+              type={false}
+              year={마지막날[0]}
+              month={마지막날[1]}
+              dateRef={dateRef}
+              dateClose={endDateOpenHandler}
             />
           )}
         </div>
-        <div className="time-area-span">
-          <span>~</span>
-        </div>
-        <div className="time-area-date">
-          {comparison !== 1 && (
-            <span onClick={endDateOpenHandler}>
-              {마지막날[1] + "월 " + 마지막날[2] + "일"}
-            </span>
-          )}
-          {comparison === 1 && (
-            <span onClick={endDateOpenHandler}>
-              {마지막날[0] + "년" + 마지막날[1] + "월" + 마지막날[2] + "일"}
-            </span>
-          )}
-          <div className="date-area">
-            {lastDateIsVisible && (
-              <Month
-                type={false}
-                year={마지막날[0]}
-                month={마지막날[1]}
-                dateRef={dateRef}
-                dateClose={endDateOpenHandler}
-              />
-            )}
-          </div>
-        </div>
-        <div className="time-two">
-          <input
-            type="text"
-            placeholder={timeState.lastTime || lastTime}
-            onClick={lastTimeSelectorHandler}
-            ref={timeTwoRef}
+      </div>
+      <div className="time-two">
+        <input
+          type="text"
+          placeholder={timeState.lastTime || lastTime}
+          onClick={lastTimeSelectorHandler}
+          ref={timeTwoRef}
+        />
+        {timeState.lastIsVisible && (
+          <TimeBoxTwo
+            timeTwoRef={timeTwoRef}
+            TwoRef={TwoRef}
+            timeVisible={timeTwoVisible}
+            timeRef={timeRef}
           />
-          {timeState.lastIsVisible && (
-            <TimeBoxTwo
-              timeTwoRef={timeTwoRef}
-              TwoRef={TwoRef}
-              timeVisible={timeTwoVisible}
-              timeRef={timeRef}
-            />
-          )}
-        </div>
+        )}
       </div>
     </div>
   );

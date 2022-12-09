@@ -7,6 +7,7 @@ import { listActions } from "../store/list-slice";
 import ModalPosition from "../library/ModalPosition";
 import SetTime from "../library/Time/SetTime";
 import TimeSelector from "../library/Time/TimeSelector";
+import ColorBox from "../library/ColorBox";
 import { comparisonHandler } from "../library/Comparioson";
 import "./AddEvent.css";
 
@@ -61,15 +62,6 @@ const AddEvent = () => {
   });
 
   const comparison = comparisonHandler(startDate, endDate);
-
-  const openColorSelector = () => {
-    setOpenColor((prevState) => !prevState);
-  };
-
-  const selectedColor = (컬러) => {
-    setColor(컬러);
-    setOpenColor(false);
-  };
 
   const listSubmitHandler = (event) => {
     event.preventDefault();
@@ -152,59 +144,13 @@ const AddEvent = () => {
         timeTwoRef={timeTwoRef}
         comparison={comparison}
       />
-      <div className="color-picker">
-        <img
-          src="img/palette.png"
-          alt="memo"
-          width="20"
-          className="color-icon"
-        />
-        <div className={`${color} circle`} onClick={openColorSelector}></div>
-        {openColor && (
-          <div className="color-box" ref={colorRef}>
-            <div
-              onClick={() => selectedColor("토마토")}
-              className={`토마토 circle`}
-            ></div>
-            <div
-              onClick={() => selectedColor("연분홍")}
-              className={`연분홍 circle`}
-            ></div>
-            <div
-              onClick={() => selectedColor("세이지")}
-              className={`세이지 circle`}
-            ></div>
-            <div
-              onClick={() => selectedColor("바나나")}
-              className={`바나나 circle`}
-            ></div>
-            <div
-              onClick={() => selectedColor("바질")}
-              className={`바질 circle`}
-            ></div>
-            <div
-              onClick={() => selectedColor("공작")}
-              className={`공작 circle`}
-            ></div>
-            <div
-              onClick={() => selectedColor("블루베리")}
-              className={`블루베리 circle`}
-            ></div>
-            <div
-              onClick={() => selectedColor("라벤더")}
-              className={`라벤더 circle`}
-            ></div>
-            <div
-              onClick={() => selectedColor("포도")}
-              className={`포도 circle`}
-            ></div>
-            <div
-              onClick={() => selectedColor("흑연")}
-              className={`흑연 circle`}
-            ></div>
-          </div>
-        )}
-      </div>
+      <ColorBox
+        color={color}
+        setColor={setColor}
+        openColor={openColor}
+        setOpenColor={setOpenColor}
+        colorRef={colorRef}
+      />
       <div className="buttonBox">
         <button type="submit">저장</button>
         <button type="button" onClick={cancelHandler}>

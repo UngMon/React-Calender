@@ -1,8 +1,8 @@
 .addModal {
   position: absolute;
   z-index: 5;
-  width: 30%;
-  max-height: 60%;
+  width: 400px;
+  max-height: 500px;
   background-color: white;
   border-radius: 5px;
   box-shadow: 7px 7px 20px rgb(121, 120, 120);
@@ -21,95 +21,21 @@
 
 .inputArea {
   width: 90%;
-  height: 40%;
-  margin: 2rem auto 2.5rem;
+  height: 22px;
+  margin: 30px 0 0 24px;
   text-align: center;
   display: flex;
   align-items: center;
 }
 
-.inputArea .input-icon {
-  font-size: 1rem;
-}
-
 .inputArea input {
   width: 80%;
-  height: 35%;
+  height: 100%;
   margin: 0 auto;
   font-weight: bold;
   border-top: 0;
   border-left: 0;
   border-right: 0;
-}
-
-input::placeholder {
-  font-size: 0.8em;
-}
-
-.color-picker {
-  width: 90%;
-  height: 40%;
-  margin: 2rem auto;
-  text-align: center;
-  display: flex;
-  align-items: center;
-}
-
-.color-icon {
-  font-size: 14px;
-  margin-right: 1rem;
-}
-
-.color-box {
-  margin-left: 1em;
-  display: flex;
-}
-
-.circle {
-  width: 1em;
-  height: 1em;
-  border-radius: 100%;
-  margin-right: 0.3em;
-}
-
-.토마토 {
-  background-color: rgb(213, 0, 0);
-}
-
-.연분홍 {
-  background-color: rgb(230, 124, 115);
-}
-
-.바나나 {
-  background-color: rgb(246, 191, 38);
-}
-
-.세이지 {
-  background-color: rgb(244, 81, 30);
-}
-
-.바질 {
-  background-color: rgb(11, 128, 67);
-}
-
-.공작 {
-  background-color: rgb(3, 155, 229);
-}
-
-.블루베리 {
-  background-color: rgb(63, 81, 181);
-}
-
-.라벤더 {
-  background-color: rgb(121, 134, 203);
-}
-
-.포도 {
-  background-color: rgb(142, 36, 170);
-}
-
-.흑연 {
-  background-color: rgb(97, 97, 97);
 }
 
 .buttonBox {
@@ -186,15 +112,4 @@ input::placeholder {
   top: 60%;
 }
 
-@media screen and (min-width: 955px) {
-  .addMordal {
-    width: 400px;
-  }
-}
 
-@media screen and (max-width: 955px) {
-  .addMordal {
-    width: 40%;
-    font-size: 0.5rem;
-  }
-}

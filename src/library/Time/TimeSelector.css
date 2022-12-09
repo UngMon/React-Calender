@@ -1,40 +1,44 @@
 .time-date-box {
   width: 90%;
-  height: 20%;
+  height: 19px;
   background-color: white;
-  margin: 0 auto 2.5rem;
-}
-
-.time-area {
-  width: 100%;
-  margin: 0 auto;
-  font-size: 0.8rem;
+  margin: 40px 0 0 24px;
   display: flex;
-  justify-content: left;
-  align-items: center;
-  font-size: 80%;
+  align-content: center;
+  font-size: 14px;
 }
 
 .clock-icon {
   margin-right: 0.8rem;
+  size: 14px;
 }
 
 .time-area-date {
-  width: 18%;
-  height: 100%;
+  width: 60px;
+  height: 19px;
   position: relative;
+  line-height: 19px;
+  text-align: center;
+}
+
+.time-area-date span {
+  display: inline-block;
+  font-size: 12px;
 }
 
 .time-one {
   position: relative;
-  margin-right: 0.8rem;
-  width: 20%;
+  width: 72px;
   height: 100%;
+  text-align: center;
 }
 
 .time-one input {
-  width: 90%;
-  height: 100%;
+  width: 57px;
+  height: 15px;
+  font-size: 11px;
+  text-align: center;
+  line-height: 15px;
 }
 
 input::-webkit-input-placeholder { font-size: 0.7rem; }
@@ -44,48 +48,57 @@ input:-moz-placeholder { font-size: 0.7rem; }
 input::placeholder { font-size: 0.7rem; }
 
 .time-area-span {
-  font-size: 1rem;
+  display: inline-block;
+  width: 24px;
+  text-align: center;
+  font-size: 16px;
 }
 
 .time-two {
   position: relative;
-  width: 20%;
+  width: 72px;
   height: 100%;
+  text-align: center;
 }
 
 .time-two input {
-  width: 90%;
-  height: 100%;
+  width: 57px;
+  height: 15px;
+  font-size: 11px;
+  text-align: center;
+  line-height: 15px;
 }
 
 .time-select-one {
   position: absolute;
   top: 100%;
   width: 100%;
-  height: 6rem
+  height: 96px;
+  font-size: 11px;
 }
 
 .time-select-two {
   position: absolute;
   top: 100%;
   width: 100%;
-  height: 6rem
-}
-
-.time-area input::placeholder {
-  color: black;
-  font-size: 0.8rem;
-  text-align: center;
+  height: 96px;
+  font-size: 11px;
 }
 
 
-#time-one {
+#time-selector {
   max-height: 100%;
   overflow-y: scroll;
 }
 
-#time-one div:hover {
+#time-selector div:hover {
   background-color: lightgray;
+}
+
+.time-date-box input::placeholder {
+  text-align: center;
+  color: black;
+  font-size: 11px;
 }
 
 .time-area-date .date-area {

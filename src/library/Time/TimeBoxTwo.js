@@ -25,7 +25,7 @@ const TimeBoxTwo = ({ timeTwoRef, TwoRef, timeVisible, timeRef }) => {
       className={`time-select-two ${!timeVisible && "none"}`}
       ref={(el) => (timeRef.current[1] = el)}
     >
-      <div id="time-one">
+      <div id="time-selector">
         <div ref={(el) => (TwoRef.current[0] = el)} onClick={clickHandler}>
           오전 00:30
         </div>

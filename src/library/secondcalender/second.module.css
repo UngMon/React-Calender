@@ -7,7 +7,7 @@
   text-align: center;
   background-color: white;
   border-radius: 10px;
-  box-shadow: 5px 5px 10px rgb(224, 224, 224);
+  box-shadow: 7px 7px 20px rgb(121, 120, 120);
 }
 
 .month-area {
@@ -27,6 +27,11 @@
   border-radius: 5px;
   border: 1px;
   margin-right: 10px;
+}
+
+button:hover {
+  border-radius: 100%;
+  background-color: lightgray;
 }
 
 .calender {
