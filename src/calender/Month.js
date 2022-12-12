@@ -10,11 +10,11 @@ import { NavLink } from "react-router-dom";
 import { modalActions } from "../store/modal-slice";
 
 const Month = () => {
-  console.log('month')
+  console.log("month");
   const dispatch = useDispatch();
 
   const monthInfo = useSelector((state) => state.month);
-  const scheduleInfo = useSelector(state => state.modal.userSchedule);
+  const scheduleInfo = useSelector((state) => state.modal.userSchedule);
 
   const movePrevMonthHandler = () => {
     dispatch(monthActions.prevMonth());
@@ -25,44 +25,45 @@ const Month = () => {
   };
 
   const logoutHandler = () => {
-    signOut(auth).then((res) => {
-      dispatch(modalActions.logout());
-    }).catch((err) => {
-      alert("로그아웃 실패");
-      localStorage.clear()
-    });
+    signOut(auth)
+      .then((res) => {
+        dispatch(modalActions.logout());
+      })
+      .catch((err) => {
+        alert("로그아웃 실패");
+        localStorage.clear();
+      });
   };
 
   return (
     <div className="view-area">
-      <header className="header">
-        <div className="header-name"><span>{scheduleInfo.name} Calender</span></div>
-        <div className="month-area">
-          <button onClick={movePrevMonthHandler} style={{backgroundColor: "transparent"}}>
+      <header className="header" >
+        <div className="header-name">
+          <span>{scheduleInfo.name} Calender</span>
+        </div>
+        <div className="select-month">
+          <button onClick={movePrevMonthHandler}>
             <FontAwesomeIcon icon={faAngleLeft} />
           </button>
           <span>
             {monthInfo.year}년 {monthInfo.month + 1}월
           </span>
-          <button onClick={moveNextMonthHandler} style={{backgroundColor: "transparent"}}>
-          <FontAwesomeIcon icon={faAngleRight} />
+          <button onClick={moveNextMonthHandler}>
+            <FontAwesomeIcon icon={faAngleRight} />
           </button>
         </div>
-        <nav className="header-nav">
-          <ul>
-            {/* <li className="profile">{scheduleInfo.name}</li> */}
-            <NavLink className={'Logout'} to='/start' onClick={logoutHandler}>Logout</NavLink>
-          </ul>
-        </nav>
+        <div className="header-Logout">
+          <NavLink className={"Logout"} to="/start" onClick={logoutHandler}>
+            Logout
+          </NavLink>
+        </div>
       </header>
-      <main className="calender-view">
-        <Calender
-          year={monthInfo.year}
-          month={monthInfo.month + 1}
-          firstDay={monthInfo.firstDay}
-          lastDate={monthInfo.lastDate}
-        />
-      </main>
+      <Calender
+        year={monthInfo.year}
+        month={monthInfo.month + 1}
+        firstDay={monthInfo.firstDay}
+        lastDate={monthInfo.lastDate}
+      />
     </div>
   );
 };

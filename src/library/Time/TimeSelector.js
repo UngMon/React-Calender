@@ -28,7 +28,7 @@ const TimeSelector = ({
   const timeRef = useRef([]);
   const OneRef = useRef([]);
   const TwoRef = useRef([]);
-
+  console.log(dateRef)
   const timeOneVisible = timeState.firstIsVisible;
   const timeTwoVisible = timeState.lastIsVisible;
 
@@ -91,12 +91,12 @@ const TimeSelector = ({
 
   const timePickerCloseHandler = (e) => {
     let boolean = true;
-    console.log(timeRef.current);
+
     for (let i = 0; i < timeRef.current.length; i++) {
-      if (timeRef.current[i] === null) {
+      if (timeRef.current[i] === null || timeRef.current[i] === undefined) {
         continue;
       }
-
+  
       if (!timeRef.current[i].contains(e.target)) {
         boolean = false;
       } else {

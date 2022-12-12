@@ -1,45 +1,53 @@
 import { useSelector } from "react-redux";
 import AddEvent from "../modal/AddEvent";
 import List from "../modal/List";
-import AllList from '../modal/AllList';
+import AllList from "../modal/AllList";
 import classes from "./Calender.module.css";
 import MakeCaledner from "./MakeCalender";
 
 const date = new Date();
 const fixYear = date.getFullYear();
 const fixMonth = date.getMonth() + 1;
-const fixDate = date.getDate()
+const fixDate = date.getDate();
 
 const Calender = ({ year, month, firstDay, lastDate }) => {
-  console.log('calender')
+  console.log("calender");
 
   const addModal = useSelector((state) => state.modal);
   const listModal = useSelector((state) => state.list);
   const allListModal = useSelector((state) => state.all);
-  const identify = fixYear + '.' + fixMonth + '.' + fixDate;
+  const identify = fixYear + "." + fixMonth + "." + fixDate;
 
   return (
-    <div className={classes.calender}>
-      {addModal.isVisible && !listModal.isVisible && !allListModal.isVisible && <AddEvent/>}
-      {!addModal.isVisible && listModal.isVisible && !allListModal.isVisible && <List />}
-      {!addModal.isVisible && !listModal.isVisible && allListModal.isVisible && <AllList />}
-      <table className={classes.table}>
-        <thead className={classes.weekname}>
-          <tr>
-            <th dayindex="0">일</th>
-            <th dayindex="1">월</th>
-            <th dayindex="2">화</th>
-            <th dayindex="3">수</th>
-            <th dayindex="4">목</th>
-            <th dayindex="5">금</th>
-            <th dayindex="7">토</th>
-          </tr>
-        </thead>
-        <tbody className={classes.presentation}>
-          {MakeCaledner({ year, month, firstDay, lastDate, identify })}
-        </tbody>
-      </table>
-    </div>
+    <main className={classes['calender-view']}>
+      <div className={classes.calender}>
+        {addModal.isVisible &&
+          !listModal.isVisible &&
+          !allListModal.isVisible && <AddEvent />}
+        {!addModal.isVisible &&
+          listModal.isVisible &&
+          !allListModal.isVisible && <List />}
+        {!addModal.isVisible &&
+          !listModal.isVisible &&
+          allListModal.isVisible && <AllList />}
+        <table className={classes.table}>
+          <thead className={classes.weekname}>
+            <tr>
+              <th dayindex="0">일</th>
+              <th dayindex="1">월</th>
+              <th dayindex="2">화</th>
+              <th dayindex="3">수</th>
+              <th dayindex="4">목</th>
+              <th dayindex="5">금</th>
+              <th dayindex="7">토</th>
+            </tr>
+          </thead>
+          <tbody className={classes.presentation}>
+            {MakeCaledner({ year, month, firstDay, lastDate, identify })}
+          </tbody>
+        </table>
+      </div>
+    </main>
   );
 };
 

@@ -9,37 +9,60 @@
 }
 
 .header {
+  box-sizing: border-box;
   width: 90%;
-  height: 8%;
+  height: 62px;
   margin: 0 auto;
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  font-size: 16px;
+}
+
+.header-name {
+  box-sizing: border-box;
+  padding: 8px;
+  height: 62px;
+  line-height: 48px;
 }
 
 .header-name span{
-  font-size: 1.2em;
-  font-weight: bold;
-  margin-left: 0.5em;
+  font-size: 1.1em;
+  font-weight: 600;
 }
 
-.header ul {
+.select-month {
+  box-sizing: border-box;
+  height: 62px;
+  padding: 8px 0;
   display: flex;
-  list-style: none;
-  align-items: stretch;
-  margin-right: 1.3em;
+  justify-content: center;
+  align-items: center;
+  font-size: 1.2em;
+  font-weight: 600;
 }
 
-.header li {
-  margin-right: 2em;
+.select-month span {
+  margin: 0 0.8em;
 }
 
-.profile {
-  display: block;
-  width: 50%;
-  height: 50%;
-  font-size: 1em;
-  font-weight: bold;
+.select-month button { 
+  width: 24px;
+  height: 24px;
+  border: 0;
+  font-size: 1.1em;
+  background-color: transparent;
+}
+
+.select-month button:hover{
+  cursor: pointer;
+  background-color: lightgray;
+}
+
+.header-Logout {
+  box-sizing: border-box;
+  height: 64px;
+  padding: 8px;
+  line-height: 48px;
 }
 
 .Logout {
@@ -52,30 +75,6 @@
 .Logout:hover {
   cursor: pointer;
   color: blue;
-}
-
-.month-area {
-  height: 5%;
-  display: flex;
-  justify-content: center;
-  justify-items: center;
-  align-items: center;
-  text-align: center;
-  font-size: 1.3em;
-  font-weight:bolder;
-}
-
-.month-area span {
-  margin: 0 1em;
-}
-
-.month-area button { 
-  border: 0;
-  font-size: 1.2em;
-}
-
-.calender-view {
-  height: 90%;
 }
 
 /* @media screen and (min-width: 1200px) {

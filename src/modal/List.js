@@ -22,15 +22,18 @@ const List = () => {
   const listState = useSelector((state) => state.list);
   const modalState = useSelector((state) => state.modal);
 
-  const [editArea, setEditArea] = useState(false);
-
   const index = listState.index;
   const listIndex = listState.listIndex;
   const dayIndex = listState.dayIndex;
 
   const schedule = modalState.userSchedule.schedule;
   const listInfo = schedule[index].todo[listIndex];
+  const dateArray =
+    listInfo.startDate === listInfo.endDate
+      ? listInfo.startDate.split(".")
+      : [...listInfo.startDate.split("."), ...listInfo.endDate.split(".")];
 
+  const [editArea, setEditArea] = useState(false);
   const [color, setColor] = useState(listInfo.color);
   const [openColor, setOpenColor] = useState(false);
 
@@ -180,52 +183,56 @@ const List = () => {
           <FontAwesomeIcon icon={faXmark} />
         </div>
       </div>
-      <div className="list-area">
-        {editArea && (
-          <form className="list-form" onSubmit={editListSubmitHandler}>
-            <div className="edit-list">
-              <img
-                src="img/memo.png"
-                alt="memo"
-                width="17"
-                className="input-icon"
-              />
-              <input placeholder={listState.listName} type="text" ref={inputRef} />
-            </div>
-            <TimeSelector
-              startDate={startDate}
-              endDate={endDate}
-              firstTime={listInfo.startTime}
-              lastTime={listInfo.endTime}
-              timeOneRef={timeOneRef}
-              timeTwoRef={timeTwoRef}
-              comparison={comparison}
+      {editArea && (
+        <form className="list-edit-form" onSubmit={editListSubmitHandler}>
+          <div className="edit-list">
+            <img
+              src="img/memo.png"
+              alt="memo"
+              width="17"
+              className="input-icon"
             />
-            <ColorBox
-              color={color}
-              setColor={setColor}
-              openColor={openColor}
-              setOpenColor={setOpenColor}
-              colorRef={colorRef}
+            <input
+              placeholder={listState.listName}
+              type="text"
+              ref={inputRef}
             />
-          </form>
-        )}
-        {!editArea && (
-          <>
+          </div>
+          <TimeSelector
+            startDate={startDate}
+            endDate={endDate}
+            firstTime={listInfo.startTime}
+            lastTime={listInfo.endTime}
+            timeOneRef={timeOneRef}
+            timeTwoRef={timeTwoRef}
+            comparison={comparison}
+          />
+          <ColorBox
+            color={color}
+            setColor={setColor}
+            openColor={openColor}
+            setOpenColor={setOpenColor}
+            colorRef={colorRef}
+          />
+        </form>
+      )}
+      {!editArea && (
+        <div className="list-info">
+          <div className="list-title">
             <div className={`list-color-box ${listInfo.color}`}></div>
             <div className={`listName  ${styleClass}`}>
               {listState.listName}
             </div>
-          </>
-        )}
-      </div>
-      {!editArea && (
-        <div className="list-time-area">
-          <div>{schedule[index].todo[listIndex].startTime}</div>
-          <div>
-            <span>~</span>
           </div>
-          <div>{schedule[index].todo[listIndex].endTime}</div>
+          <div className="list-time">
+            <div>{`${dateArray[0]}년 ${dateArray[1]}월 ${dateArray[2]}일`}</div>
+            <div>{schedule[index].todo[listIndex].startTime}</div>
+            <span>~</span>
+            <div
+              style={{ display: dateArray.length === 3 && "none" }}
+            >{`${dateArray[3]}년 ${dateArray[4]}월 ${dateArray[5]}일`}</div>
+            <div>{schedule[index].todo[listIndex].endTime}</div>
+          </div>
         </div>
       )}
     </div>

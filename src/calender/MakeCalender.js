@@ -1,3 +1,4 @@
+import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { allListActions } from "../store/all-list-slice";
 import { modalActions } from "../store/modal-slice";
@@ -8,15 +9,24 @@ import classes from "./Calender.module.css";
 const MakeCaledner = ({ year, month, firstDay, lastDate, identify }) => {
   console.log("makecalender");
   const dispatch = useDispatch();
-  const browserWidth = window.innerWidth;
-  console.log(browserWidth);
 
   // {email: '', name: '', schedule: []}
   const modalState = useSelector((state) => state.modal);
+  const [height, setHeight] = useState(0);
 
   // {idx: '', todo: [ ... {}...]}
   const schedule = modalState.userSchedule.schedule;
   const modalVisible = modalState.isVisible;
+
+  const trRef = useRef([]);
+
+  const listBoxHeight = height !== 0 ? Math.floor(height / 24) : null;
+
+  console.log(listBoxHeight);
+  useEffect(() => {
+    setHeight(trRef.current[0].clientHeight - 28);
+    console.log(height);
+  }, [height]);
 
   const listClickHandler = (
     startDate,
@@ -59,8 +69,8 @@ const MakeCaledner = ({ year, month, firstDay, lastDate, identify }) => {
 
     return todoInfo.map((item, tdIdx) => {
       // todo 안의 요소가 dummy일정이 아닌 하루 일정과 긴 일정들 일 때,
-      if (tdIdx < 4 && !item.isFake) {
-        // [0, 0, 0, 0]
+      if (tdIdx < listBoxHeight && !item.isFake) {
+        // [0, 0, 0, 0, ..., 0]
 
         array[dayIdx].some((arrItem, arrIdx) => {
           // 다른 일정이 채워져 있지 않은 상태에서만..
@@ -89,7 +99,7 @@ const MakeCaledner = ({ year, month, firstDay, lastDate, identify }) => {
       }
 
       return !item.isFake ? (
-        tdIdx < 3 ? (
+        tdIdx < listBoxHeight - 1 ? (
           <div
             key={item.index + tdIdx}
             className={`${
@@ -124,16 +134,15 @@ const MakeCaledner = ({ year, month, firstDay, lastDate, identify }) => {
               }`}
               dayindex={dayIdx}
             >
-                {todoInfo[tdIdx].startTime + " " + todoInfo[tdIdx].title}
+              {todoInfo[tdIdx].startTime + " " + todoInfo[tdIdx].title}
             </div>
           </div>
         ) : (
-          tdIdx === 3 &&
-          todoInfo.length > 3 && (
-            // todo안의 요소가 5개 이상이면 더보기란 생성.
+          tdIdx === listBoxHeight - 1 &&
+          todoInfo.length > listBoxHeight - 1 && (
             <div
               key={tdIdx}
-              className={`${classes["list-more"]} ${classes[`listIndex-3`]}`}
+              className={`${classes["list-more"]} ${classes["listIndex-3"]}`}
               onClick={(event) => {
                 event.stopPropagation();
                 allListClickHandler(date, dayIdx, week, todoIndex);
@@ -142,11 +151,10 @@ const MakeCaledner = ({ year, month, firstDay, lastDate, identify }) => {
           )
         )
       ) : (
-        tdIdx === 3 && todoInfo.length > 3 && (
-          // todo안의 요소가 5개 이상이면 더보기란 생성.
+        tdIdx === listBoxHeight - 1 && todoInfo.length > listBoxHeight - 1 && (
           <div
             key={tdIdx}
-            className={`classes["list-more"]  ${classes[`listIndex-3`]}`}
+            className={`${classes["list-more"]}  ${classes[`listIndex-3`]}`}
             onClick={(event) => {
               event.stopPropagation();
               allListClickHandler(date, dayIdx, week, todoIndex);
@@ -198,8 +206,8 @@ const MakeCaledner = ({ year, month, firstDay, lastDate, identify }) => {
                   {nowDate}
                 </h2>
               </div>
-              <div className={classes['list-box']}>
-                <div className={classes['list-area']}>
+              <div className={classes["list-box"]}>
+                <div className={classes["list-area"]}>
                   {scheduleHandler(idx, dayIdx, week, array, listCount)}
                 </div>
               </div>
@@ -228,8 +236,8 @@ const MakeCaledner = ({ year, month, firstDay, lastDate, identify }) => {
                   {nowDate}
                 </h2>
               </div>
-              <div className={classes['list-box']}>
-                <div className={classes['list-area']}>
+              <div className={classes["list-box"]}>
+                <div className={classes["list-area"]}>
                   {scheduleHandler(idx, dayIdx, week, array, listCount)}
                 </div>
               </div>
@@ -264,8 +272,8 @@ const MakeCaledner = ({ year, month, firstDay, lastDate, identify }) => {
                   {nowDate}
                 </h2>
               </div>
-              <div className={classes['list-box']}>
-                <div className={classes['list-area']}>
+              <div className={classes["list-box"]}>
+                <div className={classes["list-area"]}>
                   {scheduleHandler(idx, dayIdx, week, array, listCount)}
                 </div>
               </div>
@@ -294,8 +302,8 @@ const MakeCaledner = ({ year, month, firstDay, lastDate, identify }) => {
                   {nowDate}
                 </h2>
               </div>
-              <div className={classes['list-box']}>
-                <div className={classes['list-area']}>
+              <div className={classes["list-box"]}>
+                <div className={classes["list-area"]}>
                   {scheduleHandler(idx, dayIdx, week, array, listCount)}
                 </div>
               </div>
@@ -308,20 +316,25 @@ const MakeCaledner = ({ year, month, firstDay, lastDate, identify }) => {
   };
   /* 주 만들기, 달 마다 5주 6주 다르므로...*/
   const week = Math.ceil((firstDay + lastDate) / 7);
+
   for (let i = 1; i <= week; i++) {
     let array = [
       "", // 0
-      [0, 0, 0, 0], //dayIndex = 1
-      [0, 0, 0, 0], // 2
-      [0, 0, 0, 0], // 3
-      [0, 0, 0, 0],
-      [0, 0, 0, 0],
-      [0, 0, 0, 0],
-      [0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], 
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], 
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     ];
 
     monthArray.push(
-      <tr key={i} weekindex={i}>
+      <tr
+        key={i}
+        className={`week ${i}`}
+        ref={(el) => (i === 1 ? (trRef.current[i - 1] = el) : null)}
+      >
         {makeDay(i, array)}
       </tr>
     );
