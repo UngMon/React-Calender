@@ -92,14 +92,16 @@
 }
 
 .list-area {
-  position: relative;
+  position: absolute;
+  top: 0;
   width: 100%;
   height: 100%; /* 여기 동적으로.*/
 }
 
 .list-boundary-short {
+  position: absolute;
   width: 98%;
-  height: 22px;
+  height: 24px;
   display: flex;
 }
 
@@ -113,7 +115,7 @@
 
 .color-bar {
   box-sizing: border-box;
-  margin: 2px 0;
+  margin: 3px 0;
   height: 18px;
   width: 4px;
 }
@@ -131,7 +133,6 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  pointer-events: auto;
 }
 
 .long {
@@ -139,13 +140,13 @@
   padding-left: 0.5em;
   border-radius: 5px 5px;
   color: white;
-  pointer-events: auto;
 }
 
 .list-more {
-  top: 80%;
+  position: absolute;
   width: 100%;
   height: 24px;
+  padding-left: 4px;
   font-size: 12px;
   line-height: 24px;
 }

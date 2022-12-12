@@ -106,9 +106,10 @@ const MakeCaledner = ({ year, month, firstDay, lastDate, identify }) => {
               item.isLong
                 ? classes["list-boundary-long"]
                 : classes["list-boundary-short"]
-            } ${classes[`listIndex-${positionIndex}`]}`}
+            }`}
             style={{
               width: item.isLong && `${item.length}00%`,
+              top: `${24*(positionIndex)}px`,
             }}
             onClick={(event) => {
               event.stopPropagation();
@@ -142,24 +143,26 @@ const MakeCaledner = ({ year, month, firstDay, lastDate, identify }) => {
           todoInfo.length > listBoxHeight - 1 && (
             <div
               key={tdIdx}
-              className={`${classes["list-more"]} ${classes["listIndex-3"]}`}
+              className={`${classes["list-more"]}`}
+              style={{ top: `${24 * (listBoxHeight - 1)}px` }}
               onClick={(event) => {
                 event.stopPropagation();
                 allListClickHandler(date, dayIdx, week, todoIndex);
               }}
-            >{`${todoInfo.length - 3}개 더보기`}</div>
+            >{`${todoInfo.length - (listBoxHeight - 1)}개 더보기`}</div>
           )
         )
       ) : (
         tdIdx === listBoxHeight - 1 && todoInfo.length > listBoxHeight - 1 && (
           <div
             key={tdIdx}
-            className={`${classes["list-more"]}  ${classes[`listIndex-3`]}`}
+            className={`${classes["list-more"]}`}
+            style={{ marginTop: `${24 * (listBoxHeight - 1)}px` }}
             onClick={(event) => {
               event.stopPropagation();
               allListClickHandler(date, dayIdx, week, todoIndex);
             }}
-          >{`${todoInfo.length - 3}개 더보기`}</div>
+          >{`${todoInfo.length - (listBoxHeight - 1)}개 더보기`}</div>
         )
       );
     });
@@ -321,8 +324,8 @@ const MakeCaledner = ({ year, month, firstDay, lastDate, identify }) => {
     let array = [
       "", // 0
       [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], 
-      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], 
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
       [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
       [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
       [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
