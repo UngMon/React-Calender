@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { allListActions } from "../store/all-list-slice";
 import { modalActions } from "../store/modal-slice";
@@ -12,7 +12,7 @@ const MakeCaledner = ({ year, month, firstDay, lastDate, identify }) => {
 
   // {email: '', name: '', schedule: []}
   const modalState = useSelector((state) => state.modal);
-  const [height, setHeight] = useState(0);
+  const [height, setHeight] = useState(null);
 
   // {idx: '', todo: [ ... {}...]}
   const schedule = modalState.userSchedule.schedule;
@@ -22,11 +22,17 @@ const MakeCaledner = ({ year, month, firstDay, lastDate, identify }) => {
 
   const listBoxHeight = height !== 0 ? Math.floor(height / 24) : null;
 
-  console.log(listBoxHeight);
-  useEffect(() => {
+  const getListBoxSize = useCallback(() => {
+    setHeight(trRef.current[0].clientHeight -28)
+  }, [])
+
+  useEffect(() => { // 첫 마운트시 height state에 값을 부여
     setHeight(trRef.current[0].clientHeight - 28);
-    console.log(height);
-  }, [height]);
+  }, []);
+
+  useEffect(() => { // 창 크기 조절시에 보이는 list 개수 달리 보여주기 위함.
+    window.addEventListener("resize", getListBoxSize);
+  });
 
   const listClickHandler = (
     startDate,
@@ -323,13 +329,13 @@ const MakeCaledner = ({ year, month, firstDay, lastDate, identify }) => {
   for (let i = 1; i <= week; i++) {
     let array = [
       "", // 0
-      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     ];
 
     monthArray.push(
