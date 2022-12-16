@@ -10,6 +10,7 @@ const listSlice = createSlice({
     listName: "",
     listIndex: "",
     index: "",
+    key: '',
     style: false,
   },
   reducers: {
@@ -20,11 +21,10 @@ const listSlice = createSlice({
       state.listName = action.payload.listName;
       state.listIndex = action.payload.listIndex;
       state.index = action.payload.scheduleIndex;
-    },
-
-    onModal(state) {
+      state.key = action.payload.key;
       state.isVisible = true;
     },
+
     offModal(state) {
       state.isVisible = false;
     }

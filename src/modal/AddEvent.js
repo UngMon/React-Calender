@@ -66,6 +66,14 @@ const AddEvent = () => {
   const listSubmitHandler = (event) => {
     event.preventDefault();
 
+    const time = new Date();
+    const dateArr = [
+      time.getFullYear(),
+      time.getMonth(),
+      time.getDate(),
+      time.toTimeString(),
+    ];
+
     const pattern = /^(오전|오후)\s(([0][0-9]|[1][0-2])):([0-5][0-9])$/;
 
     let title = inputRef.current.value;
@@ -100,12 +108,16 @@ const AddEvent = () => {
 
     // 시작날과 마지막 날 일치
     if (comparison === 4) {
-      dispatch(modalActions.inputList({ title, startTime, endTime, color }));
+      dispatch(
+        modalActions.inputList({ title, startTime, endTime, color, dateArr })
+      );
     }
 
     // 마지막 날이 시작날 보다 큼.
     if (comparison <= 3) {
-      dispatch(modalActions.longDateList({ title, startTime, endTime, color }));
+      dispatch(
+        modalActions.longDateList({ title, startTime, endTime, color, dateArr })
+      );
     }
 
     inputRef.current.value = "";

@@ -50,6 +50,15 @@ const List = () => {
   const comparison = comparisonHandler(startDate, endDate);
 
   const modalCloseHandler = (e) => {
+    if (openColor) {
+      // 색상 선택 on, off
+      if (!colorRef.current.contains(e.target)) {
+        setTimeout(() => {
+          setOpenColor(false);
+        }, [100]);
+      }
+    }
+
     if (!modalRef.current.contains(e.target)) {
       setTimeout(() => {
         dispatch(listActions.offModal());
@@ -80,6 +89,14 @@ const List = () => {
 
   const editListSubmitHandler = (event) => {
     event.preventDefault();
+
+    const time = new Date();
+    const dateArr = [
+      time.getFullYear(),
+      time.getMonth(),
+      time.getDate(),
+      time.toTimeString(),
+    ];
 
     const pattern = /^(오전|오후)\s(([0][0-9]|[1][0-2])):([0-5][0-9])$/;
     let title = inputRef.current.value;
@@ -116,14 +133,16 @@ const List = () => {
     dispatch(modalActions.removeList({ index, listIndex }));
     console.log("remove하는중");
     if (comparison === 4) {
-      dispatch(modalActions.inputList({ startTime, endTime, title }));
+      dispatch(
+        modalActions.inputList({ startTime, endTime, title, color, dateArr })
+      );
     }
 
     if (comparison <= 3) {
       console.log("여기?");
 
       const longArr = !modalState.longArrChanged ? listInfo.arr : undefined;
-
+      console.log(longArr);
       dispatch(
         modalActions.longDateList({
           startTime,
@@ -131,6 +150,8 @@ const List = () => {
           title,
           dayIndex,
           longArr,
+          dateArr,
+          color,
         })
       );
     }
@@ -214,6 +235,9 @@ const List = () => {
             setOpenColor={setOpenColor}
             colorRef={colorRef}
           />
+          <div className="buttonBox">
+            <button type="submit">저장</button>
+          </div>
         </form>
       )}
       {!editArea && (

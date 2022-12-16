@@ -11,7 +11,7 @@ import NotFound from "./pages/NotFound";
 
 function App() {
   console.log("app");
-
+  
   const dispatch = useDispatch();
 
   const modal = useSelector((state) => state.modal);

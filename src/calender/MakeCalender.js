@@ -12,6 +12,7 @@ const MakeCaledner = ({ year, month, firstDay, lastDate, identify }) => {
 
   // {email: '', name: '', schedule: []}
   const modalState = useSelector((state) => state.modal);
+  const listState = useSelector((state) => state.list);
   const [height, setHeight] = useState(null);
 
   // {idx: '', todo: [ ... {}...]}
@@ -23,14 +24,16 @@ const MakeCaledner = ({ year, month, firstDay, lastDate, identify }) => {
   const listBoxHeight = height !== 0 ? Math.floor(height / 24) : null;
 
   const getListBoxSize = useCallback(() => {
-    setHeight(trRef.current[0].clientHeight -28)
-  }, [])
-
-  useEffect(() => { // 첫 마운트시 height state에 값을 부여
     setHeight(trRef.current[0].clientHeight - 28);
   }, []);
 
-  useEffect(() => { // 창 크기 조절시에 보이는 list 개수 달리 보여주기 위함.
+  useEffect(() => {
+    // 첫 마운트시 height state에 값을 부여
+    setHeight(trRef.current[0].clientHeight - 28);
+  }, []);
+
+  useEffect(() => {
+    // 창 크기 조절시에 보이는 list 개수 달리 보여주기 위함.
     window.addEventListener("resize", getListBoxSize);
   });
 
@@ -40,7 +43,8 @@ const MakeCaledner = ({ year, month, firstDay, lastDate, identify }) => {
     dayIndex,
     listName,
     listIndex,
-    scheduleIndex
+    scheduleIndex,
+    key
   ) => {
     dispatch(
       listActions.clickedList({
@@ -50,9 +54,9 @@ const MakeCaledner = ({ year, month, firstDay, lastDate, identify }) => {
         listName,
         listIndex,
         scheduleIndex,
+        key
       })
     );
-    dispatch(listActions.onModal());
   };
 
   const allListClickHandler = (date, day, week, scheduleIndex) => {
@@ -115,7 +119,7 @@ const MakeCaledner = ({ year, month, firstDay, lastDate, identify }) => {
             }`}
             style={{
               width: item.isLong && `${item.length}00%`,
-              top: `${24*(positionIndex)}px`,
+              top: `${24 * positionIndex}px`
             }}
             onClick={(event) => {
               event.stopPropagation();
@@ -125,7 +129,8 @@ const MakeCaledner = ({ year, month, firstDay, lastDate, identify }) => {
                 dayIdx,
                 todoInfo[tdIdx].title,
                 tdIdx,
-                todoIndex
+                todoIndex,
+                item.index
               );
             }}
           >
@@ -139,6 +144,7 @@ const MakeCaledner = ({ year, month, firstDay, lastDate, identify }) => {
               } ${todoInfo[tdIdx].isLong && classes.long} ${
                 item.isLong && item.color
               }`}
+              style={{ backgroundColor: listState.isVisible && item.index === listState.key && 'rgba(182, 182, 182, 0.8)'}}
               dayindex={dayIdx}
             >
               {todoInfo[tdIdx].startTime + " " + todoInfo[tdIdx].title}
@@ -329,13 +335,34 @@ const MakeCaledner = ({ year, month, firstDay, lastDate, identify }) => {
   for (let i = 1; i <= week; i++) {
     let array = [
       "", // 0
-      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0,
+      ],
+      [
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0,
+      ],
+      [
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0,
+      ],
+      [
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0,
+      ],
+      [
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0,
+      ],
+      [
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0,
+      ],
+      [
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0,
+      ],
     ];
 
     monthArray.push(
