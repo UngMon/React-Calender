@@ -11,7 +11,7 @@ import NotFound from "./pages/NotFound";
 
 function App() {
   console.log("app");
-  
+
   const dispatch = useDispatch();
 
   const modal = useSelector((state) => state.modal);
@@ -19,7 +19,6 @@ function App() {
   useEffect(() => {
     onAuthStateChanged(auth, user => {
       if (user) {
-        console.log(user)
         dispatch(fetchScheduleData(user));
       }
     })

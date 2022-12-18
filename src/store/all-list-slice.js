@@ -2,10 +2,18 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const allListSlice = createSlice({
   name: "all",
-  initialState: { isVisible: false, date: "", day: "", week: "", index: "" },
+  initialState: {
+    isVisible: false,
+    date: "",
+    day: "",
+    week: "",
+    index: "",
+    array: [],
+  },
   reducers: {
-    onModal(state) {
+    onModal(state, action) {
       state.isVisible = true;
+      state.array = action.payload.array;
     },
 
     offModal(state) {

@@ -24,8 +24,8 @@ export const fetchScheduleData = (user) => {
       console.log(userData);
       dispatch(modalActions.fetchFromData(userData));
       if (user) {
+        console.log(user)
         console.log('작동?')
-
         const email = user.email
         dispatch(modalActions.confirmUser({email}));
       }

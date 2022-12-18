@@ -1,11 +1,11 @@
 .all-list {
   position: absolute;
   z-index: 5;
-  width: 15%;
+  width: 230px;
   height: 30%;
   background-color: white;
   border-radius: 10px;
-  box-shadow: 5px 5px 10px rgb(224, 224, 224);
+  box-shadow: 7px 7px 20px rgb(121, 120, 120);
   text-align: center;
 }
 

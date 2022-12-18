@@ -54,13 +54,13 @@ const MakeCaledner = ({ year, month, firstDay, lastDate, identify }) => {
         listName,
         listIndex,
         scheduleIndex,
-        key
+        key,
       })
     );
   };
 
-  const allListClickHandler = (date, day, week, scheduleIndex) => {
-    dispatch(allListActions.onModal());
+  const allListClickHandler = (date, day, week, scheduleIndex, array) => {
+    dispatch(allListActions.onModal({array}));
     dispatch(allListActions.clickedListBox({ date, day, week, scheduleIndex }));
   };
 
@@ -119,7 +119,7 @@ const MakeCaledner = ({ year, month, firstDay, lastDate, identify }) => {
             }`}
             style={{
               width: item.isLong && `${item.length}00%`,
-              top: `${24 * positionIndex}px`
+              top: `${24 * positionIndex}px`,
             }}
             onClick={(event) => {
               event.stopPropagation();
@@ -144,7 +144,12 @@ const MakeCaledner = ({ year, month, firstDay, lastDate, identify }) => {
               } ${todoInfo[tdIdx].isLong && classes.long} ${
                 item.isLong && item.color
               }`}
-              style={{ backgroundColor: listState.isVisible && item.index === listState.key && 'rgba(182, 182, 182, 0.8)'}}
+              style={{
+                backgroundColor:
+                  listState.isVisible &&
+                  item.index === listState.key &&
+                  "rgba(182, 182, 182, 0.8)",
+              }}
               dayindex={dayIdx}
             >
               {todoInfo[tdIdx].startTime + " " + todoInfo[tdIdx].title}
@@ -159,7 +164,7 @@ const MakeCaledner = ({ year, month, firstDay, lastDate, identify }) => {
               style={{ top: `${24 * (listBoxHeight - 1)}px` }}
               onClick={(event) => {
                 event.stopPropagation();
-                allListClickHandler(date, dayIdx, week, todoIndex);
+                allListClickHandler(date, dayIdx, week, todoIndex, array);
               }}
             >{`${todoInfo.length - (listBoxHeight - 1)}개 더보기`}</div>
           )
@@ -335,34 +340,13 @@ const MakeCaledner = ({ year, month, firstDay, lastDate, identify }) => {
   for (let i = 1; i <= week; i++) {
     let array = [
       "", // 0
-      [
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-        0,
-      ],
-      [
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-        0,
-      ],
-      [
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-        0,
-      ],
-      [
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-        0,
-      ],
-      [
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-        0,
-      ],
-      [
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-        0,
-      ],
-      [
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-        0,
-      ],
+      [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ],
+      [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ],
+      [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ],
+      [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ],
+      [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ],
+      [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ],
+      [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ],
     ];
 
     monthArray.push(

@@ -9,13 +9,11 @@ const MakeLongArr = (startInfo, endInfo) => {
   const secondMonth = endInfo[1];
   const secondDate = endInfo[2];
 
-  console.log(endInfo);
-
   if (+firstYear === +secondYear) {
     if (+firstMonth === +secondMonth) {
       // 같은 년도 같은 달이면, secondDate 까지 idxArr에 push
       for (let i = +firstDate; i <= +secondDate; i++) {
-        idxArr.push(firstYear + "." + firstMonth + "." + i);
+        idxArr.push(firstYear + "-" + firstMonth + "-" + i);
       }
       console.log(idxArr);
     }
@@ -30,14 +28,14 @@ const MakeLongArr = (startInfo, endInfo) => {
 
         if (m !== +secondMonth) {
           for (let d = +firstDate; d <= k; d++) {
-            idxArr.push(firstYear + "." + m + "." + d);
+            idxArr.push(firstYear + "-" + m + "-" + d);
           }
           // continue;
         }
 
         if (m === +secondMonth) {
           for (let d = 1; d <= secondDate; d++) {
-            idxArr.push(firstYear + "." + m + "." + d);
+            idxArr.push(firstYear + "-" + m + "-" + d);
           }
           // break;
         }
@@ -56,13 +54,13 @@ const MakeLongArr = (startInfo, endInfo) => {
 
           if (m === +firstMonth) {
             for (let d = +firstDate; d <= k; d++) {
-              idxArr.push(y + "." + m + "." + d);
+              idxArr.push(y + "-" + m + "-" + d);
             }
             continue;
           }
 
           for (let d = 1; d <= k; d++) {
-            idxArr.push(y + "." + m + "." + d);
+            idxArr.push(y + "-" + m + "-" + d);
           }
         }
         console.log(idxArr);
@@ -78,13 +76,13 @@ const MakeLongArr = (startInfo, endInfo) => {
           if (m === +secondMonth) {
             console.log('m === secondMonth')
             for (let d = 1; d <= +secondDate; d++) {
-              idxArr.push(y + "." + m + "." + d);
+              idxArr.push(y + "-" + m + "-" + d);
             }
             break;
           }
 
           for (let d = 1; d <= k; d++) {
-            idxArr.push(y + "." + m + "." + d);
+            idxArr.push(y + "-" + m + "-" + d);
           }
           continue; 
         }
@@ -97,7 +95,7 @@ const MakeLongArr = (startInfo, endInfo) => {
         k = new Date(y, m, 0).getDate();
 
         for (let d = 1; d <= k; d++) {
-          idxArr.push(y + "." + m + "." + d);
+          idxArr.push(y + "-" + m + "-" + d);
         }
       }
       console.log(idxArr);

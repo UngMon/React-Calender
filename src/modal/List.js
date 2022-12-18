@@ -24,14 +24,14 @@ const List = () => {
 
   const index = listState.index;
   const listIndex = listState.listIndex;
-  const dayIndex = listState.dayIndex;
 
   const schedule = modalState.userSchedule.schedule;
   const listInfo = schedule[index].todo[listIndex];
+
   const dateArray =
     listInfo.startDate === listInfo.endDate
-      ? listInfo.startDate.split(".")
-      : [...listInfo.startDate.split("."), ...listInfo.endDate.split(".")];
+      ? listInfo.startDate.split("-")
+      : [...listInfo.startDate.split("-"), ...listInfo.endDate.split("-")];
 
   const [editArea, setEditArea] = useState(false);
   const [color, setColor] = useState(listInfo.color);
@@ -91,7 +91,7 @@ const List = () => {
     event.preventDefault();
 
     const time = new Date();
-    const dateArr = [
+    const key = [
       time.getFullYear(),
       time.getMonth(),
       time.getDate(),
@@ -131,10 +131,16 @@ const List = () => {
 
     // startTime < endTime 이면서...
     dispatch(modalActions.removeList({ index, listIndex }));
-    console.log("remove하는중");
+
+    const dayIndex = new Date(
+      `${
+        !modalState.longArrChanged ? listInfo.startDate : modalState.startDate
+      }`
+    ).getDay() + 1; 
+    console.log(dayIndex)
     if (comparison === 4) {
       dispatch(
-        modalActions.inputList({ startTime, endTime, title, color, dateArr })
+        modalActions.inputList({ startTime, endTime, title, color, key })
       );
     }
 
@@ -142,6 +148,8 @@ const List = () => {
       console.log("여기?");
 
       const longArr = !modalState.longArrChanged ? listInfo.arr : undefined;
+      console.log(modalState.longArrChanged);
+      console.log(modalState.longArr)
       console.log(longArr);
       dispatch(
         modalActions.longDateList({
@@ -150,7 +158,7 @@ const List = () => {
           title,
           dayIndex,
           longArr,
-          dateArr,
+          key,
           color,
         })
       );

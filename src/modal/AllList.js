@@ -12,7 +12,7 @@ const AllList = () => {
 
   const schedule = useSelector((state) => state.modal.userSchedule.schedule);
   const allModal = useSelector((state) => state.all);
-
+  console.log(allModal.array);
   const modalRef = useRef();
 
   const addModalCloseHandler = (e) => {

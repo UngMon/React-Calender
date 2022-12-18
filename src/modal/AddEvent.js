@@ -67,7 +67,7 @@ const AddEvent = () => {
     event.preventDefault();
 
     const time = new Date();
-    const dateArr = [
+    const key = [
       time.getFullYear(),
       time.getMonth(),
       time.getDate(),
@@ -109,14 +109,14 @@ const AddEvent = () => {
     // 시작날과 마지막 날 일치
     if (comparison === 4) {
       dispatch(
-        modalActions.inputList({ title, startTime, endTime, color, dateArr })
+        modalActions.inputList({ title, startTime, endTime, color, key })
       );
     }
 
     // 마지막 날이 시작날 보다 큼.
     if (comparison <= 3) {
       dispatch(
-        modalActions.longDateList({ title, startTime, endTime, color, dateArr })
+        modalActions.longDateList({ title, startTime, endTime, color, key })
       );
     }
 

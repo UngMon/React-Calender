@@ -1,4 +1,4 @@
-import { createSlice, current } from "@reduxjs/toolkit";
+import { createSlice } from "@reduxjs/toolkit";
 
 const modalSlice = createSlice({
   name: "modal",
@@ -143,6 +143,7 @@ const modalSlice = createSlice({
     clickedStartDate(state, action) {
       state.startDate = action.payload.idx;
       state.week = action.payload.week;
+
       state.dayIndex = action.payload.dayIndex;
       state.longArr = action.payload.longArr;
       state.longArrChanged = true;
@@ -177,10 +178,10 @@ const modalSlice = createSlice({
 
       const key =
         "9999" +
-        `${action.payload.dateArr[0]}` + //now year
-        `${87 + action.payload.dateArr[1]}` + //now month
-        `${68 + action.payload.dateArr[2]}` + //now date
-        action.payload.dateArr[3]; // now time
+        `${action.payload.key[0]}` + //now year
+        `${87 + action.payload.key[1]}` + //now month
+        `${68 + action.payload.key[2]}` + //now date
+        action.payload.key[3]; // now time
 
       if (index !== -1) {
         // 존재하면
@@ -250,7 +251,7 @@ const modalSlice = createSlice({
         ? state.longArr || action.payload.longArr
         : action.payload.longArr;
       console.log(action.payload.longArr);
-      console.log(current(state.longArr));
+
       let leng = arr.length;
 
       // longDateList는 AddEvent와 List.js에서 사용됨
@@ -267,13 +268,13 @@ const modalSlice = createSlice({
 
       // {email: '', name: '', schedule: [...]} 깊은 복사
       let userSchedule = JSON.parse(JSON.stringify(state.userSchedule));
-      console.log(action.payload.dateArr)
+      console.log(action.payload.key)
       const key =
         `${9999 - arr.length}` +
-        `${action.payload.dateArr[0]}` + //now year
-        `${87 + action.payload.dateArr[1]}` + //now month
-        `${68 + action.payload.dateArr[2]}` + //now date
-        action.payload.dateArr[3]; // now time
+        `${action.payload.key[0]}` + //now year
+        `${87 + action.payload.key[1]}` + //now month
+        `${68 + action.payload.key[2]}` + //now date
+        action.payload.key[3]; // now time
 
       if (userSchedule.schedule[0] === "") {
         console.log("working");

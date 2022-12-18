@@ -18,8 +18,8 @@ const TimeSelector = ({
   const dispatch = useDispatch();
   const timeState = useSelector((state) => state.time);
 
-  const 시작날 = startDate.split(".");
-  const 마지막날 = endDate.split(".");
+  const 시작날 = startDate.split("-");
+  const 마지막날 = endDate.split("-");
 
   const [fristDateIsVisible, setFirstDateIsVisible] = useState(false);
   const [lastDateIsVisible, setLastDateIsVisible] = useState(false);
@@ -28,18 +28,16 @@ const TimeSelector = ({
   const timeRef = useRef([]);
   const OneRef = useRef([]);
   const TwoRef = useRef([]);
-  console.log(dateRef)
+
   const timeOneVisible = timeState.firstIsVisible;
   const timeTwoVisible = timeState.lastIsVisible;
 
   const startDateOpenHandler = useCallback(() => {
-    // console.log("??");
     setFirstDateIsVisible((prevState) => !prevState);
     setLastDateIsVisible(false);
   }, []);
 
   const endDateOpenHandler = useCallback(() => {
-    // console.log("??");
     setFirstDateIsVisible(false);
     setLastDateIsVisible((prevState) => !prevState);
   }, []);
@@ -53,15 +51,13 @@ const TimeSelector = ({
   };
 
   const datePickerCloseHandler = useCallback((e) => {
-    // console.log(e.target);
-    // console.log(dateRef.current);
     let boolean = true;
     for (let i = 0; i < dateRef.current.length; i++) {
       // 5주와 6주 사이를 왔다갔다하면 ref의 마지막 인덱스가 null이 생성되어있음.
       if (dateRef.current[i] === null) {
         break; //반복문 탈출
       }
-      // console.log(dateRef.current[i]);
+ 
       if (!dateRef.current[i].contains(e.target)) {
         console.log("포함 x");
         boolean = false;
