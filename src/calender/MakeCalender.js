@@ -21,8 +21,8 @@ const MakeCaledner = ({ year, month, firstDay, lastDate, identify }) => {
 
   const trRef = useRef([]);
 
-  const listBoxHeight = height !== 0 ? Math.floor(height / 24) : null;
-
+  const listBoxHeightCount = height !== 0 ? Math.floor(height / 24) : null;
+  console.log(listBoxHeightCount);
   const getListBoxSize = useCallback(() => {
     setHeight(trRef.current[0].clientHeight - 28);
   }, []);
@@ -59,16 +59,15 @@ const MakeCaledner = ({ year, month, firstDay, lastDate, identify }) => {
     );
   };
 
-  const allListClickHandler = (date, day, week, scheduleIndex, array) => {
-    dispatch(allListActions.onModal({array}));
+  const allListClickHandler = (date, day, week, scheduleIndex) => {
     dispatch(allListActions.clickedListBox({ date, day, week, scheduleIndex }));
   };
 
   const scheduleHandler = (date, dayIdx, week, array) => {
     // {idx: 'date..', todo: [~~]}의 인덱스
     const todoIndex = schedule.findIndex((item) => item.idx === date);
+
     if (todoIndex === -1) {
-      // console.log(`스케쥴 작동 ${date}`);
       return;
     }
 
@@ -79,39 +78,48 @@ const MakeCaledner = ({ year, month, firstDay, lastDate, identify }) => {
 
     return todoInfo.map((item, tdIdx) => {
       // todo 안의 요소가 dummy일정이 아닌 하루 일정과 긴 일정들 일 때,
-      if (tdIdx < listBoxHeight && !item.isFake) {
+      if (tdIdx < listBoxHeightCount && !item.isMiddle) {
         // [0, 0, 0, 0, ..., 0]
-
         array[dayIdx].some((arrItem, arrIdx) => {
-          // 다른 일정이 채워져 있지 않은 상태에서만..
+          //   // 다른 일정이 채워져 있지 않은 상태에서만..
           if (arrItem !== 0) return false; //continue
 
-          array[dayIdx][arrIdx] = item.index;
-
           // isLong이 true일 때, array의 요일칸에 index값을 부여해줌.
-          if (item.isLong) {
-            for (let i = dayIdx + 1; i < dayIdx + item.length; i++) {
-              if (i === 8) break;
-              // console.log(week)
-              // console.log(i)
-              // console.log(item.length)
-              // console.log(array)
-              // console.log(item.index);
-              // console.log(tdIdx);
-              array[i][arrIdx] = item.index;
+          for (let i = dayIdx; i < dayIdx + item.length; i++) {
+            if (i === 8) break;
+            // console.log(week)
+            // console.log(i);
+            // console.log(item.index);
+            // console.log(tdIdx);
+            // console.log(arrIdx);
+            array[i][arrIdx] = {
+              week: week,
+              dayIndex: dayIdx,
+              title: item.title,
+              listIndex: tdIdx,
+              index: todoIndex,
+              key: item.index,
+              isLong: item.isLong ? true : false,
+              isStart: item.isStart ? true : false,
+              isEnd: item.isEnd ? true : false,
+            };
+            if (!item.isLong) {
+              break;
             }
           }
-
           positionIndex = arrIdx;
-
           return true;
         });
       }
-
-      return !item.isFake ? (
-        tdIdx < listBoxHeight - 1 ? (
+      // console.log(dayIdx);
+      // console.log(listBoxHeightCount);
+      // console.log(tdIdx);
+      // console.log(positionIndex);
+      // console.log(array);
+      return !item.isMiddle ? (
+        tdIdx < listBoxHeightCount - 1 ? (
           <div
-            key={item.index + tdIdx}
+            key={tdIdx}
             className={`${
               item.isLong
                 ? classes["list-boundary-long"]
@@ -127,10 +135,10 @@ const MakeCaledner = ({ year, month, firstDay, lastDate, identify }) => {
                 date,
                 week,
                 dayIdx,
-                todoInfo[tdIdx].title,
-                tdIdx,
-                todoIndex,
-                item.index
+                item.title,
+                tdIdx, // listIndex
+                todoIndex, // scheduleIndex
+                item.index // key
               );
             }}
           >
@@ -138,11 +146,9 @@ const MakeCaledner = ({ year, month, firstDay, lastDate, identify }) => {
               <div className={`${item.color} ${classes["color-bar"]}`}></div>
             )}
             <div
-              key={todoInfo[tdIdx].index + tdIdx}
-              className={`${classes.list} ${
-                todoInfo[tdIdx].style && classes.done
-              } ${todoInfo[tdIdx].isLong && classes.long} ${
-                item.isLong && item.color
+              key={tdIdx}
+              className={`${classes.list} ${item.style && classes.done} ${
+                item.isLong && `${classes.long} ${item.color}`
               }`}
               style={{
                 backgroundColor:
@@ -152,34 +158,33 @@ const MakeCaledner = ({ year, month, firstDay, lastDate, identify }) => {
               }}
               dayindex={dayIdx}
             >
-              {todoInfo[tdIdx].startTime + " " + todoInfo[tdIdx].title}
+              {item.startTime + " " + item.title}
             </div>
           </div>
         ) : (
-          tdIdx === listBoxHeight - 1 &&
-          todoInfo.length > listBoxHeight - 1 && (
+          tdIdx === listBoxHeightCount - 1 && (
             <div
               key={tdIdx}
               className={`${classes["list-more"]}`}
-              style={{ top: `${24 * (listBoxHeight - 1)}px` }}
+              style={{ top: `${24 * (listBoxHeightCount - 1)}px` }}
               onClick={(event) => {
                 event.stopPropagation();
-                allListClickHandler(date, dayIdx, week, todoIndex, array);
+                allListClickHandler(date, dayIdx, week, todoIndex);
               }}
-            >{`${todoInfo.length - (listBoxHeight - 1)}개 더보기`}</div>
+            >{`${todoInfo.length - (listBoxHeightCount - 1)}개 더보기`}</div>
           )
         )
       ) : (
-        tdIdx === listBoxHeight - 1 && todoInfo.length > listBoxHeight - 1 && (
+        tdIdx === listBoxHeightCount - 1 && (
           <div
             key={tdIdx}
             className={`${classes["list-more"]}`}
-            style={{ marginTop: `${24 * (listBoxHeight - 1)}px` }}
+            style={{ marginTop: `${24 * (listBoxHeightCount - 1)}px` }}
             onClick={(event) => {
               event.stopPropagation();
               allListClickHandler(date, dayIdx, week, todoIndex);
             }}
-          >{`${todoInfo.length - (listBoxHeight - 1)}개 더보기`}</div>
+          >{`${todoInfo.length - (listBoxHeightCount - 1)}개 더보기`}</div>
         )
       );
     });
@@ -340,13 +345,34 @@ const MakeCaledner = ({ year, month, firstDay, lastDate, identify }) => {
   for (let i = 1; i <= week; i++) {
     let array = [
       "", // 0
-      [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ],
-      [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ],
-      [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ],
-      [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ],
-      [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ],
-      [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ],
-      [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ],
+      [
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0,
+      ],
+      [
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0,
+      ],
+      [
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0,
+      ],
+      [
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0,
+      ],
+      [
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0,
+      ],
+      [
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0,
+      ],
+      [
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0,
+      ],
     ];
 
     monthArray.push(
@@ -364,3 +390,32 @@ const MakeCaledner = ({ year, month, firstDay, lastDate, identify }) => {
 };
 
 export default MakeCaledner;
+
+// //[
+//   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+//   0,
+// ],
+// [
+//   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+//   0,
+// ],
+// [
+//   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+//   0,
+// ],
+// [
+//   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+//   0,
+// ],
+// [
+//   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+//   0,
+// ],
+// [
+//   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+//   0,
+// ],
+// [
+//   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+//   0,
+// ],

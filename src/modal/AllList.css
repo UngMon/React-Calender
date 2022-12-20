@@ -1,75 +1,179 @@
-.all-list {
+.AllList {
   position: absolute;
   z-index: 5;
   width: 230px;
-  height: 30%;
+  height: 250px;
   background-color: white;
   border-radius: 10px;
   box-shadow: 7px 7px 20px rgb(121, 120, 120);
   text-align: center;
 }
 
-.header-list-box {
-  margin: 12px 0 5px 0;
+.AllList-header {
+  margin: 18px 0 5px 0;
   height: 10%;
   display: flex;
   align-items: center;
 }
 
-.header-list-box h2 {
-  font-size: 1rem;
-  margin: 0 20% 0 50%;
+.AllList-header h2 {
+  font-size: 16px;
+  margin-left: 110px;
 }
 
-.header-list-box button {
-  font-size: 0.8rem;
-  width: 2rem;
-  height: 2rem;
+.AllList-header button {
+  font-size: 16px;
+  margin-left: 60px;
+  width: 26px;
+  height: 26px;
   border: 0;
   background-color: white;
 }
 
-.header-list-box button:hover {
+.AllList-header button:hover {
   background-color: lightgray;
   border-radius: 100%;
 }
 
-.list-box-date {
-  font-size: 1rem;
+.AllList-date {
+  margin: 10px 0;
+  height: 18px;
+  font-size: 16px;
+  line-height: 18px;
+  text-align: center;
 }
 
-.main-list-box {
-  margin: 16px 16px;
-  margin-bottom: 10%;
-  overflow-y: auto;
-  max-height: 56%;
+.AllList-box {
+  width: 230px;
+  height: 135px;
+  overflow-y: scroll;
+  overflow-x: hidden;
 }
 
-.main-list-box ul {
-  list-style: none;
-  text-align: left;
-}
-
-.main-list-box li {
-  margin-top: 10px;
+.AllList-item {
+  position: relative;
+  margin: 0 0 0 11px;
+  width: 204px;
+  height: 24px;
+  display: flex;
+  align-items: center;
 }
 
 .start-date {
-  background-color: rgb(121, 134, 203);
-  border: 0 10px 10px 0;
-  color: white;
+  position: absolute;
+  left: -11px;
+  /* width: 1.5px; */
+  height: 0px;
+  background-color: transparent;
+  border-bottom: 11px solid transparent;
+  border-top: 11px solid transparent;
+  border-left: 11px solid transparent;
 }
 
-.fake-date {
-  background-color: rgb(121, 134, 203);
-  border-radius: 10px 10px 10px 10px;
+.title {
+  margin: 0 0 0 11px;
+  padding-left: 7px;
+  width: 170px;
+  height: 22px;
+  text-align: center;
+  font-size: 14px;
+  line-height: 22px;
   color: white;
+  overflow: hidden;
+  text-overflow: auto;
+  text-align: left;
 }
 
 .end-date {
-  background-color: rgb(121, 134, 203);
-  border-radius: 10px 0 0 10px;
-  color: white;
+  position: absolute;
+  left: 188px;
+  width: 0;
+  height: 0;
+  background-color: transparent;
+  border-bottom: 11px solid transparent;
+  border-top: 11px solid transparent;
+  border-left: 11px solid skyblue;
+  border-right: 11px solid transparent;
+}
+
+.border-left-토마토 {
+  border-left: 11px solid rgb(213, 0, 0);
+}
+
+.border-right-토마토 {
+  border-right: 11px solid rgb(213, 0, 0);
+}
+
+.border-left-연분홍 {
+  border-left: 11px solid rgb(230, 124, 115);
+}
+
+.border-right-연분홍 {
+  border-right: 11px solid rgb(230, 124, 115);
+}
+
+.border-left-바나나 {
+  border-left: 11px solid rgb(246, 191, 38);
+}
+
+.border-right-바나나 {
+  border-right: 11px solid rgb(246, 191, 38);
+}
+
+.border-left-세이지 {
+  border-left: 11px solid rgb(244, 81, 30);
+}
+
+.border-right-세이지 {
+  border-right: 11px solid rgb(244, 81, 30);
+}
+
+.border-left-바질 {
+  border-left: 11px solid rgb(11, 128, 67);
+}
+
+.border-right-바질 {
+  border-right: 11px solid rgb(11, 128, 67);
+}
+
+.border-left-공작 {
+  border-left: 11px solid rgb(3, 155, 229);
+}
+
+.border-right-공작 {
+  border-right: 11px solid rgb(3, 155, 229);
+}
+
+.border-left-블루베리 {
+  border-left: 11px solid rgb(63, 81, 181);
+}
+
+.border-right-블루베리 {
+  border-right: 11px solid rgb(63, 81, 181);
+}
+
+.border-left-라벤더 {
+  border-left: 11px solid rgb(121, 134, 203);
+}
+
+.border-right-라벤더 {
+  border-right: 11px solid rgb(121, 134, 203);
+}
+
+.border-left-포도 {
+  border-left: 11px solid rgb(142, 36, 170);
+}
+
+.border-right-포도 {
+  border-right: 11px solid rgb(142, 36, 170);
+}
+
+.border-left-흑연 {
+  border-left: 11px solid rgb(97, 97, 97);
+}
+
+.border-right-흑연 {
+  border-right: 11px solid rgb(97, 97, 97);
 }
 
 .li-day-1 {

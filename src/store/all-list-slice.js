@@ -8,19 +8,14 @@ const allListSlice = createSlice({
     day: "",
     week: "",
     index: "",
-    array: [],
   },
   reducers: {
-    onModal(state, action) {
-      state.isVisible = true;
-      state.array = action.payload.array;
-    },
-
     offModal(state) {
       state.isVisible = false;
     },
 
     clickedListBox(state, action) {
+      state.isVisible = true;
       state.date = action.payload.date;
       state.day = action.payload.day;
       state.week = action.payload.week;

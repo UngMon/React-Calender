@@ -12,7 +12,7 @@ const AllList = () => {
 
   const schedule = useSelector((state) => state.modal.userSchedule.schedule);
   const allModal = useSelector((state) => state.all);
-  console.log(allModal.array);
+
   const modalRef = useRef();
 
   const addModalCloseHandler = (e) => {
@@ -32,16 +32,55 @@ const AllList = () => {
     };
   });
 
+  // const listClickHandler = (item) => {
+  //   // const week = item.week
+  //   // const dayIndex =
+  //   // state.week = action.payload.week;
+  //   // state.dayIndex = action.payload.dayIndex;
+  //   // state.listName = action.payload.listName;
+  //   // state.listIndex = action.payload.listIndex;
+  //   // state.index = action.payload.scheduleIndex;
+  //   // state.key = action.payload.key;
+  //   // state.isVisible = true;
+  //   dispatch(listActions.clickedList({}));
+  // };
+
   const makeListHandler = () => {
     return schedule[allModal.index].todo.map((item, listIndex) => (
-      <li
-        key={item.firstTime + " " + item.lastTime + listIndex}
-        className={`item-list ${item.isStart && "start-date"} ${
-          item.isFake && "fake-date"
-        } ${item.isEnd === "end-date"}`}
+      <div
+        key={listIndex}
+        className="AllList-item"
+        // onClick={listClickHandler(item)}
       >
-        {item.firstTime + " " + item.list}
-      </li>
+        {item.isEnd && (
+          <div className={`end-date border-left-${item.color}`}></div>
+        )}
+        {item.isMiddle && (
+          <div className={`end-date border-left-${item.color}`}></div>
+        )}
+        <div
+          className={`title ${item.color}`}
+          style={{
+            width: `${!item.isLong && !item.isMiddle && "192px"}`,
+            borderRadius: `${
+              item.isMiddle
+                ? "0.6px"
+                : item.isEnd
+                ? "0 5px 5px 0"
+                : !item.isLong && "5px"
+            }`,
+            margin: `${!item.isLong && !item.isMiddle && "0"}`,
+          }}
+        >
+          {item.title}
+        </div>
+        {item.isMiddle && (
+          <div className={`start-date border-right-${item.color}`}></div>
+        )}
+        {item.isStart && (
+          <div className={`start-date border-right-${item.color}`}></div>
+        )}
+      </div>
     ));
   };
 
@@ -67,21 +106,17 @@ const AllList = () => {
 
   return (
     <div
-      className={`all-list li-week-${allModal.week} li-day-${allModal.day}`}
+      className={`AllList week-${allModal.week} day-${allModal.day}`}
       ref={modalRef}
     >
-      <div className="header-list-box">
+      <div className="AllList-header">
         <h2>{dayChangeHandler()}</h2>
         <button onClick={cancelHandler}>
           <FontAwesomeIcon icon={faXmark} />
         </button>
       </div>
-      <h3 className="list-box-date">{allModal.date}</h3>
-      <div className="main-list-box">
-        <div>
-          <ul>{makeListHandler()}</ul>
-        </div>
-      </div>
+      <h3 className="AllList-date">{allModal.date}</h3>
+      <div className="AllList-box">{makeListHandler()}</div>
     </div>
   );
 };

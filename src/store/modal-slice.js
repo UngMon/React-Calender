@@ -98,7 +98,7 @@ const modalSlice = createSlice({
       let itemsIdx;
       let listIdx;
 
-      dateArr.forEach((items) => {
+      for (const items of dateArr) {
         itemsIdx = userSchedule.findIndex((item) => item.idx === items);
 
         listIdx = userSchedule[itemsIdx].todo.findIndex(
@@ -107,7 +107,7 @@ const modalSlice = createSlice({
 
         userSchedule[itemsIdx].todo[listIdx].style =
           !userSchedule[itemsIdx].todo[listIdx].style;
-      });
+      }
 
       dummyUserData[state.userIndex].schedule = userSchedule;
 
@@ -198,7 +198,7 @@ const modalSlice = createSlice({
             color: action.payload.color,
             length: 99,
             isStart: false,
-            isFake: false,
+            isMiddle: false,
             isEnd: false,
             isLong: false,
             index: key,
@@ -227,7 +227,7 @@ const modalSlice = createSlice({
                 color: action.payload.color,
                 length: 1,
                 isStart: false,
-                isFake: false,
+                isMiddle: false,
                 isEnd: false,
                 isLong: false,
                 index: key,
@@ -251,7 +251,7 @@ const modalSlice = createSlice({
         ? state.longArr || action.payload.longArr
         : action.payload.longArr;
       console.log(action.payload.longArr);
-
+      console.log(state.longArr)
       let leng = arr.length;
 
       // longDateList는 AddEvent와 List.js에서 사용됨
@@ -305,7 +305,7 @@ const modalSlice = createSlice({
                 length: Leng,
                 isStart: true,
                 isEnd: false,
-                isFake: false,
+                isMiddle: false,
                 isLong: true,
                 index: key,
                 arr,
@@ -328,7 +328,7 @@ const modalSlice = createSlice({
                   title: action.payload.title,
                   length: Leng,
                   isStart: false,
-                  isFake: false,
+                  isMiddle: false,
                   isEnd: leng === 1 ? true : false,
                   isLong: true,
                   style: false,
@@ -350,7 +350,7 @@ const modalSlice = createSlice({
                   length: 1,
                   isStart: false,
                   isEnd: leng === 1 ? true : false,
-                  isFake: true,
+                  isMiddle: true,
                   isLong: false,
                   style: false,
                   color: action.payload.color,
@@ -388,8 +388,8 @@ const modalSlice = createSlice({
                     style: false,
                     color: action.payload.color,
                     isStart: true,
+                    isMiddle: false,
                     isEnd: false,
-                    isFake: false,
                     isLong: true,
                     index: key,
                     arr,
@@ -416,8 +416,8 @@ const modalSlice = createSlice({
                       style: false,
                       color: action.payload.color,
                       isStart: false,
+                      isMiddle: false,
                       isEnd: leng === 1 ? true : false,
-                      isFake: false,
                       isLong: true,
                       index: key,
                       arr,
@@ -442,8 +442,8 @@ const modalSlice = createSlice({
                       style: false,
                       color: action.payload.color,
                       isStart: false,
+                      isMiddle: true,
                       isEnd: leng === 1 ? true : false,
-                      isFake: true,
                       isLong: false,
                       index: key,
                       arr: [i],
@@ -466,7 +466,7 @@ const modalSlice = createSlice({
 
     removeList(state, action) {
       state.changed = true; // fetch (put)
-      console.log('remove!')
+      console.log("remove!");
       let dummyUserData = [...state.userData];
       //{email: '', name: '', schedule: [~~]} 에서 schedule
       // userSchedule = [{idx: '~', todo: [...] }, ...]
@@ -488,11 +488,13 @@ const modalSlice = createSlice({
         // 하루가 아닌 여러 날짜를 삭제할 때,
         const Array = userSchedule[index].todo[listIndex].arr;
         const identifyIndex = userSchedule[index].todo[listIndex].index;
-
+        console.log(identifyIndex)
+        console.log(`index ${index}`)
+        console.log(`listIndex ${listIndex}`)
         let itemsIdx;
         let listIdx;
 
-        Array.forEach((items) => {
+        for (const items of Array) {
           itemsIdx = userSchedule.findIndex((item) => item.idx === items);
 
           listIdx = userSchedule[itemsIdx].todo.findIndex(
@@ -503,7 +505,7 @@ const modalSlice = createSlice({
 
           userSchedule[itemsIdx].todo.length === 0 &&
             userSchedule.splice(itemsIdx, 1);
-        });
+        }
       }
 
       // firebase realtimeDB에서 (schedule: [''])형태를 남기기 위함
