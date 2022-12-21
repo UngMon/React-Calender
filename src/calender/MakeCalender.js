@@ -73,121 +73,48 @@ const MakeCaledner = ({ year, month, firstDay, lastDate, identify }) => {
 
     // [... , { arr: [~~], startDate: '', isLong: 'true', ...}] or undefined
     const todoInfo = schedule[todoIndex].todo;
-
+    console.log(date);
+    console.log(`시작 ${dayIdx}`);
+    console.log(todoInfo);
     let positionIndex; // 화면에 보일 일정들의 위치를 저장하는 변수.
+    let todoCount = 0;
 
-    return todoInfo.map((item, tdIdx) => {
-      // todo 안의 요소가 dummy일정이 아닌 하루 일정과 긴 일정들 일 때,
-      if (tdIdx < listBoxHeightCount && !item.isMiddle) {
-        // [0, 0, 0, 0, ..., 0]
-        array[dayIdx].some((arrItem, arrIdx) => {
-          //   // 다른 일정이 채워져 있지 않은 상태에서만..
-          if (arrItem !== 0) return false; //continue
-
-          // isLong이 true일 때, array의 요일칸에 index값을 부여해줌.
-          for (let i = dayIdx; i < dayIdx + item.length; i++) {
-            if (i === 8) break;
-            // console.log(week)
-            // console.log(i);
-            // console.log(item.index);
-            // console.log(tdIdx);
-            // console.log(arrIdx);
-            array[i][arrIdx] = {
-              week: week,
-              dayIndex: dayIdx,
-              title: item.title,
-              listIndex: tdIdx,
-              index: todoIndex,
-              key: item.index,
-              isLong: item.isLong ? true : false,
-              isStart: item.isStart ? true : false,
-              isEnd: item.isEnd ? true : false,
-            };
-            if (!item.isLong) {
-              break;
-            }
-          }
-          positionIndex = arrIdx;
-          return true;
-        });
+    for (const item of todoInfo) {
+      if (item.isMiddle) {
+        continue;
       }
-      // console.log(dayIdx);
-      // console.log(listBoxHeightCount);
-      // console.log(tdIdx);
-      // console.log(positionIndex);
-      // console.log(array);
-      return !item.isMiddle ? (
-        tdIdx < listBoxHeightCount - 1 ? (
-          <div
-            key={tdIdx}
-            className={`${
-              item.isLong
-                ? classes["list-boundary-long"]
-                : classes["list-boundary-short"]
-            }`}
-            style={{
-              width: item.isLong && `${item.length}00%`,
-              top: `${24 * positionIndex}px`,
-            }}
-            onClick={(event) => {
-              event.stopPropagation();
-              listClickHandler(
-                date,
-                week,
-                dayIdx,
-                item.title,
-                tdIdx, // listIndex
-                todoIndex, // scheduleIndex
-                item.index // key
-              );
-            }}
-          >
-            {!item.isLong && (
-              <div className={`${item.color} ${classes["color-bar"]}`}></div>
-            )}
-            <div
-              key={tdIdx}
-              className={`${classes.list} ${item.style && classes.done} ${
-                item.isLong && `${classes.long} ${item.color}`
-              }`}
-              style={{
-                backgroundColor:
-                  listState.isVisible &&
-                  item.index === listState.key &&
-                  "rgba(182, 182, 182, 0.8)",
-              }}
-              dayindex={dayIdx}
-            >
-              {item.startTime + " " + item.title}
-            </div>
-          </div>
-        ) : (
-          tdIdx === listBoxHeightCount - 1 && (
-            <div
-              key={tdIdx}
-              className={`${classes["list-more"]}`}
-              style={{ top: `${24 * (listBoxHeightCount - 1)}px` }}
-              onClick={(event) => {
-                event.stopPropagation();
-                allListClickHandler(date, dayIdx, week, todoIndex);
-              }}
-            >{`${todoInfo.length - (listBoxHeightCount - 1)}개 더보기`}</div>
-          )
-        )
-      ) : (
-        tdIdx === listBoxHeightCount - 1 && (
-          <div
-            key={tdIdx}
-            className={`${classes["list-more"]}`}
-            style={{ marginTop: `${24 * (listBoxHeightCount - 1)}px` }}
-            onClick={(event) => {
-              event.stopPropagation();
-              allListClickHandler(date, dayIdx, week, todoIndex);
-            }}
-          >{`${todoInfo.length - (listBoxHeightCount - 1)}개 더보기`}</div>
-        )
-      );
-    });
+
+      let arrayCount = 0;
+      
+      for (const arrayItem of array[dayIdx]) {
+        if (arrayItem !== 0) {
+          arrayCount += 1;
+          continue;
+        }
+
+        for (let i = dayIdx; i < dayIdx + item.length; i++) {
+          if (i === 8) break;
+          array[i][arrayCount] = {
+            week: week,
+            dayIndex: dayIdx,
+            title: item.title,
+            listIndex: todoCount,
+            index: todoIndex,
+            key: item.index,
+            isLong: item.isLong ? true : false,
+            isStart: item.isStart ? true : false,
+            isEnd: item.isEnd ? true : false,
+          };
+
+          if (!item.isLong) break;
+        }
+        positionIndex = arrayCount;
+        arrayCount += 1;
+        break;
+      }
+      todoCount += 1;
+      console.log(array);
+    }
   };
 
   const addClickHandler = (idx, dayIndex, week) => {
@@ -419,3 +346,74 @@ export default MakeCaledner;
 //   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 //   0,
 // ],
+
+// for (const item of todoInfo) {
+//   if (todoCount === listBoxHeightCount || !item.isMiddle) {
+//     continue;
+//   }
+//   console.log(item)
+//   let arrayCount = 0;
+
+//   array[dayIdx].some((arrayItem, arrayIdx) =>  {
+//     if (arrayItem !== 0) return false; // continue;
+
+//     for (let i = dayIdx; i < dayIdx + item.length; i++) {
+//       if (i === 8) break;
+
+//       array[i][arrayIdx] = {
+//         week: week,
+//         dayIndex: dayIdx,
+//         title: item.title,
+//         listIndex: todoCount,
+//         index: todoIndex,
+//         key: item.index,
+//         isLong: item.isLong ? true : false,
+//         isStart: item.isStart ? true : false,
+//         isEnd: item.isEnd ? true : false,
+//       };
+//       console.log(array[dayIdx][arrayCount])
+//       if (!item.isLong) break;
+//     }
+//     positionIndex = arrayIdx;
+//     arrayCount += 1;
+//     return true;
+//   });
+//   todoCount += 1;
+//   console.log(item)
+//   console.log(array);
+// }
+
+
+
+    // todoInfo.some((item, tdIdx) => {
+    //   // todo 안의 요소가 dummy일정이 아닌 하루 일정과 긴 일정들 일 때,
+    //   if (tdIdx < listBoxHeightCount && !item.isMiddle) {
+    //     // [0, 0, 0, 0, ..., 0]
+    //     array[dayIdx].some((arrItem, arrIdx) => {
+    //       //   // 다른 일정이 채워져 있지 않은 상태에서만..
+    //       if (arrItem !== 0) return false; //continue
+
+    //       // isLong이 true일 때, array의 요일칸에 index값을 부여해줌.
+    //       for (let i = dayIdx; i < dayIdx + item.length; i++) {
+    //         if (i === 8) break;
+    //         array[i][arrIdx] = {
+    //           week: week,
+    //           dayIndex: dayIdx,
+    //           title: item.title,
+    //           listIndex: tdIdx,
+    //           index: todoIndex,
+    //           key: item.index,
+    //           isLong: item.isLong ? true : false,
+    //           isStart: item.isStart ? true : false,
+    //           isEnd: item.isEnd ? true : false,
+    //         };
+    //         if (!item.isLong) {
+    //           break;
+    //         }
+    //       }
+    //       positionIndex = arrIdx;
+    //       return true;
+    //     });
+    //   }
+    // });
+    // console.log(array)

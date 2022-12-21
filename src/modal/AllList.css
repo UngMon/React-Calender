@@ -61,8 +61,7 @@
 
 .start-date {
   position: absolute;
-  left: -11px;
-  /* width: 1.5px; */
+  right: 4.7px;
   height: 0px;
   background-color: transparent;
   border-bottom: 11px solid transparent;
@@ -86,94 +85,93 @@
 
 .end-date {
   position: absolute;
-  left: 188px;
+  left: 0px;
   width: 0;
   height: 0;
   background-color: transparent;
   border-bottom: 11px solid transparent;
   border-top: 11px solid transparent;
-  border-left: 11px solid skyblue;
   border-right: 11px solid transparent;
 }
 
 .border-left-토마토 {
-  border-left: 11px solid rgb(213, 0, 0);
-}
-
-.border-right-토마토 {
   border-right: 11px solid rgb(213, 0, 0);
 }
 
-.border-left-연분홍 {
-  border-left: 11px solid rgb(230, 124, 115);
+.border-right-토마토 {
+  border-left: 11px solid rgb(213, 0, 0);
 }
 
-.border-right-연분홍 {
+.border-left-연분홍 {
   border-right: 11px solid rgb(230, 124, 115);
 }
 
-.border-left-바나나 {
-  border-left: 11px solid rgb(246, 191, 38);
+.border-right-연분홍 {
+  border-left: 11px solid rgb(230, 124, 115);
 }
 
-.border-right-바나나 {
+.border-left-바나나 {
   border-right: 11px solid rgb(246, 191, 38);
 }
 
-.border-left-세이지 {
-  border-left: 11px solid rgb(244, 81, 30);
+.border-right-바나나 {
+  border-left: 11px solid rgb(246, 191, 38);
 }
 
-.border-right-세이지 {
+.border-left-세이지 {
   border-right: 11px solid rgb(244, 81, 30);
 }
 
-.border-left-바질 {
-  border-left: 11px solid rgb(11, 128, 67);
+.border-right-세이지 {
+  border-left: 11px solid rgb(244, 81, 30);
 }
 
-.border-right-바질 {
+.border-left-바질 {
   border-right: 11px solid rgb(11, 128, 67);
 }
 
-.border-left-공작 {
-  border-left: 11px solid rgb(3, 155, 229);
+.border-right-바질 {
+  border-left: 11px solid rgb(11, 128, 67);
 }
 
-.border-right-공작 {
+.border-left-공작 {
   border-right: 11px solid rgb(3, 155, 229);
 }
 
-.border-left-블루베리 {
-  border-left: 11px solid rgb(63, 81, 181);
+.border-right-공작 {
+  border-left: 11px solid rgb(3, 155, 229);
 }
 
-.border-right-블루베리 {
+.border-left-블루베리 {
   border-right: 11px solid rgb(63, 81, 181);
 }
 
-.border-left-라벤더 {
-  border-left: 11px solid rgb(121, 134, 203);
+.border-right-블루베리 {
+  border-left: 11px solid rgb(63, 81, 181);
 }
 
-.border-right-라벤더 {
+.border-left-라벤더 {
   border-right: 11px solid rgb(121, 134, 203);
 }
 
-.border-left-포도 {
-  border-left: 11px solid rgb(142, 36, 170);
+.border-right-라벤더 {
+  border-left: 11px solid rgb(121, 134, 203);
 }
 
-.border-right-포도 {
+.border-left-포도 {
   border-right: 11px solid rgb(142, 36, 170);
 }
 
+.border-right-포도 {
+  border-left: 11px solid rgb(142, 36, 170);
+}
+
 .border-left-흑연 {
-  border-left: 11px solid rgb(97, 97, 97);
+  border-right: 11px solid rgb(97, 97, 97);
 }
 
 .border-right-흑연 {
-  border-right: 11px solid rgb(97, 97, 97);
+  border-left: 11px solid rgb(97, 97, 97);
 }
 
 .li-day-1 {

@@ -164,8 +164,8 @@ const modalSlice = createSlice({
       state.changed = true;
       const arr = [...state.userData];
 
-      // ['year', 'month', 'date']
-
+      const startDate = state.startDate.split('-') // ['year', 'month', 'date']
+      
       //우선 파이어베이스 realtime db때문에 schedule: ['']라고 정의한 첫 번째 요소 삭제
       if (arr[state.userIndex].schedule[0] === "") {
         arr[state.userIndex].schedule.splice(0, 1);
@@ -177,7 +177,10 @@ const modalSlice = createSlice({
       );
 
       const key =
-        "9999" +
+        `${startDate[0]}` + // startDate Year
+        `${87 + +startDate[1]}` + // startDate month
+        `${68 + +startDate[2]}` + // startDate date
+        '1000' +
         `${action.payload.key[0]}` + //now year
         `${87 + action.payload.key[1]}` + //now month
         `${68 + action.payload.key[2]}` + //now date
@@ -201,13 +204,14 @@ const modalSlice = createSlice({
             isMiddle: false,
             isEnd: false,
             isLong: false,
+            isShort: true,
             index: key,
             arr: [state.startDate],
           },
         ];
 
         arr[state.userIndex].schedule[index].todo.sort((a, b) =>
-          a.index < b.index ? -1 : 1
+          a.index < b.index ? 1 : -1
         );
       } else {
         // 해당 날짜가 schedule 배열에 없을 때, 즉 처음
@@ -230,6 +234,7 @@ const modalSlice = createSlice({
                 isMiddle: false,
                 isEnd: false,
                 isLong: false,
+                isShort: true,
                 index: key,
                 arr: [state.startDate],
               },
@@ -246,6 +251,8 @@ const modalSlice = createSlice({
       state.changed = true;
 
       let dummyUserData = [...state.userData];
+
+      const startDate = state.startDate.split('-');
       // 일정을 입력할 때, 날짜 조정이 없을 경우 액션값, 날짜 조정을 하면 state.longArr의 값을..
       const arr = state.longArrChanged
         ? state.longArr || action.payload.longArr
@@ -265,12 +272,15 @@ const modalSlice = createSlice({
       console.log(action.payload.dayIndex);
       console.log(state.dayIndex);
       console.log(count);
-
+ 
       // {email: '', name: '', schedule: [...]} 깊은 복사
       let userSchedule = JSON.parse(JSON.stringify(state.userSchedule));
       console.log(action.payload.key)
-      const key =
-        `${9999 - arr.length}` +
+      const key = 
+        `${startDate[0]}` + // startDate Year
+        `${99 - +startDate[1]}` + // startDate month
+        `${99 - +startDate[2]}` + // startDate date
+        `${1000 + arr.length}` +
         `${action.payload.key[0]}` + //now year
         `${87 + action.payload.key[1]}` + //now month
         `${68 + action.payload.key[2]}` + //now date
@@ -307,6 +317,7 @@ const modalSlice = createSlice({
                 isEnd: false,
                 isMiddle: false,
                 isLong: true,
+                isShort: false,
                 index: key,
                 arr,
               },
@@ -352,6 +363,7 @@ const modalSlice = createSlice({
                   isEnd: leng === 1 ? true : false,
                   isMiddle: true,
                   isLong: false,
+                  isShort: false,
                   style: false,
                   color: action.payload.color,
                   index: key,
@@ -363,7 +375,7 @@ const modalSlice = createSlice({
           }
 
           userSchedule.schedule[index].todo.sort((a, b) =>
-            a.index < b.index ? -1 : 1
+            a.index < b.index ? 1 : -1
           );
         } else {
           // 다시 돌아와서, schedule에 longArr에 있는 날짜에 일정이 없을 때,
@@ -391,6 +403,7 @@ const modalSlice = createSlice({
                     isMiddle: false,
                     isEnd: false,
                     isLong: true,
+                    isShort: false,
                     index: key,
                     arr,
                   },
@@ -419,6 +432,7 @@ const modalSlice = createSlice({
                       isMiddle: false,
                       isEnd: leng === 1 ? true : false,
                       isLong: true,
+                      isShort: false,
                       index: key,
                       arr,
                     },
@@ -445,6 +459,7 @@ const modalSlice = createSlice({
                       isMiddle: true,
                       isEnd: leng === 1 ? true : false,
                       isLong: false,
+                      isShort: false,
                       index: key,
                       arr: [i],
                     },
