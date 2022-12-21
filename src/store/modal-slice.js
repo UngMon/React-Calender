@@ -178,8 +178,8 @@ const modalSlice = createSlice({
 
       const key =
         `${startDate[0]}` + // startDate Year
-        `${87 + +startDate[1]}` + // startDate month
-        `${68 + +startDate[2]}` + // startDate date
+        `${99 - +startDate[1]}` + // startDate month
+        `${99 - +startDate[2]}` + // startDate date
         '1000' +
         `${action.payload.key[0]}` + //now year
         `${87 + action.payload.key[1]}` + //now month
@@ -199,7 +199,7 @@ const modalSlice = createSlice({
             title: action.payload.title,
             style: false,
             color: action.payload.color,
-            length: 99,
+            length: 1,
             isStart: false,
             isMiddle: false,
             isEnd: false,
