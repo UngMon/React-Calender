@@ -6,7 +6,14 @@ import { listActions } from "../store/list-slice";
 import MakeKey from "../library/MakeKey";
 import classes from "./Calender.module.css";
 
-const MakeCaledner = ({ year, month, firstDay, lastDate, identify }) => {
+const MakeCaledner = ({
+  year,
+  month,
+  firstDay,
+  lastDate,
+  identify,
+  listAreaRef,
+}) => {
   console.log("makecalender");
   const dispatch = useDispatch();
 
@@ -22,7 +29,7 @@ const MakeCaledner = ({ year, month, firstDay, lastDate, identify }) => {
   const trRef = useRef([]);
 
   const listBoxHeightCount = height !== 0 ? Math.floor(height / 24) : null;
-  console.log(listBoxHeightCount);
+
   const getListBoxSize = useCallback(() => {
     setHeight(trRef.current[0].clientHeight - 28);
   }, []);
@@ -38,7 +45,6 @@ const MakeCaledner = ({ year, month, firstDay, lastDate, identify }) => {
   });
 
   const listClickHandler = (
-    startDate,
     week,
     dayIndex,
     listName,
@@ -46,12 +52,8 @@ const MakeCaledner = ({ year, month, firstDay, lastDate, identify }) => {
     scheduleIndex,
     key
   ) => {
-    console.log(
-      `date ${startDate} week ${week} dayIdx ${dayIndex} title ${listName} listIndex ${listIndex} scheduelIdnx ${scheduleIndex} key ${key}`
-    );
     dispatch(
       listActions.clickedList({
-        startDate,
         week,
         dayIndex,
         listName,
@@ -80,8 +82,6 @@ const MakeCaledner = ({ year, month, firstDay, lastDate, identify }) => {
     let todoCount = 0;
 
     for (const item of todoInfo) {
-      console.log(date)
-      console.log(`todoCount ${todoCount} ${item.title}`)
       if (item.isMiddle) {
         todoCount += 1;
         continue;
@@ -106,6 +106,7 @@ const MakeCaledner = ({ year, month, firstDay, lastDate, identify }) => {
           key: item.index,
           length: item.length,
           color: item.color,
+          style: item.style,
           isLong: item.isLong,
           isStart: item.isStart,
           isMiddle: item.isMiddle,
@@ -142,17 +143,17 @@ const MakeCaledner = ({ year, month, firstDay, lastDate, identify }) => {
             }}
             onClick={(event) => {
               event.stopPropagation();
-              console.log(item)
+              console.log(listState.isVisible);
               listClickHandler(
-                date,
                 week,
                 dayIdx,
                 item.title,
                 item.listIndex, // listIndex
                 todoIndex, // scheduleIndex
-                item.index // key
+                item.key // key
               );
             }}
+            ref={(el) => (listAreaRef.current[item.key] = el)}
           >
             {!item.isLong && (
               <div className={`${item.color} ${classes["color-bar"]}`}></div>
@@ -165,7 +166,7 @@ const MakeCaledner = ({ year, month, firstDay, lastDate, identify }) => {
               style={{
                 backgroundColor:
                   listState.isVisible &&
-                  item.index === listState.key &&
+                  item.key === listState.key &&
                   "rgba(182, 182, 182, 0.8)",
               }}
               dayindex={dayIdx}
@@ -183,6 +184,7 @@ const MakeCaledner = ({ year, month, firstDay, lastDate, identify }) => {
                 event.stopPropagation();
                 allListClickHandler(date, dayIdx, week, todoIndex);
               }}
+              ref={(el) => (listAreaRef.current[item.key] = el)}
             >{`${todoInfo.length - (listBoxHeightCount - 1)}개 더보기`}</div>
           )
         )
@@ -197,6 +199,7 @@ const MakeCaledner = ({ year, month, firstDay, lastDate, identify }) => {
               event.stopPropagation();
               allListClickHandler(date, dayIdx, week, todoIndex);
             }}
+            ref={(el) => (listAreaRef.current[item.key] = el)}
           >{`${listBoxHeightCount - idx}개 더보기`}</div>
         )
       )
@@ -212,6 +215,7 @@ const MakeCaledner = ({ year, month, firstDay, lastDate, identify }) => {
 
   const monthArray = [];
 
+  ////////////////////////////////////////////////
   /* 날짜 생성하기 */
   const makeDay = (week, array, listCount) => {
     const thisMonthArray = [];
@@ -229,7 +233,12 @@ const MakeCaledner = ({ year, month, firstDay, lastDate, identify }) => {
           thisMonthArray.push(
             <td
               key={idx}
-              onClick={() => addClickHandler(idx, dayIdx, week)}
+              onClick={() => {
+                console.log(listState.isVisible);
+                if (!listState.isVisible) {
+                  addClickHandler(idx, dayIdx, week);
+                }
+              }}
               className={classes.date_box}
               day-index={dayIdx}
             >
@@ -245,7 +254,9 @@ const MakeCaledner = ({ year, month, firstDay, lastDate, identify }) => {
                 </h2>
               </div>
               <div className={classes["list-box"]}>
-                <div className={classes["list-area"]}>
+                <div
+                  className={classes["list-area"]}
+                >
                   {scheduleHandler(idx, dayIdx, week, array, listCount)}
                 </div>
               </div>
@@ -259,7 +270,12 @@ const MakeCaledner = ({ year, month, firstDay, lastDate, identify }) => {
           thisMonthArray.push(
             <td
               key={idx}
-              onClick={() => addClickHandler(idx, dayIdx, week)}
+              onClick={() => {
+                console.log(listState.isVisible);
+                if (!listState.isVisible) {
+                  addClickHandler(idx, dayIdx, week);
+                }
+              }}
               className={classes.date_box}
               day-index={dayIdx}
             >
@@ -275,7 +291,9 @@ const MakeCaledner = ({ year, month, firstDay, lastDate, identify }) => {
                 </h2>
               </div>
               <div className={classes["list-box"]}>
-                <div className={classes["list-area"]}>
+                <div
+                  className={classes["list-area"]}
+                >
                   {scheduleHandler(idx, dayIdx, week, array, listCount)}
                 </div>
               </div>
@@ -295,7 +313,12 @@ const MakeCaledner = ({ year, month, firstDay, lastDate, identify }) => {
           thisMonthArray.push(
             <td
               key={idx}
-              onClick={() => addClickHandler(idx, dayIdx, week)}
+              onClick={() => {
+                console.log(listState.isVisible);
+                if (!listState.isVisible) {
+                  addClickHandler(idx, dayIdx, week);
+                }
+              }}
               className={classes.date_box}
               day-index={dayIdx}
             >
@@ -311,7 +334,9 @@ const MakeCaledner = ({ year, month, firstDay, lastDate, identify }) => {
                 </h2>
               </div>
               <div className={classes["list-box"]}>
-                <div className={classes["list-area"]}>
+                <div
+                  className={classes["list-area"]}
+                >
                   {scheduleHandler(idx, dayIdx, week, array, listCount)}
                 </div>
               </div>
@@ -325,7 +350,11 @@ const MakeCaledner = ({ year, month, firstDay, lastDate, identify }) => {
           thisMonthArray.push(
             <td
               key={idx}
-              onClick={() => addClickHandler(idx, dayIdx, week)}
+              onClick={() => {
+                if (!listState.isVisible) {
+                  addClickHandler(idx, dayIdx, week);
+                }
+              }}
               className={classes.date_box}
               day-index={dayIdx}
             >
@@ -341,7 +370,9 @@ const MakeCaledner = ({ year, month, firstDay, lastDate, identify }) => {
                 </h2>
               </div>
               <div className={classes["list-box"]}>
-                <div className={classes["list-area"]}>
+                <div
+                  className={classes["list-area"]}
+                >
                   {scheduleHandler(idx, dayIdx, week, array, listCount)}
                 </div>
               </div>

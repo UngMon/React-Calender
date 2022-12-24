@@ -2,6 +2,7 @@ import { useRef, useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { listActions } from "../store/list-slice";
 import { modalActions } from "../store/modal-slice";
+import { allListActions } from "../store/all-list-slice";
 import { timeActions } from "../store/time-slice";
 import { comparisonHandler } from "../library/Comparioson";
 import ModalPosition from "../library/ModalPosition";
@@ -16,16 +17,17 @@ import {
 import TimeSelector from "../library/Time/TimeSelector";
 import ColorBox from "../library/ColorBox";
 
-const List = () => {
+const List = ({ listRef }) => {
   const dispatch = useDispatch();
 
   const listState = useSelector((state) => state.list);
   const modalState = useSelector((state) => state.modal);
 
-  const index = listState.index;
+  const index = listState.scheduleIndex;
   const listIndex = listState.listIndex;
 
   const schedule = modalState.userSchedule.schedule;
+
   const listInfo = schedule[index].todo[listIndex];
 
   const dateArray =
@@ -41,6 +43,7 @@ const List = () => {
   const endDate = modalState.endDate;
 
   const modalRef = useRef();
+  const clickedListRef = useRef();
   const inputRef = useRef();
   const colorRef = useRef();
 
@@ -50,6 +53,9 @@ const List = () => {
   const comparison = comparisonHandler(startDate, endDate);
 
   const modalCloseHandler = (e) => {
+    let closeBool = true;
+    console.log(clickedListRef.current);
+
     if (openColor) {
       // 색상 선택 on, off
       if (!colorRef.current.contains(e.target)) {
@@ -59,9 +65,34 @@ const List = () => {
       }
     }
 
-    if (!modalRef.current.contains(e.target)) {
+    if (e.target === clickedListRef.current) {
       setTimeout(() => {
+        console.log(`?????`);
         dispatch(listActions.offModal());
+      }, 100);
+      return;
+    }
+
+    if (!modalRef.current.contains(e.target)) {
+      for (const key in listRef.current) {
+        if (listRef.current[key].contains(e.target)) {
+          clickedListRef.current = e.target;
+          closeBool = false;
+          console.log(e.target);
+          console.log("working");
+          break;
+        }
+      }
+      console.log(e.target)
+      console.log(closeBool)
+      if (closeBool) {
+        console.log('??????????')
+        dispatch(listActions.offModal());
+        dispatch(allListActions.offModal());
+        return;
+      }
+
+      setTimeout(() => {
         dispatch(modalActions.offModal());
         dispatch(timeActions.resetTime());
       }, 100);
@@ -132,12 +163,13 @@ const List = () => {
     // startTime < endTime 이면서...
     dispatch(modalActions.removeList({ index, listIndex }));
 
-    const dayIndex = new Date(
-      `${
-        !modalState.longArrChanged ? listInfo.startDate : modalState.startDate
-      }`
-    ).getDay() + 1; 
-    console.log(dayIndex)
+    const dayIndex =
+      new Date(
+        `${
+          !modalState.longArrChanged ? listInfo.startDate : modalState.startDate
+        }`
+      ).getDay() + 1;
+    console.log(dayIndex);
     if (comparison === 4) {
       dispatch(
         modalActions.inputList({ startTime, endTime, title, color, key })
@@ -149,7 +181,7 @@ const List = () => {
 
       const longArr = !modalState.longArrChanged ? listInfo.arr : undefined;
       console.log(modalState.longArrChanged);
-      console.log(modalState.longArr)
+      console.log(modalState.longArr);
       console.log(longArr);
       dispatch(
         modalActions.longDateList({
@@ -186,7 +218,7 @@ const List = () => {
     schedule[index].todo[listIndex].style && !editArea && "done";
 
   return (
-    <div
+    <form
       className={`list-box ${ModalPosition(
         listState.dayIndex,
         listState.week
@@ -267,7 +299,7 @@ const List = () => {
           </div>
         </div>
       )}
-    </div>
+    </form>
   );
 };
 

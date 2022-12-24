@@ -9,10 +9,15 @@ const SetTime = () => {
   let lastTime = "";
 
   const hourMakeHandler = (hour) => {
-    if (hour < 10) {
+    if (hour < 9) {
       currentTime = "오전 0" + hour;
       lastTime = "오전 0" + (hour + 1);
       console.log(currentTime);
+    }
+
+    if (hour === 9) {
+      currentTime = '오전 0' + hour;
+      lastTime = '오전 ' + (hour + 1);
     }
 
     if (hour === 10) {

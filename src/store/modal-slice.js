@@ -257,8 +257,8 @@ const modalSlice = createSlice({
       const arr = state.longArrChanged
         ? state.longArr || action.payload.longArr
         : action.payload.longArr;
-      console.log(action.payload.longArr);
-      console.log(state.longArr)
+      // console.log(action.payload.longArr);
+      // console.log(state.longArr)
       let leng = arr.length;
 
       // longDateList는 AddEvent와 List.js에서 사용됨
@@ -268,14 +268,14 @@ const modalSlice = createSlice({
         ? state.dayIndex || action.payload.dayIndex
         : action.payload.dayIndex;
 
-      console.log(leng);
-      console.log(action.payload.dayIndex);
-      console.log(state.dayIndex);
-      console.log(count);
+      // console.log(leng);
+      // console.log(action.payload.dayIndex);
+      // console.log(state.dayIndex);
+      // console.log(count);
  
       // {email: '', name: '', schedule: [...]} 깊은 복사
       let userSchedule = JSON.parse(JSON.stringify(state.userSchedule));
-      console.log(action.payload.key)
+      console.log(userSchedule)
       const key = 
         `${startDate[0]}` + // startDate Year
         `${99 - +startDate[1]}` + // startDate month
@@ -286,11 +286,11 @@ const modalSlice = createSlice({
         `${68 + action.payload.key[2]}` + //now date
         action.payload.key[3]; // now time
 
-      if (userSchedule.schedule[0] === "") {
+      if (userSchedule.schedule[0] === '') {
         console.log("working");
         userSchedule.schedule.splice(0, 1);
       }
-
+      console.log(userSchedule)
       for (let i of arr) {
         const index = userSchedule.schedule.findIndex((item) => item.idx === i);
         // console.log(i);

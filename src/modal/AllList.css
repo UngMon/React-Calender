@@ -1,6 +1,6 @@
 .AllList {
   position: absolute;
-  z-index: 5;
+  z-index: 4;
   width: 230px;
   height: 250px;
   background-color: white;
@@ -61,7 +61,7 @@
 
 .start-date {
   position: absolute;
-  right: 4.7px;
+  right: 5px;
   height: 0px;
   background-color: transparent;
   border-bottom: 11px solid transparent;
@@ -70,12 +70,12 @@
 }
 
 .title {
-  margin: 0 0 0 11px;
+  margin: 0 0 0 9px;
   padding-left: 7px;
-  width: 170px;
+  width: 174px;
   height: 22px;
   text-align: center;
-  font-size: 14px;
+  font-size: 12px;
   line-height: 22px;
   color: white;
   overflow: hidden;

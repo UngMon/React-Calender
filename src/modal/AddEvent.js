@@ -50,7 +50,7 @@ const AddEvent = () => {
         dispatch(allListActions.offModal());
         dispatch(listActions.offModal());
         dispatch(timeActions.resetTime());
-      }, 100);
+      }, 130);
     }
   };
 

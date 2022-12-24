@@ -18,10 +18,11 @@ const AllList = () => {
   const addModalCloseHandler = (e) => {
     if (allModal.isVisible && !modalRef.current.contains(e.target)) {
       setTimeout(() => {
+        console.log("offmodal");
         dispatch(allListActions.offModal());
         dispatch(modalActions.offModal());
-        dispatch(listActions.offModal());
-      }, 100);
+        // dispatch(listActions.offModal());
+      }, 350);
     }
   };
 
@@ -31,45 +32,52 @@ const AllList = () => {
       document.removeEventListener("mousedown", addModalCloseHandler);
     };
   });
-
-  // const listClickHandler = (item) => {
-  //   // const week = item.week
-  //   // const dayIndex =
-  //   // state.week = action.payload.week;
-  //   // state.dayIndex = action.payload.dayIndex;
-  //   // state.listName = action.payload.listName;
-  //   // state.listIndex = action.payload.listIndex;
-  //   // state.index = action.payload.scheduleIndex;
-  //   // state.key = action.payload.key;
-  //   // state.isVisible = true;
-  //   dispatch(listActions.clickedList({}));
-  // };
+  console.log(allModal.index);
+  const listClickHandler = (item, listIdx) => {
+    const week = allModal.week;
+    const dayIndex = allModal.day;
+    const listName = item.title;
+    const listIndex = listIdx;
+    const scheduleIndex = allModal.index;
+    const key = item.index;
+    dispatch(
+      listActions.clickedList({
+        week,
+        dayIndex,
+        listName,
+        listIndex,
+        scheduleIndex,
+        key,
+      })
+    );
+  };
 
   const makeListHandler = () => {
-    return schedule[allModal.index].todo.map((item, listIndex) => (
+    return schedule[allModal.index].todo.map((item, listIdx) => (
       <div
-        key={listIndex}
+        key={listIdx}
         className="AllList-item"
-        // onClick={listClickHandler(item)}
+        onClick={() => listClickHandler(item, listIdx)}
       >
         {item.isEnd && (
           <div className={`end-date border-left-${item.color}`}></div>
         )}
-        {item.isMiddle && (
+        {item.isMiddle && !item.isEnd && (
           <div className={`end-date border-left-${item.color}`}></div>
         )}
         <div
           className={`title ${item.color}`}
           style={{
-            width: `${!item.isLong && !item.isMiddle && "192px"}`,
-            borderRadius: `${
-              item.isMiddle
-                ? "0.6px"
-                : item.isEnd
-                ? "0 5px 5px 0"
-                : !item.isLong && "5px"
+            width: `${
+              item.isShort
+                ? "194px"
+                : item.isStart
+                ? "182.5px"
+                : item.isEnd && "183px"
             }`,
-            margin: `${!item.isLong && !item.isMiddle && "0"}`,
+
+            borderRadius: `3px`,
+            margin: `${item.isShort ? "0" : item.isStart && "0px"}`,
           }}
         >
           {item.title}

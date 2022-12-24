@@ -1,3 +1,4 @@
+import { useRef } from "react";
 import { useSelector } from "react-redux";
 import AddEvent from "../modal/AddEvent";
 import List from "../modal/List";
@@ -18,18 +19,16 @@ const Calender = ({ year, month, firstDay, lastDate }) => {
   const allListModal = useSelector((state) => state.all);
   const identify = fixYear + "." + fixMonth + "." + fixDate;
 
+  const listAreaRef = useRef([]); 
+
   return (
-    <main className={classes['calender-view']}>
+    <main className={classes["calender-view"]}>
       <div className={classes.calender}>
         {addModal.isVisible &&
           !listModal.isVisible &&
           !allListModal.isVisible && <AddEvent />}
-        {!addModal.isVisible &&
-          listModal.isVisible &&
-          !allListModal.isVisible && <List />}
-        {!addModal.isVisible &&
-          !listModal.isVisible &&
-          allListModal.isVisible && <AllList />}
+        {!addModal.isVisible && listModal.isVisible && <List listRef={listAreaRef}/>}
+        {!addModal.isVisible && allListModal.isVisible && <AllList />}
         <table className={classes.table}>
           <thead className={classes.weekname}>
             <tr>
@@ -43,7 +42,7 @@ const Calender = ({ year, month, firstDay, lastDate }) => {
             </tr>
           </thead>
           <tbody className={classes.presentation}>
-            {MakeCaledner({ year, month, firstDay, lastDate, identify })}
+            {MakeCaledner({ year, month, firstDay, lastDate, identify, listAreaRef })}
           </tbody>
         </table>
       </div>

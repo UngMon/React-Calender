@@ -8,7 +8,7 @@ const listSlice = createSlice({
     dayIndex: "",
     listName: "",
     listIndex: "",
-    index: "",
+    scheduleIndex: "",
     key: '',
     style: false,
   },
@@ -18,7 +18,7 @@ const listSlice = createSlice({
       state.dayIndex = action.payload.dayIndex;
       state.listName = action.payload.listName;
       state.listIndex = action.payload.listIndex;
-      state.index = action.payload.scheduleIndex;
+      state.scheduleIndex = action.payload.scheduleIndex;
       state.key = action.payload.key;
       state.isVisible = true;
     },
