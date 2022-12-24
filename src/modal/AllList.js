@@ -7,23 +7,41 @@ import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import { modalActions } from "../store/modal-slice";
 import { listActions } from "../store/list-slice";
 
-const AllList = () => {
+const AllList = ({ listRef }) => {
   const dispatch = useDispatch();
 
   const schedule = useSelector((state) => state.modal.userSchedule.schedule);
   const allModal = useSelector((state) => state.all);
 
   const modalRef = useRef();
+  const clickedAllListRef = useRef();
 
   const addModalCloseHandler = (e) => {
-    if (allModal.isVisible && !modalRef.current.contains(e.target)) {
+    console.log(clickedAllListRef)
+    console.log(e.target)
+
+    if (clickedAllListRef.current === e.target) {
       setTimeout(() => {
-        console.log("offmodal");
         dispatch(allListActions.offModal());
-        dispatch(modalActions.offModal());
-        // dispatch(listActions.offModal());
-      }, 350);
+      }, 100);
+      return;
     }
+
+    if (allModal.isVisible && !modalRef.current.contains(e.target)) {
+      for (const key in listRef.current) {
+        if (listRef.current[key].contains(e.target)) {
+          clickedAllListRef.current = listRef.current[key];
+          dispatch(modalActions.offModal());
+          break;
+        }
+      }
+      return;
+    }
+    setTimeout(() => {
+      console.log("offmodal");
+      dispatch(allListActions.offModal());
+      dispatch(modalActions.offModal());
+    }, 100);
   };
 
   useEffect(() => {
@@ -32,7 +50,7 @@ const AllList = () => {
       document.removeEventListener("mousedown", addModalCloseHandler);
     };
   });
-  console.log(allModal.index);
+
   const listClickHandler = (item, listIdx) => {
     const week = allModal.week;
     const dayIndex = allModal.day;

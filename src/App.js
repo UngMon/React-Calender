@@ -1,8 +1,8 @@
+import { auth } from "./Auth/firebase";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchScheduleData, sendScheduleData } from "./store/fetch-action";
 import { Navigate, Route, Routes } from "react-router-dom";
-import { auth } from "./Auth/firebase";
 import { onAuthStateChanged } from "firebase/auth";
 import Loading from "./pages/Loading";
 import LoginPage from "./pages/LoginPage";
@@ -11,6 +11,7 @@ import NotFound from "./pages/NotFound";
 
 function App() {
   console.log("app");
+  console.log(auth.currentUser)
 
   const dispatch = useDispatch();
 

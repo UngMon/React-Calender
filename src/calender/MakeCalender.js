@@ -65,6 +65,9 @@ const MakeCaledner = ({
   };
 
   const allListClickHandler = (date, day, week, scheduleIndex) => {
+    if (listState.isVisible) {
+      dispatch(listActions.offModal());
+    }
     dispatch(allListActions.clickedListBox({ date, day, week, scheduleIndex }));
   };
 
@@ -254,9 +257,7 @@ const MakeCaledner = ({
                 </h2>
               </div>
               <div className={classes["list-box"]}>
-                <div
-                  className={classes["list-area"]}
-                >
+                <div className={classes["list-area"]}>
                   {scheduleHandler(idx, dayIdx, week, array, listCount)}
                 </div>
               </div>
@@ -291,9 +292,7 @@ const MakeCaledner = ({
                 </h2>
               </div>
               <div className={classes["list-box"]}>
-                <div
-                  className={classes["list-area"]}
-                >
+                <div className={classes["list-area"]}>
                   {scheduleHandler(idx, dayIdx, week, array, listCount)}
                 </div>
               </div>
@@ -334,9 +333,7 @@ const MakeCaledner = ({
                 </h2>
               </div>
               <div className={classes["list-box"]}>
-                <div
-                  className={classes["list-area"]}
-                >
+                <div className={classes["list-area"]}>
                   {scheduleHandler(idx, dayIdx, week, array, listCount)}
                 </div>
               </div>
@@ -370,9 +367,7 @@ const MakeCaledner = ({
                 </h2>
               </div>
               <div className={classes["list-box"]}>
-                <div
-                  className={classes["list-area"]}
-                >
+                <div className={classes["list-area"]}>
                   {scheduleHandler(idx, dayIdx, week, array, listCount)}
                 </div>
               </div>

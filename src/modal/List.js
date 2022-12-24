@@ -54,7 +54,6 @@ const List = ({ listRef }) => {
 
   const modalCloseHandler = (e) => {
     let closeBool = true;
-    console.log(clickedListRef.current);
 
     if (openColor) {
       // 색상 선택 on, off
@@ -64,7 +63,8 @@ const List = ({ listRef }) => {
         }, [100]);
       }
     }
-
+    console.log(e.target)
+    console.log(clickedListRef)
     if (e.target === clickedListRef.current) {
       setTimeout(() => {
         console.log(`?????`);
@@ -83,16 +83,21 @@ const List = ({ listRef }) => {
           break;
         }
       }
-      console.log(e.target)
-      console.log(closeBool)
-      if (closeBool) {
-        console.log('??????????')
-        dispatch(listActions.offModal());
-        dispatch(allListActions.offModal());
+      console.log(e.target);
+      console.log(closeBool);
+      if (closeBool) { // list클릭했을 때, 
+        console.log("??????????");
+        setTimeout(() => {
+          dispatch(listActions.offModal());
+          dispatch(allListActions.offModal());
+        }, 100);
         return;
       }
 
-      setTimeout(() => {
+      setTimeout(() => { // 
+        console.log(`here?`)
+        // dispatch(listActions.offModal());
+        // dispatch(allListActions.offModal());
         dispatch(modalActions.offModal());
         dispatch(timeActions.resetTime());
       }, 100);
