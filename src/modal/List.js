@@ -2,7 +2,6 @@ import { useRef, useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { listActions } from "../store/list-slice";
 import { modalActions } from "../store/modal-slice";
-import { allListActions } from "../store/all-list-slice";
 import { timeActions } from "../store/time-slice";
 import { comparisonHandler } from "../library/Comparioson";
 import ModalPosition from "../library/ModalPosition";
@@ -17,11 +16,12 @@ import {
 import TimeSelector from "../library/Time/TimeSelector";
 import ColorBox from "../library/ColorBox";
 
-const List = ({ listRef }) => {
+const List = ({ listRef, allListRef }) => {
   const dispatch = useDispatch();
 
   const listState = useSelector((state) => state.list);
   const modalState = useSelector((state) => state.modal);
+  const allListState = useSelector(state => state.all);
 
   const index = listState.scheduleIndex;
   const listIndex = listState.listIndex;
@@ -53,7 +53,6 @@ const List = ({ listRef }) => {
   const comparison = comparisonHandler(startDate, endDate);
 
   const modalCloseHandler = (e) => {
-    let closeBool = true;
 
     if (openColor) {
       // 색상 선택 on, off
@@ -77,27 +76,25 @@ const List = ({ listRef }) => {
       for (const key in listRef.current) {
         if (listRef.current[key].contains(e.target)) {
           clickedListRef.current = e.target;
-          closeBool = false;
           console.log(e.target);
           console.log("working");
-          break;
+          return;
         }
       }
-      console.log(e.target);
-      console.log(closeBool);
-      if (closeBool) { // list클릭했을 때, 
-        console.log("??????????");
-        setTimeout(() => {
-          dispatch(listActions.offModal());
-          dispatch(allListActions.offModal());
-        }, 100);
-        return;
+
+      for (const key in allListRef.current) {
+        if (allListRef.current[key].contains(e.target)) {
+          clickedListRef.current = e.target;
+          setTimeout(() => {
+            dispatch(listActions.offModal());
+          }, 100)
+          return;
+        }
       }
 
       setTimeout(() => { // 
         console.log(`here?`)
-        // dispatch(listActions.offModal());
-        // dispatch(allListActions.offModal());
+        dispatch(listActions.offModal());
         dispatch(modalActions.offModal());
         dispatch(timeActions.resetTime());
       }, 100);
@@ -223,7 +220,7 @@ const List = ({ listRef }) => {
     schedule[index].todo[listIndex].style && !editArea && "done";
 
   return (
-    <form
+    <div
       className={`list-box ${ModalPosition(
         listState.dayIndex,
         listState.week
@@ -304,7 +301,7 @@ const List = ({ listRef }) => {
           </div>
         </div>
       )}
-    </form>
+    </div>
   );
 };
 

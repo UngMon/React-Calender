@@ -7,7 +7,7 @@ import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import { modalActions } from "../store/modal-slice";
 import { listActions } from "../store/list-slice";
 
-const AllList = ({ listRef }) => {
+const AllList = ({ listRef, allListRef }) => {
   const dispatch = useDispatch();
 
   const schedule = useSelector((state) => state.modal.userSchedule.schedule);
@@ -17,8 +17,8 @@ const AllList = ({ listRef }) => {
   const clickedAllListRef = useRef();
 
   const addModalCloseHandler = (e) => {
-    console.log(clickedAllListRef)
-    console.log(e.target)
+    console.log(clickedAllListRef);
+    console.log(e.target);
 
     if (clickedAllListRef.current === e.target) {
       setTimeout(() => {
@@ -31,17 +31,28 @@ const AllList = ({ listRef }) => {
       for (const key in listRef.current) {
         if (listRef.current[key].contains(e.target)) {
           clickedAllListRef.current = listRef.current[key];
-          dispatch(modalActions.offModal());
-          break;
+          setTimeout(() => {
+            console.log(`?????`);
+            dispatch(allListActions.offModal());
+          }, 50);
+          return;
         }
       }
+
+      for (const key in allListRef.current) {
+        if (allListRef.current[key].contains(e.target)) {
+          clickedAllListRef.current = allListRef.current[key];
+          return;
+        }
+      }
+      setTimeout(() => {
+        console.log("??!!");
+        dispatch(allListActions.offModal());
+        dispatch(modalActions.offModal());
+        dispatch(listActions.offModal());
+      }, 60);
       return;
     }
-    setTimeout(() => {
-      console.log("offmodal");
-      dispatch(allListActions.offModal());
-      dispatch(modalActions.offModal());
-    }, 100);
   };
 
   useEffect(() => {
@@ -89,13 +100,15 @@ const AllList = ({ listRef }) => {
             width: `${
               item.isShort
                 ? "194px"
-                : item.isStart
-                ? "182.5px"
-                : item.isEnd && "183px"
+                : item.isLong && !item.isEnd
+                ? "183px"
+                : "174px"
             }`,
 
             borderRadius: `3px`,
-            margin: `${item.isShort ? "0" : item.isStart && "0px"}`,
+            marginLeft: `${
+              item.isShort ? "0px" : item.isLong && !item.isEnd ? "0px" : "9px"
+            }`,
           }}
         >
           {item.title}
@@ -132,7 +145,7 @@ const AllList = ({ listRef }) => {
 
   return (
     <div
-      className={`AllList week-${allModal.week} day-${allModal.day}`}
+      className={`AllList all-week-${allModal.week} all-day-${allModal.day}`}
       ref={modalRef}
     >
       <div className="AllList-header">

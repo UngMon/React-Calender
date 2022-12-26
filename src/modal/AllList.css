@@ -174,54 +174,54 @@
   border-left: 11px solid rgb(97, 97, 97);
 }
 
-.li-day-1 {
+.all-day-1 {
   left: 1%;
 }
 
-.li-day-2 {
+.all-day-2 {
   left: 14%;
 }
 
-.li-day-3 {
+.all-day-3 {
   left: 28%;
 }
 
-.li-day-4 {
-  right: 42%;
+.all-day-4 {
+  right: 41%;
 }
 
-.li-day-5 {
-  right: 43%;
+.all-day-5 {
+  right: 27%;
 }
 
-.li-day-6 {
-  right: 29%;
+.all-day-6 {
+  right: 14%;
 }
 
-.li-day-7 {
-  right: 15%;
+.all-day-7 {
+  right: 1%;
 }
 
-.li-week-1 {
-  top: 17%;
+.all-week-1 {
+  top: 15%;
 }
 
-.li-week-2 {
-  top: 30%;
+.all-week-2 {
+  top: 25%;
 }
 
-.li-week-3 {
+.all-week-3 {
   top: 40%;
 }
 
-.li-week-4 {
+.all-week-4 {
   top: 50%;
 }
 
-.li-week-5 {
+.all-week-5 {
   top: 60%;
 }
 
-.li-week-6 {
+.all-week-6 {
   top: 70;
 }

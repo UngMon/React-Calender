@@ -11,7 +11,6 @@ import NotFound from "./pages/NotFound";
 
 function App() {
   console.log("app");
-  console.log(auth.currentUser)
 
   const dispatch = useDispatch();
 

@@ -12,7 +12,8 @@ const MakeCaledner = ({
   firstDay,
   lastDate,
   identify,
-  listAreaRef,
+  listRef,
+  allListRef
 }) => {
   console.log("makecalender");
   const dispatch = useDispatch();
@@ -156,7 +157,7 @@ const MakeCaledner = ({
                 item.key // key
               );
             }}
-            ref={(el) => (listAreaRef.current[item.key] = el)}
+            ref={(el) => (listRef.current[item.key] = el)}
           >
             {!item.isLong && (
               <div className={`${item.color} ${classes["color-bar"]}`}></div>
@@ -187,7 +188,7 @@ const MakeCaledner = ({
                 event.stopPropagation();
                 allListClickHandler(date, dayIdx, week, todoIndex);
               }}
-              ref={(el) => (listAreaRef.current[item.key] = el)}
+              ref={(el) => (allListRef.current[item.key] = el)}
             >{`${todoInfo.length - (listBoxHeightCount - 1)}개 더보기`}</div>
           )
         )
@@ -202,7 +203,7 @@ const MakeCaledner = ({
               event.stopPropagation();
               allListClickHandler(date, dayIdx, week, todoIndex);
             }}
-            ref={(el) => (listAreaRef.current[item.key] = el)}
+            ref={(el) => (allListRef.current[item.key] = el)}
           >{`${listBoxHeightCount - idx}개 더보기`}</div>
         )
       )

@@ -19,7 +19,8 @@ const Calender = ({ year, month, firstDay, lastDate }) => {
   const allListModal = useSelector((state) => state.all);
   const identify = fixYear + "." + fixMonth + "." + fixDate;
 
-  const listAreaRef = useRef([]);
+  const listRef = useRef({});
+  const allListRef = useRef({});
 
   return (
     <main className={classes["calender-view"]}>
@@ -28,10 +29,10 @@ const Calender = ({ year, month, firstDay, lastDate }) => {
           !listModal.isVisible &&
           !allListModal.isVisible && <AddEvent />}
         {!addModal.isVisible && listModal.isVisible && (
-          <List listRef={listAreaRef} />
+          <List listRef={listRef} allListRef={allListRef}/>
         )}
         {!addModal.isVisible && allListModal.isVisible && (
-          <AllList listRef={listAreaRef} />
+          <AllList listRef={listRef} allListRef={allListRef}/>
         )}
         <table className={classes.table}>
           <thead className={classes.weekname}>
@@ -52,7 +53,8 @@ const Calender = ({ year, month, firstDay, lastDate }) => {
               firstDay,
               lastDate,
               identify,
-              listAreaRef,
+              listRef,
+              allListRef
             })}
           </tbody>
         </table>
