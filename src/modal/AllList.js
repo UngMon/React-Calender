@@ -91,7 +91,7 @@ const AllList = ({ listRef, allListRef }) => {
         {item.isEnd && (
           <div className={`end-date border-left-${item.color}`}></div>
         )}
-        {item.isMiddle && !item.isEnd && (
+        {item.isMiddle && (
           <div className={`end-date border-left-${item.color}`}></div>
         )}
         <div
@@ -113,10 +113,7 @@ const AllList = ({ listRef, allListRef }) => {
         >
           {item.title}
         </div>
-        {item.isMiddle && (
-          <div className={`start-date border-right-${item.color}`}></div>
-        )}
-        {item.isStart && (
+        {item.isMiddle && item.isEnd ? null : (
           <div className={`start-date border-right-${item.color}`}></div>
         )}
       </div>
