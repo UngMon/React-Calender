@@ -100,11 +100,14 @@ const AllList = ({ listRef, allListRef }) => {
             width: `${
               item.isShort
                 ? "194px"
-                : item.isLong && !item.isEnd
-                ? "183px"
-                : "174px"
+                : item.isMiddle
+                ? item.isEnd
+                  ? "183px"
+                  : "174px"
+                : item.isStart
+                ? item.isEnd ? '174px' : '183px'
+                : item.isEnd && "183px"
             }`,
-
             borderRadius: `3px`,
             marginLeft: `${
               item.isShort ? "0px" : item.isLong && !item.isEnd ? "0px" : "9px"

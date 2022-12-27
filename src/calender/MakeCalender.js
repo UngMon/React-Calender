@@ -204,7 +204,7 @@ const MakeCaledner = ({
               allListClickHandler(date, dayIdx, week, todoIndex);
             }}
             ref={(el) => (allListRef.current[item.key] = el)}
-          >{`${listBoxHeightCount - idx}개 더보기`}</div>
+          >{`${todoInfo.length - (listBoxHeightCount - 1)}개 더보기`}</div>
         )
       )
     );
