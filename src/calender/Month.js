@@ -9,7 +9,7 @@ import { faAngleLeft, faAngleRight } from "@fortawesome/free-solid-svg-icons";
 import { NavLink } from "react-router-dom";
 import { modalActions } from "../store/modal-slice";
 
-const Month = () => {
+const Month = ({ loginData }) => {
   console.log("month");
   const dispatch = useDispatch();
 
@@ -27,6 +27,7 @@ const Month = () => {
   const logoutHandler = () => {
     signOut(auth)
       .then((res) => {
+        localStorage.removeItem("email");
         dispatch(modalActions.logout());
       })
       .catch((err) => {
@@ -37,7 +38,7 @@ const Month = () => {
 
   return (
     <div className="view-area">
-      <header className="header" >
+      <header className="header">
         <div className="header-name">
           <span>{scheduleInfo.name} Calender</span>
         </div>
@@ -53,7 +54,7 @@ const Month = () => {
           </button>
         </div>
         <div className="header-Logout">
-          <NavLink className={"Logout"} to="/start" onClick={logoutHandler}>
+          <NavLink className={"Logout"} to="/login" onClick={logoutHandler}>
             Logout
           </NavLink>
         </div>

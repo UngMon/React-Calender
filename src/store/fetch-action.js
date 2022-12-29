@@ -1,7 +1,6 @@
 import { modalActions } from "./modal-slice";
 
 export const fetchScheduleData = (user) => {
-
   return async (dispatch) => {
     console.log("fetch?");
     const fetchData = async () => {
@@ -23,12 +22,8 @@ export const fetchScheduleData = (user) => {
       const userData = await fetchData();
       console.log(userData);
       dispatch(modalActions.fetchFromData(userData));
-      if (user) {
-        console.log(user)
-        console.log('작동?')
-        const email = user.email
-        dispatch(modalActions.confirmUser({email}));
-      }
+      const email = user.email;
+      dispatch(modalActions.confirmUser({ email }));
     } catch (error) {
       console.log(error);
       alert("데이터 불러오기 실패");

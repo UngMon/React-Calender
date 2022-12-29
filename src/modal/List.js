@@ -53,7 +53,8 @@ const List = ({ listRef, allListRef }) => {
   const comparison = comparisonHandler(startDate, endDate);
 
   const modalCloseHandler = (e) => {
-
+    console.log(listRef.current)
+    console.log(allListRef.current)
     if (openColor) {
       // 색상 선택 on, off
       if (!colorRef.current.contains(e.target)) {
@@ -77,7 +78,6 @@ const List = ({ listRef, allListRef }) => {
         if (listRef.current[key].contains(e.target)) {
           clickedListRef.current = e.target;
           console.log(e.target);
-          console.log("working");
           return;
         }
       }
@@ -86,6 +86,7 @@ const List = ({ listRef, allListRef }) => {
         if (allListRef.current[key].contains(e.target)) {
           clickedListRef.current = e.target;
           setTimeout(() => {
+            console.log('allList 클릭했나?')
             dispatch(listActions.offModal());
           }, 100)
           return;

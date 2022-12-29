@@ -2,7 +2,12 @@
 import React, { useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { auth } from "../Auth/firebase";
-import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
+import {
+  GoogleAuthProvider,
+  setPersistence,
+  signInWithPopup,
+  browserLocalPersistence,
+} from "firebase/auth";
 import { FacebookAuthProvider } from "firebase/auth";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { createUserWithEmailAndPassword } from "firebase/auth";
@@ -114,26 +119,27 @@ const LoginPage = () => {
     if (type === "Facebook") {
       provider = new FacebookAuthProvider();
     }
-    
-    signInWithPopup(auth, provider)
-      .then((data) => {
-        console.log(data);
-        const name = data.user.displayName;
-        const email = data.user.email;
+    setPersistence(auth, browserLocalPersistence).then(() => {
+      signInWithPopup(auth, provider)
+        .then((data) => {
+          console.log(data);
+          const name = data.user.displayName;
+          const email = data.user.email;
 
-        dispatch(modalActions.createUser({ name, email }));
+          dispatch(modalActions.createUser({ name, email }));
 
-        navigagte("/calender");
-      })
-      .catch((err) => {
-        alert("로그인하는데 실패했습니다.");
-        console.log(err);
-      });
+          navigagte("/calender");
+        })
+        .catch((err) => {
+          alert("로그인하는데 실패했습니다.");
+          console.log(err);
+        });
+    });
   };
 
   const loginFormHandler = (email, password, e) => {
     e.preventDefault();
-    console.log("작동1");
+
     if (!isEmail || !isPassword) {
       return alert("올바른 양식을 기입해주세요!");
     }
@@ -141,6 +147,9 @@ const LoginPage = () => {
     signInWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
         // Signed in
+        localStorage.setItem('email', userCredential.user.auth.config)
+        console.log(userCredential);
+        console.log(userCredential.user.auth.config.apiKey);
         const user = userCredential.user;
 
         dispatch(modalActions.confirmUser({ email }));

@@ -3,7 +3,6 @@ const SetTime = () => {
   const time = new Date();
   let hour = time.getHours();
   let minute = time.getMinutes();
-  console.log(typeof hour);
 
   let currentTime = "";
   let lastTime = "";
@@ -12,7 +11,6 @@ const SetTime = () => {
     if (hour < 9) {
       currentTime = "오전 0" + hour;
       lastTime = "오전 0" + (hour + 1);
-      console.log(currentTime);
     }
 
     if (hour === 9) {
@@ -63,12 +61,10 @@ const SetTime = () => {
   };
 
   minute = Math.ceil(minute / 15) * 15;
-  console.log(minute);
 
   if (minute === 60) {
     minute = "00";
     hourMakeHandler(hour + 1);
-    console.log(currentTime);
   }
 
   if (minute === 0) {
@@ -82,7 +78,6 @@ const SetTime = () => {
 
   currentTime = currentTime + ":" + minute;
   lastTime = lastTime + ":" + minute;
-  console.log(currentTime);
 
   return { currentTime, lastTime };
 };

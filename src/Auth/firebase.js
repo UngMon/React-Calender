@@ -19,6 +19,5 @@ const firebaseApp = initializeApp(firebaseConfig);
 
 const auth = getAuth(firebaseApp);
 // 기본 이메일 로그인을 위한 코드
-console.log(auth)
 
 export { auth, firebaseApp };

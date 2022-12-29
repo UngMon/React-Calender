@@ -1,11 +1,11 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, current } from "@reduxjs/toolkit";
 
 const modalSlice = createSlice({
   name: "modal",
   initialState: {
     isVisible: false,
     isLogin: false,
-    isLoading: false,
+    isLoading: true,
     startDate: "",
     endDate: "",
     week: "",
@@ -53,12 +53,16 @@ const modalSlice = createSlice({
         state.userIndex = userIndex;
       }
       state.userSchedule = state.userData[state.userIndex];
+      state.isLoading = false;
     },
 
     confirmUser(state, action) {
+      console.log('??')
+      console.log(current(state.userData))
       const userIndex = state.userData.findIndex(
         (item) => item.email === action.payload.email
       );
+      console.log(userIndex)
       console.log(state.userData);
       console.log(action.payload.email);
       console.log(userIndex);
@@ -79,7 +83,7 @@ const modalSlice = createSlice({
       state.isLogin = false;
     },
 
-    LoadigState(state) {
+    LoadingState(state) {
       state.isLoading = true;
     },
 
