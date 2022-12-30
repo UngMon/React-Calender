@@ -33,7 +33,6 @@ function App() {
     }
   }, [modal, dispatch]);
 
-  console.log("?");
   return (
     <Routes>
       {!loginData && <Route path="/login" element={<LoginPage />} />}

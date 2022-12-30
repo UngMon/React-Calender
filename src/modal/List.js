@@ -74,7 +74,9 @@ const List = ({ listRef, allListRef }) => {
     }
 
     if (!modalRef.current.contains(e.target)) {
+      console.log(listRef.current)
       for (const key in listRef.current) {
+        console.log(listRef.current[key].contains(e.target))
         if (listRef.current[key].contains(e.target)) {
           clickedListRef.current = e.target;
           console.log(e.target);

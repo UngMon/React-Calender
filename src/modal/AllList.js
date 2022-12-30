@@ -46,11 +46,10 @@ const AllList = ({ listRef, allListRef }) => {
         }
       }
       setTimeout(() => {
-        console.log("??!!");
         dispatch(allListActions.offModal());
         dispatch(modalActions.offModal());
         dispatch(listActions.offModal());
-      }, 60);
+      }, 90);
       return;
     }
   };
@@ -112,6 +111,7 @@ const AllList = ({ listRef, allListRef }) => {
             marginLeft: `${
               item.isShort ? "0px" : item.isLong && !item.isEnd ? "0px" : "9px"
             }`,
+            textDecoration: `${item.style && 'line-through'}`
           }}
         >
           {item.title}

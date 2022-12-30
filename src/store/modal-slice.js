@@ -371,7 +371,7 @@ const modalSlice = createSlice({
                   style: false,
                   color: action.payload.color,
                   index: key,
-                  arr: [i],
+                  arr,
                 },
               ];
               // console.log(current(schedule));
@@ -465,7 +465,7 @@ const modalSlice = createSlice({
                       isLong: false,
                       isShort: false,
                       index: key,
-                      arr: [i],
+                      arr,
                     },
                   ],
                 },
@@ -500,16 +500,13 @@ const modalSlice = createSlice({
       //당일 계획 삭제할 때,
       if (userSchedule[index].todo[listIndex].arr.length === 1) {
         userSchedule[index].todo.splice(listIndex, 1);
-
         // todo가 비어있는 배열이라면 ex){idx: '~', todo: []} 필요가 없으니 삭제
         userSchedule[index].todo.length === 0 && userSchedule.splice(index, 1);
       } else {
         // 하루가 아닌 여러 날짜를 삭제할 때,
         const Array = userSchedule[index].todo[listIndex].arr;
         const identifyIndex = userSchedule[index].todo[listIndex].index;
-        console.log(identifyIndex)
-        console.log(`index ${index}`)
-        console.log(`listIndex ${listIndex}`)
+
         let itemsIdx;
         let listIdx;
 

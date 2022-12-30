@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 import { useSelector } from "react-redux";
 import AddEvent from "../modal/AddEvent";
 import List from "../modal/List";
@@ -11,7 +11,7 @@ const fixYear = date.getFullYear();
 const fixMonth = date.getMonth() + 1;
 const fixDate = date.getDate();
 
-const Calender = ({ year, month, firstDay, lastDate }) => {
+const Calender = ({ year, month, firstDay, lastDate, scheduleInfo }) => {
   console.log("calender");
 
   const addModal = useSelector((state) => state.modal);
@@ -21,6 +21,11 @@ const Calender = ({ year, month, firstDay, lastDate }) => {
 
   const listRef = useRef({});
   const allListRef = useRef({});
+
+  useEffect(() => {
+    listRef.current = {};
+    allListRef.current = {};
+  }, [month, scheduleInfo])
 
   return (
     <main className={classes["calender-view"]}>

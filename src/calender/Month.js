@@ -9,7 +9,7 @@ import { faAngleLeft, faAngleRight } from "@fortawesome/free-solid-svg-icons";
 import { NavLink } from "react-router-dom";
 import { modalActions } from "../store/modal-slice";
 
-const Month = ({ loginData }) => {
+const Month = () => {
   console.log("month");
   const dispatch = useDispatch();
 
@@ -64,6 +64,7 @@ const Month = ({ loginData }) => {
         month={monthInfo.month + 1}
         firstDay={monthInfo.firstDay}
         lastDate={monthInfo.lastDate}
+        scheduleInfo={scheduleInfo}
       />
     </div>
   );
