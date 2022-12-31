@@ -46,9 +46,9 @@ const AllList = ({ listRef, allListRef }) => {
         }
       }
       setTimeout(() => {
+        console.log('그냥꺼지나')
         dispatch(allListActions.offModal());
         dispatch(modalActions.offModal());
-        dispatch(listActions.offModal());
       }, 90);
       return;
     }

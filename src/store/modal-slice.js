@@ -126,7 +126,7 @@ const modalSlice = createSlice({
     resetState(state) {
       state.longArr = "";
       state.dayIndex = "";
-      state.endDate = "";
+      // state.endDate = "";
     },
 
     onModal(state) {
@@ -135,8 +135,6 @@ const modalSlice = createSlice({
 
     offModal(state) {
       state.isVisible = false;
-      state.startDate = "";
-      state.endDate = "";
     },
 
     setDate(state, action) {

@@ -16,12 +16,11 @@ import {
 import TimeSelector from "../library/Time/TimeSelector";
 import ColorBox from "../library/ColorBox";
 
-const List = ({ listRef, allListRef }) => {
+const List = ({ listRef, allListRef, year, month }) => {
   const dispatch = useDispatch();
 
   const listState = useSelector((state) => state.list);
   const modalState = useSelector((state) => state.modal);
-  const allListState = useSelector(state => state.all);
 
   const index = listState.scheduleIndex;
   const listIndex = listState.listIndex;
@@ -29,18 +28,17 @@ const List = ({ listRef, allListRef }) => {
   const schedule = modalState.userSchedule.schedule;
 
   const listInfo = schedule[index].todo[listIndex];
+  const startDate = modalState.startDate || listInfo.startDate;
+  const endDate = modalState.endDate || listInfo.endDate;
 
   const dateArray =
-    listInfo.startDate === listInfo.endDate
-      ? listInfo.startDate.split("-")
-      : [...listInfo.startDate.split("-"), ...listInfo.endDate.split("-")];
+    startDate === endDate
+      ? startDate.split("-")
+      : [...startDate.split("-"), ...endDate.split("-")];
 
   const [editArea, setEditArea] = useState(false);
   const [color, setColor] = useState(listInfo.color);
   const [openColor, setOpenColor] = useState(false);
-
-  const startDate = modalState.startDate;
-  const endDate = modalState.endDate;
 
   const modalRef = useRef();
   const clickedListRef = useRef();
@@ -53,8 +51,8 @@ const List = ({ listRef, allListRef }) => {
   const comparison = comparisonHandler(startDate, endDate);
 
   const modalCloseHandler = (e) => {
-    console.log(listRef.current)
-    console.log(allListRef.current)
+    console.log(listRef.current);
+    console.log(allListRef.current);
     if (openColor) {
       // 색상 선택 on, off
       if (!colorRef.current.contains(e.target)) {
@@ -63,8 +61,8 @@ const List = ({ listRef, allListRef }) => {
         }, [100]);
       }
     }
-    console.log(e.target)
-    console.log(clickedListRef)
+    console.log(e.target);
+    console.log(clickedListRef);
     if (e.target === clickedListRef.current) {
       setTimeout(() => {
         console.log(`?????`);
@@ -74,9 +72,9 @@ const List = ({ listRef, allListRef }) => {
     }
 
     if (!modalRef.current.contains(e.target)) {
-      console.log(listRef.current)
+      console.log(listRef.current);
       for (const key in listRef.current) {
-        console.log(listRef.current[key].contains(e.target))
+        console.log(listRef.current[key].contains(e.target));
         if (listRef.current[key].contains(e.target)) {
           clickedListRef.current = e.target;
           console.log(e.target);
@@ -88,15 +86,16 @@ const List = ({ listRef, allListRef }) => {
         if (allListRef.current[key].contains(e.target)) {
           clickedListRef.current = e.target;
           setTimeout(() => {
-            console.log('allList 클릭했나?')
+            console.log("allList 클릭했나?");
             dispatch(listActions.offModal());
-          }, 100)
+          }, 100);
           return;
         }
       }
 
-      setTimeout(() => { // 
-        console.log(`here?`)
+      setTimeout(() => {
+        //
+        console.log(`here?`);
         dispatch(listActions.offModal());
         dispatch(modalActions.offModal());
         dispatch(timeActions.resetTime());
@@ -210,7 +209,7 @@ const List = ({ listRef, allListRef }) => {
     dispatch(timeActions.resetTime());
   };
 
-  const listDoneHandler = (index, listIndex) => {
+  const listDoneHandler = (index, listIndex, year, month) => {
     dispatch(modalActions.listDone({ index, listIndex }));
   };
 
@@ -295,11 +294,24 @@ const List = ({ listRef, allListRef }) => {
           </div>
           <div className="list-time">
             <div>{`${dateArray[0]}년 ${dateArray[1]}월 ${dateArray[2]}일`}</div>
+            <span>&nbsp;</span>
             <div>{schedule[index].todo[listIndex].startTime}</div>
+            <span>&nbsp;&nbsp;</span>
             <span>~</span>
-            <div
-              style={{ display: dateArray.length === 3 && "none" }}
-            >{`${dateArray[3]}년 ${dateArray[4]}월 ${dateArray[5]}일`}</div>
+            <span>&nbsp;&nbsp;</span>
+            <div style={{ display: dateArray.length === 3 && "none" }}>
+              {`${
+                dateArray.length < 4
+                  ? "" // startDate === endDate
+                  : dateArray[0] === dateArray[3] // 같은 년도
+                  ? dateArray[1] === dateArray[4] // 같은 달
+                    ? `${dateArray[5]}일` // 다른 날
+                    : `${dateArray[4]}월 ${dateArray[5]}일` // 다른 달
+                  : `${dateArray[3]}년 ${dateArray[4]}월 ${dateArray[5]}일` // 다른 년도
+              }
+              `}
+            </div>
+            <span>&nbsp;</span>
             <div>{schedule[index].todo[listIndex].endTime}</div>
           </div>
         </div>

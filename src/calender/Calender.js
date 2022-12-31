@@ -17,8 +17,8 @@ const Calender = ({ year, month, firstDay, lastDate, scheduleInfo }) => {
   const addModal = useSelector((state) => state.modal);
   const listModal = useSelector((state) => state.list);
   const allListModal = useSelector((state) => state.all);
-  const identify = fixYear + "." + fixMonth + "." + fixDate;
-
+  const identify = fixYear + "-" + fixMonth + "-" + fixDate;
+  
   const listRef = useRef({});
   const allListRef = useRef({});
 
@@ -34,7 +34,7 @@ const Calender = ({ year, month, firstDay, lastDate, scheduleInfo }) => {
           !listModal.isVisible &&
           !allListModal.isVisible && <AddEvent />}
         {!addModal.isVisible && listModal.isVisible && (
-          <List listRef={listRef} allListRef={allListRef}/>
+          <List listRef={listRef} allListRef={allListRef} year={year} month={month}/>
         )}
         {!addModal.isVisible && allListModal.isVisible && (
           <AllList listRef={listRef} allListRef={allListRef}/>
