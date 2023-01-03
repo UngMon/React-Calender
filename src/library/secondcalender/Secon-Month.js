@@ -5,6 +5,8 @@ import { faAngleLeft, faAngleRight } from "@fortawesome/free-solid-svg-icons";
 import { useState } from "react";
 
 const Month = ({ type, year, month, dateRef, dateClose }) => {
+  console.log('secondMonth')
+  console.log(dateRef.current)
   const [thisYear, setYear] = useState(+year);
   const [thisMonth, setMonth] = useState(+month);
 
@@ -38,7 +40,7 @@ const Month = ({ type, year, month, dateRef, dateClose }) => {
         <button
           onClick={movePrevMonthHandler}
           type="button"
-          ref={(el) => (dateRef.current[0] = el)}
+          ref={(el) => (dateRef.current[2] = el)}
         >
           <FontAwesomeIcon
             icon={faAngleLeft}
@@ -48,7 +50,7 @@ const Month = ({ type, year, month, dateRef, dateClose }) => {
         <button
           onClick={moveNextMonthHandler}
           type="button"
-          ref={(el) => (dateRef.current[1] = el)}
+          ref={(el) => (dateRef.current[3] = el)}
         >
           <FontAwesomeIcon
             icon={faAngleRight}

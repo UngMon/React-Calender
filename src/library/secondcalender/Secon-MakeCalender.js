@@ -15,6 +15,8 @@ const MakeCaledner = ({
   dateRef,
   dateClose
 }) => {
+  console.log('second')
+  console.log(dateRef.current)
   const dispatch = useDispatch();
 
   const modalState = useSelector((state) => state.modal);
@@ -175,7 +177,7 @@ const MakeCaledner = ({
         key={i}
         className={classes["week-box"]}
         weekindex={i}
-        ref={(el) => (dateRef.current[i+1] = el)}
+        ref={(el) => (dateRef.current[i+3] = el)}
       >
         {makeDay(i)}
       </tr>

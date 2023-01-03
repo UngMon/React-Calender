@@ -51,8 +51,8 @@ const List = ({ listRef, allListRef, year, month }) => {
   const comparison = comparisonHandler(startDate, endDate);
 
   const modalCloseHandler = (e) => {
-    console.log(listRef.current);
-    console.log(allListRef.current);
+    // console.log(listRef.current);
+    // console.log(allListRef.current);
     if (openColor) {
       // 색상 선택 on, off
       if (!colorRef.current.contains(e.target)) {
@@ -61,23 +61,23 @@ const List = ({ listRef, allListRef, year, month }) => {
         }, [100]);
       }
     }
-    console.log(e.target);
-    console.log(clickedListRef);
+    // console.log(e.target);
+    // console.log(clickedListRef);
     if (e.target === clickedListRef.current) {
       setTimeout(() => {
-        console.log(`?????`);
+        // console.log(`?????`);
         dispatch(listActions.offModal());
       }, 100);
       return;
     }
 
     if (!modalRef.current.contains(e.target)) {
-      console.log(listRef.current);
+      // console.log(listRef.current);
       for (const key in listRef.current) {
         console.log(listRef.current[key].contains(e.target));
         if (listRef.current[key].contains(e.target)) {
           clickedListRef.current = e.target;
-          console.log(e.target);
+          // console.log(e.target);
           return;
         }
       }
@@ -86,7 +86,7 @@ const List = ({ listRef, allListRef, year, month }) => {
         if (allListRef.current[key].contains(e.target)) {
           clickedListRef.current = e.target;
           setTimeout(() => {
-            console.log("allList 클릭했나?");
+            // console.log("allList 클릭했나?");
             dispatch(listActions.offModal());
           }, 100);
           return;
@@ -94,8 +94,7 @@ const List = ({ listRef, allListRef, year, month }) => {
       }
 
       setTimeout(() => {
-        //
-        console.log(`here?`);
+        // console.log(`here?`);
         dispatch(listActions.offModal());
         dispatch(modalActions.offModal());
         dispatch(timeActions.resetTime());
@@ -226,7 +225,7 @@ const List = ({ listRef, allListRef, year, month }) => {
       className={`list-box ${ModalPosition(
         listState.dayIndex,
         listState.week
-      )}`}
+      )} ${editArea ? 'edit' : ''}`}
       ref={modalRef}
     >
       <div className="option-box">

@@ -57,7 +57,7 @@
 
 .buttonBox button:hover {
   border-radius: 100%;
-  background-color: lightgray;
+  background-color: rgb(242, 239, 239);
 }
 
 .day-1 {
