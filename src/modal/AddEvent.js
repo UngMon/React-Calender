@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { modalActions } from "../store/modal-slice";
 import { timeActions } from "../store/time-slice";
@@ -13,15 +13,16 @@ import "./AddEvent.css";
 
 const setTime = SetTime();
 const firstTime = setTime.currentTime;
-
 const LastTime = setTime.lastTime;
 
-const AddEvent = () => {
+const AddEvent = ({ viewRef }) => {
   const dispatch = useDispatch();
   const modalState = useSelector((state) => state.modal);
+  console.log("addevent");
 
   const [color, setColor] = useState("라벤더");
   const [openColor, setOpenColor] = useState(false);
+  const [width, setWidth] = useState("");
 
   const startDate = modalState.startDate;
   const endDate = modalState.endDate;
@@ -32,6 +33,18 @@ const AddEvent = () => {
 
   const timeOneRef = useRef();
   const timeTwoRef = useRef();
+
+  useEffect(() => {
+    setWidth(viewRef.current.clientWidth);
+  }, [viewRef]);
+
+  const widthCalculator = useCallback(() => {
+    setWidth(viewRef.current.clientWidth);
+  }, [viewRef]);
+
+  useEffect(() => {
+    window.addEventListener("resize", widthCalculator);
+  });
 
   const closeHandler = (e) => {
     if (openColor) {
@@ -134,13 +147,16 @@ const AddEvent = () => {
 
   return (
     <form
-      className={`addModal ${ModalPosition(
-        modalState.dayIndex,
-        modalState.week
-      )}`}
+      className={`addModal`}
       onSubmit={listSubmitHandler}
       ref={modalRef}
-      style={{ display: !modalState.isVisible && "none" }}
+      style={{
+        marginLeft: `${ModalPosition(
+          modalState.dayIndex,
+          modalState.week,
+          width
+        )}px`,
+      }}
     >
       <div className="add-modal-name">일정 추가</div>
       <div className="inputArea">

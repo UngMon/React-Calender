@@ -1,6 +1,7 @@
 .calender-view {
   width: 100%;
   height: calc(100% - 62px);
+  position: relative;
 }
 
 .calender {
@@ -37,7 +38,7 @@
 
 .presentation {
   width: 100%;
-  height: 95%;
+  height: calc(100% - 26px);
   box-sizing: border-box;
 }
 
@@ -53,8 +54,9 @@
 
 .date {
   position: absolute;
+  box-sizing: border-box;
   width: 100%;
-  height: 100%;
+  height: calc(100% - 2px);
   text-align: left;
 }
 
@@ -85,9 +87,9 @@
 
 .list-box {
   position: absolute;
-  margin-top: 26px;
+  margin-top: 24px;
   width: 100%;
-  height: 80%;
+  height: calc(100% - 24px);
   font-size: 24px;
 }
 
@@ -95,7 +97,7 @@
   position: absolute;
   top: 0;
   width: 100%;
-  height: 100%; /* 여기 동적으로.*/
+  height: 100%;
 }
 
 .list-boundary-short {
@@ -178,8 +180,14 @@
   text-decoration: line-through;
 }
 
-/* @media screen and (max-width: 980px) {
-  .calender-view {
-    height: 93%;
-  }
+.modal-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  /* width: 0;
+  height: 0; */
+}
+
+/* .modal-second-container {
+  width: 100%;
 } */

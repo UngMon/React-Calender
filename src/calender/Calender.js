@@ -18,27 +18,19 @@ const Calender = ({ year, month, firstDay, lastDate, scheduleInfo }) => {
   const listModal = useSelector((state) => state.list);
   const allListModal = useSelector((state) => state.all);
   const identify = fixYear + "-" + fixMonth + "-" + fixDate;
-  
+
+  const viewRef = useRef("");
   const listRef = useRef({});
   const allListRef = useRef({});
 
   useEffect(() => {
     listRef.current = {};
     allListRef.current = {};
-  }, [month, scheduleInfo])
+  }, [month, scheduleInfo]);
 
   return (
-    <main className={classes["calender-view"]}>
+    <main className={classes["calender-view"]} ref={viewRef}>
       <div className={classes.calender}>
-        {addModal.isVisible &&
-          !listModal.isVisible &&
-          !allListModal.isVisible && <AddEvent />}
-        {!addModal.isVisible && listModal.isVisible && (
-          <List listRef={listRef} allListRef={allListRef} year={year} month={month}/>
-        )}
-        {!addModal.isVisible && allListModal.isVisible && (
-          <AllList listRef={listRef} allListRef={allListRef}/>
-        )}
         <table className={classes.table}>
           <thead className={classes.weekname}>
             <tr>
@@ -59,10 +51,24 @@ const Calender = ({ year, month, firstDay, lastDate, scheduleInfo }) => {
               lastDate,
               identify,
               listRef,
-              allListRef
+              allListRef,
+              viewRef,
             })}
           </tbody>
         </table>
+      </div>
+      <div className={classes["modal-container"]}>
+        <div className={classes['modal-second-container']}>
+          {addModal.isVisible &&
+            !listModal.isVisible &&
+            !allListModal.isVisible && <AddEvent viewRef={viewRef} />}
+          {!addModal.isVisible && listModal.isVisible && (
+            <List viewRef={viewRef} listRef={listRef} allListRef={allListRef} />
+          )}
+          {!addModal.isVisible && allListModal.isVisible && (
+            <AllList listRef={listRef} allListRef={allListRef} />
+          )}
+        </div>
       </div>
     </main>
   );

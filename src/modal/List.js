@@ -1,4 +1,4 @@
-import { useRef, useState, useEffect } from "react";
+import { useRef, useState, useEffect, useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { listActions } from "../store/list-slice";
 import { modalActions } from "../store/modal-slice";
@@ -16,8 +16,9 @@ import {
 import TimeSelector from "../library/Time/TimeSelector";
 import ColorBox from "../library/ColorBox";
 
-const List = ({ listRef, allListRef, year, month }) => {
+const List = ({ viewRef, listRef, allListRef }) => {
   const dispatch = useDispatch();
+  console.log('list.js')
 
   const listState = useSelector((state) => state.list);
   const modalState = useSelector((state) => state.modal);
@@ -39,6 +40,7 @@ const List = ({ listRef, allListRef, year, month }) => {
   const [editArea, setEditArea] = useState(false);
   const [color, setColor] = useState(listInfo.color);
   const [openColor, setOpenColor] = useState(false);
+  const [width, setWidth] = useState('');
 
   const modalRef = useRef();
   const clickedListRef = useRef();
@@ -47,6 +49,18 @@ const List = ({ listRef, allListRef, year, month }) => {
 
   const timeOneRef = useRef();
   const timeTwoRef = useRef();
+
+  useEffect(() => {
+    setWidth(viewRef.current.clientWidth);
+  }, [viewRef]);
+
+  const widthCalculator = useCallback(() => {
+    setWidth(viewRef.current.clientWidth);
+  }, [viewRef])
+
+  useEffect(() => {
+    window.addEventListener('resize', widthCalculator)
+  })
 
   const comparison = comparisonHandler(startDate, endDate);
 
@@ -224,9 +238,11 @@ const List = ({ listRef, allListRef, year, month }) => {
     <div
       className={`list-box ${ModalPosition(
         listState.dayIndex,
-        listState.week
+        listState.week,
+        viewRef
       )} ${editArea ? 'edit' : ''}`}
       ref={modalRef}
+      style={{marginLeft: '100px'}}
     >
       <div className="option-box">
         <div

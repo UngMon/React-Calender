@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { allListActions } from "../store/all-list-slice";
 import { modalActions } from "../store/modal-slice";
@@ -14,31 +14,33 @@ const MakeCaledner = ({
   identify,
   listRef,
   allListRef,
+  viewRef,
 }) => {
   console.log("makecalender");
   const dispatch = useDispatch();
-
+  const week = Math.ceil((firstDay + lastDate) / 7); // 해당 month가 몇 주인지?
   // {email: '', name: '', schedule: []}
   const modalState = useSelector((state) => state.modal);
   const listState = useSelector((state) => state.list);
-  const [height, setHeight] = useState(null);
+
+  const [listBoxHeightCount, setHeight] = useState("");
 
   // {idx: '', todo: [ ... {}...]}
   const schedule = modalState.userSchedule.schedule;
   const modalVisible = modalState.isVisible;
 
-  const trRef = useRef([]);
-
-  const listBoxHeightCount = height !== 0 ? Math.floor(height / 24) : null;
+  useEffect(() => {
+    // 컴포넌트의 return 실행 후, state에 값을 저장후 랜더링 
+    setHeight(
+      Math.floor((viewRef.current.clientHeight - 26 - 24 * week) / (24 * week))
+    );
+  }, [viewRef, week]);
 
   const getListBoxSize = useCallback(() => {
-    setHeight(trRef.current[0].clientHeight - 28);
-  }, []);
-
-  useEffect(() => {
-    // 첫 마운트시 height state에 값을 부여
-    setHeight(trRef.current[0].clientHeight - 28);
-  }, []);
+    setHeight(
+      Math.floor((viewRef.current.clientHeight - 26 - 24 * week) / (24 * week))
+    );
+  }, [week, viewRef]);
 
   useEffect(() => {
     // 창 크기 조절시에 보이는 list 개수 달리 보여주기 위함.
@@ -214,7 +216,6 @@ const MakeCaledner = ({
     if (!modalVisible) {
       dispatch(modalActions.clickedStartDate({ idx, dayIndex, week }));
     }
-    dispatch(modalActions.onModal());
   };
 
   const monthArray = [];
@@ -380,7 +381,6 @@ const MakeCaledner = ({
     return thisMonthArray;
   };
   /* 주 만들기, 달 마다 5주 6주 다르므로...*/
-  const week = Math.ceil((firstDay + lastDate) / 7);
 
   for (let i = 1; i <= week; i++) {
     let array = [
@@ -416,11 +416,7 @@ const MakeCaledner = ({
     ];
 
     monthArray.push(
-      <tr
-        key={i}
-        className={`week ${i}`}
-        ref={(el) => (i === 1 ? (trRef.current[i - 1] = el) : null)}
-      >
+      <tr key={i} className={`week ${i}`}>
         {makeDay(i, array)}
       </tr>
     );
@@ -459,72 +455,3 @@ export default MakeCaledner;
 //   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 //   0,
 // ],
-
-// for (const item of todoInfo) {
-//   if (todoCount === listBoxHeightCount || !item.isMiddle) {
-//     continue;
-//   }
-//   console.log(item)
-//   let arrayCount = 0;
-
-//   array[dayIdx].some((arrayItem, arrayIdx) =>  {
-//     if (arrayItem !== 0) return false; // continue;
-
-//     for (let i = dayIdx; i < dayIdx + item.length; i++) {
-//       if (i === 8) break;
-
-//       array[i][arrayIdx] = {
-//         week: week,
-//         dayIndex: dayIdx,
-//         title: item.title,
-//         listIndex: todoCount,
-//         index: todoIndex,
-//         key: item.index,
-//         isLong: item.isLong ? true : false,
-//         isStart: item.isStart ? true : false,
-//         isEnd: item.isEnd ? true : false,
-//       };
-//       console.log(array[dayIdx][arrayCount])
-//       if (!item.isLong) break;
-//     }
-//     positionIndex = arrayIdx;
-//     arrayCount += 1;
-//     return true;
-//   });
-//   todoCount += 1;
-//   console.log(item)
-//   console.log(array);
-// }
-
-// todoInfo.some((item, tdIdx) => {
-//   // todo 안의 요소가 dummy일정이 아닌 하루 일정과 긴 일정들 일 때,
-//   if (tdIdx < listBoxHeightCount && !item.isMiddle) {
-//     // [0, 0, 0, 0, ..., 0]
-//     array[dayIdx].some((arrItem, arrIdx) => {
-//       //   // 다른 일정이 채워져 있지 않은 상태에서만..
-//       if (arrItem !== 0) return false; //continue
-
-//       // isLong이 true일 때, array의 요일칸에 index값을 부여해줌.
-//       for (let i = dayIdx; i < dayIdx + item.length; i++) {
-//         if (i === 8) break;
-//         array[i][arrIdx] = {
-//           week: week,
-//           dayIndex: dayIdx,
-//           title: item.title,
-//           listIndex: tdIdx,
-//           index: todoIndex,
-//           key: item.index,
-//           isLong: item.isLong ? true : false,
-//           isStart: item.isStart ? true : false,
-//           isEnd: item.isEnd ? true : false,
-//         };
-//         if (!item.isLong) {
-//           break;
-//         }
-//       }
-//       positionIndex = arrIdx;
-//       return true;
-//     });
-//   }
-// });
-// console.log(array)

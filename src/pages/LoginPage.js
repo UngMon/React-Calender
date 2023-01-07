@@ -21,7 +21,7 @@ import classes from "./LoginPage.module.css";
 const LoginPage = () => {
   const dispatch = useDispatch();
   const navigagte = useNavigate();
-
+  console.log('loginpage')
   // 회원가입 인지 아닌지~
   const [creatingUser, setCreatingUser] = useState(false);
 
