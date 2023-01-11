@@ -17,11 +17,12 @@ const Calender = ({ year, month, firstDay, lastDate, scheduleInfo }) => {
   const addModal = useSelector((state) => state.modal);
   const listModal = useSelector((state) => state.list);
   const allListModal = useSelector((state) => state.all);
+  // 아래 identify는 makeCalender에서 현재 날짜에 파란 원이 생기게 끔 식별
   const identify = fixYear + "-" + fixMonth + "-" + fixDate;
 
   const viewRef = useRef("");
-  const listRef = useRef({});
-  const allListRef = useRef({});
+  const listRef = useRef();
+  const allListRef = useRef();
 
   useEffect(() => {
     listRef.current = {};
@@ -31,6 +32,9 @@ const Calender = ({ year, month, firstDay, lastDate, scheduleInfo }) => {
   return (
     <main className={classes["calender-view"]} ref={viewRef}>
       <div className={classes.calender}>
+        {!addModal.isVisible && allListModal.isVisible && (
+          <AllList listRef={listRef} allListRef={allListRef} />
+        )}
         <table className={classes.table}>
           <thead className={classes.weekname}>
             <tr>
@@ -56,17 +60,12 @@ const Calender = ({ year, month, firstDay, lastDate, scheduleInfo }) => {
             })}
           </tbody>
         </table>
-      </div>
-      <div className={classes["modal-container"]}>
-        <div className={classes['modal-second-container']}>
+        <div className={classes["modal-container"]}>
           {addModal.isVisible &&
             !listModal.isVisible &&
             !allListModal.isVisible && <AddEvent viewRef={viewRef} />}
           {!addModal.isVisible && listModal.isVisible && (
             <List viewRef={viewRef} listRef={listRef} allListRef={allListRef} />
-          )}
-          {!addModal.isVisible && allListModal.isVisible && (
-            <AllList listRef={listRef} allListRef={allListRef} />
           )}
         </div>
       </div>

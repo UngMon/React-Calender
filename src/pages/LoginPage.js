@@ -1,5 +1,5 @@
 /* eslint-disable */
-import React, { useState, useCallback } from "react";
+import { useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { auth } from "../Auth/firebase";
 import {
@@ -13,15 +13,12 @@ import { signInWithEmailAndPassword } from "firebase/auth";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { useDispatch } from "react-redux";
 import { modalActions } from "../store/modal-slice";
-import { Link } from "react-router-dom";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 import classes from "./LoginPage.module.css";
 
 const LoginPage = () => {
   const dispatch = useDispatch();
   const navigagte = useNavigate();
-  console.log('loginpage')
+  console.log("loginpage");
   // 회원가입 인지 아닌지~
   const [creatingUser, setCreatingUser] = useState(false);
 
@@ -29,24 +26,24 @@ const LoginPage = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState(null);
   const [password, setPassword] = useState(null);
-  const [passwordConfirm, setPasswordConfirm] = useState("");
+  // const [passwordConfirm, setPasswordConfirm] = useState("");
 
   // 이메일과 패스워드 유효성 검사 state
   const [isName, setIsName] = useState(false);
   const [isEmail, setIsEmail] = useState(false);
   const [isPassword, setIsPassword] = useState(false);
-  const [isPasswordConfirm, setIsPasswordConfirm] = useState(false);
+  // const [isPasswordConfirm, setIsPasswordConfirm] = useState(false);
 
   // 이메일과 패스워드 에러메시지 state
   const [nameMessage, setNameMessage] = useState("");
   const [emailMessage, setEmailMessage] = useState("");
   const [passwordMessage, setPasswordMessage] = useState("");
-  const [passwordConfirmMessage, setPasswordConfirmMessage] = useState("");
+  // const [passwordConfirmMessage, setPasswordConfirmMessage] = useState("");
 
   const onChangeName = useCallback((e) => {
     setName(e.target.value);
     if (e.target.value.length < 2 || e.target.value.length > 5) {
-      setNameMessage("2글자 이상 5글자 미만으로 입력해주세요.");
+      setNameMessage("2글자 이상 5글자 이하로 입력해주세요.");
       setIsName(false);
       setName("");
     } else {
@@ -103,7 +100,6 @@ const LoginPage = () => {
       setIsPassword(true);
       setPassword(e.target.value);
     }
-    console.log();
   }, []);
 
   const socialLoginHandler = (event, type) => {
@@ -147,7 +143,7 @@ const LoginPage = () => {
     signInWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
         // Signed in
-        localStorage.setItem('email', userCredential.user.auth.config)
+        localStorage.setItem("email", userCredential.user.auth.config);
         console.log(userCredential);
         console.log(userCredential.user.auth.config.apiKey);
         const user = userCredential.user;
@@ -196,14 +192,7 @@ const LoginPage = () => {
     <section className={classes["login-area"]}>
       <div className={classes["login-box"]}>
         <div className={classes["login-box-title"]}>
-          <div className={classes["back"]}>
-            <Link to="/start">
-              <FontAwesomeIcon icon={faArrowLeft} />
-            </Link>
-          </div>
-          <div className={classes["title"]}>
-            <span>{creatingUser ? "회원 가입" : "로그인"}</span>
-          </div>
+          <span>{creatingUser ? "회원 가입" : "로그인"}</span>
         </div>
         <form
           className={classes["login-form"]}
@@ -248,18 +237,13 @@ const LoginPage = () => {
               {passwordMessage}
             </p>
           </div>
-          <div className={classes["form-button"]}>
-            {creatingUser ? (
-              <button
-                type="button"
-                onClick={() => createAccount(name, email, password)}
-              >
-                계정 생성
-              </button>
-            ) : (
-              <button type="submit">확인</button>
-            )}
-          </div>
+          <button
+            className={classes["form-button"]}
+            type="submit"
+            onClick={() => creatingUser && createAccount(name, email, password)}
+          >
+            {creatingUser ? "계정 생성" : "확인"}
+          </button>
           <span>소셜 로그인</span>
           <div className={classes["social-login-area"]}>
             <img
@@ -285,9 +269,9 @@ const LoginPage = () => {
                 ? "이미 계정이 있으신가요?"
                 : "아직 회원이 아니신가요?"}
             </span>
-            <button type="button" onClick={toggleButtonHandler}>
+            <div className={classes['change-button']} onClick={toggleButtonHandler}>
               {creatingUser ? "로그인" : "회원 가입"}
-            </button>
+            </div>
           </div>
         </form>
       </div>
@@ -296,3 +280,4 @@ const LoginPage = () => {
 };
 
 export default LoginPage;
+

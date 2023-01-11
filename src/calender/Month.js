@@ -1,5 +1,5 @@
+import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { monthActions } from "../store/month-slice";
 import { auth } from "../Auth/firebase";
 import { signOut } from "firebase/auth";
 import Calender from "./Calender";
@@ -9,19 +9,37 @@ import { faAngleLeft, faAngleRight } from "@fortawesome/free-solid-svg-icons";
 import { NavLink } from "react-router-dom";
 import { modalActions } from "../store/modal-slice";
 
+const newDate = new Date();
+
 const Month = () => {
   console.log("month");
-  const dispatch = useDispatch();
+  console.log(localStorage.getItem("email"))
+  const dispatch =  useDispatch();
 
-  const monthInfo = useSelector((state) => state.month);
+  const [year, setYear] = useState(newDate.getFullYear());
+  const [month, setMonth] = useState(newDate.getMonth());
+
+  const firstDay = new Date(year, month, 1).getDay();
+  const lastDate = new Date(year, month + 1, 0).getDate();
+
   const scheduleInfo = useSelector((state) => state.modal.userSchedule);
-
+  
   const movePrevMonthHandler = () => {
-    dispatch(monthActions.prevMonth());
+    if (month === 0) {
+      setYear(year - 1);
+      setMonth(11);
+      return;
+    }
+    setMonth(month - 1);
   };
 
   const moveNextMonthHandler = () => {
-    dispatch(monthActions.nextMonth());
+    if (month === 11) {
+      setYear(year + 1);
+      setMonth(0);
+      return;
+    }
+    setMonth(month + 1);
   };
 
   const logoutHandler = () => {
@@ -47,7 +65,7 @@ const Month = () => {
             <FontAwesomeIcon icon={faAngleLeft} />
           </button>
           <span>
-            {monthInfo.year}년 {monthInfo.month + 1}월
+            {year}년 {month + 1}월
           </span>
           <button onClick={moveNextMonthHandler}>
             <FontAwesomeIcon icon={faAngleRight} />
@@ -60,10 +78,10 @@ const Month = () => {
         </div>
       </header>
       <Calender
-        year={monthInfo.year}
-        month={monthInfo.month + 1}
-        firstDay={monthInfo.firstDay}
-        lastDate={monthInfo.lastDate}
+        year={year}
+        month={month + 1}
+        firstDay={firstDay}
+        lastDate={lastDate}
         scheduleInfo={scheduleInfo}
       />
     </div>

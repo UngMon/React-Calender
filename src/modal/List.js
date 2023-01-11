@@ -18,7 +18,6 @@ import ColorBox from "../library/ColorBox";
 
 const List = ({ viewRef, listRef, allListRef }) => {
   const dispatch = useDispatch();
-  console.log('list.js')
 
   const listState = useSelector((state) => state.list);
   const modalState = useSelector((state) => state.modal);
@@ -40,7 +39,7 @@ const List = ({ viewRef, listRef, allListRef }) => {
   const [editArea, setEditArea] = useState(false);
   const [color, setColor] = useState(listInfo.color);
   const [openColor, setOpenColor] = useState(false);
-  const [width, setWidth] = useState('');
+  const [size, setSize] = useState(["", ""]);
 
   const modalRef = useRef();
   const clickedListRef = useRef();
@@ -51,16 +50,16 @@ const List = ({ viewRef, listRef, allListRef }) => {
   const timeTwoRef = useRef();
 
   useEffect(() => {
-    setWidth(viewRef.current.clientWidth);
+    setSize([viewRef.current.clientWidth, viewRef.current.clientHeight]);
   }, [viewRef]);
 
   const widthCalculator = useCallback(() => {
-    setWidth(viewRef.current.clientWidth);
-  }, [viewRef])
+    setSize([viewRef.current.clientWidth, viewRef.current.clientHeight]);
+  }, [viewRef]);
 
   useEffect(() => {
-    window.addEventListener('resize', widthCalculator)
-  })
+    window.addEventListener("resize", widthCalculator);
+  });
 
   const comparison = comparisonHandler(startDate, endDate);
 
@@ -86,17 +85,22 @@ const List = ({ viewRef, listRef, allListRef }) => {
     }
 
     if (!modalRef.current.contains(e.target)) {
-      // console.log(listRef.current);
       for (const key in listRef.current) {
-        console.log(listRef.current[key].contains(e.target));
+        if (listRef.current[key] === null) {
+          continue;
+        }
+
         if (listRef.current[key].contains(e.target)) {
           clickedListRef.current = e.target;
-          // console.log(e.target);
           return;
         }
       }
 
       for (const key in allListRef.current) {
+        if (allListRef.current[key] === null) {
+          continue;
+        }
+
         if (allListRef.current[key].contains(e.target)) {
           clickedListRef.current = e.target;
           setTimeout(() => {
@@ -108,7 +112,6 @@ const List = ({ viewRef, listRef, allListRef }) => {
       }
 
       setTimeout(() => {
-        // console.log(`here?`);
         dispatch(listActions.offModal());
         dispatch(modalActions.offModal());
         dispatch(timeActions.resetTime());
@@ -234,15 +237,21 @@ const List = ({ viewRef, listRef, allListRef }) => {
   const styleClass =
     schedule[index].todo[listIndex].style && !editArea && "done";
 
+    const marginSize =
+    size[0] !== ""
+      ? ModalPosition(listState.dayIndex, listState.week, size)
+      : false;
+
   return (
     <div
-      className={`list-box ${ModalPosition(
-        listState.dayIndex,
-        listState.week,
-        viewRef
-      )} ${editArea ? 'edit' : ''}`}
+      className={`list-box ${editArea ? "edit" : ""}`}
       ref={modalRef}
-      style={{marginLeft: '100px'}}
+      style={{
+        // 마운트시에 width 가 ''이므로 display none
+        display: `${!marginSize ? "none" : "block"}`,
+        marginLeft: `${marginSize && marginSize[0]}px`,
+        marginTop: `${marginSize && marginSize[1]}px`,
+      }}
     >
       <div className="option-box">
         <div

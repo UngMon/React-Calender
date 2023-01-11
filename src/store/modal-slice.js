@@ -129,6 +129,10 @@ const modalSlice = createSlice({
       // state.endDate = "";
     },
 
+    onModal(state) {
+      state.isVisible = true;
+    },
+
     offModal(state) {
       state.isVisible = false;
       state.startDate = '';
@@ -141,7 +145,10 @@ const modalSlice = createSlice({
     },
 
     clickedStartDate(state, action) {
-      state.isVisible = true;
+      if (action.payload.type === 'add') {
+        state.isVisible = true;
+      }
+      
       state.startDate = action.payload.idx;
       state.week = action.payload.week;
 

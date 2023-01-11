@@ -15,7 +15,6 @@
   margin: 0 auto;
   display: flex;
   justify-content: space-between;
-  font-size: 16px;
 }
 
 .header-name {
@@ -23,10 +22,10 @@
   padding: 8px;
   height: 62px;
   line-height: 48px;
+  font-size: 16px;
 }
 
 .header-name span{
-  font-size: 1.1em;
   font-weight: 600;
 }
 
@@ -37,7 +36,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  font-size: 1.2em;
+  font-size: 16px;
   font-weight: 600;
 }
 
@@ -49,7 +48,7 @@
   width: 24px;
   height: 24px;
   border: 0;
-  font-size: 1.1em;
+  font-size: 16px;
   background-color: transparent;
 }
 
@@ -60,14 +59,14 @@
 
 .header-Logout {
   box-sizing: border-box;
-  height: 64px;
+  height: 62px;
   padding: 8px;
   line-height: 48px;
 }
 
 .Logout {
   color: black;
-  font-size: 1.2em;
+  font-size: 16px;
   font-weight: bold;
   text-decoration: none;
 }
@@ -81,16 +80,64 @@
   .month-area {
     font-size: 1.3em;
   }
-}
-
-@media screen and (max-width: 980px) {
-  .header {
-    height: 45px;
-  }
-}
-
-@media screen and (max-width: 980px) {
-  .calender-view {
-    height: 93%;
-  }
 } */
+
+@media screen and (max-width: 400px) {
+  .header-name {
+    font-size: 12px;
+  }
+  .select-month {
+    font-size: 12px;
+  }
+
+  .select-month button {
+    font-size: 12px;
+  }
+  .Logout {
+    font-size: 12px;
+  }
+}
+
+@media screen and (max-width: 300px) {
+  .header-name {
+    display: none;
+  }
+
+  .select-month {
+    margin-left: 30px;
+  }
+
+  .select-month span {
+    margin: 0 10px;
+    font-size: 14px;
+  }
+
+  .select-month button {
+    width: 14px;
+    font-size: 14px;
+  }
+
+  .header-Logout {
+    line-height: 42px;
+  }
+}
+
+@media screen and (max-width: 230px) {
+  .select-month {
+    margin: 0;
+  }
+
+  .select-month span {
+    margin: 0 5px;
+    font-size: 10px;
+  }
+
+  .select-month button {
+    width: 10px;
+    font-size: 10px;
+  }
+
+  .Logout {
+    font-size: 10px;
+  }
+}

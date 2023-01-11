@@ -29,6 +29,10 @@ const AllList = ({ listRef, allListRef }) => {
 
     if (allModal.isVisible && !modalRef.current.contains(e.target)) {
       for (const key in listRef.current) {
+        if (listRef.current[key] === null) {
+          continue;
+        }
+
         if (listRef.current[key].contains(e.target)) {
           clickedAllListRef.current = listRef.current[key];
           setTimeout(() => {
@@ -40,6 +44,10 @@ const AllList = ({ listRef, allListRef }) => {
       }
 
       for (const key in allListRef.current) {
+        if (allListRef.current[key] === null) {
+          continue;
+        }
+
         if (allListRef.current[key].contains(e.target)) {
           clickedAllListRef.current = allListRef.current[key];
           return;

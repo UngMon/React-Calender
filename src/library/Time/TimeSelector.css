@@ -119,10 +119,8 @@ input::placeholder { font-size: 0.7rem; }
 .time-area-date .date-area {
   position: absolute;
   margin: 0 auto;
-  top: 90%;
+  top: 110%;
   left: -30%;
-  width: 90%;
-  max-height: 90%;
 }
 
 .start_date {

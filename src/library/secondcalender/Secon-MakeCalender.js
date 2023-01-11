@@ -13,10 +13,10 @@ const MakeCaledner = ({
   identify,
   type,
   dateRef,
-  dateClose
+  dateClose,
 }) => {
-  console.log('second')
-  console.log(dateRef.current)
+  console.log("second");
+  console.log(dateRef.current);
   const dispatch = useDispatch();
 
   const modalState = useSelector((state) => state.modal);
@@ -40,8 +40,10 @@ const MakeCaledner = ({
     if (type) {
       const 마지막날 = modalState.endDate.split("-");
       const longArr = MakeLongArr(날짜정보, 마지막날);
-      console.log(dayIndex);
-      dispatch(modalActions.clickedStartDate({ idx, dayIndex, week, longArr }));
+      const type = "second";
+      dispatch(
+        modalActions.clickedStartDate({ type, idx, dayIndex, week, longArr })
+      );
     } else {
       // 두 번째 미니 달력 선택의 경우...
       const 시작날 = modalState.startDate.split("-");
@@ -177,7 +179,7 @@ const MakeCaledner = ({
         key={i}
         className={classes["week-box"]}
         weekindex={i}
-        ref={(el) => (dateRef.current[i+3] = el)}
+        ref={(el) => (dateRef.current[i + 3] = el)}
       >
         {makeDay(i)}
       </tr>

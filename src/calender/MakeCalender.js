@@ -30,7 +30,7 @@ const MakeCaledner = ({
   const modalVisible = modalState.isVisible;
 
   useEffect(() => {
-    // 컴포넌트의 return 실행 후, state에 값을 저장후 랜더링 
+    // 컴포넌트의 return 실행 후, state에 값을 저장후 랜더링
     setHeight(
       Math.floor((viewRef.current.clientHeight - 26 - 24 * week) / (24 * week))
     );
@@ -131,7 +131,6 @@ const MakeCaledner = ({
       }
       todoCount += 1;
     }
-
     ///////////////////////////////////////////////////////
     return array[dayIdx].map((item, idx) =>
       !item.isMiddle && isNaN(item) ? (
@@ -149,7 +148,6 @@ const MakeCaledner = ({
             }}
             onClick={(event) => {
               event.stopPropagation();
-              console.log(listState.isVisible);
               listClickHandler(
                 week,
                 dayIdx,
@@ -159,14 +157,16 @@ const MakeCaledner = ({
                 item.key // key
               );
             }}
-            ref={(el) => (listRef.current[`${date}${item.key}`] = el)}
+            ref={(el) => {
+              listRef.current[`${date}${item.key}`] = el;
+            }}
           >
             {!item.isLong && (
               <div className={`${item.color} ${classes["color-bar"]}`}></div>
             )}
             <div
               key={idx}
-              className={`${classes.list} ${item.style && classes.done} ${
+              className={`${classes.list} ${
                 item.isLong && `${classes.long} ${item.color}`
               }`}
               style={{
@@ -177,7 +177,20 @@ const MakeCaledner = ({
               }}
               dayindex={dayIdx}
             >
-              {item.startTime + " " + item.title}
+              <div
+                className={`${classes["type-one"]}  ${
+                  item.style && classes.done
+                }`}
+              >
+                {item.startTime + " " + item.title}
+              </div>
+              <div
+                className={`${classes["type-two"]} ${
+                  item.style && classes.done
+                }`}
+              >
+                {" " + item.title}
+              </div>
             </div>
           </div>
         ) : (
@@ -213,8 +226,9 @@ const MakeCaledner = ({
   };
 
   const addClickHandler = (idx, dayIndex, week) => {
+    const type = "add";
     if (!modalVisible) {
-      dispatch(modalActions.clickedStartDate({ idx, dayIndex, week }));
+      dispatch(modalActions.clickedStartDate({ type, idx, dayIndex, week }));
     }
   };
 
@@ -284,14 +298,27 @@ const MakeCaledner = ({
             >
               <div className={classes.date}>
                 <h2
-                  className={`${identify === idx && classes.Today} ${
+                  className={`${classes["date-month"]} ${
+                    identify === idx && classes.Today
+                  } ${
                     identify !== idx && dayIdx === 1
                       ? classes.sunday
                       : dayIdx === 7 && classes.saturday
                   }`}
                 >
-                  {nowDate}
+                  {nowDate === 1 ? `${month}월` : nowDate}
                 </h2>
+                {nowDate === 1 && (
+                  <h2
+                    className={`${
+                      identify !== idx && dayIdx === 1
+                        ? classes.sunday
+                        : dayIdx === 7 && classes.saturday
+                    }`}
+                  >
+                    <span>&nbsp;</span>1일
+                  </h2>
+                )}
               </div>
               <div className={classes["list-box"]}>
                 <div className={classes["list-area"]}>
@@ -359,14 +386,31 @@ const MakeCaledner = ({
             >
               <div className={classes.date}>
                 <h2
-                  className={`${identify === idx && classes.Today} ${
+                  className={`${classes["date-month"]} ${
+                    identify === idx && classes.Today
+                  } ${
                     identify !== idx && dayIdx === 1
                       ? classes.sunday
                       : dayIdx === 7 && classes.saturday
                   }`}
                 >
-                  {nowDate}
+                  {nowDate === 1
+                    ? month === 12
+                      ? "1월"
+                      : `${month + 1}월`
+                    : nowDate}
                 </h2>
+                {nowDate === 1 && (
+                  <h2
+                    className={`${
+                      identify !== idx && dayIdx === 1
+                        ? classes.sunday
+                        : dayIdx === 7 && classes.saturday
+                    }`}
+                  >
+                    1일
+                  </h2>
+                )}
               </div>
               <div className={classes["list-box"]}>
                 <div className={classes["list-area"]}>

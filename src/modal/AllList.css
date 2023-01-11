@@ -46,8 +46,7 @@
 .AllList-box {
   width: 230px;
   height: 135px;
-  overflow-y: scroll;
-  overflow-x: hidden;
+  overflow-y: auto;
 }
 
 .AllList-item {
@@ -187,11 +186,11 @@
 }
 
 .all-day-4 {
-  right: 41%;
+  right: 45%;
 }
 
 .all-day-5 {
-  right: 27%;
+  right: 30%;
 }
 
 .all-day-6 {
@@ -203,25 +202,25 @@
 }
 
 .all-week-1 {
-  top: 15%;
+  margin-top: 15%;
 }
 
 .all-week-2 {
-  top: 25%;
+  top: 20%;
 }
 
 .all-week-3 {
-  top: 40%;
+  top: 35%;
 }
 
 .all-week-4 {
-  top: 50%;
+  top: 40%;
 }
 
 .all-week-5 {
-  top: 60%;
+  top: 45%;
 }
 
 .all-week-6 {
-  top: 70;
+  top: 50%;
 }

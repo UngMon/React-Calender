@@ -22,7 +22,7 @@ const AddEvent = ({ viewRef }) => {
 
   const [color, setColor] = useState("라벤더");
   const [openColor, setOpenColor] = useState(false);
-  const [width, setWidth] = useState("");
+  const [size, setSize] = useState(["", ""]);
 
   const startDate = modalState.startDate;
   const endDate = modalState.endDate;
@@ -35,11 +35,11 @@ const AddEvent = ({ viewRef }) => {
   const timeTwoRef = useRef();
 
   useEffect(() => {
-    setWidth(viewRef.current.clientWidth);
+    setSize([viewRef.current.clientWidth, viewRef.current.clientHeight]);
   }, [viewRef]);
 
   const widthCalculator = useCallback(() => {
-    setWidth(viewRef.current.clientWidth);
+    setSize([viewRef.current.clientWidth, viewRef.current.clientHeight]);
   }, [viewRef]);
 
   useEffect(() => {
@@ -144,18 +144,26 @@ const AddEvent = ({ viewRef }) => {
     dispatch(modalActions.offModal());
     dispatch(timeActions.resetTime());
   };
-
+ // 여기는 size의 크기에 따라서 modalposition에서 값을 정해보자
+ // 내 말은 size > 425일때 이후의 과정 or media에서 정의한 사이즈 그대로 받아올것인지.
+  const marginSize =
+    size[0] !== ""
+      ? size[0] > 425 ? ModalPosition(modalState.dayIndex, modalState.week, size)
+      : ['', ''] : false;
+  console.log(size[0])
+  console.log(marginSize);
+  console.log(marginSize[0]);
+  console.log(marginSize[1]);
   return (
     <form
       className={`addModal`}
       onSubmit={listSubmitHandler}
       ref={modalRef}
       style={{
-        marginLeft: `${ModalPosition(
-          modalState.dayIndex,
-          modalState.week,
-          width
-        )}px`,
+        // 마운트시에 width 가 ''이므로 display none
+        display: `${!marginSize ? "none" : "block"}`,
+        marginLeft: `${marginSize && marginSize[0]}px`,
+        marginTop: `${marginSize && marginSize[1]}px`,
       }}
     >
       <div className="add-modal-name">일정 추가</div>

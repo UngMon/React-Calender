@@ -44,7 +44,7 @@ const Month = ({ type, year, month, dateRef, dateClose }) => {
         >
           <FontAwesomeIcon
             icon={faAngleLeft}
-            style={{ backgroundColor: "white" }}
+            style={{ backgroundColor: "transparent" }}
           />
         </button>
         <button
@@ -54,7 +54,7 @@ const Month = ({ type, year, month, dateRef, dateClose }) => {
         >
           <FontAwesomeIcon
             icon={faAngleRight}
-            style={{ backgroundColor: "white" }}
+            style={{ backgroundColor: "transparent" }}
           />
         </button>
       </div>
