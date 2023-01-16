@@ -253,10 +253,7 @@ const MakeCaledner = ({
             <td
               key={idx}
               onClick={() => {
-                console.log(listState.isVisible);
-                if (!listState.isVisible) {
-                  addClickHandler(idx, dayIdx, week);
-                }
+                addClickHandler(idx, dayIdx, week);
               }}
               className={classes.date_box}
               day-index={dayIdx}

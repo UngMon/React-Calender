@@ -1,6 +1,6 @@
 const MakeLongArr = (startInfo, endInfo) => {
   const idxArr = [];
-
+  console.log(startInfo)
   const firstYear = startInfo[0];
   const firstMonth = startInfo[1];
   const firstDate = startInfo[2];
@@ -47,6 +47,8 @@ const MakeLongArr = (startInfo, endInfo) => {
   if (+firstYear < +secondYear) {
     let k;
     for (let y = +firstYear; y <= +secondYear; y++) {
+      console.log(firstYear)
+      console.log(secondYear)
       console.log(y);
       if (y === +firstYear) {
         for (let m = +firstMonth; m <= 12; m++) {

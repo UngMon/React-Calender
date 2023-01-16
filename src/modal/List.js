@@ -237,7 +237,7 @@ const List = ({ viewRef, listRef, allListRef }) => {
   const styleClass =
     schedule[index].todo[listIndex].style && !editArea && "done";
 
-    const marginSize =
+  const marginSize =
     size[0] !== ""
       ? ModalPosition(listState.dayIndex, listState.week, size)
       : false;
@@ -303,7 +303,7 @@ const List = ({ viewRef, listRef, allListRef }) => {
             setOpenColor={setOpenColor}
             colorRef={colorRef}
           />
-          <div className="buttonBox">
+          <div className="edit-button-box">
             <button type="submit">저장</button>
           </div>
         </form>
@@ -317,13 +317,15 @@ const List = ({ viewRef, listRef, allListRef }) => {
             </div>
           </div>
           <div className="list-time">
-            <div>{`${dateArray[0]}년 ${dateArray[1]}월 ${dateArray[2]}일`}</div>
-            <span>&nbsp;</span>
-            <div>{schedule[index].todo[listIndex].startTime}</div>
-            <span>&nbsp;&nbsp;</span>
-            <span>~</span>
-            <span>&nbsp;&nbsp;</span>
-            <div style={{ display: dateArray.length === 3 && "none" }}>
+            <div className="time-item">{`${dateArray[0]}년 ${dateArray[1]}월 ${dateArray[2]}일`}</div>
+            <div className="time-item">
+              {schedule[index].todo[listIndex].startTime}
+            </div>
+            <span className="time-item">~</span>
+            <div
+              className="time-item"
+              style={{ display: dateArray.length === 3 && "none" }}
+            >
               {`${
                 dateArray.length < 4
                   ? "" // startDate === endDate
@@ -335,8 +337,9 @@ const List = ({ viewRef, listRef, allListRef }) => {
               }
               `}
             </div>
-            <span>&nbsp;</span>
-            <div>{schedule[index].todo[listIndex].endTime}</div>
+            <div className="time-item">
+              {schedule[index].todo[listIndex].endTime}
+            </div>
           </div>
         </div>
       )}

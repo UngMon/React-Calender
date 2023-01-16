@@ -22,7 +22,7 @@ const AddEvent = ({ viewRef }) => {
 
   const [color, setColor] = useState("라벤더");
   const [openColor, setOpenColor] = useState(false);
-  const [size, setSize] = useState(["", ""]);
+  const [size, setSize] = useState(["", "", '']);
 
   const startDate = modalState.startDate;
   const endDate = modalState.endDate;
@@ -144,16 +144,19 @@ const AddEvent = ({ viewRef }) => {
     dispatch(modalActions.offModal());
     dispatch(timeActions.resetTime());
   };
- // 여기는 size의 크기에 따라서 modalposition에서 값을 정해보자
- // 내 말은 size > 425일때 이후의 과정 or media에서 정의한 사이즈 그대로 받아올것인지.
+  // 여기는 size의 크기에 따라서 modalposition에서 값을 정해보자
+  // 내 말은 size > 425일때 이후의 과정 or media에서 정의한 사이즈 그대로 받아올것인지.
+  console.log(size);
   const marginSize =
     size[0] !== ""
-      ? size[0] > 425 ? ModalPosition(modalState.dayIndex, modalState.week, size)
-      : ['', ''] : false;
-  console.log(size[0])
+      ? ModalPosition(
+          modalState.dayIndex,
+          modalState.week,
+          size
+        )
+      : false;
   console.log(marginSize);
-  console.log(marginSize[0]);
-  console.log(marginSize[1]);
+
   return (
     <form
       className={`addModal`}

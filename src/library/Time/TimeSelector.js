@@ -106,7 +106,7 @@ const TimeSelector = ({
     let boolean = true;
 
     if (timeOneRef.current.contains(e.target)) {
-      console.log('timeOnRef')
+      console.log("timeOnRef");
       dispatch(timeActions.firstTimetoggle());
       if (timeTwoVisible) {
         dispatch(timeActions.lastTimetoggle());
@@ -115,7 +115,7 @@ const TimeSelector = ({
     }
 
     if (timeTwoRef.current.contains(e.target)) {
-      console.log('timetwoRef')
+      console.log("timetwoRef");
       dispatch(timeActions.lastTimetoggle());
       if (timeOneVisible) {
         dispatch(timeActions.firstTimetoggle());
@@ -140,7 +140,7 @@ const TimeSelector = ({
     }
 
     if (!boolean) {
-      console.log('!boolean')
+      console.log("!boolean");
       setTimeout(() => {
         dispatch(timeActions.timeToggle());
       }, 120);
@@ -148,7 +148,7 @@ const TimeSelector = ({
   };
 
   useEffect(() => {
-    console.log('timeEffect')
+    console.log("timeEffect");
     document.addEventListener("mousedown", timePickerCloseHandler);
     return () => {
       document.removeEventListener("mousedown", timePickerCloseHandler);
@@ -156,90 +156,92 @@ const TimeSelector = ({
   });
 
   return (
-    <div className="time-date-box">
+    <div className="time-container">
       <img src="img/clock.png" alt="clock" width="19" className="clock-icon" />
-      <div className="time-area-date">
-        <div ref={(el) => (dateRef.current[0] = el)}>
-          {comparison !== 1 && (
-            <span onClick={startDateOpenHandler}>
-              {시작날[1] + "월 " + 시작날[2] + "일"}
-            </span>
-          )}
-          {comparison === 1 && (
-            <span onClick={startDateOpenHandler}>
-              {시작날[0] + "년" + 시작날[1] + "월" + 시작날[2] + "일"}
-            </span>
-          )}
-        </div>
+      <div className="time-box">
         <div className="date-area">
-          {fristDateIsVisible && (
-            <Month
-              type={true}
-              year={시작날[0]}
-              month={시작날[1]}
-              dateRef={dateRef}
-              dateClose={startDateOpenHandler}
+          <div ref={(el) => (dateRef.current[0] = el)}>
+            {comparison !== 1 && (
+              <span onClick={startDateOpenHandler}>
+                {시작날[1] + "월 " + 시작날[2] + "일"}
+              </span>
+            )}
+            {comparison === 1 && (
+              <span onClick={startDateOpenHandler}>
+                {시작날[0] + "년" + 시작날[1] + "월" + 시작날[2] + "일"}
+              </span>
+            )}
+          </div>
+          <div className="second-calender">
+            {fristDateIsVisible && (
+              <Month
+                type={true}
+                year={시작날[0]}
+                month={시작날[1]}
+                dateRef={dateRef}
+                dateClose={startDateOpenHandler}
+              />
+            )}
+          </div>
+        </div>
+        <div className="time-one">
+          <input
+            type="text"
+            placeholder={timeState.firstTime || firstTime}
+            ref={timeOneRef}
+          />
+          {timeState.firstIsVisible && (
+            <TimeBox
+              timeOneRef={timeOneRef}
+              OneRef={OneRef}
+              timeVisible={timeOneVisible}
+              timeRef={timeRef}
             />
           )}
         </div>
-      </div>
-      <div className="time-one">
-        <input
-          type="text"
-          placeholder={timeState.firstTime || firstTime}
-          ref={timeOneRef}
-        />
-        {timeState.firstIsVisible && (
-          <TimeBox
-            timeOneRef={timeOneRef}
-            OneRef={OneRef}
-            timeVisible={timeOneVisible}
-            timeRef={timeRef}
-          />
-        )}
-      </div>
-      <div className="time-area-span">
-        <span>~</span>
-      </div>
-      <div className="time-area-date">
-        <div ref={(el) => (dateRef.current[1] = el)}>
-          {comparison !== 1 && (
-            <span onClick={endDateOpenHandler}>
-              {마지막날[1] + "월 " + 마지막날[2] + "일"}
-            </span>
-          )}
-          {comparison === 1 && (
-            <span onClick={endDateOpenHandler}>
-              {마지막날[0] + "년" + 마지막날[1] + "월" + 마지막날[2] + "일"}
-            </span>
-          )}
+        <div className="time-box-span">
+          <span>~</span>
         </div>
         <div className="date-area">
-          {lastDateIsVisible && (
-            <Month
-              type={false}
-              year={마지막날[0]}
-              month={마지막날[1]}
-              dateRef={dateRef}
-              dateClose={endDateOpenHandler}
+          <div ref={(el) => (dateRef.current[1] = el)}>
+            {comparison !== 1 && (
+              <span onClick={endDateOpenHandler}>
+                {마지막날[1] + "월 " + 마지막날[2] + "일"}
+              </span>
+            )}
+            {comparison === 1 && (
+              <span onClick={endDateOpenHandler}>
+                {마지막날[0] + "년" + 마지막날[1] + "월" + 마지막날[2] + "일"}
+              </span>
+            )}
+          </div>
+          <div className="second-calender">
+            {lastDateIsVisible && (
+              <Month
+                type={false}
+                year={마지막날[0]}
+                month={마지막날[1]}
+                dateRef={dateRef}
+                dateClose={endDateOpenHandler}
+              />
+            )}
+          </div>
+        </div>
+        <div className="time-two">
+          <input
+            type="text"
+            placeholder={timeState.lastTime || lastTime}
+            ref={timeTwoRef}
+          />
+          {timeState.lastIsVisible && (
+            <TimeBoxTwo
+              timeTwoRef={timeTwoRef}
+              TwoRef={TwoRef}
+              timeVisible={timeTwoVisible}
+              timeRef={timeRef}
             />
           )}
         </div>
-      </div>
-      <div className="time-two">
-        <input
-          type="text"
-          placeholder={timeState.lastTime || lastTime}
-          ref={timeTwoRef}
-        />
-        {timeState.lastIsVisible && (
-          <TimeBoxTwo
-            timeTwoRef={timeTwoRef}
-            TwoRef={TwoRef}
-            timeVisible={timeTwoVisible}
-            timeRef={timeRef}
-          />
-        )}
       </div>
     </div>
   );

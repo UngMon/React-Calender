@@ -170,6 +170,9 @@
   padding-left: 4px;
   font-size: 12px;
   line-height: 24px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .listIndex-1 {
@@ -200,20 +203,17 @@
 
 .modal-container {
   position: absolute;
-  z-index: 10;
   top: 0;
   left: 0;
-  width: 100%;
-  height: 100%;
+  z-index: 10;
+  display: flex;
 }
 
 @media screen and (max-width: 800px) {
   .color-bar {
     display: none;
   }
-  .list {
-    padding-left: 0;
-  }
+
   .type-one {
     display: none;
   }
@@ -232,7 +232,11 @@
     font-size: 4px;
   }
 
-  .list-div {
+  .list {
+    font-size: 8px;
+  }
+
+  .list-more {
     font-size: 8px;
   }
 }

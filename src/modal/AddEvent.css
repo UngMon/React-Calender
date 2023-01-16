@@ -22,7 +22,7 @@
 .inputArea {
   width: 90%;
   height: 22px;
-  margin: 40px 0 0 24px;
+  margin: 40px 0 0 20px;
   text-align: center;
   display: flex;
   align-items: center;
@@ -116,8 +116,18 @@
   top: 60%;
 }
 
-@media all and (max-width: 420px) {
+@media screen and (max-width: 425px) {
   .addModal {
-    width: calc(100% * 4 / 5);
+    width: 300px;
+  }
+
+  .inputArea input{
+    font-size: 10px;
+  }
+}
+
+@media screen and (max-width: 325px) {
+  .addModal {
+    width: 250px;
   }
 }

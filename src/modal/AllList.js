@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { allListActions } from "../store/all-list-slice";
 import "./AllList.css";
@@ -7,19 +7,18 @@ import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import { modalActions } from "../store/modal-slice";
 import { listActions } from "../store/list-slice";
 
-const AllList = ({ listRef, allListRef }) => {
+const AllList = ({ viewRef, listRef, allListRef }) => {
   const dispatch = useDispatch();
 
   const schedule = useSelector((state) => state.modal.userSchedule.schedule);
+  const listIsVisible = useSelector((state) => state.list.isVisible);
   const allModal = useSelector((state) => state.all);
 
+  const [size, setSize] = useState([0, 0]);
   const modalRef = useRef();
   const clickedAllListRef = useRef();
 
   const addModalCloseHandler = (e) => {
-    console.log(clickedAllListRef);
-    console.log(e.target);
-
     if (clickedAllListRef.current === e.target) {
       setTimeout(() => {
         dispatch(allListActions.offModal());
@@ -36,7 +35,6 @@ const AllList = ({ listRef, allListRef }) => {
         if (listRef.current[key].contains(e.target)) {
           clickedAllListRef.current = listRef.current[key];
           setTimeout(() => {
-            console.log(`?????`);
             dispatch(allListActions.offModal());
           }, 50);
           return;
@@ -54,13 +52,24 @@ const AllList = ({ listRef, allListRef }) => {
         }
       }
       setTimeout(() => {
-        console.log('그냥꺼지나')
         dispatch(allListActions.offModal());
-        dispatch(modalActions.offModal());
+        if (!listIsVisible) dispatch(modalActions.offModal());
       }, 90);
       return;
     }
   };
+
+  useEffect(() => {
+    setSize([viewRef.current.clientWidth, viewRef.current.clientHeight]);
+  }, [viewRef]);
+
+  const widthCalculator = useCallback(() => {
+    setSize([viewRef.current.clientWidth, viewRef.current.clientHeight]);
+  }, [viewRef]);
+
+  useEffect(() => {
+    window.addEventListener("resize", widthCalculator);
+  });
 
   useEffect(() => {
     document.addEventListener("mousedown", addModalCloseHandler);
@@ -112,14 +121,16 @@ const AllList = ({ listRef, allListRef }) => {
                   ? "183px"
                   : "174px"
                 : item.isStart
-                ? item.isEnd ? '174px' : '183px'
+                ? item.isEnd
+                  ? "174px"
+                  : "183px"
                 : item.isEnd && "183px"
             }`,
             borderRadius: `3px`,
             marginLeft: `${
               item.isShort ? "0px" : item.isLong && !item.isEnd ? "0px" : "9px"
             }`,
-            textDecoration: `${item.style && 'line-through'}`
+            textDecoration: `${item.style && "line-through"}`,
           }}
         >
           {item.title}
@@ -151,10 +162,55 @@ const AllList = ({ listRef, allListRef }) => {
       : "토";
   };
 
+  const modalPosition = useCallback((day, week, size) => {
+    if (size[0] === 0) return;
+
+    const width = size[0];
+    const height = size[1];
+
+    const array = [0, 0];
+
+    if (day === 1) array[0] = (width * (day - 1)) / 7;
+
+    if (day === 2) array[0] = (width * (day - 1)) / 7;
+
+    if (day === 3) array[0] = (width * (day - 1)) / 7;
+
+    if (day === 4) array[0] = width - 230 - (width * 3) / 7 + 60;
+
+    if (day === 5) array[0] = width - 230 - (width * 2) / 7 + 50;
+
+    if (day === 6) array[0] = width - 230 - width / 7 + 50;
+
+    if (day === 7) array[0] = width - 230 - 10;
+    ////////////////////////////////////////////////
+
+    if (week === 1) array[1] = 10;
+
+    if (week === 2) array[1] = (height * (week - 1)) / 6;
+
+    if (week === 3) array[1] = height - 240 - (height * 2) / 6;
+
+    if (week === 4) array[1] = height - 240 - height / 6;
+
+    if (week === 5) array[1] = height - 240;
+
+    if (week === 6) array[1] = height - 240;
+
+    return array;
+  }, []);
+
+  const marginPsition = modalPosition(allModal.day, allModal.week, size);
+
   return (
     <div
-      className={`AllList all-week-${allModal.week} all-day-${allModal.day}`}
+      className={`AllList`}
       ref={modalRef}
+      style={{
+        display: `${size[0] === 0 ? "none" : "block"}`,
+        marginLeft: `${size[0] !== 0 && marginPsition[0]}px`,
+        marginTop: `${size[0] !== 0 && marginPsition[1]}px`,
+      }}
     >
       <div className="AllList-header">
         <h2>{dayChangeHandler()}</h2>

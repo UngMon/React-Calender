@@ -32,9 +32,6 @@ const Calender = ({ year, month, firstDay, lastDate, scheduleInfo }) => {
   return (
     <main className={classes["calender-view"]} ref={viewRef}>
       <div className={classes.calender}>
-        {!addModal.isVisible && allListModal.isVisible && (
-          <AllList listRef={listRef} allListRef={allListRef} />
-        )}
         <table className={classes.table}>
           <thead className={classes.weekname}>
             <tr>
@@ -61,12 +58,23 @@ const Calender = ({ year, month, firstDay, lastDate, scheduleInfo }) => {
           </tbody>
         </table>
         <div className={classes["modal-container"]}>
-          {addModal.isVisible &&
-            !listModal.isVisible &&
-            !allListModal.isVisible && <AddEvent viewRef={viewRef} />}
+          {!addModal.isVisible && allListModal.isVisible && (
+            <AllList
+              viewRef={viewRef}
+              listRef={listRef}
+              allListRef={allListRef}
+            />
+          )}
+        </div>
+        <div className={classes["modal-container"]}>
           {!addModal.isVisible && listModal.isVisible && (
             <List viewRef={viewRef} listRef={listRef} allListRef={allListRef} />
           )}
+        </div>
+        <div className={classes["modal-container"]}>
+          {addModal.isVisible &&
+            !listModal.isVisible &&
+            !allListModal.isVisible && <AddEvent viewRef={viewRef} />}
         </div>
       </div>
     </main>

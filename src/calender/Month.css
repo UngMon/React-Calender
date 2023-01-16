@@ -76,12 +76,6 @@
   color: blue;
 }
 
-/* @media screen and (min-width: 1200px) {
-  .month-area {
-    font-size: 1.3em;
-  }
-} */
-
 @media screen and (max-width: 400px) {
   .header-name {
     font-size: 12px;

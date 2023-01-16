@@ -1,11 +1,12 @@
-.time-date-box {
+.time-container {
   width: 90%;
   height: 19px;
   background-color: white;
   margin: 50px 0 0 20px;
   display: flex;
-  align-content: center;
+  align-items: center;
   font-size: 14px;
+  position: relative;
 }
 
 .clock-icon {
@@ -13,29 +14,43 @@
   size: 14px;
 }
 
-.time-area-date {
+.time-box {
+  display: flex;
+  align-items: center;
+}
+
+.date-area {
   width: 60px;
   height: 19px;
-  position: relative;
   line-height: 19px;
   text-align: center;
 }
 
-.time-area-date span {
+.date-area span {
   display: inline-block;
   font-size: 12px;
 }
 
-.time-area-date:hover {
+.date-area:hover {
   cursor: pointer;
   background-color: rgb(242, 239, 239);
 }
 
 .time-one {
   position: relative;
+  box-sizing: border-box;
+  padding: 1px 1px;
   width: 72px;
   height: 100%;
   text-align: center;
+}
+
+.time-one input {
+  width: 57px;
+  height: 15px;
+  font-size: 12px;
+  text-align: center;
+  line-height: 15px;
 }
 
 .time-one input:hover {
@@ -43,21 +58,7 @@
   background-color: rgb(242, 239, 239);
 }
 
-.time-one input {
-  width: 57px;
-  height: 15px;
-  font-size: 11px;
-  text-align: center;
-  line-height: 15px;
-}
-
-input::-webkit-input-placeholder { font-size: 0.7rem; }
-input::-moz-placeholder { font-size: 0.7rem; }
-input:-ms-input-placeholder { font-size: 0.7rem; }
-input:-moz-placeholder { font-size: 0.7rem; }
-input::placeholder { font-size: 0.7rem; }
-
-.time-area-span {
+.time-box-span {
   display: inline-block;
   width: 24px;
   text-align: center;
@@ -66,6 +67,8 @@ input::placeholder { font-size: 0.7rem; }
 
 .time-two {
   position: relative;
+  box-sizing: border-box;
+  padding: 1px 1px;   
   width: 72px;
   height: 100%;
   text-align: center;
@@ -74,9 +77,8 @@ input::placeholder { font-size: 0.7rem; }
 .time-two input {
   width: 57px;
   height: 15px;
-  font-size: 11px;
+  font-size: 10px;
   text-align: center;
-  line-height: 15px;
 }
 
 .time-two input:hover {
@@ -110,17 +112,16 @@ input::placeholder { font-size: 0.7rem; }
   background-color: lightgray;
 }
 
-.time-date-box input::placeholder {
+.time-container input::placeholder {
   text-align: center;
   color: black;
   font-size: 11px;
 }
 
-.time-area-date .date-area {
+.second-calender {
   position: absolute;
-  margin: 0 auto;
   top: 110%;
-  left: -30%;
+  left: 10%;
 }
 
 .start_date {
@@ -132,4 +133,75 @@ input::placeholder { font-size: 0.7rem; }
   margin-left: 10%;
   max-width: 40%;
   height: 95%;
+}
+
+@media screen and (max-width: 425px) {
+  .time-area-date {
+    width: 45px;
+  }
+
+  .time-area-date span {
+    font-size: 10px;
+  }
+
+  .time-area-date .date-area {
+    left: -4%;
+  }
+
+  .time-one {
+    width: 56px;
+  }
+
+  .time-two {
+    width: 56px;
+  }
+
+  .time-one input {
+    width: 52px;
+    font-size: 8px
+  }
+
+  .time-one input::placeholder {
+    font-size: 8px;
+  }
+
+  .time-two input {
+    width: 52px;
+    font-size: 8px;
+    line-height: 14px;
+  }
+
+  .time-two input::placeholder {
+    font-size: 8px;
+  }
+}
+
+@media screen and (max-width: 425px) {
+  .time-container input::placeholder {
+    font-size: 4px;
+  }
+
+  .date-area {
+    width: 46px;
+    line-height: 16px;
+  }
+  
+  .date-area span{
+    font-size: 10px;
+  }
+}
+
+@media screen and (max-height: 430px) {
+  .second-calender {
+    z-index: 6;
+    top: -400%;
+  }
+}
+
+@media screen and (max-width: 325px) {
+  .time-box {
+    display: grid;
+    grid-template-columns: auto auto auto;
+    gap: 5px;
+  }
 }
