@@ -170,19 +170,27 @@ const AllList = ({ viewRef, listRef, allListRef }) => {
 
     const array = [0, 0];
 
-    if (day === 1) array[0] = (width * (day - 1)) / 7;
+    if (day === 1)
+      array[0] = width > 350 ? (width * (day - 1)) / 7 : width / 2 - 120;
 
-    if (day === 2) array[0] = (width * (day - 1)) / 7;
+    if (day === 2)
+      array[0] = width > 350 ? (width * (day - 1)) / 7 : width / 2 - 120;
 
-    if (day === 3) array[0] = (width * (day - 1)) / 7;
+    if (day === 3)
+      array[0] = width > 350 ? (width * (day - 1)) / 7 : width / 2 - 120;
 
-    if (day === 4) array[0] = width - 230 - (width * 3) / 7 + 60;
+    if (day === 4)
+      array[0] =
+        width > 320 ? width - 230 - (width * 3) / 7 + 60 : width / 2 - 115;
 
-    if (day === 5) array[0] = width - 230 - (width * 2) / 7 + 50;
+    if (day === 5)
+      array[0] =
+        width > 320 ? width - 230 - (width * 2) / 7 + 50 : width / 2 - 115;
 
-    if (day === 6) array[0] = width - 230 - width / 7 + 50;
+    if (day === 6)
+      array[0] = width > 320 ? width - 230 - width / 7 + 20 : width / 2 - 115;
 
-    if (day === 7) array[0] = width - 230 - 10;
+    if (day === 7) array[0] = width > 320 ? width - 230 - 10 : width / 2 - 115;
     ////////////////////////////////////////////////
 
     if (week === 1) array[1] = 10;

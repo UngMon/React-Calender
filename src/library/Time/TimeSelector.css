@@ -191,10 +191,16 @@
   }
 }
 
-@media screen and (max-height: 430px) {
+@media screen and (max-height: 450px) {
   .second-calender {
     z-index: 6;
     top: -400%;
+  }
+}
+
+@media screen and (max-width: 425px) {
+  .second-calender {
+    left: -4%;
   }
 }
 
@@ -203,5 +209,11 @@
     display: grid;
     grid-template-columns: auto auto auto;
     gap: 5px;
+  }
+
+  .second-calender {
+    z-index: 6;
+    top: 200%;
+    left: -9%;
   }
 }

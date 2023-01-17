@@ -4,9 +4,7 @@ const ModalPosition = (dayIndex, week, size) => {
   // 캘린더 너비에 따른 모달창 위치 조절
 
   const modalWidth = width > 420 ? 400 : width > 320 ? 300 : 250;
-  console.log(size[0]);
-  console.log(dayIndex, week);
-  console.log(modalWidth);
+
   if (size[0] === "") {
     console.log("here");
     return ["", ""];
@@ -58,29 +56,29 @@ const ModalPosition = (dayIndex, week, size) => {
   }
 
   if (week === 1) {
-    array[1] = 30;
+    array[1] = 0;
   }
 
   if (week === 2) {
-    array[1] = (height * 1) / 6;
+    array[1] = height > 370 ? (height * 1) / 6 : 0;
   }
 
   if (week === 3) {
-    array[1] = (height * 2) / 6 - 150;
+    array[1] = height > 375 ? (height * 2) / 6 - 100 : 0;
   }
 
   if (week === 4) {
-    array[1] = (height - 400) - 50;
+    array[1] = height > 510 ? (height - 400) - 50 : 0;
   }
 
   if (week === 5) {
-    array[1] = (height - 400);
+    array[1] = height > 440 ? (height - 400) : 0;
   }
 
   if (week === 6) {
     array[1] = (height * 3) / 6 - 70;
   }
-  console.log(array)
+
   return array;
 };
 
