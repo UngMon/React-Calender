@@ -1,4 +1,5 @@
 .addModal {
+  z-index: 4;
   width: 400px;
   height: 300px;
   border-radius: 5px;

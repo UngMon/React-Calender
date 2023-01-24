@@ -19,7 +19,6 @@ function App() {
   useEffect(() => {
     onAuthStateChanged(auth, (user) => {
       if (user) {
-        console.log(user);
         dispatch(fetchScheduleData(user));
       }
     });

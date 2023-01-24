@@ -15,12 +15,14 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import TimeSelector from "../library/Time/TimeSelector";
 import ColorBox from "../library/ColorBox";
+import { allListActions } from "../store/all-list-slice";
 
-const List = ({ viewRef, listRef, allListRef }) => {
+const List = ({ viewRef, listRef, allListRef, clickedElement, list }) => {
   const dispatch = useDispatch();
-
+  console.log(listRef);
   const listState = useSelector((state) => state.list);
   const modalState = useSelector((state) => state.modal);
+  const allListState = useSelector((state) => state.all);
 
   const index = listState.scheduleIndex;
   const listIndex = listState.listIndex;
@@ -41,8 +43,6 @@ const List = ({ viewRef, listRef, allListRef }) => {
   const [openColor, setOpenColor] = useState(false);
   const [size, setSize] = useState(["", ""]);
 
-  const modalRef = useRef();
-  const clickedListRef = useRef();
   const inputRef = useRef();
   const colorRef = useRef();
 
@@ -64,8 +64,6 @@ const List = ({ viewRef, listRef, allListRef }) => {
   const comparison = comparisonHandler(startDate, endDate);
 
   const modalCloseHandler = (e) => {
-    // console.log(listRef.current);
-    // console.log(allListRef.current);
     if (openColor) {
       // 색상 선택 on, off
       if (!colorRef.current.contains(e.target)) {
@@ -74,24 +72,24 @@ const List = ({ viewRef, listRef, allListRef }) => {
         }, [100]);
       }
     }
-    // console.log(e.target);
-    // console.log(clickedListRef);
-    if (e.target === clickedListRef.current) {
+
+    if (e.target === clickedElement.current) {
       setTimeout(() => {
-        // console.log(`?????`);
+        console.log(`?????`);
         dispatch(listActions.offModal());
       }, 100);
       return;
     }
 
-    if (!modalRef.current.contains(e.target)) {
+    if (!list.current.contains(e.target)) {
       for (const key in listRef.current) {
         if (listRef.current[key] === null) {
           continue;
         }
 
         if (listRef.current[key].contains(e.target)) {
-          clickedListRef.current = e.target;
+          console.log("llistRef???");
+          clickedElement.current = e.target;
           return;
         }
       }
@@ -102,9 +100,9 @@ const List = ({ viewRef, listRef, allListRef }) => {
         }
 
         if (allListRef.current[key].contains(e.target)) {
-          clickedListRef.current = e.target;
+          clickedElement.current = e.target;
           setTimeout(() => {
-            // console.log("allList 클릭했나?");
+            console.log("allList 클릭했나?");
             dispatch(listActions.offModal());
           }, 100);
           return;
@@ -112,10 +110,12 @@ const List = ({ viewRef, listRef, allListRef }) => {
       }
 
       setTimeout(() => {
-        dispatch(listActions.offModal());
+        console.log("통과");
+        console.log(e.target);
+        !allListState.isVisible && dispatch(listActions.offModal());
         dispatch(modalActions.offModal());
         dispatch(timeActions.resetTime());
-      }, 100);
+      }, 80);
     }
   };
 
@@ -132,6 +132,9 @@ const List = ({ viewRef, listRef, allListRef }) => {
   };
 
   const listEditHandler = (startDate, endDate) => {
+    if (allListState.isVisible) {
+      dispatch(allListActions.offModal());
+    }
     setEditArea((prevState) => !prevState);
     // 리스트 클릭시 modla-slice의 startDate와 endDate값이 원하는 값이 아니기에
     // 클릭할 때 값을 갱신해줘야 함.
@@ -200,9 +203,7 @@ const List = ({ viewRef, listRef, allListRef }) => {
       console.log("여기?");
 
       const longArr = !modalState.longArrChanged ? listInfo.arr : undefined;
-      console.log(modalState.longArrChanged);
-      console.log(modalState.longArr);
-      console.log(longArr);
+
       dispatch(
         modalActions.longDateList({
           startTime,
@@ -245,7 +246,7 @@ const List = ({ viewRef, listRef, allListRef }) => {
   return (
     <div
       className={`list-box ${editArea ? "edit" : ""}`}
-      ref={modalRef}
+      ref={list}
       style={{
         // 마운트시에 width 가 ''이므로 display none
         display: `${!marginSize ? "none" : "block"}`,

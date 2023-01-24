@@ -20,9 +20,11 @@ const Calender = ({ year, month, firstDay, lastDate, scheduleInfo }) => {
   // 아래 identify는 makeCalender에서 현재 날짜에 파란 원이 생기게 끔 식별
   const identify = fixYear + "-" + fixMonth + "-" + fixDate;
 
-  const viewRef = useRef("");
-  const listRef = useRef();
-  const allListRef = useRef();
+  const viewRef = useRef();
+  const listRef = useRef(); // makeCalender에서 list ref
+  const allListRef = useRef(); // makeCalender에서 all ref
+  const clickedElement = useRef();
+  const list = useRef(); // list모달창 ref
 
   useEffect(() => {
     listRef.current = {};
@@ -54,6 +56,7 @@ const Calender = ({ year, month, firstDay, lastDate, scheduleInfo }) => {
               listRef,
               allListRef,
               viewRef,
+              clickedElement
             })}
           </tbody>
         </table>
@@ -63,12 +66,20 @@ const Calender = ({ year, month, firstDay, lastDate, scheduleInfo }) => {
               viewRef={viewRef}
               listRef={listRef}
               allListRef={allListRef}
+              clickedElement={clickedElement}
+              list={list}
             />
           )}
         </div>
         <div className={classes["modal-container"]}>
           {!addModal.isVisible && listModal.isVisible && (
-            <List viewRef={viewRef} listRef={listRef} allListRef={allListRef} />
+            <List
+              viewRef={viewRef}
+              listRef={listRef}
+              allListRef={allListRef}
+              clickedElement={clickedElement}
+              list={list}
+            />
           )}
         </div>
         <div className={classes["modal-container"]}>

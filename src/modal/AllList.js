@@ -7,7 +7,7 @@ import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import { modalActions } from "../store/modal-slice";
 import { listActions } from "../store/list-slice";
 
-const AllList = ({ viewRef, listRef, allListRef }) => {
+const AllList = ({ viewRef, listRef, allListRef, clickedElement, list }) => {
   const dispatch = useDispatch();
 
   const schedule = useSelector((state) => state.modal.userSchedule.schedule);
@@ -34,6 +34,7 @@ const AllList = ({ viewRef, listRef, allListRef }) => {
 
         if (listRef.current[key].contains(e.target)) {
           clickedAllListRef.current = listRef.current[key];
+          console.log("listRef?");
           setTimeout(() => {
             dispatch(allListActions.offModal());
           }, 50);
@@ -47,12 +48,20 @@ const AllList = ({ viewRef, listRef, allListRef }) => {
         }
 
         if (allListRef.current[key].contains(e.target)) {
+          console.log("allListRef?");
           clickedAllListRef.current = allListRef.current[key];
           return;
         }
       }
+
+      if (listIsVisible && list.current.contains(e.target)) {
+        return;
+      }
+      
       setTimeout(() => {
+        console.log("마지막");
         dispatch(allListActions.offModal());
+        dispatch(listActions.offModal());
         if (!listIsVisible) dispatch(modalActions.offModal());
       }, 90);
       return;
@@ -78,7 +87,8 @@ const AllList = ({ viewRef, listRef, allListRef }) => {
     };
   });
 
-  const listClickHandler = (item, listIdx) => {
+  const listClickHandler = (event, item, listIdx) => {
+    clickedElement.current = event.target;
     const week = allModal.week;
     const dayIndex = allModal.day;
     const listName = item.title;
@@ -102,7 +112,7 @@ const AllList = ({ viewRef, listRef, allListRef }) => {
       <div
         key={listIdx}
         className="AllList-item"
-        onClick={() => listClickHandler(item, listIdx)}
+        onClick={(event) => listClickHandler(event, item, listIdx)}
       >
         {item.isEnd && (
           <div className={`end-date border-left-${item.color}`}></div>

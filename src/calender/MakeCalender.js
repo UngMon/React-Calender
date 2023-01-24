@@ -15,6 +15,7 @@ const MakeCaledner = ({
   listRef,
   allListRef,
   viewRef,
+  clickedElement
 }) => {
   console.log("makecalender");
   const dispatch = useDispatch();
@@ -48,6 +49,7 @@ const MakeCaledner = ({
   });
 
   const listClickHandler = (
+    event,
     week,
     dayIndex,
     listName,
@@ -55,6 +57,7 @@ const MakeCaledner = ({
     scheduleIndex,
     key
   ) => {
+    clickedElement.current = event.target;
     dispatch(
       listActions.clickedList({
         week,
@@ -67,7 +70,8 @@ const MakeCaledner = ({
     );
   };
 
-  const allListClickHandler = (date, day, week, scheduleIndex) => {
+  const allListClickHandler = (event, date, day, week, scheduleIndex) => {
+    clickedElement.current = event.target;
     if (listState.isVisible) {
       dispatch(listActions.offModal());
     }
@@ -149,6 +153,7 @@ const MakeCaledner = ({
             onClick={(event) => {
               event.stopPropagation();
               listClickHandler(
+                event,
                 week,
                 dayIdx,
                 item.title,
@@ -201,7 +206,7 @@ const MakeCaledner = ({
               style={{ top: `${24 * idx}px` }}
               onClick={(event) => {
                 event.stopPropagation();
-                allListClickHandler(date, dayIdx, week, todoIndex);
+                allListClickHandler(event, date, dayIdx, week, todoIndex);
               }}
               ref={(el) => (allListRef.current[`${date}${item.key}`] = el)}
             >{`${todoInfo.length - (listBoxHeightCount - 1)}개 더보기`}</div>
@@ -216,7 +221,7 @@ const MakeCaledner = ({
             style={{ marginTop: `${24 * (listBoxHeightCount - 1)}px` }}
             onClick={(event) => {
               event.stopPropagation();
-              allListClickHandler(date, dayIdx, week, todoIndex);
+              allListClickHandler(event, date, dayIdx, week, todoIndex);
             }}
             ref={(el) => (allListRef.current[`${date}${item.key}`] = el)}
           >{`${todoInfo.length - (listBoxHeightCount - 1)}개 더보기`}</div>

@@ -7,6 +7,7 @@ import {
   setPersistence,
   signInWithPopup,
   browserLocalPersistence,
+  sendEmailVerification,
 } from "firebase/auth";
 import { FacebookAuthProvider } from "firebase/auth";
 import { signInWithEmailAndPassword } from "firebase/auth";
@@ -115,6 +116,7 @@ const LoginPage = () => {
     if (type === "Facebook") {
       provider = new FacebookAuthProvider();
     }
+
     setPersistence(auth, browserLocalPersistence).then(() => {
       signInWithPopup(auth, provider)
         .then((data) => {
@@ -136,18 +138,20 @@ const LoginPage = () => {
   const loginFormHandler = (email, password, e) => {
     e.preventDefault();
 
-    if (!isEmail || !isPassword) {
-      return alert("올바른 양식을 기입해주세요!");
-    }
+    if (creatingUser) return;
+
+    if (!isEmail || !isPassword) return alert("올바른 양식을 기입해주세요!");
 
     signInWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
         // Signed in
-        localStorage.setItem("email", userCredential.user.auth.config);
         console.log(userCredential);
-        console.log(userCredential.user.auth.config.apiKey);
-        const user = userCredential.user;
+        const emailverified = userCredential.user.emailVerified;
 
+        if (!emailverified) return alert("이메일 인증을 해주세요!");
+
+        // 이메일 인증 이후..
+        localStorage.setItem("email", userCredential.user.auth.config);
         dispatch(modalActions.confirmUser({ email }));
         navigagte("/calender");
       })
@@ -167,10 +171,20 @@ const LoginPage = () => {
     if (!isName || !isEmail || !isPassword) {
       return alert("올바른 양식을 기입해주세요!");
     }
-
+    console.log(auth);
     createUserWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
         const user = userCredential;
+        console.log(user);
+        sendEmailVerification(auth.currentUser)
+          .then(() => {
+            alert("이메일 인증 링크를 보냈습니다!");
+          })
+          .catch((err) => {
+            console.log(err);
+            alert("인증 링크를 보내는데 실패했습니다!");
+          });
+        console.log(auth.currentUser);
         console.log(user);
         dispatch(modalActions.createUser({ name, email }));
         navigagte("/calender");
@@ -269,7 +283,10 @@ const LoginPage = () => {
                 ? "이미 계정이 있으신가요?"
                 : "아직 회원이 아니신가요?"}
             </span>
-            <div className={classes['change-button']} onClick={toggleButtonHandler}>
+            <div
+              className={classes["change-button"]}
+              onClick={toggleButtonHandler}
+            >
               {creatingUser ? "로그인" : "회원 가입"}
             </div>
           </div>
@@ -280,4 +297,3 @@ const LoginPage = () => {
 };
 
 export default LoginPage;
-
