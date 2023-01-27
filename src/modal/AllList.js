@@ -154,6 +154,7 @@ const AllList = ({ viewRef, listRef, allListRef, clickedElement, list }) => {
 
   const cancelHandler = () => {
     dispatch(allListActions.offModal());
+    dispatch(listActions.offModal());
   };
 
   const dayChangeHandler = () => {

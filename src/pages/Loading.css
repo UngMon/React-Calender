@@ -1,4 +1,6 @@
-
+.centered {
+  font-size: 3rem;
+}
 
 .lds-dual-ring {
   display: inline-block;

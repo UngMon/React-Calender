@@ -1,0 +1,126 @@
+.reset-area {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+}
+
+.reset-box {
+  margin: calc((100vh - 600px) / 2) auto;
+  width: 350px;
+  height: 600px;
+  border: 1px solid black;
+  background-color: white;
+  border-radius: 5px;
+}
+
+.back-page-button {
+  width: 20px;
+  height: 20px;
+  margin: 15px 15px;
+  text-align: center;
+}
+
+.back-page-button:hover {
+  cursor: pointer;
+  color: blue;
+}
+
+.arrow {
+  font-size: 16px;
+}
+
+.reset-box-title {
+  width: 100%;
+  height: 2rem;
+  padding: 0;
+  margin: 30px auto 0;
+  font-size: 1.5rem;
+  font-weight: bold;
+  text-align: center;
+  line-height: 2rem;
+}
+
+.reset-box-ins {
+  margin: 1rem auto;
+  width: 75%;
+  font-size: 0.9rem;
+  text-align: center;
+}
+.reset-form {
+  margin: 0 auto;
+  width: 100%;
+  height: 110px;
+}
+
+.reset-info-area {
+  margin: 40px auto 0;
+  width: 80%;
+  height: 50%;
+  display: flex;
+  flex-direction: column;
+}
+
+.reset-info-area label {
+  text-align: left;
+  margin-left: 2px;
+  margin-bottom: 1rem;
+  font-size: 0.9rem;
+  height: 1rem;
+}
+
+.reset-info-area input {
+  cursor: pointer;
+  box-sizing: border-box;
+  width: 100%;
+  padding: 0.2rem 0.3rem;
+  border: 0;
+  border-bottom: 1px solid rgb(39, 39, 39);
+}
+
+.reset-info-area p {
+  margin: 0.7rem auto;
+  font-size: 0.8rem;
+}
+
+.passwordChangeButton {
+  display: block;
+  width: 30%;
+  height: 30px;
+  border: 0;
+  border-radius: 6px;
+  background-image: linear-gradient(
+    to right,
+    #771af9 0%,
+    #678df6 75%,
+    #769bf9 100%
+  );
+  color: white;
+  margin: 0 auto;
+}
+
+.passwordChangeButton:hover {
+  cursor: pointer;
+}
+
+/* .form-button {
+  display: block;
+  margin: 16px auto;
+  width: 200px;
+  height: 34px;
+  cursor: pointer;
+  border: 0;
+  border-radius: 6px;
+  background-image: linear-gradient(
+    to right,
+    #771af9 0%,
+    #678df6 75%,
+    #d2fce1 100%
+  );
+  color: white;
+  font-size: 0.8rem;
+  font-weight: bold;
+} */
+/* 
+.form-button:hover {
+  border-radius: 6px;
+} */

@@ -6,12 +6,13 @@ import { Navigate, Route, Routes } from "react-router-dom";
 import { onAuthStateChanged } from "firebase/auth";
 import Loading from "./pages/Loading";
 import LoginPage from "./pages/LoginPage";
+import ResetPage from "./pages/ResetPage";
 import Month from "./calender/Month";
-
+import NotFound from "./pages/NotFound";
 
 function App() {
   console.log("app");
-  
+
   const dispatch = useDispatch();
   const modal = useSelector((state) => state.modal);
   const loginData = localStorage.getItem("email") || undefined;
@@ -31,17 +32,20 @@ function App() {
   }, [modal, dispatch]);
 
   return (
-    <Routes>
-      {!loginData && <Route path="/login" element={<LoginPage />} />}
-      {!loginData && (
-        <Route path="*" element={<Navigate replace to="/login" />} />
-      )}
-      {loginData && modal.isLoading && <Route path="*" element={<Loading />} />}
-      {loginData && !modal.isLoading && (
-        <Route path="/calender" element={<Month />} />
-      )}
-      {modal.isLogin && <Route path="*" element={<Navigate to="/calender" />} />}
-    </Routes>
+      <Routes>
+        {!loginData && <Route path="/" element={<LoginPage />} />}
+        {!loginData && <Route path="/reset-password" element={<ResetPage />} />}
+        {!loginData && <Route path="/*" element={<NotFound />} />}
+        {loginData && modal.isLoading && (
+          <Route path="*" element={<Loading />} />
+        )}
+        {loginData && !modal.isLoading && (
+          <Route path="/calender" element={<Month />} />
+        )}
+        {modal.isLogin && (
+          <Route path="*" element={<Navigate to="/calender" />} />
+        )}
+      </Routes>
   );
 }
 

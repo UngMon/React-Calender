@@ -198,6 +198,10 @@ const LoginPage = () => {
       });
   };
 
+  const changePassword = () => {
+    navigagte("/reset-password");
+  };
+
   const toggleButtonHandler = () => {
     setCreatingUser((prevState) => !prevState);
   };
@@ -276,6 +280,12 @@ const LoginPage = () => {
               src="img/Facebook_Logo.png"
               alt="Google"
             />
+          </div>
+          <div
+            className={classes.passwordChangeButton}
+            onClick={changePassword}
+          >
+            <span>비밀번호를 잊으셨나요?</span>
           </div>
           <div className={classes["isLogin"]}>
             <span>
