@@ -47,8 +47,10 @@ const ResetPage = () => {
     if (!isEmail) return alert("이메일을 제대로 입력해주세요!");
 
     sendPasswordResetEmail(auth, email)
-      .then(() => {
+      .then((data) => {
         // Password reset email sent!
+        console.log(auth)
+        console.log(data)
         alert("이메일 인증 링크를 보냈습니다!");
         navigate("/");
       })

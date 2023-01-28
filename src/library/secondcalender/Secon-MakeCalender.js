@@ -16,7 +16,7 @@ const MakeCaledner = ({
   dateClose,
 }) => {
   console.log("second");
-  console.log(dateRef.current);
+
   const dispatch = useDispatch();
 
   const modalState = useSelector((state) => state.modal);
@@ -27,12 +27,14 @@ const MakeCaledner = ({
     const 날짜정보 = idx.split("-"); // ['year', 'month', 'date']
 
     if (modalState.startDate !== idx) {
+      console.log('???')
       // 기존 modalState를 갱신해줌..
       const thisMonth = month - 1;
       dispatch(monthActions.setMonth({ 날짜정보, thisMonth }));
     }
 
     if (!listState.isVisible) {
+      console.log('????????????')
       dispatch(modalActions.onModal());
     }
 
@@ -47,6 +49,7 @@ const MakeCaledner = ({
     } else {
       // 두 번째 미니 달력 선택의 경우...
       const 시작날 = modalState.startDate.split("-");
+      console.log(시작날);
       const longArr = MakeLongArr(시작날, 날짜정보);
       dispatch(modalActions.clickedLastDate({ idx, longArr }));
     }

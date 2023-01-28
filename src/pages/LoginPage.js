@@ -123,7 +123,7 @@ const LoginPage = () => {
           console.log(data);
           const name = data.user.displayName;
           const email = data.user.email;
-
+          localStorage.setItem("email", data.user.email);
           dispatch(modalActions.createUser({ name, email }));
 
           navigagte("/calender");
@@ -151,7 +151,8 @@ const LoginPage = () => {
         if (!emailverified) return alert("이메일 인증을 해주세요!");
 
         // 이메일 인증 이후..
-        localStorage.setItem("email", userCredential.user.auth.config);
+        localStorage.setItem("email", userCredential.user);
+        console.log(userCredential.user.auth.config)
         dispatch(modalActions.confirmUser({ email }));
         navigagte("/calender");
       })

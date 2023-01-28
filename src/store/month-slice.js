@@ -4,48 +4,36 @@ const today = new Date();
 const todayYear = today.getFullYear();
 const todayMonth = today.getMonth();
 
-const initialDateInfo = {
-  year: todayYear,
-  month: todayMonth,
-  firstDay: new Date(todayYear, todayMonth, 1).getDay(),
-  lastDate: new Date(todayYear, todayMonth + 1, 0).getDate(),
-};
-
 const monthSlice = createSlice({
-  name: 'month',
-  initialState: initialDateInfo,
+  name: "month",
+  
+  initialState: {
+    year: todayYear,
+    month: todayMonth,
+  },
+
   reducers: {
     prevMonth(state) {
       if (state.month === 0) {
         state.month = 11;
         state.year -= 1;
-        state.firstDay = new Date(state.year, state.month, 1).getDay();
-        state.lastDate = new Date(state.year, state.month + 1, 0).getDate();
       } else {
         state.month -= 1;
-        state.firstDay = new Date(state.year, state.month, 1).getDay();
-        state.lastDate = new Date(state.year, state.month + 1, 0).getDate();
       }
     },
     nextMonth(state) {
       if (state.month === 11) {
         state.year += 1;
         state.month = 0;
-        state.firstDay = new Date(state.year, state.month, 1).getDay();
-        state.lastDate = new Date(state.year, state.month + 1, 0).getDate();
       } else {
         state.month += 1;
-        state.firstDay = new Date(state.year, state.month, 1).getDay();
-        state.lastDate = new Date(state.year, state.month + 1, 0).getDate();
       }
     },
 
     setMonth(state, action) {
       state.year = action.payload.날짜정보[0];
       state.month = action.payload.thisMonth;
-      state.firstDay = new Date(state.year, state.month, 1).getDay();
-      state.lastDate = new Date(state.year, state.month + 1, 0).getDate();
-    }
+    },
   },
 });
 

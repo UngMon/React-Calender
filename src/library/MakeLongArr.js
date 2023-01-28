@@ -15,7 +15,6 @@ const MakeLongArr = (startInfo, endInfo) => {
       for (let i = +firstDate; i <= +secondDate; i++) {
         idxArr.push(firstYear + "-" + firstMonth + "-" + i);
       }
-      console.log(idxArr);
     }
 
     if (+firstMonth < +secondMonth) {
@@ -23,7 +22,6 @@ const MakeLongArr = (startInfo, endInfo) => {
 
       for (let m = +firstMonth; m <= +secondMonth; m++) {
         //  1 <= m <= 12이므로 m-1 할 필요 없음.
-        console.log(m);
         k = new Date(firstYear, m, 0).getDate(); // 그 달의 마지막 날
 
         if (m !== +secondMonth) {
@@ -39,7 +37,6 @@ const MakeLongArr = (startInfo, endInfo) => {
           }
           // break;
         }
-        console.log(idxArr);
       }
     }
   }
@@ -47,9 +44,7 @@ const MakeLongArr = (startInfo, endInfo) => {
   if (+firstYear < +secondYear) {
     let k;
     for (let y = +firstYear; y <= +secondYear; y++) {
-      console.log(firstYear)
-      console.log(secondYear)
-      console.log(y);
+
       if (y === +firstYear) {
         for (let m = +firstMonth; m <= 12; m++) {
           k = new Date(y, m, 0).getDate();
@@ -65,7 +60,7 @@ const MakeLongArr = (startInfo, endInfo) => {
             idxArr.push(y + "-" + m + "-" + d);
           }
         }
-        console.log(idxArr);
+
         continue;
       }
 
@@ -88,7 +83,7 @@ const MakeLongArr = (startInfo, endInfo) => {
           }
           continue; 
         }
-        console.log(idxArr);
+
         break;
       }
 
@@ -100,7 +95,7 @@ const MakeLongArr = (startInfo, endInfo) => {
           idxArr.push(y + "-" + m + "-" + d);
         }
       }
-      console.log(idxArr);
+
     }
   }
 

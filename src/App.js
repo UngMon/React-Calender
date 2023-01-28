@@ -16,7 +16,7 @@ function App() {
   const dispatch = useDispatch();
   const modal = useSelector((state) => state.modal);
   const loginData = localStorage.getItem("email") || undefined;
-
+  
   useEffect(() => {
     onAuthStateChanged(auth, (user) => {
       if (user) {

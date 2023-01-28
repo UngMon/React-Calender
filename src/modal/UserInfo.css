@@ -1,0 +1,52 @@
+
+.user-info-box {
+    z-index: 4;
+    position: absolute;
+    right: 30px;
+    top: 60px;
+    width: 250px;
+    height: 200px;
+    background-color: rgb(243, 242, 242);
+    border-radius: 5px;
+  }
+  
+  .user-info-name {
+    margin: 15px auto;
+    width: 60px;
+    height: 60px;
+    color: white;
+    font-size: 1rem;
+    font-weight: bold;
+    line-height: 60px;
+    background-color: blueviolet;
+    border-radius: 50%;
+  }
+  
+  .user-info-email {
+    margin: 0 auto;
+    box-sizing: border-box;
+    max-width: 90%;
+    height: 50px;
+    border-top: 1px solid gray;
+    border-bottom: 1px solid gray;
+    font-size: 0.9rem;
+    white-space: normal;
+    text-overflow: ellipsis;
+  }
+  
+  .user-info-box-logout {
+    margin: 10px auto 0;
+    width: 80px;
+    height: 40px;
+    line-height: 40px;
+    color: black;
+    font-size: 1rem;
+    font-weight: bold;
+    text-decoration: none;
+  }
+  
+  .user-info-box-logout:hover {
+    cursor: pointer;
+    background-color: lightgray;
+    border-radius: 5px;
+  }
