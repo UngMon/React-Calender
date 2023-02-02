@@ -1,7 +1,11 @@
 .calender-view {
-  width: 100%;
-  height: calc(100% - 62px);
+  box-sizing: border-box;
+  margin: 0 auto;
+  width: 97%;
+  height: calc(100% - 80px);
   position: relative;
+  background-color: rgba(252, 252, 252, 0.9);
+  border-radius: 10px;
 }
 
 .calender {
@@ -10,19 +14,19 @@
 }
 
 .table {
-  width: 98%;
+  width: 99%;
   margin: 0 auto;
   height: 100%;
   border-spacing: 0;
   border-collapse: collapse;
   text-align: left;
-  font-size: 0.9em;
+  font-size: 12px;
 }
 
 .weekname {
   width: 100%;
   height: 26px;
-  font-size: 0.9em;
+  font-size: 1em;
 }
 
 .weekname tr {
@@ -31,8 +35,8 @@
 }
 
 .weekname th {
-  border-top: 1px solid rgb(193, 192, 192, 1);
-  border-bottom: 1px solid rgb(193, 192, 192, 1);
+  /* border-top: 1px solid rgb(193, 192, 192, 0.2); */
+  border-bottom: 1px solid rgb(193, 192, 192, 0.2);
   padding-left: 6px;
 }
 
@@ -43,35 +47,34 @@
 }
 
 .date_box {
-  width: 14.2857142857%;
+  position: relative;
+  width: calc(100% / 7);
   box-sizing: border-box;
   vertical-align: text-top;
-  border: 1px solid rgba(180, 179, 179, 0.5);
+  border: 1px solid rgba(180, 179, 179, 0.2);
   border-left: 0;
   border-right: 0;
-  position: relative;
 }
 
 .date {
   position: absolute;
   box-sizing: border-box;
   width: 100%;
-  height: calc(100% - 2px);
+  height: 24px;
   text-align: left;
   display: flex;
 }
 
 .date h2 {
+  display: block;
+  box-sizing: border-box;
+  padding: 2px;
   width: 24px;
   height: 24px;
-  font-size: 12px;
+  font-size: 1em;
   text-align: center;
   font-weight: 540;
-  line-height: 24px;
-}
-
-.date-month {
-  display: block;
+  line-height: 1.8em;
 }
 
 .sunday {
@@ -106,8 +109,9 @@
 }
 
 .list-boundary-short {
+  /* box-sizing: border-box; */
   position: absolute;
-  width: 98%;
+  width: 100%;
   height: 24px;
   display: flex;
 }
@@ -123,16 +127,16 @@
 
 .color-bar {
   box-sizing: border-box;
-  margin: 3px 0;
+  margin: 2px 0;
   height: 18px;
-  width: 4px;
+  min-width: 4px;
 }
 
 .list {
-  width: 100%;
+  box-sizing: border-box;
+  width: calc(100% - 4px);
   height: 22px;
-  margin: 1px 5px 1px 0;
-  padding-left: 3px;
+  padding: 1px 5px 1px 3px;
   color: #506ee2;
 }
 
@@ -240,7 +244,6 @@
     font-size: 8px;
   }
 }
-
 
 @media screen and (max-width: 250px) {
   .date-month {

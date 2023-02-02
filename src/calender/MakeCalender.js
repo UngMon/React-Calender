@@ -15,7 +15,8 @@ const MakeCaledner = ({
   listRef,
   allListRef,
   viewRef,
-  clickedElement
+  clickedElement,
+  listBoxHeightCountRef,
 }) => {
   console.log("makecalender");
   const dispatch = useDispatch();
@@ -25,6 +26,7 @@ const MakeCaledner = ({
   const listState = useSelector((state) => state.list);
 
   const [listBoxHeightCount, setHeight] = useState("");
+  listBoxHeightCountRef.current = listBoxHeightCount;
 
   // {idx: '', todo: [ ... {}...]}
   const schedule = modalState.userSchedule.schedule;
@@ -290,7 +292,6 @@ const MakeCaledner = ({
             <td
               key={idx}
               onClick={() => {
-                console.log(listState.isVisible);
                 if (!listState.isVisible) {
                   addClickHandler(idx, dayIdx, week);
                 }
@@ -300,27 +301,17 @@ const MakeCaledner = ({
             >
               <div className={classes.date}>
                 <h2
-                  className={`${classes["date-month"]} ${
-                    identify === idx && classes.Today
-                  } ${
+                  style={{ width: nowDate === 1 && "54px" }}
+                  className={`
+                  ${identify === idx && classes.Today}
+                  ${
                     identify !== idx && dayIdx === 1
                       ? classes.sunday
                       : dayIdx === 7 && classes.saturday
                   }`}
                 >
-                  {nowDate === 1 ? `${month}월` : nowDate}
+                  {nowDate === 1 ? `${month}월 1일` : nowDate}
                 </h2>
-                {nowDate === 1 && (
-                  <h2
-                    className={`${
-                      identify !== idx && dayIdx === 1
-                        ? classes.sunday
-                        : dayIdx === 7 && classes.saturday
-                    }`}
-                  >
-                    <span>&nbsp;</span>1일
-                  </h2>
-                )}
               </div>
               <div className={classes["list-box"]}>
                 <div className={classes["list-area"]}>
@@ -344,7 +335,6 @@ const MakeCaledner = ({
             <td
               key={idx}
               onClick={() => {
-                console.log(listState.isVisible);
                 if (!listState.isVisible) {
                   addClickHandler(idx, dayIdx, week);
                 }
@@ -388,31 +378,19 @@ const MakeCaledner = ({
             >
               <div className={classes.date}>
                 <h2
-                  className={`${classes["date-month"]} ${
-                    identify === idx && classes.Today
-                  } ${
+                  className={`${identify === idx && classes.Today} ${
                     identify !== idx && dayIdx === 1
                       ? classes.sunday
                       : dayIdx === 7 && classes.saturday
                   }`}
+                  style={{ width: nowDate === 1 && "54px" }}
                 >
                   {nowDate === 1
                     ? month === 12
-                      ? "1월"
-                      : `${month + 1}월`
+                      ? "1월 1일"
+                      : `${month + 1}월 1일`
                     : nowDate}
                 </h2>
-                {nowDate === 1 && (
-                  <h2
-                    className={`${
-                      identify !== idx && dayIdx === 1
-                        ? classes.sunday
-                        : dayIdx === 7 && classes.saturday
-                    }`}
-                  >
-                    1일
-                  </h2>
-                )}
               </div>
               <div className={classes["list-box"]}>
                 <div className={classes["list-area"]}>

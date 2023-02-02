@@ -29,10 +29,14 @@
   align-items: center;
 }
 
+.input-icon {
+  margin-right: 15px;
+}
+
 .inputArea input {
-  width: 80%;
+  width: 85%;
   height: 100%;
-  margin: 0 auto;
+  margin: 0;
   font-weight: bold;
   border-top: 0;
   border-left: 0;
@@ -117,7 +121,7 @@
   top: 60%;
 }
 
-@media screen and (max-width: 425px) {
+@media screen and (max-width: 435px) {
   .addModal {
     width: 300px;
   }
@@ -127,7 +131,7 @@
   }
 }
 
-@media screen and (max-width: 325px) {
+@media screen and (max-width: 335ㄴㄴpx) {
   .addModal {
     width: 250px;
   }

@@ -1,52 +1,82 @@
-
 .user-info-box {
-    z-index: 4;
-    position: absolute;
-    right: 30px;
-    top: 60px;
-    width: 250px;
-    height: 200px;
-    background-color: rgb(243, 242, 242);
-    border-radius: 5px;
+  z-index: 4;
+  position: absolute;
+  right: 30px;
+  top: 60px;
+  width: 300px;
+  height: 200px;
+  background-color: rgb(243, 242, 242);
+  border-radius: 7px;
+  box-shadow: 0px 24px 20px 3px rgb(0 0 0 / 14%),
+    0px 9px 20px 8px rgb(0 0 0 / 12%), 0px 11px 15px -7px rgb(0 0 0 / 20%);
+  font-size: 16px;
+}
+
+.user-info-name {
+  margin: 15px auto;
+  width: 60px;
+  height: 60px;
+  color: white;
+  font-size: 1em;
+  font-weight: bold;
+  line-height: 60px;
+  background-color: blueviolet;
+  border-radius: 50%;
+}
+
+.user-info-email {
+  margin: 0 auto;
+  box-sizing: border-box;
+  max-width: 90%;
+  height: 50px;
+  border-top: 1px solid gray;
+  border-bottom: 1px solid gray;
+  font-size: 0.9em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.user-info-box-logout {
+  margin: 10px auto 0;
+  width: 80px;
+  height: 40px;
+  line-height: 40px;
+  color: black;
+  font-size: 1em;
+  font-weight: bold;
+  text-decoration: none;
+}
+
+.user-info-box-logout:hover {
+  cursor: pointer;
+  background-color: lightgray;
+  border-radius: 5px;
+}
+
+@media screen and (max-width: 370px) {
+  .user-info-box {
+    width: 200px;
+    font-size: 14px;
   }
-  
+
   .user-info-name {
-    margin: 15px auto;
-    width: 60px;
-    height: 60px;
-    color: white;
-    font-size: 1rem;
-    font-weight: bold;
-    line-height: 60px;
-    background-color: blueviolet;
-    border-radius: 50%;
-  }
-  
-  .user-info-email {
-    margin: 0 auto;
-    box-sizing: border-box;
-    max-width: 90%;
+    width: 50px;
     height: 50px;
-    border-top: 1px solid gray;
-    border-bottom: 1px solid gray;
-    font-size: 0.9rem;
-    white-space: normal;
-    text-overflow: ellipsis;
+    line-height: 50px;
   }
-  
-  .user-info-box-logout {
-    margin: 10px auto 0;
-    width: 80px;
+}
+
+@media screen and (max-width: 260px) {
+  .user-info-box {
+    width: 70%;
+    font-size: 8px;
+    right: 20px;
+  }
+
+  .user-info-name {
+    width: 40px;
     height: 40px;
     line-height: 40px;
-    color: black;
-    font-size: 1rem;
-    font-weight: bold;
-    text-decoration: none;
   }
-  
-  .user-info-box-logout:hover {
-    cursor: pointer;
-    background-color: lightgray;
-    border-radius: 5px;
-  }
+}

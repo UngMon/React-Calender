@@ -6,7 +6,7 @@ const todayMonth = today.getMonth();
 
 const monthSlice = createSlice({
   name: "month",
-  
+
   initialState: {
     year: todayYear,
     month: todayMonth,
@@ -16,17 +16,17 @@ const monthSlice = createSlice({
     prevMonth(state) {
       if (state.month === 0) {
         state.month = 11;
-        state.year -= 1;
+        state.year = +state.year - 1;
       } else {
-        state.month -= 1;
+        state.month = +state.month - 1;
       }
     },
     nextMonth(state) {
       if (state.month === 11) {
-        state.year += 1;
+        state.year = +state.year + 1;
         state.month = 0;
       } else {
-        state.month += 1;
+        state.month = +state.month + 1;
       }
     },
 

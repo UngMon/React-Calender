@@ -7,16 +7,41 @@ import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import { modalActions } from "../store/modal-slice";
 import { listActions } from "../store/list-slice";
 
-const AllList = ({ viewRef, listRef, allListRef, clickedElement, list }) => {
+const AllList = ({
+  viewRef,
+  listRef,
+  allListRef,
+  clickedElement,
+  list,
+  listBoxHeightCount,
+}) => {
+  console.log("allList");
+
   const dispatch = useDispatch();
 
   const schedule = useSelector((state) => state.modal.userSchedule.schedule);
-  const listIsVisible = useSelector((state) => state.list.isVisible);
   const allModal = useSelector((state) => state.all);
+
+  console.log(listBoxHeightCount)
+  if (schedule[allModal.index].todo.length < listBoxHeightCount.current) {
+    setTimeout(() => {
+      dispatch(allListActions.offModal());
+    }, 100);
+  }
+
+  const listIsVisible = useSelector((state) => state.list.isVisible);
 
   const [size, setSize] = useState([0, 0]);
   const modalRef = useRef();
+  const makeListRef = useRef({});
   const clickedAllListRef = useRef();
+
+  useEffect(() => {
+    document.addEventListener("mousedown", addModalCloseHandler);
+    return () => {
+      document.removeEventListener("mousedown", addModalCloseHandler);
+    };
+  });
 
   const addModalCloseHandler = (e) => {
     if (clickedAllListRef.current === e.target) {
@@ -55,9 +80,10 @@ const AllList = ({ viewRef, listRef, allListRef, clickedElement, list }) => {
       }
 
       if (listIsVisible && list.current.contains(e.target)) {
+        console.log("67row");
         return;
       }
-      
+
       setTimeout(() => {
         console.log("마지막");
         dispatch(allListActions.offModal());
@@ -65,6 +91,18 @@ const AllList = ({ viewRef, listRef, allListRef, clickedElement, list }) => {
         if (!listIsVisible) dispatch(modalActions.offModal());
       }, 90);
       return;
+    }
+
+    for (const key in makeListRef.current) {
+      if (makeListRef.current[key].contains(e.target)) {
+        return;
+      }
+    }
+
+    if (modalRef.current.contains(e.target)) {
+      setTimeout(() => {
+        dispatch(listActions.offModal());
+      }, 100);
     }
   };
 
@@ -78,13 +116,6 @@ const AllList = ({ viewRef, listRef, allListRef, clickedElement, list }) => {
 
   useEffect(() => {
     window.addEventListener("resize", widthCalculator);
-  });
-
-  useEffect(() => {
-    document.addEventListener("mousedown", addModalCloseHandler);
-    return () => {
-      document.removeEventListener("mousedown", addModalCloseHandler);
-    };
   });
 
   const listClickHandler = (event, item, listIdx) => {
@@ -113,6 +144,9 @@ const AllList = ({ viewRef, listRef, allListRef, clickedElement, list }) => {
         key={listIdx}
         className="AllList-item"
         onClick={(event) => listClickHandler(event, item, listIdx)}
+        ref={(el) => {
+          makeListRef.current[`${listIdx}`] = el;
+        }}
       >
         {item.isEnd && (
           <div className={`end-date border-left-${item.color}`}></div>

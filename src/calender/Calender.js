@@ -25,6 +25,7 @@ const Calender = ({ year, month, firstDay, lastDate, scheduleInfo }) => {
   const allListRef = useRef(); // makeCalender에서 all ref
   const clickedElement = useRef();
   const list = useRef(); // list모달창 ref
+  const listBoxHeightCountRef = useRef();
 
   useEffect(() => {
     listRef.current = {};
@@ -56,7 +57,8 @@ const Calender = ({ year, month, firstDay, lastDate, scheduleInfo }) => {
               listRef,
               allListRef,
               viewRef,
-              clickedElement
+              clickedElement,
+              listBoxHeightCountRef,
             })}
           </tbody>
         </table>
@@ -68,6 +70,7 @@ const Calender = ({ year, month, firstDay, lastDate, scheduleInfo }) => {
               allListRef={allListRef}
               clickedElement={clickedElement}
               list={list}
+              listBoxHeightCount={listBoxHeightCountRef}
             />
           )}
         </div>

@@ -1,28 +1,33 @@
 .view-area {
-  position: absolute;
-  top: 0.5%;
-  left: 0.5%;
-  width: 99%;
-  height: 99%;
-  background-color: rgba(252, 252, 252, 0.65);
-  border-radius: 15px;
+  width: 100%;
+  height: 100%;
 }
 
 .header {
-  box-sizing: border-box;
-  width: 90%;
-  height: 62px;
+  width: 97%;
+  padding: 10px 0;
   margin: 0 auto;
+  font-size: 16px;
+}
+
+.header-box {
+  box-sizing: border-box;
+  width: 100%;
+  height: 44px;
+  padding: 0 20px;
   display: flex;
   justify-content: space-between;
+  align-items: center;
+  background-color: rgba(252, 252, 252, 0.9);
+  border-radius: 20px 20px;
 }
 
 .header-name {
   box-sizing: border-box;
   padding: 8px;
-  height: 62px;
-  line-height: 48px;
-  font-size: 16px;
+  height: 44px;
+  line-height: 1.625em;
+  font-size: 1em;
 }
 
 .header-name span {
@@ -35,7 +40,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  font-size: 16px;
+  font-size: 1em;
   font-weight: 600;
 }
 
@@ -47,145 +52,78 @@
   width: 24px;
   height: 24px;
   border: 0;
-  font-size: 16px;
+  font-size: 1em;
   background-color: transparent;
 }
 
 .select-month button:hover {
   cursor: pointer;
+  border-radius: 50%;
   background-color: lightgray;
 }
 
 .header-user-info {
   box-sizing: border-box;
-  height: 62px;
-  padding: 12px;
-  line-height: 48px;
-  width: 62px;
-  height: 60px;
+  padding: 6px;
+  width: 44px;
+  height: 44px;
   text-align: center;
 }
 
 .user-info-circle {
-  font-size: 0.9rem;
-  font-weight: bold;
-  line-height: 2.3rem;
-  color: rgb(240, 240, 240);
   width: 100%;
   height: 100%;
+  font-size: 0.8em;
+  font-weight: bold;
+  line-height: 2.5em;
+  color: rgb(240, 240, 240);
   border-radius: 50%;
   background-color: blueviolet;
   position: relative;
 }
 
-.user-info-box {
-  z-index: 4;
-  position: absolute;
-  right: 30px;
-  top: 60px;
-  width: 250px;
-  height: 200px;
-  background-color: rgb(243, 242, 242);
-  border-radius: 5px;
-}
-
-.user-info-name {
-  margin: 15px auto;
-  width: 60px;
-  height: 60px;
-  color: white;
-  font-size: 1rem;
-  font-weight: bold;
-  line-height: 60px;
-  background-color: blueviolet;
-  border-radius: 50%;
-}
-
-.user-info-email {
-  margin: 0 auto;
-  box-sizing: border-box;
-  max-width: 90%;
-  height: 50px;
-  border-top: 1px solid gray;
-  border-bottom: 1px solid gray;
-  font-size: 0.9rem;
-  white-space: normal;
-  text-overflow: ellipsis;
-}
-
-.user-info-box-logout {
-  margin: 10px auto 0;
-  width: 80px;
-  height: 40px;
-  line-height: 40px;
-  color: black;
-  font-size: 1rem;
-  font-weight: bold;
-  text-decoration: none;
-}
-
-.user-info-box-logout:hover {
+.header-user-info:hover {
   cursor: pointer;
-  background-color: lightgray;
-  border-radius: 5px;
 }
 
 @media screen and (max-width: 400px) {
-  .header-name {
-    font-size: 12px;
-  }
-  .select-month {
-    font-size: 12px;
+  .header {
+    font-size: 14px;
   }
 
-  .select-month button {
-    font-size: 12px;
+  .header-name {
+    line-height: 1.8em;
   }
-  .Logout {
-    font-size: 12px;
+
+  .user-info-circle {
+    line-height: 3em;
   }
 }
 
-@media screen and (max-width: 300px) {
+@media screen and (max-width: 310px) {
+
   .header-name {
     display: none;
   }
 
   .select-month {
-    margin-left: 30px;
-  }
-
-  .select-month span {
-    margin: 0 10px;
-    font-size: 14px;
-  }
-
-  .select-month button {
-    width: 14px;
-    font-size: 14px;
-  }
-
-  .header-Logout {
-    line-height: 42px;
+    margin-left: 0px;
   }
 }
 
-@media screen and (max-width: 230px) {
+@media screen and (max-width: 249px) {
   .select-month {
     margin: 0;
   }
 
   .select-month span {
     margin: 0 5px;
-    font-size: 10px;
+    font-size: 12px;
   }
 
   .select-month button {
-    width: 10px;
-    font-size: 10px;
+    width: 12px;
+    font-size: 12px;
   }
 
-  .Logout {
-    font-size: 10px;
-  }
 }

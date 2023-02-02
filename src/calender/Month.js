@@ -55,25 +55,29 @@ const Month = () => {
       onWheel={(e) => delayRef.current.delay && wheelHandler(e)}
     >
       <header className="header">
-        <div className="header-name">
-          <span>Calender</span>
-        </div>
-        <div className="select-month">
-          <button onClick={movePrevMonthHandler}>
-            <FontAwesomeIcon icon={faAngleLeft} />
-          </button>
-          <span>
-            {monthState.year}년 {monthState.month + 1}월
-          </span>
-          <button onClick={moveNextMonthHandler}>
-            <FontAwesomeIcon icon={faAngleRight} />
-          </button>
-        </div>
-        <div className="header-user-info">
-          <div className="user-info-circle" onClick={openUserInfoHandler}>
-            {userInfo.name}
+        <div className="header-box">
+          <div className="header-name">
+            <span>Calender</span>
           </div>
-          {openUserInfo && <UserInfo userInfo={userInfo} />}
+          <div className="select-month">
+            <button onClick={movePrevMonthHandler}>
+              <FontAwesomeIcon icon={faAngleLeft} />
+            </button>
+            <span>
+              {monthState.year}년 {monthState.month + 1}월
+            </span>
+            <button onClick={moveNextMonthHandler}>
+              <FontAwesomeIcon icon={faAngleRight} />
+            </button>
+          </div>
+          <div className="header-user-info">
+            <div className="user-info-circle" onClick={openUserInfoHandler}>
+              {userInfo.name}
+            </div>
+            {openUserInfo && (
+              <UserInfo userInfo={userInfo} setOpenUserInfo={setOpenUserInfo} />
+            )}
+          </div>
         </div>
       </header>
       <Calender
