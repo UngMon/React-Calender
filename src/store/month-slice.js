@@ -31,7 +31,7 @@ const monthSlice = createSlice({
     },
 
     setMonth(state, action) {
-      state.year = action.payload.날짜정보[0];
+      state.year = action.payload.선택날짜[0];
       state.month = action.payload.thisMonth;
     },
   },

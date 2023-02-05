@@ -11,7 +11,7 @@ const fixYear = date.getFullYear();
 const fixMonth = date.getMonth() + 1;
 const fixDate = date.getDate();
 
-const Calender = ({ year, month, firstDay, lastDate, scheduleInfo }) => {
+const Calender = ({ year, month, firstDay, lastDate, scheduleInfo, viewRef }) => {
   console.log("calender");
 
   const addModal = useSelector((state) => state.modal);
@@ -20,20 +20,19 @@ const Calender = ({ year, month, firstDay, lastDate, scheduleInfo }) => {
   // 아래 identify는 makeCalender에서 현재 날짜에 파란 원이 생기게 끔 식별
   const identify = fixYear + "-" + fixMonth + "-" + fixDate;
 
-  const viewRef = useRef();
-  const listRef = useRef(); // makeCalender에서 list ref
-  const allListRef = useRef(); // makeCalender에서 all ref
+  const listRef = useRef({}); // makeCalender에서 list ref
+  const allListRef = useRef({}); // makeCalender에서 all ref
   const clickedElement = useRef();
   const list = useRef(); // list모달창 ref
-  const listBoxHeightCountRef = useRef();
 
   useEffect(() => {
+    console.log('/??')
     listRef.current = {};
     allListRef.current = {};
   }, [month, scheduleInfo]);
 
   return (
-    <main className={classes["calender-view"]} ref={viewRef}>
+    <main className={classes["calender-view"]}>
       <div className={classes.calender}>
         <table className={classes.table}>
           <thead className={classes.weekname}>
@@ -58,7 +57,6 @@ const Calender = ({ year, month, firstDay, lastDate, scheduleInfo }) => {
               allListRef,
               viewRef,
               clickedElement,
-              listBoxHeightCountRef,
             })}
           </tbody>
         </table>
@@ -70,7 +68,6 @@ const Calender = ({ year, month, firstDay, lastDate, scheduleInfo }) => {
               allListRef={allListRef}
               clickedElement={clickedElement}
               list={list}
-              listBoxHeightCount={listBoxHeightCountRef}
             />
           )}
         </div>

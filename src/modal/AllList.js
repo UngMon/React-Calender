@@ -1,33 +1,19 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { allListActions } from "../store/all-list-slice";
-import "./AllList.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import { modalActions } from "../store/modal-slice";
 import { listActions } from "../store/list-slice";
+import "./AllList.css";
 
-const AllList = ({
-  viewRef,
-  listRef,
-  allListRef,
-  clickedElement,
-  list,
-  listBoxHeightCount,
-}) => {
+const AllList = ({ viewRef, listRef, allListRef, clickedElement, list }) => {
   console.log("allList");
 
   const dispatch = useDispatch();
 
   const schedule = useSelector((state) => state.modal.userSchedule.schedule);
   const allModal = useSelector((state) => state.all);
-
-  console.log(listBoxHeightCount)
-  if (schedule[allModal.index].todo.length < listBoxHeightCount.current) {
-    setTimeout(() => {
-      dispatch(allListActions.offModal());
-    }, 100);
-  }
 
   const listIsVisible = useSelector((state) => state.list.isVisible);
 
@@ -44,6 +30,7 @@ const AllList = ({
   });
 
   const addModalCloseHandler = (e) => {
+    console.log("???");
     if (clickedAllListRef.current === e.target) {
       setTimeout(() => {
         dispatch(allListActions.offModal());
@@ -52,6 +39,7 @@ const AllList = ({
     }
 
     if (allModal.isVisible && !modalRef.current.contains(e.target)) {
+      console.log("modalRef미포함");
       for (const key in listRef.current) {
         if (listRef.current[key] === null) {
           continue;
@@ -73,19 +61,19 @@ const AllList = ({
         }
 
         if (allListRef.current[key].contains(e.target)) {
-          console.log("allListRef?");
+          // console.log("allListRef?");
           clickedAllListRef.current = allListRef.current[key];
           return;
         }
       }
 
       if (listIsVisible && list.current.contains(e.target)) {
-        console.log("67row");
+        // console.log("67row");
         return;
       }
 
       setTimeout(() => {
-        console.log("마지막");
+        // console.log("마지막");
         dispatch(allListActions.offModal());
         dispatch(listActions.offModal());
         if (!listIsVisible) dispatch(modalActions.offModal());
@@ -139,6 +127,10 @@ const AllList = ({
   };
 
   const makeListHandler = () => {
+    if (schedule[allModal.index] === undefined) {
+      return <div className="AllList-nothing">등록된 일정이 없습니다.</div>;
+    }
+
     return schedule[allModal.index].todo.map((item, listIdx) => (
       <div
         key={listIdx}
@@ -164,7 +156,7 @@ const AllList = ({
                 ? item.isEnd
                   ? "183px"
                   : "174px"
-                : item.isStart
+                : item.isStart1
                 ? item.isEnd
                   ? "174px"
                   : "183px"
@@ -263,6 +255,9 @@ const AllList = ({
         display: `${size[0] === 0 ? "none" : "block"}`,
         marginLeft: `${size[0] !== 0 && marginPsition[0]}px`,
         marginTop: `${size[0] !== 0 && marginPsition[1]}px`,
+      }}
+      onWheel={(e) => {
+        e.stopPropagation();
       }}
     >
       <div className="AllList-header">

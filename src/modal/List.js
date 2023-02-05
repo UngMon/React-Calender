@@ -19,7 +19,7 @@ import { allListActions } from "../store/all-list-slice";
 
 const List = ({ viewRef, listRef, allListRef, clickedElement, list }) => {
   const dispatch = useDispatch();
-  console.log(listRef);
+
   const listState = useSelector((state) => state.list);
   const modalState = useSelector((state) => state.modal);
   const allListState = useSelector((state) => state.all);
@@ -132,13 +132,17 @@ const List = ({ viewRef, listRef, allListRef, clickedElement, list }) => {
   };
 
   const listEditHandler = (startDate, endDate) => {
+    const arr = listInfo.arr;
+    const week = listState.week;
+    const day = listState.dayIndex;
+
     if (allListState.isVisible) {
       dispatch(allListActions.offModal());
     }
     setEditArea((prevState) => !prevState);
     // 리스트 클릭시 modla-slice의 startDate와 endDate값이 원하는 값이 아니기에
-    // 클릭할 때 값을 갱신해줘야 함.
-    dispatch(modalActions.setDate({ startDate, endDate }));
+    // 클릭할 때 값을 갱신해줘야 함. 추가로 arr 배열도..
+    dispatch(modalActions.setDate({ week, day, startDate, endDate, arr}));
   };
 
   const editListSubmitHandler = (event) => {
@@ -186,13 +190,6 @@ const List = ({ viewRef, listRef, allListRef, clickedElement, list }) => {
     // startTime < endTime 이면서...
     dispatch(modalActions.removeList({ index, listIndex }));
 
-    const dayIndex =
-      new Date(
-        `${
-          !modalState.longArrChanged ? listInfo.startDate : modalState.startDate
-        }`
-      ).getDay() + 1;
-    console.log(dayIndex);
     if (comparison === 4) {
       dispatch(
         modalActions.inputList({ startTime, endTime, title, color, key })
@@ -200,17 +197,11 @@ const List = ({ viewRef, listRef, allListRef, clickedElement, list }) => {
     }
 
     if (comparison <= 3) {
-      console.log("여기?");
-
-      const longArr = !modalState.longArrChanged ? listInfo.arr : undefined;
-
       dispatch(
         modalActions.longDateList({
           startTime,
           endTime,
           title,
-          dayIndex,
-          longArr,
           key,
           color,
         })
@@ -220,19 +211,15 @@ const List = ({ viewRef, listRef, allListRef, clickedElement, list }) => {
     inputRef.current.value = "";
 
     closeModalHandler();
-
-    dispatch(modalActions.offModal());
-    dispatch(modalActions.resetState());
-    dispatch(timeActions.resetTime());
   };
 
-  const listDoneHandler = (index, listIndex, year, month) => {
+  const listDoneHandler = (index, listIndex) => {
     dispatch(modalActions.listDone({ index, listIndex }));
   };
 
   const closeModalHandler = () => {
     dispatch(listActions.offModal());
-    dispatch(modalActions.resetState());
+    dispatch(timeActions.resetTime());
   };
 
   const styleClass =
@@ -253,6 +240,7 @@ const List = ({ viewRef, listRef, allListRef, clickedElement, list }) => {
         marginLeft: `${marginSize && marginSize[0]}px`,
         marginTop: `${marginSize && marginSize[1]}px`,
       }}
+      onWheel={(e) => e.stopPropagation()}
     >
       <div className="option-box">
         <div

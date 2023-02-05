@@ -115,6 +115,7 @@ const AddEvent = ({ viewRef }) => {
 
     if (startTime > endTime) {
       if (comparison === 4) {
+        // 같은 날의 경우에만 아래와 같은 알림을 뜨게 함.
         return alert("종료 시간이 시작 시간보다 작습니다!! ex) 00:30 ~ 01:30");
       }
     }
@@ -136,8 +137,6 @@ const AddEvent = ({ viewRef }) => {
     inputRef.current.value = "";
 
     cancelHandler();
-    dispatch(timeActions.resetTime());
-    dispatch(modalActions.resetState());
   };
 
   const cancelHandler = () => {
@@ -168,6 +167,7 @@ const AddEvent = ({ viewRef }) => {
         marginLeft: `${marginSize && marginSize[0]}px`,
         marginTop: `${marginSize && marginSize[1]}px`,
       }}
+      onWheel={(e) => e.stopPropagation()}
     >
       <div className="add-modal-name">일정 추가</div>
       <div className="inputArea">

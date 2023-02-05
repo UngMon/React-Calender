@@ -121,7 +121,7 @@
   top: 60%;
 }
 
-@media screen and (max-width: 435px) {
+@media screen and (max-width: 500px) {
   .addModal {
     width: 300px;
   }
@@ -131,8 +131,8 @@
   }
 }
 
-@media screen and (max-width: 335ㄴㄴpx) {
+@media screen and (max-width: 335px) {
   .addModal {
-    width: 250px;
+    width: 230px;
   }
 }

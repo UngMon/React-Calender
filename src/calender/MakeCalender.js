@@ -16,7 +16,6 @@ const MakeCaledner = ({
   allListRef,
   viewRef,
   clickedElement,
-  listBoxHeightCountRef,
 }) => {
   console.log("makecalender");
   const dispatch = useDispatch();
@@ -26,7 +25,6 @@ const MakeCaledner = ({
   const listState = useSelector((state) => state.list);
 
   const [listBoxHeightCount, setHeight] = useState("");
-  listBoxHeightCountRef.current = listBoxHeightCount;
 
   // {idx: '', todo: [ ... {}...]}
   const schedule = modalState.userSchedule.schedule;
@@ -82,16 +80,18 @@ const MakeCaledner = ({
 
   const scheduleHandler = (date, dayIdx, week, array) => {
     // {idx: 'date..', todo: [~~]}의 인덱스
+
     const todoIndex = schedule.findIndex((item) => item.idx === date);
 
     if (todoIndex === -1) {
       return;
     }
-
     // [... , { arr: [~~], startDate: '', isLong: 'true', ...}] or undefined
     const todoInfo = schedule[todoIndex].todo;
 
     let todoCount = 0;
+    let visualCount = 0;
+    let moreListBool = false;
 
     for (const item of todoInfo) {
       if (item.isMiddle) {
@@ -132,76 +132,22 @@ const MakeCaledner = ({
 
           if (!item.isLong) break;
         }
+
         arrayCount += 1;
         break;
       }
       todoCount += 1;
     }
+
     ///////////////////////////////////////////////////////
-    return array[dayIdx].map((item, idx) =>
-      !item.isMiddle && isNaN(item) ? (
-        idx < listBoxHeightCount - 1 ? (
-          <div
-            key={idx}
-            className={`${
-              item.isLong
-                ? classes["list-boundary-long"]
-                : classes["list-boundary-short"]
-            }`}
-            style={{
-              width: item.isLong && `${item.length}00%`,
-              top: `${24 * idx}px`,
-            }}
-            onClick={(event) => {
-              event.stopPropagation();
-              listClickHandler(
-                event,
-                week,
-                dayIdx,
-                item.title,
-                item.listIndex, // listIndex
-                todoIndex, // scheduleIndex
-                item.key // key
-              );
-            }}
-            ref={(el) => {
-              listRef.current[`${date}${item.key}`] = el;
-            }}
-          >
-            {!item.isLong && (
-              <div className={`${item.color} ${classes["color-bar"]}`}></div>
-            )}
-            <div
-              key={idx}
-              className={`${classes.list} ${
-                item.isLong && `${classes.long} ${item.color}`
-              }`}
-              style={{
-                backgroundColor:
-                  listState.isVisible &&
-                  item.key === listState.key &&
-                  "rgba(182, 182, 182, 0.8)",
-              }}
-              dayindex={dayIdx}
-            >
-              <div
-                className={`${classes["type-one"]}  ${
-                  item.style && classes.done
-                }`}
-              >
-                {item.startTime + " " + item.title}
-              </div>
-              <div
-                className={`${classes["type-two"]} ${
-                  item.style && classes.done
-                }`}
-              >
-                {" " + item.title}
-              </div>
-            </div>
-          </div>
-        ) : (
-          idx === listBoxHeightCount - 1 && (
+    // idx = arrayCount,  item = {~~}
+    return array[dayIdx].map((item, idx) => {
+      // item이 숫자 1이 아닌 객체일 때,
+      let result;
+
+      if (isNaN(item)) {
+        if (idx === listBoxHeightCount - 1) {
+          result = (
             <div
               key={idx}
               className={`${classes["list-more"]}`}
@@ -210,32 +156,212 @@ const MakeCaledner = ({
                 event.stopPropagation();
                 allListClickHandler(event, date, dayIdx, week, todoIndex);
               }}
-              ref={(el) => (allListRef.current[`${date}${item.key}`] = el)}
+              ref={(el) => (allListRef.current[`${date}`] = el)}
             >{`${todoInfo.length - (listBoxHeightCount - 1)}개 더보기`}</div>
-          )
-        )
-      ) : (
-        idx === listBoxHeightCount - 1 &&
-        item === 1 && (
-          <div
-            key={idx}
-            className={`${classes["list-more"]} ${idx}`}
-            style={{ marginTop: `${24 * (listBoxHeightCount - 1)}px` }}
-            onClick={(event) => {
-              event.stopPropagation();
-              allListClickHandler(event, date, dayIdx, week, todoIndex);
-            }}
-            ref={(el) => (allListRef.current[`${date}${item.key}`] = el)}
-          >{`${todoInfo.length - (listBoxHeightCount - 1)}개 더보기`}</div>
-        )
-      )
-    );
+          );
+        }
+
+        if (idx < listBoxHeightCount - 1) {
+          visualCount += 1;
+
+          result = (
+            <div
+              key={idx}
+              className={`${
+                item.isLong
+                  ? classes["list-boundary-long"]
+                  : classes["list-boundary-short"]
+              }`}
+              style={{
+                width: item.isLong && `${item.length}00%`,
+                top: `${24 * idx}px`,
+              }}
+              onClick={(event) => {
+                event.stopPropagation();
+                listClickHandler(
+                  event,
+                  week,
+                  dayIdx,
+                  item.title,
+                  item.listIndex, // listIndex
+                  todoIndex, // scheduleIndex
+                  item.key // key
+                );
+              }}
+              ref={(el) => {
+                listRef.current[`${date}${item.key}`] = el;
+              }}
+            >
+              {!item.isLong && (
+                <div className={`${item.color} ${classes["color-bar"]}`}></div>
+              )}
+              <div
+                key={idx}
+                className={`${classes.list} ${
+                  item.isLong && `${classes.long} ${item.color}`
+                }`}
+                style={{
+                  backgroundColor:
+                    listState.isVisible &&
+                    item.key === listState.key &&
+                    "rgba(182, 182, 182, 0.8)",
+                }}
+                dayindex={dayIdx}
+              >
+                <div
+                  className={`${classes["type-one"]}  ${
+                    item.style && classes.done
+                  }`}
+                >
+                  {item.startTime + " " + item.title}
+                </div>
+                <div
+                  className={`${classes["type-two"]} ${
+                    item.style && classes.done
+                  }`}
+                >
+                  {" " + item.title}
+                </div>
+              </div>
+            </div>
+          );
+        }
+      }
+
+      // item이 숫자일 때, 더 보기 태그 생성
+      if (item !== 0 && typeof item !== 'object') {
+        if (idx < listBoxHeightCount - 1) {
+          visualCount += 1;
+        }
+        /// 여기서 idx > listBox~ -2 이렇게 하면 더보기란이 엄청생길거임.. 
+        // 솔루션은 map을 for로 바꿔서 중단시키던지. 아니면 응? 어떻게 하지?...
+        if (idx > listBoxHeightCount - 2 && !moreListBool) {
+          result = (
+            <div
+              key={idx}
+              className={`${classes["list-more"]} ${idx}`}
+              style={{ marginTop: `${24 * (listBoxHeightCount - 1)}px` }}
+              onClick={(event) => {
+                event.stopPropagation();
+                allListClickHandler(event, date, dayIdx, week, todoIndex);
+              }}
+              ref={(el) => (allListRef.current[`${date}`] = el)}
+            >
+              {`${todoInfo.length - visualCount}개 더보기rlrlr`}
+            </div>
+          );
+          moreListBool = true;
+        }
+      }
+      return result;
+    });
+    // return array[dayIdx].map((item, idx) =>
+    //   isNaN(item) ? (
+    //     idx < listBoxHeightCount - 1 ? (
+    //       (visualCount += 1),
+    //       <div
+    //         key={idx}
+    //         className={`${
+    //           item.isLong
+    //             ? classes["list-boundary-long"]
+    //             : classes["list-boundary-short"]
+    //         }`}
+    //         style={{
+    //           width: item.isLong && `${item.length}00%`,
+    //           top: `${24 * idx}px`,
+    //         }}
+    //         onClick={(event) => {
+    //           event.stopPropagation();
+    //           listClickHandler(
+    //             event,
+    //             week,
+    //             dayIdx,
+    //             item.title,
+    //             item.listIndex, // listIndex
+    //             todoIndex, // scheduleIndex
+    //             item.key // key
+    //           );
+    //         }}
+    //         ref={(el) => {
+    //           listRef.current[`${date}${item.key}`] = el;
+    //         }}
+    //       >
+    //         {!item.isLong && (
+    //           <div className={`${item.color} ${classes["color-bar"]}`}></div>
+    //         )}
+    //         <div
+    //           key={idx}
+    //           className={`${classes.list} ${
+    //             item.isLong && `${classes.long} ${item.color}`
+    //           }`}
+    //           style={{
+    //             backgroundColor:
+    //               listState.isVisible &&
+    //               item.key === listState.key &&
+    //               "rgba(182, 182, 182, 0.8)",
+    //           }}
+    //           dayindex={dayIdx}
+    //         >
+    //           <div
+    //             className={`${classes["type-one"]}  ${
+    //               item.style && classes.done
+    //             }`}
+    //           >
+    //             {item.startTime + " " + item.title}
+    //           </div>
+    //           <div
+    //             className={`${classes["type-two"]} ${
+    //               item.style && classes.done
+    //             }`}
+    //           >
+    //             {" " + item.title}
+    //           </div>
+    //         </div>
+    //       </div>
+    //     ) : (
+    //       idx === listBoxHeightCount - 1 && (
+    //         <div
+    //           key={idx}
+    //           className={`${classes["list-more"]}`}
+    //           style={{ top: `${24 * idx}px` }}
+    //           onClick={(event) => {
+    //             console.log(listBoxHeightCount);
+    //             event.stopPropagation();
+    //             allListClickHandler(event, date, dayIdx, week, todoIndex);
+    //           }}
+    //           ref={(el) => (allListRef.current[`${date}${item.key}`] = el)}
+    //         >{`${todoInfo.length - (listBoxHeightCount - 1)}개 더보기`}</div>
+    //       )
+    //     )
+    //   ) : (
+    //     idx === listBoxHeightCount - 1 &&
+    //     item === 1 && ((visualCount += 1),
+    //       <div
+    //         key={idx}
+    //         className={`${classes["list-more"]} ${idx}`}
+    //         style={{ marginTop: `${24 * (listBoxHeightCount - 1)}px` }}
+    //         onClick={(event) => {
+    //           console.log(array[dayIdx]);
+    //           console.log(visualCount);
+    //           console.log(listBoxHeightCount);
+    //           event.stopPropagation();
+    //           allListClickHandler(event, date, dayIdx, week, todoIndex);
+    //         }}
+    //         ref={(el) => (allListRef.current[`${date}${item.key}`] = el)}
+    //       >
+    //         {todoInfo.length < listBoxHeightCount
+    //           ? `${visualCount}개 더보기`
+    //           : `${todoInfo.length - (listBoxHeightCount - 1)}개 더보기`}
+    //       </div>
+    //     )
+    //   )
+    // );
   };
 
   const addClickHandler = (idx, dayIndex, week) => {
     const type = "add";
     if (!modalVisible) {
-      dispatch(modalActions.clickedStartDate({ type, idx, dayIndex, week }));
+      dispatch(modalActions.clickedDate({ type, idx, dayIndex, week }));
     }
   };
 

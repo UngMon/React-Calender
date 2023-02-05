@@ -23,35 +23,36 @@ const MakeCaledner = ({
   const listState = useSelector((state) => state.list);
 
   const clickHandler = (idx, dayIndex, week, type) => {
-    // 미니 캘린더에서 다음달로 넘어가면 메인 캘린더도 같이 다음달과 넘어가기 위함.
-    const 날짜정보 = idx.split("-"); // ['year', 'month', 'date']
+    const 선택날짜 = idx.split("-"); // ['year', 'month', 'date']
 
+    // 미니 캘린더에서 다음달로 넘어가면 메인 캘린더도 같이 다음달과 넘어가기 위함.
     if (modalState.startDate !== idx) {
-      console.log('???')
+      console.log("???");
       // 기존 modalState를 갱신해줌..
       const thisMonth = month - 1;
-      dispatch(monthActions.setMonth({ 날짜정보, thisMonth }));
+      dispatch(monthActions.setMonth({ 선택날짜, thisMonth }));
     }
 
+    // 해당 날짜로 addEvnet.js가 렌더링.. 한 마디로 모달창이 이동하는 기능...
     if (!listState.isVisible) {
-      console.log('????????????')
       dispatch(modalActions.onModal());
     }
 
     // 첫 번째 미니 달력 선택의 경우...
     if (type) {
       const 마지막날 = modalState.endDate.split("-");
-      const longArr = MakeLongArr(날짜정보, 마지막날);
-      const type = "second";
+      const longArr = MakeLongArr(선택날짜, 마지막날);
+      const type = "start";
       dispatch(
-        modalActions.clickedStartDate({ type, idx, dayIndex, week, longArr })
+        modalActions.clickedDate({ type, idx, dayIndex, week, longArr })
       );
     } else {
       // 두 번째 미니 달력 선택의 경우...
       const 시작날 = modalState.startDate.split("-");
-      console.log(시작날);
-      const longArr = MakeLongArr(시작날, 날짜정보);
-      dispatch(modalActions.clickedLastDate({ idx, longArr }));
+      const longArr = MakeLongArr(시작날, 선택날짜);
+      console.log(longArr)
+      const type = "end";
+      dispatch(modalActions.clickedDate({ type, idx, longArr }));
     }
     dateClose();
   };

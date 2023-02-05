@@ -20,15 +20,17 @@ const Month = () => {
   const lastDate = new Date(monthState.year, monthState.month + 1, 0).getDate();
 
   const userInfo = useSelector((state) => state.modal.userSchedule);
+  const viewRef= useRef();
+  console.log(userInfo);
 
-  const movePrevMonthHandler = () => {
+  const movePrevMonth = () => {
     dispatch(monthActions.prevMonth());
     setTimeout(() => {
       delayRef.current.delay = true;
     }, 350);
   };
 
-  const moveNextMonthHandler = () => {
+  const moveNextMonth = () => {
     dispatch(monthActions.nextMonth());
     setTimeout(() => {
       delayRef.current.delay = true;
@@ -38,10 +40,10 @@ const Month = () => {
   const wheelHandler = (e) => {
     delayRef.current.delay = false;
     if (e.deltaY > 0) {
-      movePrevMonthHandler();
+      movePrevMonth();
     }
     if (e.deltaY < 0) {
-      moveNextMonthHandler();
+      moveNextMonth();
     }
   };
 
@@ -53,6 +55,7 @@ const Month = () => {
     <div
       className="view-area"
       onWheel={(e) => delayRef.current.delay && wheelHandler(e)}
+      ref={viewRef}
     >
       <header className="header">
         <div className="header-box">
@@ -60,13 +63,13 @@ const Month = () => {
             <span>Calender</span>
           </div>
           <div className="select-month">
-            <button onClick={movePrevMonthHandler}>
+            <button onClick={movePrevMonth}>
               <FontAwesomeIcon icon={faAngleLeft} />
             </button>
             <span>
               {monthState.year}년 {monthState.month + 1}월
             </span>
-            <button onClick={moveNextMonthHandler}>
+            <button onClick={moveNextMonth}>
               <FontAwesomeIcon icon={faAngleRight} />
             </button>
           </div>
@@ -86,6 +89,7 @@ const Month = () => {
         firstDay={firstDay}
         lastDate={lastDate}
         scheduleInfo={userInfo}
+        viewRef={viewRef}
       />
     </div>
   );

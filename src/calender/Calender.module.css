@@ -74,7 +74,7 @@
   font-size: 1em;
   text-align: center;
   font-weight: 540;
-  line-height: 1.8em;
+  line-height: 22px;
 }
 
 .sunday {
@@ -109,7 +109,6 @@
 }
 
 .list-boundary-short {
-  /* box-sizing: border-box; */
   position: absolute;
   width: 100%;
   height: 24px;
@@ -135,28 +134,26 @@
 .list {
   box-sizing: border-box;
   width: calc(100% - 4px);
-  height: 22px;
-  padding: 1px 5px 1px 3px;
+  height: 24px;
+  padding: 0 5px 0 3px;
   color: #506ee2;
 }
 
 .list div {
-  height: 22px;
-  line-height: 22px;
-  font-size: 10px;
-  font-weight: bold;
+  height: 100%;
+  line-height: 24px;
+  font-size: 0.5em;
+  font-weight: 700;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
 .type-one {
-  font-size: 1em;
   display: block;
 }
 
 .type-two {
-  font-size: 1em;
   display: none;
 }
 

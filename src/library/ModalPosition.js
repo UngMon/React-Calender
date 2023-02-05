@@ -3,7 +3,7 @@ const ModalPosition = (dayIndex, week, size) => {
   let height = size[1];
   // 캘린더 너비에 따른 모달창 위치 조절
 
-  const modalWidth = width > 420 ? 400 : width > 320 ? 300 : 250;
+  const modalWidth = width > 500 ? 400 : width > 335 ? 300 : 230;
 
   if (size[0] === "") {
     console.log("here");
@@ -11,10 +11,10 @@ const ModalPosition = (dayIndex, week, size) => {
   }
 
   let array = [0, 0];
-
+  console.log(modalWidth)
   if (dayIndex === 1) {
     array[0] =
-      width > 490 ? (width * dayIndex) / 7 + 10 : (width - modalWidth) / 2;
+      width > 500 ? (width * dayIndex) / 7 + 10 : (width - modalWidth) / 2;
   }
 
   if (dayIndex === 2) {

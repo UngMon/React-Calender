@@ -14,13 +14,14 @@ const TimeSelector = ({
   timeOneRef,
   timeTwoRef,
   comparison,
+  viewRef
 }) => {
   const dispatch = useDispatch();
   const timeState = useSelector((state) => state.time);
 
   const 시작날 = startDate.split("-");
   const 마지막날 = endDate.split("-");
-
+  
   const [fristDateIsVisible, setFirstDateIsVisible] = useState(false);
   const [lastDateIsVisible, setLastDateIsVisible] = useState(false);
 
@@ -163,12 +164,12 @@ const TimeSelector = ({
           <div ref={(el) => (dateRef.current[0] = el)}>
             {comparison !== 1 && (
               <span onClick={startDateOpenHandler}>
-                {시작날[1] + "월 " + ' ' + 시작날[2] + "일"}
+                {시작날[1] + "월 " + 시작날[2] + "일"}
               </span>
             )}
             {comparison === 1 && (
               <span onClick={startDateOpenHandler}>
-                {시작날[0] + "년" + ' ' + 시작날[1] + "월" + ' ' + 시작날[2] + "일"}
+                {시작날[0] + "년 " + 시작날[1] + "월 " + 시작날[2] + "일"}
               </span>
             )}
           </div>
@@ -206,12 +207,12 @@ const TimeSelector = ({
           <div ref={(el) => (dateRef.current[1] = el)}>
             {comparison !== 1 && (
               <span onClick={endDateOpenHandler}>
-                {마지막날[1] + "월 " + ' ' + 마지막날[2] + "일"}
+                {마지막날[1] + "월 " + 마지막날[2] + "일"}
               </span>
             )}
             {comparison === 1 && (
               <span onClick={endDateOpenHandler}>
-                {마지막날[0] + "년" + ' ' + 마지막날[1] + "월" + ' ' + 마지막날[2] + "일"}
+                {마지막날[0] + "년 " + 마지막날[1] + "월 " + 마지막날[2] + "일"}
               </span>
             )}
           </div>
