@@ -187,8 +187,8 @@ const modalSlice = createSlice({
 
       const key =
         `${startDate[0]}` + // startDate Year
-        `${10 + startDate[1]}` + // startDate month
-        `${10 + startDate[2]}` + // startDate date
+        `${10 + +startDate[1]}` + // startDate month
+        `${10 + +startDate[2]}` + // startDate date
         "9999" +
         action.payload.startTime +
         action.payload.endTime +
@@ -428,7 +428,7 @@ const modalSlice = createSlice({
         leng -= 1;
         count = count === 7 ? 1 : count + 1;
       } // for 문 끝.
-
+      // userSchedule.schedule.sort((a, b) => a.idx <)
       state.userSchedule = userSchedule;
       dummyUserData[state.userIndex] = userSchedule;
       state.userData = [...dummyUserData];

@@ -26,7 +26,6 @@ const Calender = ({ year, month, firstDay, lastDate, scheduleInfo, viewRef }) =>
   const list = useRef(); // list모달창 ref
 
   useEffect(() => {
-    console.log('/??')
     listRef.current = {};
     allListRef.current = {};
   }, [month, scheduleInfo]);

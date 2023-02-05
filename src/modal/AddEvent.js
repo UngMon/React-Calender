@@ -144,7 +144,7 @@ const AddEvent = ({ viewRef }) => {
     dispatch(timeActions.resetTime());
   };
   // 여기는 size의 크기에 따라서 modalposition에서 값을 정해보자
-  // 내 말은 size > 425일때 이후의 과정 or media에서 정의한 사이즈 그대로 받아올것인지.
+  //  size > 425일때 이후의 과정 or media에서 정의한 사이즈 그대로 받아올것인지.
   console.log(size);
   const marginSize =
     size[0] !== ""
@@ -166,6 +166,8 @@ const AddEvent = ({ viewRef }) => {
         display: `${!marginSize ? "none" : "block"}`,
         marginLeft: `${marginSize && marginSize[0]}px`,
         marginTop: `${marginSize && marginSize[1]}px`,
+        // marginTop: `${modalState.week < 4 && marginSize && marginSize[1]}px`,
+        // marginBottom: `${modalState.week > 3 && marginSize && marginSize[1]}px`,
       }}
       onWheel={(e) => e.stopPropagation()}
     >
@@ -182,6 +184,7 @@ const AddEvent = ({ viewRef }) => {
         timeOneRef={timeOneRef}
         timeTwoRef={timeTwoRef}
         comparison={comparison}
+        viewRef={viewRef}
       />
       <ColorBox
         color={color}

@@ -222,6 +222,10 @@
   .type-two {
     display: block;
   }
+
+  .list div {
+    text-overflow: clip;
+  }
 }
 
 @media screen and (max-width: 480px) {
@@ -240,6 +244,7 @@
   .list-more {
     font-size: 8px;
   }
+
 }
 
 @media screen and (max-width: 250px) {

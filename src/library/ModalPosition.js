@@ -11,72 +11,88 @@ const ModalPosition = (dayIndex, week, size) => {
   }
 
   let array = [0, 0];
-  console.log(modalWidth)
+  console.log(modalWidth);
   if (dayIndex === 1) {
     array[0] =
-      width > 500 ? (width * dayIndex) / 7 + 10 : (width - modalWidth) / 2;
+      width > 500 ? (width * dayIndex) / 7 - 20 : (width - modalWidth) / 2;
   }
 
   if (dayIndex === 2) {
     array[0] =
-      width > 590 ? (width * dayIndex) / 7 + 10 : (width - modalWidth) / 2;
+      width > 590 ? (width * dayIndex) / 7 - 20 : (width - modalWidth) / 2;
   }
 
   if (dayIndex === 3) {
     array[0] =
-      width > 730 ? (width * dayIndex) / 7 + 10 : (width - modalWidth) / 2;
+      width > 730 ? (width * dayIndex) / 7 - 20 : (width - modalWidth) / 2;
   }
 
   if (dayIndex === 4) {
     array[0] =
-      width > 980
-        ? width - (width * (8 - dayIndex)) / 7 - 410
+      width > 1000
+        ? width - (width * (8 - dayIndex)) / 7 - 430
         : (width - modalWidth) / 2;
   }
 
   if (dayIndex === 5) {
     array[0] =
-      width > 730
-        ? width - (width * (8 - dayIndex)) / 7 - 410
+      width > 760
+        ? width - (width * (8 - dayIndex)) / 7 - 430
         : (width - modalWidth) / 2;
   }
 
   if (dayIndex === 6) {
     array[0] =
-      width > 590
-        ? width - (width * (8 - dayIndex)) / 7 - 410
+      width > 630
+        ? width - (width * (8 - dayIndex)) / 7 - 440
         : (width - modalWidth) / 2;
   }
 
   if (dayIndex === 7) {
     array[0] =
-      width > 490
-        ? width - (width * (8 - dayIndex)) / 7 - 410
+      width > 530
+        ? width - (width * (8 - dayIndex)) / 7 - 450
         : (width - modalWidth) / 2;
   }
 
   if (week === 1) {
-    array[1] = 0;
+    array[1] = height > 400 ? 0 : -20;
   }
 
   if (week === 2) {
-    array[1] = height > 370 ? (height * 1) / 6 : 0;
+    array[1] = height > 560 ? (height * 1) / 6 : -20;
   }
 
   if (week === 3) {
-    array[1] = height > 375 ? (height * 2) / 6 - 100 : 0;
+    array[1] = height > 550 ? (height * 2) / 6 - 100 : -20;
   }
 
   if (week === 4) {
-    array[1] = height > 510 ? (height - 400) - 50 : 0;
+    array[1] = ((height - 24 - 64) / 6) * 2 - 24;
+
+    if (height < 630) array[1] = (height - 24 - 64 - 300) / 3;
+
+    if (height < 520) array[1] = -20;
   }
 
   if (week === 5) {
-    array[1] = height > 440 ? (height - 400) : 0;
+    array[1] = ((height - 24 - 64) / 6) * 3 - 24;
+
+    if (height < 790) array[1] = (height - 24 - 64 - 300) / 2;
+
+    if (height < 550) array[1] = -20;
   }
 
   if (week === 6) {
     array[1] = (height * 3) / 6 - 70;
+
+    if (height < 790) array[1] = (height - 24 - 64 - 300) / 1.5;
+
+    if (height < 650) array[1] = (height - 24 - 64 - 300) / 2;
+
+    if (height < 550) array[1] = (height - 24 - 64 - 300) / 2.5;
+
+    if (height < 520) array[1] = -20;
   }
 
   return array;
