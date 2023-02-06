@@ -68,9 +68,9 @@ const ModalPosition = (dayIndex, week, size) => {
   }
 
   if (week === 4) {
-    array[1] = ((height - 24 - 64) / 6) * 2 - 24;
+    array[1] = ((height - 24 - 64) / 6) * 2.5 - 24;
 
-    if (height < 630) array[1] = (height - 24 - 64 - 300) / 3;
+    if (height < 700) array[1] = (height - 24 - 64 - 300) / 3;
 
     if (height < 520) array[1] = -20;
   }
