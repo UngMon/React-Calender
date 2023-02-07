@@ -27,7 +27,6 @@ const MakeCaledner = ({
 
     // 미니 캘린더에서 다음달로 넘어가면 메인 캘린더도 같이 다음달과 넘어가기 위함.
     if (modalState.startDate !== idx) {
-      console.log("???");
       // 기존 modalState를 갱신해줌..
       const thisMonth = month - 1;
       dispatch(monthActions.setMonth({ 선택날짜, thisMonth }));

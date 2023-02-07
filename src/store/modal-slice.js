@@ -6,13 +6,14 @@ const modalSlice = createSlice({
     isVisible: false,
     isLogin: false,
     isLoading: true,
+    isCreated: "",
     startDate: "",
     endDate: "",
     week: "",
     dayIndex: "",
-    userIndex: "",
-    userData: [],
-    userSchedule: [],
+    uid: "",
+    dummyData: {},
+    userSchedule: {},
     longArr: [],
     longArrChanged: false,
     changed: false,
@@ -20,62 +21,67 @@ const modalSlice = createSlice({
   reducers: {
     fetchFromData(state, action) {
       console.log("패치");
-      if (action.payload.length !== 0) {
-        state.userData = action.payload;
+      console.log(action.payload.loginData);
+
+      if (action.payload.userData === undefined) {
+        // 신규 가입자라 realTimeDB에 정보가 없을 때, false;
+        console.log("여기 되는거냐?");
+        state.isCreated = false;
+        return;
       }
-      console.log(action.payload);
-    },
 
-    createUser(state, action) {
-      state.changed = true;
-      state.name = action.payload.name;
-      state.email = action.payload.email;
-      state.isLogin = true;
+      console.log("undefined 통과 fetchFromData");
+      state.dummyData = { ...action.payload.userData };
 
-      const userIndex = state.userData.findIndex(
-        (item) => item.email === action.payload.email
-      );
-
-      if (userIndex === -1) {
-        // 신규 가입자 일 때,
-
-        state.userData = [
-          ...state.userData,
-          {
-            email: action.payload.email,
-            name: action.payload.name,
-            schedule: [""],
-          },
-        ];
-
-        state.userIndex = state.userData.length - 1;
-      } else {
-        // 회원일 때,
-        state.userIndex = userIndex;
-      }
-      state.userSchedule = state.userData[state.userIndex];
-      state.isLoading = false;
-    },
-
-    confirmUser(state, action) {
-      const userIndex = state.userData.findIndex(
-        (item) => item.email === action.payload.email
-      );
-
-      if (userIndex !== -1) {
-        state.userSchedule = state.userData[userIndex];
-        state.userIndex = userIndex;
+      // 새로고침시 localStorage의 userInfo 정보를 이용해서 
+      // state.userSchedule에 object 저장
+      if (action.payload.loginData !== undefined) {
+        console.log('working? 40번줄')
+        state.userSchedule = {
+          ...action.payload.userData[action.payload.loginData.uid],
+        };
+        state.dummyData = {};
         state.isLogin = true;
         state.isLoading = false;
+        state.uid = action.payload.loginData.uid;
       }
+    },
+
+    setUser(state, action) {
+      // 신규 가입자 or 이메일 미인증 유저
+      console.log("confirm");
+
+      state.isLogin = true;
+      state.isLoading = false;
+      state.uid = action.payload.uid;
+
+      if (state.dummyData[state.uid]) {
+        state.userSchedule = { ...state.dummyData[state.uid] };
+      } else {
+        console.log("신규 가입자인지?");
+        // 신규 가입자일 때, 유저 data를 생성하고 이후 app.js에서 sendScheduleData()에서
+        // data 생성 요청을 수행함.
+        state.changed = true;
+        state.userSchedule = {
+          email: action.payload.email,
+          name: action.payload.name,
+          schedule: [""],
+        };
+        state.isCreated = true;
+      }
+      state.dummyData = {};
     },
 
     toggleChanged(state) {
+      // 일정 생성 시 렌더링 일으킴.
       state.changed = false;
     },
 
     logout(state) {
       state.isLogin = false;
+      state.userData = "";
+      state.userSchedule = "";
+      state.userIndex = "";
     },
 
     LoadingState(state) {
@@ -83,8 +89,6 @@ const modalSlice = createSlice({
     },
 
     listDone(state, action) {
-      state.changed = true;
-
       const index = action.payload.index;
       const listIndex = action.payload.listIndex;
 
@@ -170,7 +174,7 @@ const modalSlice = createSlice({
 
     inputList(state, action) {
       state.changed = true;
-      const array = [...state.userData];
+      const array = [state.userData];
 
       const startDate = state.startDate.split("-"); // ['year', 'month', 'date']
       const timeArray = action.payload.key[3].slice(0, 8).split(":");
@@ -363,7 +367,6 @@ const modalSlice = createSlice({
         if (index === -1) {
           // i가 longDate의 첫 째날 일 때,
           if (i === state.startDate) {
-
             const Leng = leng - 8 + count > 0 ? 8 - count : leng;
 
             userSchedule.schedule = [
@@ -384,7 +387,6 @@ const modalSlice = createSlice({
             ];
           } else {
             if (count === 1) {
-
               const Leng = leng >= 7 ? 7 : leng;
 
               userSchedule.schedule = [
@@ -404,7 +406,6 @@ const modalSlice = createSlice({
                 },
               ];
             } else {
-
               userSchedule.schedule = [
                 ...userSchedule.schedule,
                 {

@@ -284,6 +284,7 @@ const List = ({ viewRef, listRef, allListRef, clickedElement, list }) => {
             timeOneRef={timeOneRef}
             timeTwoRef={timeTwoRef}
             comparison={comparison}
+            viewRef={viewRef}
           />
           <ColorBox
             color={color}

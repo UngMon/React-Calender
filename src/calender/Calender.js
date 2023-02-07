@@ -11,14 +11,23 @@ const fixYear = date.getFullYear();
 const fixMonth = date.getMonth() + 1;
 const fixDate = date.getDate();
 
-const Calender = ({ year, month, firstDay, lastDate, scheduleInfo, viewRef }) => {
+const Calender = ({ year, month, firstDay, lastDate, viewRef }) => {
   console.log("calender");
 
+  const scheduleInfo = useSelector((state) => state.modal.userSchedule);
   const addModal = useSelector((state) => state.modal);
   const listModal = useSelector((state) => state.list);
   const allListModal = useSelector((state) => state.all);
   // 아래 identify는 makeCalender에서 현재 날짜에 파란 원이 생기게 끔 식별
-  const identify = fixYear + "-" + fixMonth + "-" + fixDate;
+  
+  // month가 10월 달 보다 작으면 ex) 01, 02, 03... 으로 표기
+  // data도 같은 원리
+  const identify =
+    fixYear + "-" + +fixMonth < 10
+      ? "0" + fixMonth
+      : fixMonth + "-" + +fixDate < 10
+      ? "0" + fixDate
+      : fixDate;
 
   const listRef = useRef({}); // makeCalender에서 list ref
   const allListRef = useRef({}); // makeCalender에서 all ref

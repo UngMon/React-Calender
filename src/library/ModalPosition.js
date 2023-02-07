@@ -6,12 +6,10 @@ const ModalPosition = (dayIndex, week, size) => {
   const modalWidth = width > 500 ? 400 : width > 335 ? 300 : 230;
 
   if (size[0] === "") {
-    console.log("here");
     return ["", ""];
   }
 
   let array = [0, 0];
-  console.log(modalWidth);
   if (dayIndex === 1) {
     array[0] =
       width > 500 ? (width * dayIndex) / 7 - 20 : (width - modalWidth) / 2;

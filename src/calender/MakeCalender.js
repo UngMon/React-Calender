@@ -448,7 +448,9 @@ const MakeCaledner = ({
           );
         }
       }
-    } else {
+    } 
+    
+    if (week !== 1) {
       const startDate = (week - 1) * 7;
 
       for (let i = startDate; i <= week * 7 - 1; i++) {

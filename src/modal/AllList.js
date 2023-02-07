@@ -30,7 +30,6 @@ const AllList = ({ viewRef, listRef, allListRef, clickedElement, list }) => {
   });
 
   const addModalCloseHandler = (e) => {
-    console.log("???");
     if (clickedAllListRef.current === e.target) {
       setTimeout(() => {
         dispatch(allListActions.offModal());
@@ -39,7 +38,6 @@ const AllList = ({ viewRef, listRef, allListRef, clickedElement, list }) => {
     }
 
     if (allModal.isVisible && !modalRef.current.contains(e.target)) {
-      console.log("modalRef미포함");
       for (const key in listRef.current) {
         if (listRef.current[key] === null) {
           continue;
@@ -47,7 +45,6 @@ const AllList = ({ viewRef, listRef, allListRef, clickedElement, list }) => {
 
         if (listRef.current[key].contains(e.target)) {
           clickedAllListRef.current = listRef.current[key];
-          console.log("listRef?");
           setTimeout(() => {
             dispatch(allListActions.offModal());
           }, 50);
@@ -61,19 +58,16 @@ const AllList = ({ viewRef, listRef, allListRef, clickedElement, list }) => {
         }
 
         if (allListRef.current[key].contains(e.target)) {
-          // console.log("allListRef?");
           clickedAllListRef.current = allListRef.current[key];
           return;
         }
       }
 
       if (listIsVisible && list.current.contains(e.target)) {
-        // console.log("67row");
         return;
       }
 
       setTimeout(() => {
-        // console.log("마지막");
         dispatch(allListActions.offModal());
         dispatch(listActions.offModal());
         if (!listIsVisible) dispatch(modalActions.offModal());

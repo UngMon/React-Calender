@@ -16,6 +16,8 @@ import { useDispatch } from "react-redux";
 import { modalActions } from "../store/modal-slice";
 import classes from "./LoginPage.module.css";
 
+let bool = false; // 첫 마운트시 confirmUser에서 작동하지 않기위함
+
 const LoginPage = () => {
   const dispatch = useDispatch();
   const navigagte = useNavigate();
@@ -25,8 +27,8 @@ const LoginPage = () => {
 
   // 이메일과 패스워드 state
   const [name, setName] = useState("");
-  const [email, setEmail] = useState(null);
-  const [password, setPassword] = useState(null);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   // const [passwordConfirm, setPasswordConfirm] = useState("");
 
   // 이메일과 패스워드 유효성 검사 state
@@ -121,11 +123,23 @@ const LoginPage = () => {
       signInWithPopup(auth, provider)
         .then((data) => {
           console.log(data);
-          const name = data.user.displayName;
-          const email = data.user.email;
-          localStorage.setItem("email", data.user.email);
-          dispatch(modalActions.createUser({ name, email }));
+          localStorage.setItem(
+            "userInfo",
+            JSON.stringify({
+              email: data.user.email,
+              name: data.user.displayName,
+              uid: data.user.uid,
+            })
+          );
 
+          dispatch(
+            modalActions.setUser({
+              email: data.user.email,
+              name: data.user.displayName,
+              uid: data.user.uid,
+            })
+          );
+          // bool = true;
           navigagte("/calender");
         })
         .catch((err) => {
@@ -146,14 +160,20 @@ const LoginPage = () => {
       .then((userCredential) => {
         // Signed in
         console.log(userCredential);
+        const uid = userCredential.user.uid;
         const emailverified = userCredential.user.emailVerified;
 
         if (!emailverified) return alert("이메일 인증을 해주세요!");
 
         // 이메일 인증 이후..
-        localStorage.setItem("email", userCredential.user);
-        console.log(userCredential.user.auth.config)
-        dispatch(modalActions.confirmUser({ email }));
+        localStorage.setItem("userInfo", JSON.stringify({ email, name, uid }));
+        dispatch(
+          modalActions.setUser({
+            email: userCredential.user.email,
+            name: userCredential.user.displayName,
+            uid: userCredential.user.uid,
+          })
+        );
         navigagte("/calender");
       })
       .catch((err) => {
@@ -172,28 +192,28 @@ const LoginPage = () => {
     if (!isName || !isEmail || !isPassword) {
       return alert("올바른 양식을 기입해주세요!");
     }
-    console.log(auth);
+
     createUserWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
-        const user = userCredential;
-        console.log(user);
+        const uid = userCredential.user.uid;
         sendEmailVerification(auth.currentUser)
           .then(() => {
-            alert("이메일 인증 링크를 보냈습니다!");
+            alert("이메일 인증 링크를 보냈습니다! 링크를 따라 인증해주세요!");
+            dispatch(modalActions.setUser({ name, email, uid}));
+            textClearHandler();
+            // navigagte("/");
           })
           .catch((err) => {
             console.log(err);
             alert("인증 링크를 보내는데 실패했습니다!");
           });
-        console.log(auth.currentUser);
-        console.log(user);
-        dispatch(modalActions.createUser({ name, email }));
-        navigagte("/calender");
+
       })
       .catch((err) => {
         if (err.message === "Firebase: Error (auth/email-already-in-use).") {
           alert("기입한 이메일이 이미 존재합니다.");
         } else {
+          console.log(err)
           alert("계정 생성 중 오류가 발생했습니다.");
         }
       });
@@ -205,6 +225,12 @@ const LoginPage = () => {
 
   const toggleButtonHandler = () => {
     setCreatingUser((prevState) => !prevState);
+  };
+
+  const textClearHandler = () => {
+    setName("");
+    setEmail("");
+    setPassword("");
   };
 
   return (
@@ -229,7 +255,9 @@ const LoginPage = () => {
               />
             )}
             {creatingUser && (
-              <p style={{ color: isEmail ? "grey" : "red" }}>{nameMessage}</p>
+              <p style={{ color: isEmail ? "rgb(175, 175, 175)" : "red" }}>
+                {nameMessage}
+              </p>
             )}
             <label htmlFor="email">이메일</label>
             <input
@@ -239,7 +267,7 @@ const LoginPage = () => {
               required
               onChange={onConfirmEmail}
             />
-            <p style={{ color: isEmail ? "lightgray" : "red" }}>
+            <p style={{ color: isEmail ? "rgb(175, 175, 175)" : "red" }}>
               {emailMessage}
             </p>
             <label htmlFor="password">패스워드</label>
@@ -252,7 +280,7 @@ const LoginPage = () => {
                 creatingUser ? createPassword(e) : confirmPassword(e)
               }
             />
-            <p style={{ color: isPassword ? "black" : "red" }}>
+            <p style={{ color: isPassword ? "rgb(175, 175, 175)" : "red" }}>
               {passwordMessage}
             </p>
           </div>

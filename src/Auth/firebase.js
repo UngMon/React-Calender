@@ -12,8 +12,6 @@ const firebaseConfig = {
   measurementId: "G-C79LVDWX47",
 };
 
-console.log("firebase");
-
 const firebaseApp = initializeApp(firebaseConfig);
 // firebase app 관련 코드
 

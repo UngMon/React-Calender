@@ -31,7 +31,7 @@ const UserInfo = ({ userInfo, setOpenUserInfo }) => {
   const logoutHandler = () => {
     signOut(auth)
       .then((res) => {
-        localStorage.removeItem("email");
+        localStorage.removeItem("userInfo");
         dispatch(modalActions.logout());
         navigagte("/");
       })

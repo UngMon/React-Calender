@@ -7,7 +7,7 @@ import "./Month.css";
 import Calender from "./Calender";
 import UserInfo from "../modal/UserInfo";
 
-const Month = () => {
+const Month = ({ userInfo }) => {
   console.log("month");
 
   const dispatch = useDispatch();
@@ -18,10 +18,9 @@ const Month = () => {
 
   const firstDay = new Date(monthState.year, monthState.month, 1).getDay();
   const lastDate = new Date(monthState.year, monthState.month + 1, 0).getDate();
+  const userInf = JSON.parse(userInfo);
 
-  const userInfo = useSelector((state) => state.modal.userSchedule);
   const viewRef= useRef();
-  console.log(userInfo);
 
   const movePrevMonth = () => {
     dispatch(monthActions.prevMonth());
@@ -75,10 +74,10 @@ const Month = () => {
           </div>
           <div className="header-user-info">
             <div className="user-info-circle" onClick={openUserInfoHandler}>
-              {userInfo.name}
+              {userInf.name}
             </div>
             {openUserInfo && (
-              <UserInfo userInfo={userInfo} setOpenUserInfo={setOpenUserInfo} />
+              <UserInfo userInfo={userInf} setOpenUserInfo={setOpenUserInfo} />
             )}
           </div>
         </div>
@@ -88,7 +87,6 @@ const Month = () => {
         month={monthState.month + 1}
         firstDay={firstDay}
         lastDate={lastDate}
-        scheduleInfo={userInfo}
         viewRef={viewRef}
       />
     </div>

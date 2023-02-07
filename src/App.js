@@ -15,37 +15,35 @@ function App() {
 
   const dispatch = useDispatch();
   const modal = useSelector((state) => state.modal);
-  const loginData = localStorage.getItem("email") || undefined;
-  
+  const loginData = localStorage.getItem("userInfo") || undefined;
+
   useEffect(() => {
     onAuthStateChanged(auth, (user) => {
       if (user) {
-        dispatch(fetchScheduleData(user));
+        dispatch(fetchScheduleData(JSON.parse(loginData)));
       }
     });
-  }, [dispatch]);
+  }, [dispatch, loginData]);
 
   useEffect(() => {
     if (modal.changed) {
-      dispatch(sendScheduleData(modal.userData));
+      dispatch(sendScheduleData(modal.userSchedule, modal.uid));
     }
-  }, [modal, dispatch]);
+  }, [dispatch, modal]);
 
   return (
-      <Routes>
-        {!loginData && <Route path="/" element={<LoginPage />} />}
-        {!loginData && <Route path="/reset-password" element={<ResetPage />} />}
-        {!loginData && <Route path="/*" element={<NotFound />} />}
-        {loginData && modal.isLoading && (
-          <Route path="*" element={<Loading />} />
-        )}
-        {loginData && !modal.isLoading && (
-          <Route path="/calender" element={<Month />} />
-        )}
-        {modal.isLogin && (
-          <Route path="*" element={<Navigate to="/calender" />} />
-        )}
-      </Routes>
+    <Routes>
+      {!loginData && <Route path="/" element={<LoginPage />} />}
+      {!loginData && <Route path="/reset-password" element={<ResetPage />} />}
+      {!loginData && <Route path="/*" element={<NotFound />} />}
+      {loginData && modal.isLoading && <Route path="*" element={<Loading />} />}
+      {loginData && !modal.isLoading && (
+        <Route path="/calender" element={<Month userInfo={loginData}/>} />
+      )}
+      {modal.isLogin && (
+        <Route path="*" element={<Navigate to="/calender" />} />
+      )}
+    </Routes>
   );
 }
 
