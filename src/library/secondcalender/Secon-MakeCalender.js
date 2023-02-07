@@ -1,8 +1,8 @@
-import MakeKey from "../MakeKey";
-import MakeLongArr from "../MakeLongArr";
 import { useDispatch, useSelector } from "react-redux";
 import { monthActions } from "../../store/month-slice";
 import { modalActions } from "../../store/modal-slice";
+import MakeIdx from "../MakeIdx";
+import MakeLongArr from "../MakeLongArr";
 import classes from "./second.module.css";
 
 const MakeCaledner = ({
@@ -69,7 +69,7 @@ const MakeCaledner = ({
       for (let i = 1; i <= 7; i++) {
         if (i <= firstDay) {
           const nowDate = prevMonthLastDate - firstDay + i;
-          const idx = MakeKey("prev", year, month, nowDate);
+          const idx = MakeIdx("prev", year, month, nowDate);
           const dayIdx = i; //모달창을 띄울 때 위치를 무슨 요일인지 저장
 
           thisMonthArray.push(
@@ -93,7 +93,7 @@ const MakeCaledner = ({
           );
         } else {
           const nowDate = i - firstDay;
-          const idx = MakeKey("", year, month, nowDate);
+          const idx = MakeIdx("", year, month, nowDate);
           const dayIdx = i;
 
           thisMonthArray.push(
@@ -123,7 +123,7 @@ const MakeCaledner = ({
       for (let i = startDate; i <= week * 7 - 1; i++) {
         if (i - firstDay < lastDate) {
           const nowDate = i - firstDay + 1;
-          const idx = MakeKey("", year, month, nowDate);
+          const idx = MakeIdx("", year, month, nowDate);
           const dayIdx = (i % 7) + 1;
 
           thisMonthArray.push(
@@ -147,7 +147,7 @@ const MakeCaledner = ({
           );
         } else {
           const nowDate = i - lastDate - firstDay + 1;
-          const idx = MakeKey("next", year, +month, nowDate);
+          const idx = MakeIdx("next", year, +month, nowDate);
           const dayIdx = (i % 7) + 1;
 
           thisMonthArray.push(

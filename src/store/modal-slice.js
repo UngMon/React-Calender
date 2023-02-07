@@ -25,18 +25,15 @@ const modalSlice = createSlice({
 
       if (action.payload.userData === undefined) {
         // 신규 가입자라 realTimeDB에 정보가 없을 때, false;
-        console.log("여기 되는거냐?");
         state.isCreated = false;
         return;
       }
 
-      console.log("undefined 통과 fetchFromData");
       state.dummyData = { ...action.payload.userData };
 
       // 새로고침시 localStorage의 userInfo 정보를 이용해서 
       // state.userSchedule에 object 저장
       if (action.payload.loginData !== undefined) {
-        console.log('working? 40번줄')
         state.userSchedule = {
           ...action.payload.userData[action.payload.loginData.uid],
         };
@@ -73,7 +70,6 @@ const modalSlice = createSlice({
     },
 
     toggleChanged(state) {
-      // 일정 생성 시 렌더링 일으킴.
       state.changed = false;
     },
 

@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { allListActions } from "../store/all-list-slice";
 import { modalActions } from "../store/modal-slice";
 import { listActions } from "../store/list-slice";
-import MakeKey from "../library/MakeKey";
+import MakeIdx from '../library/MakeIdx';
 import classes from "./Calender.module.css";
 
 const MakeCaledner = ({
@@ -229,11 +229,11 @@ const MakeCaledner = ({
       }
 
       // item이 숫자일 때, 더 보기 태그 생성
-      if (item !== 0 && typeof item !== 'object') {
+      if (item !== 0 && typeof item !== "object") {
         if (idx < listBoxHeightCount - 1) {
           visualCount += 1;
         }
-        /// 여기서 idx > listBox~ -2 이렇게 하면 더보기란이 엄청생길거임.. 
+        /// 여기서 idx > listBox~ -2 이렇게 하면 더보기란이 엄청생길거임..
         // 솔루션은 map을 for로 바꿔서 중단시키던지. 아니면 응? 어떻게 하지?...
         if (idx > listBoxHeightCount - 2 && !moreListBool) {
           result = (
@@ -379,7 +379,7 @@ const MakeCaledner = ({
       for (let i = 1; i <= 7; i++) {
         if (i <= firstDay) {
           const nowDate = prevMonthLastDate - firstDay + i;
-          const idx = MakeKey("prev", year, month, nowDate);
+          const idx = MakeIdx("prev", year, month, nowDate);
           const dayIdx = i; //모달창을 띄울 때 위치를 무슨 요일인지 저장
 
           thisMonthArray.push(
@@ -411,7 +411,7 @@ const MakeCaledner = ({
           );
         } else {
           const nowDate = i - firstDay;
-          const idx = MakeKey("", year, month, nowDate);
+          const idx = MakeIdx("", year, month, nowDate);
           const dayIdx = i;
 
           thisMonthArray.push(
@@ -448,18 +448,18 @@ const MakeCaledner = ({
           );
         }
       }
-    } 
-    
+    }
+
     if (week !== 1) {
       const startDate = (week - 1) * 7;
 
       for (let i = startDate; i <= week * 7 - 1; i++) {
         if (i - firstDay < lastDate) {
           const nowDate = i - firstDay + 1;
-          const idx = MakeKey("", year, month, nowDate);
+          const idx = MakeIdx("", year, month, nowDate);
           const dayIdx = (i % 7) + 1;
 
-          thisMonthArray.push(
+          thisMonthArray.push(  
             <td
               key={idx}
               onClick={() => {
@@ -490,7 +490,7 @@ const MakeCaledner = ({
           );
         } else {
           const nowDate = i - lastDate - firstDay + 1;
-          const idx = MakeKey("next", year, month, nowDate);
+          const idx = MakeIdx("next", year, month, nowDate);
           const dayIdx = (i % 7) + 1;
 
           thisMonthArray.push(
