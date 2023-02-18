@@ -22,7 +22,7 @@ const MakeCaledner = ({
   const modalState = useSelector((state) => state.modal);
   const listState = useSelector((state) => state.list);
 
-  const clickHandler = (idx, dayIndex, week, type) => {
+  const clickHandler = (idx, day, week, type) => {
     const 선택날짜 = idx.split("-"); // ['year', 'month', 'date']
 
     // 미니 캘린더에서 다음달로 넘어가면 메인 캘린더도 같이 다음달과 넘어가기 위함.
@@ -43,13 +43,12 @@ const MakeCaledner = ({
       const longArr = MakeLongArr(선택날짜, 마지막날);
       const type = "start";
       dispatch(
-        modalActions.clickedDate({ type, idx, dayIndex, week, longArr })
+        modalActions.clickedDate({ type, idx, day, week, longArr })
       );
     } else {
       // 두 번째 미니 달력 선택의 경우...
       const 시작날 = modalState.startDate.split("-");
       const longArr = MakeLongArr(시작날, 선택날짜);
-      console.log(longArr)
       const type = "end";
       dispatch(modalActions.clickedDate({ type, idx, longArr }));
     }

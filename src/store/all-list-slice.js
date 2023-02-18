@@ -7,7 +7,7 @@ const allListSlice = createSlice({
     date: "",
     day: "",
     week: "",
-    index: "",
+    key: "",
   },
   reducers: {
     offModal(state) {
@@ -19,7 +19,6 @@ const allListSlice = createSlice({
       state.date = action.payload.date;
       state.day = action.payload.day;
       state.week = action.payload.week;
-      state.index = action.payload.scheduleIndex;
     },
   },
 });

@@ -10,7 +10,7 @@ const modalSlice = createSlice({
     startDate: "",
     endDate: "",
     week: "",
-    dayIndex: "",
+    day: "",
     uid: "",
     dummyData: {},
     userSchedule: {},
@@ -20,18 +20,15 @@ const modalSlice = createSlice({
   },
   reducers: {
     fetchFromData(state, action) {
-      console.log("패치");
-      console.log(action.payload.loginData);
-
       if (action.payload.userData === undefined) {
-        // 신규 가입자라 realTimeDB에 정보가 없을 때, false;
+        // 신규 가입자라 realTimeDB에 정보가 없을 때,
         state.isCreated = false;
         return;
       }
 
       state.dummyData = { ...action.payload.userData };
 
-      // 새로고침시 localStorage의 userInfo 정보를 이용해서 
+      // 새로고침시 localStorage의 userInfo 정보를 이용해서
       // state.userSchedule에 object 저장
       if (action.payload.loginData !== undefined) {
         state.userSchedule = {
@@ -55,14 +52,13 @@ const modalSlice = createSlice({
       if (state.dummyData[state.uid]) {
         state.userSchedule = { ...state.dummyData[state.uid] };
       } else {
-        console.log("신규 가입자인지?");
         // 신규 가입자일 때, 유저 data를 생성하고 이후 app.js에서 sendScheduleData()에서
         // data 생성 요청을 수행함.
         state.changed = true;
         state.userSchedule = {
           email: action.payload.email,
           name: action.payload.name,
-          schedule: [""],
+          schedule: { dummy: 1 },
         };
         state.isCreated = true;
       }
@@ -75,9 +71,13 @@ const modalSlice = createSlice({
 
     logout(state) {
       state.isLogin = false;
-      state.userData = "";
-      state.userSchedule = "";
-      state.userIndex = "";
+      state.isCreated = "";
+      state.startDate = "";
+      state.endDate = "";
+      state.week = "";
+      state.day = "";
+      state.uid = "";
+      state.userSchedule = {};
     },
 
     LoadingState(state) {
@@ -85,36 +85,29 @@ const modalSlice = createSlice({
     },
 
     listDone(state, action) {
-      const index = action.payload.index;
-      const listIndex = action.payload.listIndex;
+      const schedule = { ...state.userSchedule.schedule };
+      const clickedDate = action.payload.date.split("-");
+      const key = action.payload.key;
 
-      let dummyUserData = [...state.userData];
-      let userSchedule = [...state.userSchedule.schedule];
+      const year = clickedDate[0];
+      const month = clickedDate[1];
+      const date = action.payload.date;
 
-      const dateArr = userSchedule[index].todo[listIndex].arr;
-      const identifyIndex = userSchedule[index].todo[listIndex].index;
+      const dateArray = schedule[year][month][date][key].arr;
 
-      let itemsIdx;
-      let listIdx;
+      for (const item of dateArray) {
+        const arr = item.split("-");
+        const year = arr[0];
+        const month = arr[1];
 
-      for (const items of dateArr) {
-        itemsIdx = userSchedule.findIndex((item) => item.idx === items);
-
-        listIdx = userSchedule[itemsIdx].todo.findIndex(
-          (item) => item.index === identifyIndex
-        );
-
-        userSchedule[itemsIdx].todo[listIdx].style =
-          !userSchedule[itemsIdx].todo[listIdx].style;
+        schedule[year][month][item][key].style =
+          !schedule[year][month][item][key].style;
       }
 
-      dummyUserData[state.userIndex].schedule = userSchedule;
-
-      state.userData = [...dummyUserData];
       state.userSchedule = {
         email: state.userSchedule.email,
         name: state.userSchedule.name,
-        schedule: [...userSchedule],
+        schedule,
       };
     },
 
@@ -127,14 +120,13 @@ const modalSlice = createSlice({
       state.startDate = "";
       state.endDate = "";
       state.week = "";
-      state.dayIndex = "";
+      state.day = "";
       state.longArrChanged = false;
       state.longArr = [];
     },
 
     setDate(state, action) {
-      state.week = action.payload.week;
-      state.dayIndex = action.payload.day;
+      state.day = action.payload.day;
       state.startDate = action.payload.startDate;
       state.endDate = action.payload.endDate;
       state.longArr = action.payload.arr;
@@ -156,10 +148,10 @@ const modalSlice = createSlice({
 
       state.startDate = action.payload.idx;
       state.week = action.payload.week;
-      state.dayIndex = action.payload.dayIndex;
+      state.day = action.payload.day;
 
       // makeCalender.js에서 addClickHandler type = 'add'
-      //type, idx, dayIndex, week
+      //type, idx, day, week
       if (action.payload.type === "add") {
         state.isVisible = true;
         return;
@@ -170,34 +162,36 @@ const modalSlice = createSlice({
 
     inputList(state, action) {
       state.changed = true;
-      const array = [state.userData];
 
-      const startDate = state.startDate.split("-"); // ['year', 'month', 'date']
-      const timeArray = action.payload.key[3].slice(0, 8).split(":");
+      const array = { ...state.userSchedule.schedule };
 
-      //우선 파이어베이스 realtime db때문에 schedule: ['']라고 정의한 첫 번째 요소 삭제
-      if (array[state.userIndex].schedule[0] === "") {
-        array[state.userIndex].schedule.splice(0, 1);
-      }
+      const startDate = state.startDate.split("-");
+      const startTimeSplit = action.payload.startTime.split(" ");
+      const endTimeSplit = action.payload.endTime.split(" ");
 
-      // return { idx : '~~', todo: []} or undefined
-      const index = array[state.userIndex].schedule.findIndex(
-        (item) => item.idx === state.startDate
-      );
+      const year = startDate[0];
+      const month = startDate[1];
+      const date = state.startDate;
+
+      const startTime =
+        `${startTimeSplit[0] === "오전" ? 1 : 2}` +
+        startTimeSplit[1].split(":").join("") +
+        "0";
+      const endTime =
+        `${endTimeSplit[0] === "오전" ? 1 : 2}` +
+        endTimeSplit[1].split(":").join("");
+
+      const start = startDate[0] + startDate[1] + startDate[2];
+      const nowDate = action.payload.timeArr.slice(0, 3).join("");
+      const nowTime = action.payload.timeArr[3].slice(0, 8).split(":").join("");
 
       const key =
-        `${startDate[0]}` + // startDate Year
-        `${10 + +startDate[1]}` + // startDate month
-        `${10 + +startDate[2]}` + // startDate date
-        "9999" +
-        action.payload.startTime +
-        action.payload.endTime +
-        `${action.payload.key[0]}` + //now year
-        `${99 - action.payload.key[1]}` + //now month
-        `${99 - action.payload.key[2]}` + //now date
-        `${24 - +timeArray[0]}` +
-        `${60 - +timeArray[1]}` +
-        `${60 - +timeArray[2]}`;
+        start +
+        9999 +
+        startTime +
+        (30000 - endTime) +
+        nowDate +
+        (256161 - nowTime);
 
       const object = {
         startDate: state.startDate,
@@ -207,84 +201,77 @@ const modalSlice = createSlice({
         title: action.payload.title,
         style: false,
         color: action.payload.color,
-        index: key,
+        key,
         arr: [state.startDate],
         length: 1,
-        isShort: true,
         isStart: false,
         isMiddle: false,
         isEnd: false,
         isLong: false,
       };
 
-      if (index !== -1) {
-        // 존재하면
-        array[state.userIndex].schedule[index].todo = [
-          ...array[state.userIndex].schedule[index].todo,
-          {
-            ...object,
-          },
-        ];
-
-        array[state.userIndex].schedule[index].todo.sort((a, b) =>
-          a.index < b.index ? -1 : 1
-        );
-      } else {
-        // 해당 날짜가 schedule 배열에 없을 때, 즉 해당 날짜에 처음 일정을 입력할 때
-
-        array[state.userIndex].schedule = [
-          ...array[state.userIndex].schedule,
-          {
-            idx: state.startDate,
-            todo: [
-              {
-                ...object,
-              },
-            ],
-          },
-        ];
+      // 해당 연도에 아무런 일정이 없을 때,
+      if (array[year] === undefined) {
+        array[year] = {};
       }
-      state.userData = [...array];
-      state.userSchedule = array[state.userIndex];
+      //해당 월에 아무런 일정이 없을 때,
+      if (array[year][month] === undefined) {
+        array[year][month] = {};
+      }
+
+      if (array[year][month][date] === undefined) {
+        // 해당 날에 일정이 없을 때,
+        array[year][month][date] = {};
+        array[year][month][date][key] = { ...object };
+      } else {
+        //해당 날에 기존 일정이 있을 때,
+        array[year][month][date][key] = { ...object };
+        const newObj = Object.fromEntries(
+          Object.entries(array[year][month][date]).sort(([a], [b]) => (a < b ? -1 : 1))
+        );
+        array[year][month][date] = newObj;
+      }
+
+      state.userSchedule = {
+        email: state.userSchedule.email,
+        name: state.userSchedule.name,
+        schedule: { ...array },
+      };
       state.longArrChanged = false;
     },
 
     longDateList(state, action) {
       state.changed = true;
 
-      let dummyUserData = [...state.userData];
+      let schedule = { ...state.userSchedule.schedule };
 
-      const startDate = state.startDate.split("-");
-      const timeArray = action.payload.key[3].slice(0, 8).split(":");
+      const startTimeSplit = action.payload.startTime.split(" ");
+      const endTimeSplit = action.payload.endTime.split(" ");
 
-      // 일정을 입력할 때, 날짜 조정이 없을 경우 액션값, 날짜 조정을 하면 state.longArr의 값을..
+      const startTime =
+        `${startTimeSplit[0] === "오전" ? 1 : 2}` +
+        startTimeSplit[1].split(":").join("");
+
+      const endTime =
+        `${endTimeSplit[0] === "오전" ? 1 : 2}` +
+        endTimeSplit[1].split(":").join("");
+
+      const nowDate = action.payload.timeArr.slice(0, 3).join("");
+      const nowTime = action.payload.timeArr[3].slice(0, 8).split(":").join("");
+
       const arr = state.longArr;
 
       let leng = arr.length;
 
-      let count = state.dayIndex;
-
-      // {email: '', name: '', schedule: [...]} 깊은 복사
-      let userSchedule = JSON.parse(JSON.stringify(state.userSchedule));
+      let count = state.day;
 
       const key =
-        `${startDate[0]}` + // startDate Year
-        `${10 + +startDate[1]}` + // startDate month
-        `${10 + +startDate[2]}` + // startDate date
-        `${5000 - arr.length}` +
-        action.payload.startTime +
-        action.payload.endTime +
-        `${action.payload.key[0]}` + //now year
-        `${99 - action.payload.key[1]}` + //now month
-        `${99 - action.payload.key[2]}` + //now date
-        `${24 - +timeArray[0]}` +
-        `${60 - +timeArray[1]}` +
-        `${60 - +timeArray[2]}`;
-
-      if (userSchedule.schedule[0] === "") {
-        console.log("working");
-        userSchedule.schedule.splice(0, 1);
-      }
+      state.startDate +
+      (9999 - arr.length) +
+      startTime +
+      (30000 - endTime) +
+      nowDate +
+      (256161 - nowTime);
 
       const object = {
         startDate: state.startDate,
@@ -294,196 +281,149 @@ const modalSlice = createSlice({
         title: action.payload.title,
         style: false,
         color: action.payload.color,
-        isShort: false,
-        index: key,
+        key,
         arr,
       };
 
-      for (let i of arr) {
-        const index = userSchedule.schedule.findIndex((item) => item.idx === i);
+      for (const i of arr) {
+        const dateInfo = i.split("-");
+        const year = dateInfo[0];
+        const month = dateInfo[1];
+
+        if (!schedule[year]) schedule[year] = {};
+
+        if (!schedule[year][month]) schedule[year][month] = {};
 
         // schedule에서 longArr배열에 있는 i 가 존재할 때, 즉 기존 일정이 있을 때!
-        if (index !== -1) {
+        if (schedule[year][month][i]) {
           if (i === state.startDate) {
             // longDate의 첫 째날 일 때,
             const Leng = leng - 8 + count > 0 ? 8 - count : leng;
-            // console.log(count);
-            // { idx: '', todo: [~~] }
-            userSchedule.schedule[index].todo = [
-              ...userSchedule.schedule[index].todo,
-              {
-                ...object,
-                length: Leng,
-                isLong: true,
-                isStart: true,
-                isMiddle: false,
-                isEnd: false,
-              },
-            ];
+
+            schedule[year][month][i][key] = {
+              ...object,
+              length: Leng,
+              count,
+              isLong: true,
+              isStart: true,
+              isMiddle: false,
+              isEnd: false,
+            };
           } else {
             // 첫 째날이 아닌 그 이후 Date일 때,
-
             if (count === 1) {
               // 시작 날 기준 다음주로 넘어갈 때, 일요일의 경우(count = 1) 남은 length만큼 표시
               const Leng = leng >= 7 ? 7 : leng; //시작 날 기준 다다음주 까지 넘어가는지
 
-              userSchedule.schedule[index].todo = [
-                ...userSchedule.schedule[index].todo,
-                {
-                  ...object,
-                  length: Leng,
-                  isLong: true,
-                  isStart: leng === 1 ? false : true,
-                  isMiddle: false,
-                  isEnd: true,
-                },
-              ];
+              schedule[year][month][i][key] = {
+                ...object,
+                length: Leng,
+                count,
+                isLong: true,
+                isStart: leng === 1 ? false : true,
+                isMiddle: false,
+                isEnd: true,
+              };
             } else {
               // 일요일이 아닌 요일
-              userSchedule.schedule[index].todo = [
-                ...userSchedule.schedule[index].todo,
-                {
-                  ...object,
-                  length: 1,
-                  isLong: false,
-                  isStart: false,
-                  isMiddle: true,
-                  isEnd: leng === 1 ? true : false,
-                },
-              ];
+              schedule[year][month][i][key] = {
+                ...object,
+                length: 1,
+                count,
+                isLong: true,
+                isStart: false,
+                isMiddle: leng === 1 ? false : true,
+                isEnd: leng === 1 ? true : false,
+              };
             }
           }
-          // 오름차순 정렬
-          userSchedule.schedule[index].todo.sort((a, b) =>
-            a.index < b.index ? -1 : 1
+          const newObj = Object.fromEntries(
+            Object.entries(schedule[year][month][i]).sort(([a], [b]) => (a < b ? -1 : 1))
           );
+          schedule[year][month][i] = newObj;
         }
 
         // 다시 돌아와서, schedule에 longArr에 있는 날짜에 일정이 없을 때,
-        if (index === -1) {
+        if (!schedule[year][month][i]) {
+          schedule[year][month][i] = {};
           // i가 longDate의 첫 째날 일 때,
           if (i === state.startDate) {
             const Leng = leng - 8 + count > 0 ? 8 - count : leng;
 
-            userSchedule.schedule = [
-              ...userSchedule.schedule,
-              {
-                idx: i,
-                todo: [
-                  {
-                    ...object,
-                    length: Leng,
-                    isLong: true,
-                    isStart: leng === 1 ? false : true,
-                    isMiddle: false,
-                    isEnd: true,
-                  },
-                ],
-              },
-            ];
+            schedule[year][month][i][key] = {
+              ...object,
+              length: Leng,
+              count,
+              isLong: true,
+              isStart: true,
+              isMiddle: false,
+              isEnd: false,
+            };
           } else {
             if (count === 1) {
               const Leng = leng >= 7 ? 7 : leng;
 
-              userSchedule.schedule = [
-                ...userSchedule.schedule,
-                {
-                  idx: i,
-                  todo: [
-                    {
-                      ...object,
-                      length: Leng,
-                      isLong: true,
-                      isStart: leng === 1 ? false : true,
-                      isMiddle: false,
-                      isEnd: true,
-                    },
-                  ],
-                },
-              ];
+              schedule[year][month][i][key] = {
+                ...object,
+                length: Leng,
+                count,
+                isLong: true,
+                isStart: leng === 1 ? false : true,
+                isMiddle: false,
+                isEnd: leng === 1 ? true : false,
+              };
             } else {
-              userSchedule.schedule = [
-                ...userSchedule.schedule,
-                {
-                  idx: i,
-                  todo: [
-                    {
-                      ...object,
-                      color: action.payload.color,
-                      length: 1,
-                      isLong: false,
-                      isStart: false,
-                      isMiddle: true,
-                      isEnd: leng === 1 ? true : false,
-                    },
-                  ],
-                },
-              ];
+              schedule[year][month][i][key] = {
+                ...object,
+                length: 1,
+                count,
+                isLong: true,
+                isStart: false,
+                isMiddle: leng === 1 ? false : true,
+                isEnd: leng === 1 ? true : false,
+              };
             }
           }
         }
         leng -= 1;
         count = count === 7 ? 1 : count + 1;
       } // for 문 끝.
-      // userSchedule.schedule.sort((a, b) => a.idx <)
-      state.userSchedule = userSchedule;
-      dummyUserData[state.userIndex] = userSchedule;
-      state.userData = [...dummyUserData];
+
+      state.userSchedule = {
+        email: state.userSchedule.email,
+        name: state.userSchedule.name,
+        schedule: { ...schedule },
+      };
       state.longArrChanged = false;
     },
 
     removeList(state, action) {
       state.changed = true; // fetch (put)
 
-      let dummyUserData = [...state.userData];
-      //{email: '', name: '', schedule: [~~]} 에서 schedule
-      // userSchedule = [{idx: '~', todo: [...] }, ...]
-      let userSchedule = JSON.parse(
-        JSON.stringify(state.userSchedule.schedule)
-      );
+      let schedule = { ...state.userSchedule.schedule };
 
-      // userSchedule 내부 {idx: '', todo: []}의 인덱스
-      const index = action.payload.index;
-      const listIndex = action.payload.listIndex; // todo 내부 {~~}의 인덱스
+      const dateInfo = action.payload.date.split("-");
+      const year = dateInfo[0];
+      const month = dateInfo[1];
+      const date = action.payload.date;
+      const key = action.payload.key;
+      const dateArray = schedule[year][month][date][key].arr;
 
-      //당일 계획 삭제할 때,
-      if (userSchedule[index].todo[listIndex].arr.length === 1) {
-        userSchedule[index].todo.splice(listIndex, 1);
-        // todo가 비어있는 배열이라면 ex){idx: '~', todo: []} 필요가 없으니 삭제
-        userSchedule[index].todo.length === 0 && userSchedule.splice(index, 1);
-      } else {
-        // 하루가 아닌 여러 날짜를 삭제할 때,
-        const Array = userSchedule[index].todo[listIndex].arr;
-        const identifyIndex = userSchedule[index].todo[listIndex].index;
+      for (const item of dateArray) {
+        // item = '2023-01-01
+        const date = item.split("-");
 
-        let itemsIdx;
-        let listIdx;
+        delete schedule[date[0]][date[1]][item][key];
 
-        for (const items of Array) {
-          itemsIdx = userSchedule.findIndex((item) => item.idx === items);
-
-          listIdx = userSchedule[itemsIdx].todo.findIndex(
-            (item) => item.index === identifyIndex
-          );
-
-          userSchedule[itemsIdx].todo.splice(listIdx, 1);
-
-          userSchedule[itemsIdx].todo.length === 0 &&
-            userSchedule.splice(itemsIdx, 1);
+        if (schedule[date[0]][date[1]][item] === {}) {
+          delete schedule[date[0]][date[1]][item];
         }
       }
 
-      // firebase realtimeDB에서 (schedule: [''])형태를 남기기 위함
-      if (userSchedule.length === 0) {
-        userSchedule = [""];
-      }
-
-      dummyUserData[state.userIndex].schedule = userSchedule;
-      state.userData = [...dummyUserData];
       state.userSchedule = {
         email: state.userSchedule.email,
         name: state.userSchedule.name,
-        schedule: [...userSchedule],
+        schedule,
       };
     },
   },

@@ -23,23 +23,18 @@ const List = ({ viewRef, listRef, allListRef, clickedElement, list }) => {
   const listState = useSelector((state) => state.list);
   const modalState = useSelector((state) => state.modal);
   const allListState = useSelector((state) => state.all);
-
-  const index = listState.scheduleIndex;
-  const listIndex = listState.listIndex;
-
   const schedule = modalState.userSchedule.schedule;
 
-  const listInfo = schedule[index].todo[listIndex];
-  const startDate = modalState.startDate || listInfo.startDate;
-  const endDate = modalState.endDate || listInfo.endDate;
+  const startDate = modalState.startDate || listState.startDate;
+  const endDate = modalState.endDate || listState.endDate;
 
   const dateArray =
-    startDate === endDate
-      ? startDate.split("-")
-      : [...startDate.split("-"), ...endDate.split("-")];
+    listState.startDate === listState.endDate
+      ? listState.startDate.split("-")
+      : [...listState.startDate.split("-"), ...listState.endDate.split("-")];
 
   const [editArea, setEditArea] = useState(false);
-  const [color, setColor] = useState(listInfo.color);
+  const [color, setColor] = useState(listState.color);
   const [openColor, setOpenColor] = useState(false);
   const [size, setSize] = useState(["", ""]);
 
@@ -72,10 +67,9 @@ const List = ({ viewRef, listRef, allListRef, clickedElement, list }) => {
         }, [100]);
       }
     }
-
+    // 같은 리스트를 클릭하면 모달창이 종료되게 끔..
     if (e.target === clickedElement.current) {
       setTimeout(() => {
-        console.log(`?????`);
         dispatch(listActions.offModal());
       }, 100);
       return;
@@ -88,7 +82,6 @@ const List = ({ viewRef, listRef, allListRef, clickedElement, list }) => {
         }
 
         if (listRef.current[key].contains(e.target)) {
-          console.log("llistRef???");
           clickedElement.current = e.target;
           return;
         }
@@ -102,7 +95,6 @@ const List = ({ viewRef, listRef, allListRef, clickedElement, list }) => {
         if (allListRef.current[key].contains(e.target)) {
           clickedElement.current = e.target;
           setTimeout(() => {
-            console.log("allList 클릭했나?");
             dispatch(listActions.offModal());
           }, 100);
           return;
@@ -110,8 +102,6 @@ const List = ({ viewRef, listRef, allListRef, clickedElement, list }) => {
       }
 
       setTimeout(() => {
-        console.log("통과");
-        console.log(e.target);
         !allListState.isVisible && dispatch(listActions.offModal());
         dispatch(modalActions.offModal());
         dispatch(timeActions.resetTime());
@@ -126,15 +116,16 @@ const List = ({ viewRef, listRef, allListRef, clickedElement, list }) => {
     };
   });
 
-  const removeListHandler = (index, listIndex) => {
-    dispatch(modalActions.removeList({ index, listIndex }));
+  const removeListHandler = (date, key) => {
+    dispatch(modalActions.removeList({ date, key }));
     dispatch(listActions.offModal());
   };
 
   const listEditHandler = (startDate, endDate) => {
-    const arr = listInfo.arr;
-    const week = listState.week;
-    const day = listState.dayIndex;
+    const day = new Date(startDate).getDay() + 1;
+    const arr = listState.arr;
+    const key = listState.key;
+    console.log(day);
 
     if (allListState.isVisible) {
       dispatch(allListActions.offModal());
@@ -142,24 +133,28 @@ const List = ({ viewRef, listRef, allListRef, clickedElement, list }) => {
     setEditArea((prevState) => !prevState);
     // 리스트 클릭시 modla-slice의 startDate와 endDate값이 원하는 값이 아니기에
     // 클릭할 때 값을 갱신해줘야 함. 추가로 arr 배열도..
-    dispatch(modalActions.setDate({ week, day, startDate, endDate, arr}));
+    dispatch(modalActions.setDate({ day, startDate, endDate, arr, key }));
   };
 
   const editListSubmitHandler = (event) => {
     event.preventDefault();
+    const key = listState.key;
 
     const time = new Date();
-    const key = [
+    const month = time.getMonth();
+    const datee = time.getDate();
+    const timeArr = [
       time.getFullYear(),
-      time.getMonth(),
-      time.getDate(),
+      month < 10 ? "0" + month : month,
+      datee < 10 ? "0" + datee : datee,
       time.toTimeString(),
     ];
 
     const pattern = /^(오전|오후)\s(([0][0-9]|[1][0-2])):([0-5][0-9])$/;
     let title = inputRef.current.value;
-    let startTime = timeOneRef.current.value || listInfo.startTime;
-    let endTime = timeTwoRef.current.value || listInfo.endTime;
+    const date = listState.startDate;
+    let startTime = timeOneRef.current.value || listState.startTime;
+    let endTime = timeTwoRef.current.value || listState.endTime;
 
     if (!timeOneRef.current.value.length === 0) {
       if (!pattern.test(timeOneRef.current.value)) {
@@ -188,11 +183,11 @@ const List = ({ viewRef, listRef, allListRef, clickedElement, list }) => {
     }
 
     // startTime < endTime 이면서...
-    dispatch(modalActions.removeList({ index, listIndex }));
+    dispatch(modalActions.removeList({ date, key }));
 
     if (comparison === 4) {
       dispatch(
-        modalActions.inputList({ startTime, endTime, title, color, key })
+        modalActions.inputList({ startTime, endTime, title, color, timeArr })
       );
     }
 
@@ -202,7 +197,7 @@ const List = ({ viewRef, listRef, allListRef, clickedElement, list }) => {
           startTime,
           endTime,
           title,
-          key,
+          timeArr,
           color,
         })
       );
@@ -213,22 +208,24 @@ const List = ({ viewRef, listRef, allListRef, clickedElement, list }) => {
     closeModalHandler();
   };
 
-  const listDoneHandler = (index, listIndex) => {
-    dispatch(modalActions.listDone({ index, listIndex }));
+  const listDoneHandler = (date, key) => {
+    dispatch(modalActions.listDone({ date, key }));
   };
 
   const closeModalHandler = () => {
     dispatch(listActions.offModal());
+    dispatch(modalActions.offModal());
     dispatch(timeActions.resetTime());
   };
 
-  const styleClass =
-    schedule[index].todo[listIndex].style && !editArea && "done";
+  const styleClass = schedule[dateArray[0]][dateArray[1]][listState.startDate][
+    listState.key
+  ].style
+    ? "done"
+    : false;
 
   const marginSize =
-    size[0] !== ""
-      ? ModalPosition(listState.dayIndex, listState.week, size)
-      : false;
+    size[0] !== "" ? ModalPosition(listState.day, listState.week, size) : false;
 
   return (
     <div
@@ -243,17 +240,15 @@ const List = ({ viewRef, listRef, allListRef, clickedElement, list }) => {
       onWheel={(e) => e.stopPropagation()}
     >
       <div className="option-box">
-        <div
-          onClick={() => listEditHandler(listInfo.startDate, listInfo.endDate)}
-        >
+        <div onClick={() => listEditHandler(startDate, endDate)}>
           <FontAwesomeIcon icon={faEdit} />
         </div>
-        <div onClick={() => removeListHandler(index, listIndex)}>
+        <div onClick={() => removeListHandler(startDate, listState.key)}>
           <FontAwesomeIcon icon={faTrash} />
         </div>
         <div
           className="fa-check"
-          onClick={() => listDoneHandler(index, listIndex)}
+          onClick={() => listDoneHandler(startDate, listState.key)}
         >
           <FontAwesomeIcon icon={faCheck} />
         </div>
@@ -270,17 +265,13 @@ const List = ({ viewRef, listRef, allListRef, clickedElement, list }) => {
               width="17"
               className="input-icon"
             />
-            <input
-              placeholder={listState.listName}
-              type="text"
-              ref={inputRef}
-            />
+            <input placeholder={listState.title} type="text" ref={inputRef} />
           </div>
           <TimeSelector
             startDate={startDate}
             endDate={endDate}
-            firstTime={listInfo.startTime}
-            lastTime={listInfo.endTime}
+            firstTime={listState.startTime}
+            lastTime={listState.endTime}
             timeOneRef={timeOneRef}
             timeTwoRef={timeTwoRef}
             comparison={comparison}
@@ -301,16 +292,12 @@ const List = ({ viewRef, listRef, allListRef, clickedElement, list }) => {
       {!editArea && (
         <div className="list-info">
           <div className="list-title">
-            <div className={`list-color-box ${listInfo.color}`}></div>
-            <div className={`listName  ${styleClass}`}>
-              {listState.listName}
-            </div>
+            <div className={`list-color-box ${listState.color}`}></div>
+            <div className={`listName  ${styleClass}`}>{listState.title}</div>
           </div>
           <div className="list-time">
             <div className="time-item">{`${dateArray[0]}년 ${dateArray[1]}월 ${dateArray[2]}일`}</div>
-            <div className="time-item">
-              {schedule[index].todo[listIndex].startTime}
-            </div>
+            <div className="time-item">{listState.startTime}</div>
             <span className="time-item">~</span>
             <div
               className="time-item"
@@ -327,9 +314,7 @@ const List = ({ viewRef, listRef, allListRef, clickedElement, list }) => {
               }
               `}
             </div>
-            <div className="time-item">
-              {schedule[index].todo[listIndex].endTime}
-            </div>
+            <div className="time-item">{listState.endTime}</div>
           </div>
         </div>
       )}

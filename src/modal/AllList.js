@@ -14,8 +14,12 @@ const AllList = ({ viewRef, listRef, allListRef, clickedElement, list }) => {
 
   const schedule = useSelector((state) => state.modal.userSchedule.schedule);
   const allModal = useSelector((state) => state.all);
-
   const listIsVisible = useSelector((state) => state.list.isVisible);
+
+  const dateInfo = allModal.date.split("-");
+  const year = dateInfo[0];
+  const month = dateInfo[1];
+  const date = allModal.date;
 
   const [size, setSize] = useState([0, 0]);
   const modalRef = useRef();
@@ -100,76 +104,91 @@ const AllList = ({ viewRef, listRef, allListRef, clickedElement, list }) => {
     window.addEventListener("resize", widthCalculator);
   });
 
-  const listClickHandler = (event, item, listIdx) => {
+  const listClickHandler = (event, object) => {
     clickedElement.current = event.target;
+    const style = object.style;
+    const color = object.color;
+    const startDate = object.startDate;
+    const endDate = object.endDate;
+    const startTime = object.startTime;
+    const endTime = object.endTime;
     const week = allModal.week;
-    const dayIndex = allModal.day;
-    const listName = item.title;
-    const listIndex = listIdx;
-    const scheduleIndex = allModal.index;
-    const key = item.index;
+    const day = allModal.day;
+    const title = object.title;
+    const key = object.key;
+    const arr = object.arr;
     dispatch(
       listActions.clickedList({
+        style,
+        color,
+        startDate,
+        endDate,
+        startTime,
+        endTime,
         week,
-        dayIndex,
-        listName,
-        listIndex,
-        scheduleIndex,
+        day,
+        title,
         key,
+        arr,
       })
     );
   };
 
   const makeListHandler = () => {
-    if (schedule[allModal.index] === undefined) {
-      return <div className="AllList-nothing">등록된 일정이 없습니다.</div>;
+    const result = [];
+
+    if (!schedule[year][month][date]) {
+      result.push(
+        <div className="AllList-nothing">등록된 일정이 없습니다.</div>
+      );
     }
 
-    return schedule[allModal.index].todo.map((item, listIdx) => (
-      <div
-        key={listIdx}
-        className="AllList-item"
-        onClick={(event) => listClickHandler(event, item, listIdx)}
-        ref={(el) => {
-          makeListRef.current[`${listIdx}`] = el;
-        }}
-      >
-        {item.isEnd && (
-          <div className={`end-date border-left-${item.color}`}></div>
-        )}
-        {item.isMiddle && (
-          <div className={`end-date border-left-${item.color}`}></div>
-        )}
+    let objectIndex = 0;
+
+    for (const key in schedule[year][month][date]) {
+      const object = schedule[year][month][date][key];
+
+      result.push(
         <div
-          className={`title ${item.color}`}
-          style={{
-            width: `${
-              item.isShort
-                ? "194px"
-                : item.isMiddle
-                ? item.isEnd
-                  ? "183px"
-                  : "174px"
-                : item.isStart1
-                ? item.isEnd
-                  ? "174px"
-                  : "183px"
-                : item.isEnd && "183px"
-            }`,
-            borderRadius: `3px`,
-            marginLeft: `${
-              item.isShort ? "0px" : item.isLong && !item.isEnd ? "0px" : "9px"
-            }`,
-            textDecoration: `${item.style && "line-through"}`,
+          key={objectIndex}
+          className="AllList-item"
+          onClick={(event) => listClickHandler(event, object)}
+          ref={(el) => {
+            makeListRef.current[`${key}`] = el;
           }}
         >
-          {item.title}
+          {(object.isEnd || object.isMiddle) && (
+            <div className={`end-date border-left-${object.color}`}></div>
+          )}
+          <div
+            className={`title ${object.color}`}
+            style={{
+              width: `${
+                object.isLong
+                  ? object.isMiddle
+                    ? "170.179px"
+                    : object.isStart
+                    ? object.isEnd && "170.1491px"
+                    : "182px"
+                  : "194px"
+              }`,
+              marginLeft: `${
+                !object.isLong ? "0px" : !object.Start && "10.909px"
+              }`,
+              textDecoration: `${object.style && "line-through"}`,
+            }}
+          >
+            {object.title}
+          </div>
+          {(object.isStart || object.isMiddle) && (
+            <div className={`start-date border-right-${object.color}`}></div>
+          )}
         </div>
-        {item.isMiddle && item.isEnd ? null : (
-          <div className={`start-date border-right-${item.color}`}></div>
-        )}
-      </div>
-    ));
+      );
+      objectIndex += 1;
+    }
+
+    return result;
   };
 
   const cancelHandler = () => {
@@ -201,40 +220,41 @@ const AllList = ({ viewRef, listRef, allListRef, clickedElement, list }) => {
 
     const array = [0, 0];
 
-    if (day === 1)
-      array[0] = width > 350 ? (width * (day - 1)) / 7 : width / 2 - 120;
+    if (day === 1) array[0] = width > 350 ? 0 : width / 2 - 120;
 
     if (day === 2)
-      array[0] = width > 350 ? (width * (day - 1)) / 7 : width / 2 - 120;
+      array[0] =
+        width > 350 ? width / 7 + (width / 7 - 230) / 2 : width / 2 - 120;
 
     if (day === 3)
-      array[0] = width > 350 ? (width * (day - 1)) / 7 : width / 2 - 120;
+      array[0] =
+        width > 350 ? (width * 2) / 7 + (width / 7 - 230) / 2 : width / 2 - 120;
 
     if (day === 4)
       array[0] =
-        width > 320 ? width - 230 - (width * 3) / 7 + 60 : width / 2 - 115;
+        width > 320 ? (width * 3) / 7 + (width / 7 - 230) / 2  - 20: width / 2 - 115;
 
     if (day === 5)
       array[0] =
-        width > 320 ? width - 230 - (width * 2) / 7 + 50 : width / 2 - 115;
+        width > 320 ? (width * 4) / 7 + (width / 7 - 230) / 2  - 35 : width / 2 - 115;
 
     if (day === 6)
-      array[0] = width > 320 ? width - 230 - width / 7 + 20 : width / 2 - 115;
+      array[0] = width > 320 ? (width * 5) / 7 + (width / 7 - 230) / 2  - 45 : width / 2 - 115;
 
-    if (day === 7) array[0] = width > 320 ? width - 230 - 10 : width / 2 - 115;
+    if (day === 7) array[0] = width > 320 ? (width) - 330 : width / 2 - 115;
     ////////////////////////////////////////////////
 
     if (week === 1) array[1] = 10;
 
     if (week === 2) array[1] = (height * (week - 1)) / 6;
 
-    if (week === 3) array[1] = height - 240 - (height * 2) / 6;
+    if (week === 3) array[1] = height - 240 - (height * 2.5) / 6;
 
-    if (week === 4) array[1] = height - 240 - height / 6;
+    if (week === 4) array[1] = height - (height * 3 / 6);
 
-    if (week === 5) array[1] = height - 240;
+    if (week === 5) array[1] = height - (height * 2 / 6);
 
-    if (week === 6) array[1] = height - 240;
+    if (week === 6) array[1] = height - (height * 2 / 6);
 
     return array;
   }, []);

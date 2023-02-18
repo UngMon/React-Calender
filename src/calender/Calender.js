@@ -21,7 +21,7 @@ const Calender = ({ year, month, firstDay, lastDate, viewRef }) => {
   // 아래 identify는 makeCalender에서 현재 날짜에 파란 원이 생기게 끔 식별
   
   // month가 10월 달 보다 작으면 ex) 01, 02, 03... 으로 표기
-  // data도 같은 원리
+  // data도 같은 원리.. 나중에 modalSlice에서 일정 추가 할 때, sort를 편하게 하기 위함.
   const identify =
     fixYear + "-" + +fixMonth < 10
       ? "0" + fixMonth

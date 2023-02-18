@@ -80,10 +80,12 @@ const AddEvent = ({ viewRef }) => {
     event.preventDefault();
 
     const time = new Date();
-    const key = [
+    const month = time.getMonth();
+    const date = time.getDate();
+    const timeArr = [
       time.getFullYear(),
-      time.getMonth(),
-      time.getDate(),
+      month < 10 ? '0' + month : month,
+      date < 10 ? '0' + date : date,
       time.toTimeString(),
     ];
 
@@ -123,14 +125,14 @@ const AddEvent = ({ viewRef }) => {
     // 시작날과 마지막 날 일치
     if (comparison === 4) {
       dispatch(
-        modalActions.inputList({ title, startTime, endTime, color, key })
+        modalActions.inputList({ title, startTime, endTime, color, timeArr })
       );
     }
 
     // 마지막 날이 시작날 보다 큼.
     if (comparison <= 3) {
       dispatch(
-        modalActions.longDateList({ title, startTime, endTime, color, key })
+        modalActions.longDateList({ title, startTime, endTime, color, timeArr })
       );
     }
 
@@ -149,7 +151,7 @@ const AddEvent = ({ viewRef }) => {
   const marginSize =
     size[0] !== ""
       ? ModalPosition(
-          modalState.dayIndex,
+          modalState.day,
           modalState.week,
           size
         )
@@ -166,8 +168,6 @@ const AddEvent = ({ viewRef }) => {
         display: `${!marginSize ? "none" : "block"}`,
         marginLeft: `${marginSize && marginSize[0]}px`,
         marginTop: `${marginSize && marginSize[1]}px`,
-        // marginTop: `${modalState.week < 4 && marginSize && marginSize[1]}px`,
-        // marginBottom: `${modalState.week > 3 && marginSize && marginSize[1]}px`,
       }}
       onWheel={(e) => e.stopPropagation()}
     >
