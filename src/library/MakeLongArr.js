@@ -30,7 +30,7 @@ const MakeLongArr = (startInfo, endInfo) => {
         const month = m < 10 ? "0" + m : m;
 
         if (m === +firstMonth) {
-          for (let d = firstDate; d <= k; d++){
+          for (let d = +firstDate; d <= k; d++){
             const date = d < 10 ? '0' + d: d;
             idxArr.push(firstYear + '-' + month + '-' +date);
           }
