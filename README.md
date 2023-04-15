@@ -1,70 +1,50 @@
-# Getting Started with Create React App
+# React Calender Project
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+외부라이브러리 없이 React로 구현한 캘린더 웹 프로젝트 입니다.
 
-## Available Scripts
+## 프로젝트 구조
 
-In the project directory, you can run:
 
-### `npm start`
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+### 프로젝트 사용방법
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+1. npm install
 
-### `npm test`
+=> npm install를 터미널에 입력하시면 프로젝트의 package의 dependencies에 있는 모듈이 설치됩니다.
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+2. firebase에 프로젝트를 등록
+=> https://console.firebase.google.com/ 해당 링크로 들어가 Firebase 사이트에 로그인을 합니다. 로그인 후, 프로젝트 추가 버튼을 누르시면 좌측 상단에 웹 앱 추가 버튼을 누르시면 됩니다. 이후 가이드를 따라 진행하시면 Calender를 사용하실 수 있습니다. 설치 가이드를 따라가시면 Firebase SDK추가 단계에서 이 프로젝트 Auth 폴더에 firebase.js에 해당 값을 입력해주시면 됩니다. 이 값은 여러분 프로젝트의 고유값 입니다.
 
-### `npm run build`
+3. 위 과정을 마치셨다면 npm start를 입력하여 프로젝트를 실행합니다.
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+### 기능 소개
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+1. 로그인 기능
+= 이 프로젝트는 파이어베이스 Authentication를 통해 firebase 자체 회원 가입, 소셜 로그인 기능이 구현 됐습니다. 
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+2. 비밀번호 재설정
+= 만약 firebase 자체에 회원가입을 하신 경우, 비밀번호 찾기 기능을 통해 회원가입 했던 사용자의 이메일에 비밀번호 재설정 메일을 발송합니다. 파이어베이스의 비밀번호 재설정 메일을 확인 하시고, 패스워드를 새롭게 저장하시면 로그인을 하실 수 있습니다.
 
-### `npm run eject`
+3. 일정 추가
+= 해당 날짜를 클릭하면 일정 입력 모달창이 등장합니다. 사용자가 원하는 만큼의 날짜를 선택하여 일정을 등록할 수 있습니다.
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+4. 시간, 컬러 기능
+= 일정을 시간별로 지정할 수 있으며, 시간이 빠른 순으로 정렬되어 보여집니다. 또한 일정을 구분하기 쉽게 색을 지정하여 좀 더 예쁜 일정을 만들 수 있습니다.
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+5. 마우스 휠 기능
+= 사용자가 마우스 휠을 움직이면 방향에 따라서 월이 이동하는 기능.
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+6. 반응협 웹
+= 브라우저 창의 크기에 따라 전체적인 Ui가 달라집니다.
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+### 느낀점
+ to-do-list를 만들고 바로 진행한 프로젝트 입니다. 코드 자체에 익숙하지 않은 시기여서 제작 기간이 상당히 소요되었습니다. 구글 캘린더와 네이버 캘린더의 Ui를 참고하여 만들었으며, 특히 긴 일정을 구현하는데 많은 시간을 쏟아부었습니다. 네이버 캘린더의 경우 아래와 같이 긴 일정 사이에 빈 공간이 있는 반면, 구글 캘린더는 빈 공간 없이 표현한 것을 참고하여 2차원 배열을 사용하여 해결했습니다. 프로젝트 진행 중에 많은 에러를 접했는데 이 부분을 블로그에 정리하지 않았던 점 아쉽습니다. 이후의 프로젝트는 타입스크립트를 적용했는데 확실히 사전에 에러를 방지할 수 있어서 기능 구현에 있어서 한결 수월했습니다. 결과적으로 조금 제작 기간이 오래걸렸지만, 리액트의 부가적인 라이브러리를 사용한 경험과 Firebase를 이용해서 Ajax 요청을 경험해볼 수 있어서 웹 개발자로 한 단계 성장할 수 있었습니다. 
 
-## Learn More
+### 향후 계획
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+1. 일정을 드래그하여 움직이게 하며, 사용자가 drop-down 한 날짜에 일정이 저장되게 끔 기능 추가
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+2. 부족한 반응형 css 조정
 
-### Code Splitting
+3. 타입스크립트 적용과 가독성이 떨어지는 현재 코드를 좀 더 간결하게 리팩토리 진행 예정
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
