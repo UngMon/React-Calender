@@ -17,9 +17,10 @@ const MakeCaledner = ({
   viewRef,
   clickedElement,
 }) => {
-  console.log("makecalender");
+  // console.log("makecalender");
   const dispatch = useDispatch();
   const week = Math.ceil((firstDay + lastDate) / 7); // 해당 month가 몇 주인지?
+
   // {email: '', name: '', schedule: []}
   const modalState = useSelector((state) => state.modal);
   const listState = useSelector((state) => state.list);
@@ -30,7 +31,6 @@ const MakeCaledner = ({
   const schedule = modalState.userSchedule.schedule;
   const modalVisible = modalState.isVisible;
 
-  // console.log(schedule);
   useEffect(() => {
     // 컴포넌트의 return 실행 후, state에 값을 저장후 랜더링
     // console.log("useEffect setHeight");
@@ -103,177 +103,277 @@ const MakeCaledner = ({
   };
 
   const scheduleHandler = (date, day, week, array) => {
-
     const dateInfo = date.split("-");
     const year = dateInfo[0];
     const month = dateInfo[1];
 
-    if (!schedule[year]) return;
-
-    if (!schedule[year][month]) return;
-
-    if (!schedule[year][month][date]) return;
+    if (!schedule?.[year]?.[month]?.[date]) return;
 
     const objLength = Object.keys(schedule[year][month][date]).length;
 
     // array 배열 만들기
     for (const item in schedule[year][month][date]) {
       const object = schedule[year][month][date][item];
-      // console.log(object.title);
-      if (object.isMiddle || (object.isEnd && object.count !== 1)) {
-        continue;
-      }
+      const isLong = object.startDate !== object.endDate ? true : false;
+
+      if (object.startDate < date && day !== 1) continue;
+
+      if (object.isMiddle || (object.isEnd && object.count !== 1)) continue;
 
       let arrayCount = 0;
+      let nowDate = +dateInfo[2];
 
-      for (const arrayItem of array[day]) {
-        if (arrayItem !== 0) {
+      for (let item of array[day]) {
+        let isMore = arrayCount < listBoxHeightCount - 1 ? false : true;
+        if (arrayCount >= listBoxHeightCount) break;
+
+        if (item) {
           arrayCount += 1;
           continue;
         }
 
-        array[day][arrayCount] = object;
-
-        for (let i = day + 1; i < day + object.length; i++) {
+        for (let i = day; i <= 7; i++) {
           if (i === 8) break;
+          let date =
+            year + "-" + month + "-" + nowDate.toString().padStart(2, 0);
+          if (date > object.endDate) break;
 
-          array[i][arrayCount] = 1;
-        }
-        // array[day].sort((a, b) => a.key < b.key ? -1 : 1);
-        break;
-      }
-    }
-
-    let result = [];
-    let visualCount = 0;
-    let moreListBool = false;
-    let index = 0;
-
-    for (const item of array[day]) {
-      if (item === 0) {
-        index += 1;
-        continue;
-      }
-
-      if (typeof item === "object") {
-        if (index < listBoxHeightCount - 1) {
-          visualCount += 1;
-          result.push(
+          array[i][arrayCount] = (
             <div
-              key={index}
+              key={arrayCount}
               className={`${
-                item.isLong
-                  ? classes["list-boundary-long"]
-                  : classes["list-boundary-short"]
+                !isMore
+                  ? object.endDate > object.startDate
+                    ? classes["list-boundary-long"]
+                    : classes["list-boundary-short"]
+                  : classes["list-more"]
               }`}
               style={{
-                width: item.isLong && `${item.length}00%`,
-                top: `${24 * index}px`,
+                width: isLong && !isMore ? `${object.length}00%` : "95%",
+                top: `${24 * arrayCount}px`,
+                display: i === day || isMore ? "flex" : "none",
               }}
               onClick={(event) => {
                 event.stopPropagation();
-                listClickHandler(
-                  event,
-                  item.style,
-                  item.color,
-                  item.startDate,
-                  item.endDate,
-                  item.startTime,
-                  item.endTime,
-                  week,
-                  day,
-                  item.title,
-                  item.key,
-                  item.arr
-                );
+                !isMore &&
+                  listClickHandler(
+                    event,
+                    object.style,
+                    object.color,
+                    object.startDate,
+                    object.endDate,
+                    object.startTime,
+                    object.endTime,
+                    week,
+                    day,
+                    object.title,
+                    object.key,
+                    object.arr
+                  );
+                isMore && allListClickHandler(event, date, day, week);
               }}
               ref={(el) => {
-                listRef.current[`${date}${item.key}`] = el;
+                listRef.current[`${date}${object.key}`] = el;
               }}
             >
-              {!item.isLong && (
-                <div className={`${item.color} ${classes["color-bar"]}`}></div>
+              {!isLong && arrayCount < listBoxHeightCount - 1 && (
+                <div
+                  className={`${object.color} ${classes["color-bar"]}`}
+                ></div>
               )}
               <div
-                key={index}
+                key={object.key}
                 className={`${classes.list} ${
-                  item.isLong && `${classes.long} ${item.color}`
+                  isLong && !isMore && `${classes.long} ${object.color}`
                 }`}
                 style={{
                   backgroundColor:
                     listState.isVisible &&
-                    item.key === listState.key &&
+                    object.key === listState.key &&
                     "rgba(182, 182, 182, 0.6)",
                 }}
                 dayindex={day}
               >
                 <div
                   className={`${classes["type-one"]}  ${
-                    item.style && classes.done
+                    object.style && classes.done
                   }`}
                 >
-                  {item.startTime + " " + item.title}
+                  {isMore
+                    ? `${objLength - listBoxHeightCount + 1}개 더보기`
+                    : object.startTime + " " + object.title}
                 </div>
                 <div
                   className={`${classes["type-two"]} ${
-                    item.style && classes.done
+                    object.style && classes.done
                   }`}
                 >
-                  {" " + item.title}
+                  {isMore
+                    ? `+${objLength - listBoxHeightCount + 1}`
+                    : " " + object.title}
                 </div>
               </div>
             </div>
           );
+
+          nowDate += 1;
         }
 
-        if (index === listBoxHeightCount - 1) {
-          result.push(
-            <div
-              key={index}
-              className={`${classes["list-more"]}`}
-              style={{ top: `${24 * index}px` }}
-              onClick={(event) => {
-                event.stopPropagation();
-                allListClickHandler(event, date, day, week);
-              }}
-              ref={(el) => (allListRef.current[`${date}`] = el)}
-            >{`${objLength - (listBoxHeightCount - 1)}개 더보기`}</div>
-          );
-          moreListBool = true;
-          break;
-        }
+        break;
       }
 
-      if (item === 1) {
-        if (index < listBoxHeightCount - 1) {
-          visualCount += 1;
-        }
+      // for (const arrayItem of array[day]) {
+      //   if (arrayItem !== undefined) {
+      //     arrayCount += 1;
+      //     continue;
+      //   }
 
-        if (index > listBoxHeightCount - 2 && !moreListBool) {
-          result.push(
-            <div
-              key={index}
-              className={`${classes["list-more"]}`}
-              style={{ marginTop: `${24 * (listBoxHeightCount - 1)}px` }}
-              onClick={(event) => {
-                event.stopPropagation();
-                allListClickHandler(event, date, day, week);
-              }}
-              ref={(el) => (allListRef.current[`${date}`] = el)}
-            >
-              {`${objLength - visualCount}개 더보기`}
-            </div>
-          );
-          moreListBool = true;
-          break;
-        }
-      }
-      index += 1;
-      if (day === 7) {
-        array = [];
-      }
+      //   array[day][arrayCount] = object;
+
+      //   for (let i = day + 1; i < day + object.length; i++) {
+      //     if (i === 8) break;
+
+      //     array[i][arrayCount] = 1;
+      //   }
+      //   break;
+      // }
     }
-    return result;
+    console.log(date);
+    console.log(array);
+    return array[day];
+    // let result = [];
+    // let visualCount = 0;
+    // let moreListBool = false;
+    // let index = 0;
+
+    // for (const item of array[day]) {
+    //   if (item === 0) {
+    //     index += 1;
+    //     continue;
+    //   }
+
+    //   if (typeof item === "object") {
+    //     if (index < listBoxHeightCount - 1) {
+    //       visualCount += 1;
+    //       result.push(
+    //         <div
+    //           key={index}
+    //           className={`${
+    //             item.isLong
+    //               ? classes["list-boundary-long"]
+    //               : classes["list-boundary-short"]
+    //           }`}
+    //           style={{
+    //             width: item.isLong && `${item.length}00%`,
+    //             top: `${24 * index}px`,
+    //           }}
+    //           onClick={(event) => {
+    //             event.stopPropagation();
+    //             listClickHandler(
+    //               event,
+    //               item.style,
+    //               item.color,
+    //               item.startDate,
+    //               item.endDate,
+    //               item.startTime,
+    //               item.endTime,
+    //               week,
+    //               day,
+    //               item.title,
+    //               item.key,
+    //               item.arr
+    //             );
+    //           }}
+    //           ref={(el) => {
+    //             listRef.current[`${date}${item.key}`] = el;
+    //           }}
+    //         >
+    //           {!item.isLong && (
+    //             <div className={`${item.color} ${classes["color-bar"]}`}></div>
+    //           )}
+    //           <div
+    //             key={index}
+    //             className={`${classes.list} ${
+    //               item.isLong && `${classes.long} ${item.color}`
+    //             }`}
+    //             style={{
+    //               backgroundColor:
+    //                 listState.isVisible &&
+    //                 item.key === listState.key &&
+    //                 "rgba(182, 182, 182, 0.6)",
+    //             }}
+    //             dayindex={day}
+    //           >
+    //             <div
+    //               className={`${classes["type-one"]}  ${
+    //                 item.style && classes.done
+    //               }`}
+    //             >
+    //               {item.startTime + " " + item.title}
+    //             </div>
+    //             <div
+    //               className={`${classes["type-two"]} ${
+    //                 item.style && classes.done
+    //               }`}
+    //             >
+    //               {" " + item.title}
+    //             </div>
+    //           </div>
+    //         </div>
+    //       );
+    //     }
+
+    //     if (index === listBoxHeightCount - 1) {
+    //       result.push(
+    //         <div
+    //           key={index}
+    //           className={`${classes["list-more"]}`}
+    //           style={{ top: `${24 * index}px` }}
+    //           onClick={(event) => {
+    //             event.stopPropagation();
+    //             allListClickHandler(event, date, day, week);
+    //           }}
+    //           ref={(el) => (allListRef.current[`${date}`] = el)}
+    //         >{`${objLength - (listBoxHeightCount - 1)}개 더보기`}</div>
+    //       );
+    //       moreListBool = true;
+    //       break;
+    //     }
+    //   }
+
+    //   if (item === 1) {
+    //     if (index < listBoxHeightCount - 1) {
+    //       visualCount += 1;
+    //     }
+
+    //     if (index > listBoxHeightCount - 2 && !moreListBool) {
+    //       result.push(
+    //         <div
+    //           key={index}
+    //           className={`${classes["list-more"]}`}
+    //           style={{ marginTop: `${24 * (listBoxHeightCount - 1)}px` }}
+    //           onClick={(event) => {
+    //             event.stopPropagation();
+    //             allListClickHandler(event, date, day, week);
+    //           }}
+    //           ref={(el) => (allListRef.current[`${date}`] = el)}
+    //         >
+    //           {`${objLength - visualCount}개 더보기`}
+    //         </div>
+    //       );
+    //       moreListBool = true;
+    //       break;
+    //     }
+    //   }
+    //   index += 1;
+    //   if (day === 7) {
+    //     array = [];
+    //   }
+    // }
+    // console.log(date);
+    // console.log(array);
+    // console.log(result);
+    // return result;
   };
 
   const monthArray = [];
@@ -289,8 +389,9 @@ const MakeCaledner = ({
 
       for (let i = 1; i <= 7; i++) {
         if (i <= firstDay) {
-          const nowDate = prevMonthLastDate - firstDay + i;
-          const idx = MakeIdx("prev", year, month, nowDate);
+          //ex) 첫 주에 28, 29, 30, 31, 1, 2, 3 표현하기 위함
+          const date = prevMonthLastDate - firstDay + i;
+          const idx = MakeIdx("prev", year, month, date);
           const day = i; //모달창을 띄울 때 위치를 무슨 요일인지 저장
 
           thisMonthArray.push(
@@ -310,7 +411,7 @@ const MakeCaledner = ({
                       : day === 7 && classes.saturday
                   }`}
                 >
-                  {nowDate}
+                  {date}
                 </h2>
               </div>
               <div className={classes["list-box"]}>
@@ -321,8 +422,8 @@ const MakeCaledner = ({
             </td>
           );
         } else {
-          const nowDate = i - firstDay;
-          const idx = MakeIdx("", year, month, nowDate);
+          const date = i - firstDay;
+          const idx = MakeIdx("", year, month, date);
           const day = i;
 
           thisMonthArray.push(
@@ -338,7 +439,7 @@ const MakeCaledner = ({
             >
               <div className={classes.date}>
                 <h2
-                  style={{ width: nowDate === 1 && "54px" }}
+                  style={{ width: date === 1 && "54px" }}
                   className={`
                   ${identify === idx && classes.Today}
                   ${
@@ -347,7 +448,7 @@ const MakeCaledner = ({
                       : day === 7 && classes.saturday
                   }`}
                 >
-                  {nowDate === 1 ? `${month}월 1일` : nowDate}
+                  {date === 1 ? `${month}월 1일` : date}
                 </h2>
               </div>
               <div className={classes["list-box"]}>
@@ -448,15 +549,15 @@ const MakeCaledner = ({
   for (let i = 1; i <= week; i++) {
     const array = [
       "",
-      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      new Array(25),
+      new Array(25),
+      new Array(25),
+      new Array(25),
+      new Array(25),
+      new Array(25),
+      new Array(25),
     ];
-  
+
     monthArray.push(
       <tr key={i} className={`week ${i}`}>
         {makeDay(i, array)}
