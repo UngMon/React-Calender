@@ -22,7 +22,7 @@ const AddEvent = ({ viewRef }) => {
 
   const [color, setColor] = useState("라벤더");
   const [openColor, setOpenColor] = useState(false);
-  const [size, setSize] = useState(["", "", '']);
+  const [size, setSize] = useState(["", "", ""]);
 
   const startDate = modalState.startDate;
   const endDate = modalState.endDate;
@@ -80,14 +80,10 @@ const AddEvent = ({ viewRef }) => {
     event.preventDefault();
 
     const time = new Date();
-    const month = time.getMonth();
-    const date = time.getDate();
-    const timeArr = [
-      time.getFullYear(),
-      month < 10 ? '0' + month : month,
-      date < 10 ? '0' + date : date,
-      time.toTimeString(),
-    ];
+    const month = time.getMonth().toString().padStart("0", 2);
+    const date = time.getDate().toString().padStart("0", 2);
+
+    const timeArr = [time.getFullYear(), month, date, time.toTimeString()];
 
     const pattern = /^(오전|오후)\s(([0][0-9]|[1][0-2])):([0-5][0-9])$/;
 
@@ -125,14 +121,14 @@ const AddEvent = ({ viewRef }) => {
     // 시작날과 마지막 날 일치
     if (comparison === 4) {
       dispatch(
-        modalActions.inputList({ title, startTime, endTime, color, timeArr })
+        modalActions.inputList({ title, startTime, endTime, color })
       );
     }
 
     // 마지막 날이 시작날 보다 큼.
     if (comparison <= 3) {
       dispatch(
-        modalActions.longDateList({ title, startTime, endTime, color, timeArr })
+        modalActions.longDateList({ title, startTime, endTime, color })
       );
     }
 
@@ -150,11 +146,7 @@ const AddEvent = ({ viewRef }) => {
   console.log(size);
   const marginSize =
     size[0] !== ""
-      ? ModalPosition(
-          modalState.day,
-          modalState.week,
-          size
-        )
+      ? ModalPosition(modalState.day, modalState.week, size)
       : false;
   console.log(marginSize);
 

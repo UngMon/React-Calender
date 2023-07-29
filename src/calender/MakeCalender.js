@@ -109,11 +109,10 @@ const MakeCaledner = ({
 
     if (!schedule?.[year]?.[month]?.[date]) return;
 
-    const objLength = Object.keys(schedule[year][month][date]).length;
-
     // array 배열 만들기
     for (const item in schedule[year][month][date]) {
       const object = schedule[year][month][date][item];
+
       const isLong = object.startDate !== object.endDate ? true : false;
 
       if (object.startDate < date && day !== 1) continue;
@@ -155,22 +154,22 @@ const MakeCaledner = ({
               }}
               onClick={(event) => {
                 event.stopPropagation();
-                !isMore &&
-                  listClickHandler(
-                    event,
-                    object.style,
-                    object.color,
-                    object.startDate,
-                    object.endDate,
-                    object.startTime,
-                    object.endTime,
-                    week,
-                    day,
-                    object.title,
-                    object.key,
-                    object.arr
-                  );
-                isMore && allListClickHandler(event, date, day, week);
+                !isMore
+                  ? listClickHandler(
+                      event,
+                      object.style,
+                      object.color,
+                      object.startDate,
+                      object.endDate,
+                      object.startTime,
+                      object.endTime,
+                      week,
+                      day,
+                      object.title,
+                      object.key,
+                      object.arr
+                    )
+                  : allListClickHandler(event, date, day, week);
               }}
               ref={(el) => {
                 listRef.current[`${date}${object.key}`] = el;
@@ -200,7 +199,11 @@ const MakeCaledner = ({
                   }`}
                 >
                   {isMore
-                    ? `${objLength - listBoxHeightCount + 1}개 더보기`
+                    ? `${
+                        Object.keys(schedule[year][month][date]).length -
+                        listBoxHeightCount +
+                        1
+                      }개 더보기`
                     : object.startTime + " " + object.title}
                 </div>
                 <div
@@ -209,7 +212,11 @@ const MakeCaledner = ({
                   }`}
                 >
                   {isMore
-                    ? `+${objLength - listBoxHeightCount + 1}`
+                    ? `+${
+                        Object.keys(schedule[year][month][date]).length -
+                        listBoxHeightCount +
+                        1
+                      }`
                     : " " + object.title}
                 </div>
               </div>
@@ -221,159 +228,8 @@ const MakeCaledner = ({
 
         break;
       }
-
-      // for (const arrayItem of array[day]) {
-      //   if (arrayItem !== undefined) {
-      //     arrayCount += 1;
-      //     continue;
-      //   }
-
-      //   array[day][arrayCount] = object;
-
-      //   for (let i = day + 1; i < day + object.length; i++) {
-      //     if (i === 8) break;
-
-      //     array[i][arrayCount] = 1;
-      //   }
-      //   break;
-      // }
     }
-    console.log(date);
-    console.log(array);
     return array[day];
-    // let result = [];
-    // let visualCount = 0;
-    // let moreListBool = false;
-    // let index = 0;
-
-    // for (const item of array[day]) {
-    //   if (item === 0) {
-    //     index += 1;
-    //     continue;
-    //   }
-
-    //   if (typeof item === "object") {
-    //     if (index < listBoxHeightCount - 1) {
-    //       visualCount += 1;
-    //       result.push(
-    //         <div
-    //           key={index}
-    //           className={`${
-    //             item.isLong
-    //               ? classes["list-boundary-long"]
-    //               : classes["list-boundary-short"]
-    //           }`}
-    //           style={{
-    //             width: item.isLong && `${item.length}00%`,
-    //             top: `${24 * index}px`,
-    //           }}
-    //           onClick={(event) => {
-    //             event.stopPropagation();
-    //             listClickHandler(
-    //               event,
-    //               item.style,
-    //               item.color,
-    //               item.startDate,
-    //               item.endDate,
-    //               item.startTime,
-    //               item.endTime,
-    //               week,
-    //               day,
-    //               item.title,
-    //               item.key,
-    //               item.arr
-    //             );
-    //           }}
-    //           ref={(el) => {
-    //             listRef.current[`${date}${item.key}`] = el;
-    //           }}
-    //         >
-    //           {!item.isLong && (
-    //             <div className={`${item.color} ${classes["color-bar"]}`}></div>
-    //           )}
-    //           <div
-    //             key={index}
-    //             className={`${classes.list} ${
-    //               item.isLong && `${classes.long} ${item.color}`
-    //             }`}
-    //             style={{
-    //               backgroundColor:
-    //                 listState.isVisible &&
-    //                 item.key === listState.key &&
-    //                 "rgba(182, 182, 182, 0.6)",
-    //             }}
-    //             dayindex={day}
-    //           >
-    //             <div
-    //               className={`${classes["type-one"]}  ${
-    //                 item.style && classes.done
-    //               }`}
-    //             >
-    //               {item.startTime + " " + item.title}
-    //             </div>
-    //             <div
-    //               className={`${classes["type-two"]} ${
-    //                 item.style && classes.done
-    //               }`}
-    //             >
-    //               {" " + item.title}
-    //             </div>
-    //           </div>
-    //         </div>
-    //       );
-    //     }
-
-    //     if (index === listBoxHeightCount - 1) {
-    //       result.push(
-    //         <div
-    //           key={index}
-    //           className={`${classes["list-more"]}`}
-    //           style={{ top: `${24 * index}px` }}
-    //           onClick={(event) => {
-    //             event.stopPropagation();
-    //             allListClickHandler(event, date, day, week);
-    //           }}
-    //           ref={(el) => (allListRef.current[`${date}`] = el)}
-    //         >{`${objLength - (listBoxHeightCount - 1)}개 더보기`}</div>
-    //       );
-    //       moreListBool = true;
-    //       break;
-    //     }
-    //   }
-
-    //   if (item === 1) {
-    //     if (index < listBoxHeightCount - 1) {
-    //       visualCount += 1;
-    //     }
-
-    //     if (index > listBoxHeightCount - 2 && !moreListBool) {
-    //       result.push(
-    //         <div
-    //           key={index}
-    //           className={`${classes["list-more"]}`}
-    //           style={{ marginTop: `${24 * (listBoxHeightCount - 1)}px` }}
-    //           onClick={(event) => {
-    //             event.stopPropagation();
-    //             allListClickHandler(event, date, day, week);
-    //           }}
-    //           ref={(el) => (allListRef.current[`${date}`] = el)}
-    //         >
-    //           {`${objLength - visualCount}개 더보기`}
-    //         </div>
-    //       );
-    //       moreListBool = true;
-    //       break;
-    //     }
-    //   }
-    //   index += 1;
-    //   if (day === 7) {
-    //     array = [];
-    //   }
-    // }
-    // console.log(date);
-    // console.log(array);
-    // console.log(result);
-    // return result;
   };
 
   const monthArray = [];

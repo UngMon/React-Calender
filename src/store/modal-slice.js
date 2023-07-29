@@ -16,7 +16,7 @@ const modalSlice = createSlice({
     userSchedule: {},
     longArr: [],
     longArrChanged: false,
-    changed: false,
+    dataChanged: false,
   },
   reducers: {
     fetchFromData(state, action) {
@@ -54,7 +54,7 @@ const modalSlice = createSlice({
       } else {
         // 신규 가입자일 때, 유저 data를 생성하고 이후 app.js에서 sendScheduleData()에서
         // data 생성 요청을 수행함.
-        state.changed = true;
+        state.dataChanged = true;
         state.userSchedule = {
           email: action.payload.email,
           name: action.payload.name,
@@ -66,7 +66,7 @@ const modalSlice = createSlice({
     },
 
     toggleChanged(state) {
-      state.changed = false;
+      state.dataChanged = false;
     },
 
     logout(state) {
@@ -134,6 +134,8 @@ const modalSlice = createSlice({
 
     clickedDate(state, action) {
       state.longArrChanged = true;
+      
+      if (action.payload.type === 'add') state.longArr = [action.payload.idx];
 
       // second-makeCaldner.js에서 endDate 설정시
       if (action.payload.type === "end") {
@@ -160,15 +162,58 @@ const modalSlice = createSlice({
       state.longArr = action.payload.longArr;
     },
 
+    makeList(state, action) {
+      state.dataChanged = true;
+
+      const type = state.startDate === state.endDate ? "L" : "S";
+      const array = JSON.parse(JSON.stringify(state.userSchedule));
+      const koreaOffset = 9 * 60 * 60 * 1000; // KST 오프셋 (+09:00) 9시간 추가
+      const koreaTime = new Date(Date.now() + koreaOffset).toISOString();
+
+      const key =
+        state.startDate +
+        type +
+        (9999 - state.longArr.length) +
+        action.payload.startTime +
+        action.payload.endTime +
+        koreaTime;
+
+      const object = {
+        title: action.payload.title,
+        color: action.payload.color,
+        startDate: state.startDate,
+        endDate: state.endDate,
+        startTime: action.payload.startTime,
+        endTime: action.payload.endTime,
+        isDone: false,
+        key,
+      };
+
+      for (let date of state.longArr) {
+        if (!array[date]) array[date] = [];
+        array[date].push(object); // O(1)
+
+        // 여기서 a, b 는 object
+        array[date].sort((a, b) => a.key < b.key ? -1 : 1); // O(nlog(n))
+
+        // const newObj = Object.fromEntries(
+        //   Object.entries(array[date]).sort(([a], [b]) => (a < b ? -1 : 1))
+        // ); 시간복잡도가 매우커진다.. O(n + nlog(n) + n) => O(n + nlog(n));
+      }
+      state.userSchedule = array;
+      state.longArrChanged = false;
+    },
+
     inputList(state, action) {
-      state.changed = true;
+      state.dataChanged = true;
 
       const array = { ...state.userSchedule.schedule };
 
       const startDate = state.startDate.split("-");
       const startTimeSplit = action.payload.startTime.split(" ");
       const endTimeSplit = action.payload.endTime.split(" ");
-
+      console.log(action.payload.startTime, action.payload.endTime);
+      console.log(action.payload.timeArr);
       const year = startDate[0];
       const month = startDate[1];
       const date = state.startDate;
@@ -227,7 +272,9 @@ const modalSlice = createSlice({
         //해당 날에 기존 일정이 있을 때,
         array[year][month][date][key] = { ...object };
         const newObj = Object.fromEntries(
-          Object.entries(array[year][month][date]).sort(([a], [b]) => (a < b ? -1 : 1))
+          Object.entries(array[year][month][date]).sort(([a], [b]) =>
+            a < b ? -1 : 1
+          )
         );
         array[year][month][date] = newObj;
       }
@@ -241,7 +288,7 @@ const modalSlice = createSlice({
     },
 
     longDateList(state, action) {
-      state.changed = true;
+      state.dataChanged = true;
 
       let schedule = { ...state.userSchedule.schedule };
 
@@ -266,12 +313,12 @@ const modalSlice = createSlice({
       let count = state.day;
 
       const key =
-      state.startDate +
-      (9999 - arr.length) +
-      startTime +
-      (30000 - endTime) +
-      nowDate +
-      (256161 - nowTime);
+        state.startDate +
+        (9999 - arr.length) +
+        startTime +
+        (30000 - endTime) +
+        nowDate +
+        (256161 - nowTime);
 
       const object = {
         startDate: state.startDate,
@@ -338,7 +385,9 @@ const modalSlice = createSlice({
             }
           }
           const newObj = Object.fromEntries(
-            Object.entries(schedule[year][month][i]).sort(([a], [b]) => (a < b ? -1 : 1))
+            Object.entries(schedule[year][month][i]).sort(([a], [b]) =>
+              a < b ? -1 : 1
+            )
           );
           schedule[year][month][i] = newObj;
         }
@@ -398,7 +447,7 @@ const modalSlice = createSlice({
     },
 
     removeList(state, action) {
-      state.changed = true; // fetch (put)
+      state.dataChanged = true; // fetch (put)
 
       let schedule = { ...state.userSchedule.schedule };
 

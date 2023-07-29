@@ -26,7 +26,7 @@ function App() {
   }, [dispatch, loginData]);
 
   useEffect(() => {
-    if (modal.changed) {
+    if (modal.dataChanged) {
       dispatch(sendScheduleData(modal.userSchedule, modal.uid));
     }
   }, [dispatch, modal]);
