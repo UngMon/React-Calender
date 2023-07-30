@@ -1,27 +1,19 @@
 import React, { useEffect } from "react";
-import { auth } from "./Auth/firebase";
-import { useDispatch, useSelector } from "react-redux";
-import { fetchScheduleData, sendScheduleData } from "./store/fetch-action";
 import {
   createBrowserRouter,
   RouterProvider,
   createRoutesFromElements,
   Route,
 } from "react-router-dom";
-import { onAuthStateChanged } from "firebase/auth";
-import Loading from "./pages/Loading";
-import LoginPage from "./pages/LoginPage";
+// import Loading from "./pages/Loading";
+// import LoginPage from "./pages/LoginPage";
 import ResetPage from "./pages/ResetPage";
-import Month from "./calender/Month";
 import NotFound from "./pages/NotFound";
+import Root from "./pages/Root";
+import Month from "./calender/Calender";
 
 function App() {
   console.log("app");
-
-  // const dispatch = useDispatch();
-  // const modal = useSelector((state) => state.modal);
-  // const loginData = localStorage.getItem("userInfo") || undefined;
-  console.log(auth)
   // useEffect(() => {
   //   onAuthStateChanged(auth, (user) => {
   //     if (user) {
@@ -38,13 +30,11 @@ function App() {
 
   const router = createBrowserRouter(
     createRoutesFromElements(
-      <Route path="" element={<LoginPage />}>
+      <Route path="" element={<Root />}>
         <Route path="/reset-password" element={<ResetPage />} />
         <Route path="/reset-password" element={<ResetPage />} />
         <Route path="/calender">
-          <Route path=":year">
-            <Route path=":month" element={<Month />}></Route>
-          </Route>
+          <Route path=":dateParams" element={<Month />} />
         </Route>
         <Route path="*" element={<NotFound />}></Route>
       </Route>

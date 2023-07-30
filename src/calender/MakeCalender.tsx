@@ -1,12 +1,12 @@
 import { useCallback, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { allListActions } from "../store/all-list-slice";
+import { allListActions } from "../store/more-slice";
 import { modalActions } from "../store/data-slice";
 import { listActions } from "../store/list-slice";
 import MakeIdx from "../library/MakeIdx";
 import classes from "./Calender.module.css";
 
-const MakeCaledner = ({
+const MakeCalender = ({
   year,
   month,
   firstDay,
@@ -407,4 +407,4 @@ const MakeCaledner = ({
   return monthArray;
 };
 
-export default MakeCaledner;
+export default MakeCalender;

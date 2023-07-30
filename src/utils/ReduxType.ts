@@ -38,3 +38,24 @@ export interface MoreType {
   week: string;
   key: string;
 }
+
+////////////// Modal Type ////////////
+
+export interface ModalType {
+  listModalOpen: boolean;
+  moreModalOpen: boolean;
+  isDone: boolean;
+  year: string;
+  month: string;
+  date: string;
+  week: string;
+  day: string;
+  color: string;
+  startDate: string;
+  endDate: string;
+  startTime: string;
+  endTime: string;
+  title: string;
+  key: string;
+  index: number;
+}

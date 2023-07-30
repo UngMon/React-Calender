@@ -1,30 +1,26 @@
 /* eslint-disable */
-import { useState, useCallback } from "react";
+import React, { useState, useCallback, ChangeEvent } from "react";
+import { auth } from "../Auth/firebase";
 import { useNavigate } from "react-router-dom";
 import { sendPasswordResetEmail } from "firebase/auth";
-import { auth } from "../Auth/firebase";
-import classes from "./ResetPage.module.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
+import classes from "./ResetPage.module.css";
 
 const ResetPage = () => {
   const navigate = useNavigate();
   console.log("reset");
 
   // 이메일 state
-  const [email, setEmail] = useState(null);
+  const [email, setEmail] = useState<string>("");
 
   // 이메일 유효성 검사 state
-  const [isEmail, setIsEmail] = useState(false);
+  const [isEmail, setIsEmail] = useState<boolean>(false);
 
   // 이메일 에러메시지 state
-  const [emailMessage, setEmailMessage] = useState("");
+  const [emailMessage, setEmailMessage] = useState<string>("");
 
-  const backPageHandler = () => {
-    navigate('/');
-  }
-
-  const onConfirmEmail = useCallback((e) => {
+  const onConfirmEmail = useCallback((e: ChangeEvent<HTMLInputElement>) => {
     const regex =
       /([\w-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([\w-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$/;
 
@@ -43,14 +39,14 @@ const ResetPage = () => {
     }
   }, []);
 
-  const changePassword = (email) => {
+  const changePassword = (email: string) => {
     if (!isEmail) return alert("이메일을 제대로 입력해주세요!");
 
     sendPasswordResetEmail(auth, email)
       .then((data) => {
         // Password reset email sent!
-        console.log(auth)
-        console.log(data)
+        console.log(auth);
+        console.log(data);
         alert("이메일 인증 링크를 보냈습니다!");
         navigate("/");
       })
@@ -68,8 +64,11 @@ const ResetPage = () => {
   return (
     <section className={classes["reset-area"]}>
       <div className={classes["reset-box"]}>
-        <div className={classes["back-page-button"]} onClick={backPageHandler}>
-          <FontAwesomeIcon icon={faArrowLeft} className={classes['arrow']}/>
+        <div
+          className={classes["back-page-button"]}
+          onClick={() => navigate("/")}
+        >
+          <FontAwesomeIcon icon={faArrowLeft} className={classes["arrow"]} />
         </div>
         <div className={classes["reset-box-title"]}>
           <span>비밀번호 초기화</span>
