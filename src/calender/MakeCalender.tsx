@@ -1,10 +1,32 @@
-import { useCallback, useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { allListActions } from "../store/more-slice";
-import { modalActions } from "../store/data-slice";
-import { listActions } from "../store/list-slice";
+import React, { ReactNode, useCallback, useEffect, useState } from "react";
+import { CalenderData, DataType, ModalType } from "../utils/ReduxType";
+import { useAppDispatch } from "../store/store";
 import MakeIdx from "../library/MakeIdx";
 import classes from "./Calender.module.css";
+import { modalActions } from "../store/modal-slice";
+import { dataActions } from "../store/data-slice";
+
+interface T {
+  year: string;
+  month: string;
+  firstDay: number;
+  lastDate: number;
+  identify: string;
+  viewRef: React.RefObject<HTMLDivElement>;
+  listRef: React.MutableRefObject<{}>;
+  allListRef: React.MutableRefObject<{}>;
+  clickedElement: React.MutableRefObject<{}>;
+  data: DataType;
+  modal: ModalType;
+}
+
+interface Parameter {
+  object: CalenderData;
+  date: string;
+  week: number;
+  day: number;
+  index: number;
+}
 
 const MakeCalender = ({
   year,
@@ -12,31 +34,26 @@ const MakeCalender = ({
   firstDay,
   lastDate,
   identify,
+  viewRef,
   listRef,
   allListRef,
-  viewRef,
   clickedElement,
-}) => {
-  // console.log("makecalender");
-  const dispatch = useDispatch();
-  const week = Math.ceil((firstDay + lastDate) / 7); // 해당 month가 몇 주인지?
+  data,
+  modal,
+}: T): React.ReactNode => {
+  const dispatch = useAppDispatch();
+  const week: number = Math.ceil((firstDay + lastDate) / 7); // 해당 month가 4주 ~ 5주인지?
+  const [listBoxHeightCount, setHeight] = useState<number>(0);
 
-  // {email: '', name: '', schedule: []}
-  const modalState = useSelector((state) => state.modal);
-  const listState = useSelector((state) => state.list);
-
-  const [listBoxHeightCount, setHeight] = useState("");
-
-  // {idx: '', todo: [ ... {}...]}
-  const schedule = modalState.userSchedule;
-  const modalVisible = modalState.isVisible;
+  const schedule = data.userSchedule;
+  const addModalOpen = data.addModalOpen;
 
   useEffect(() => {
     // 컴포넌트의 return 실행 후, state에 값을 저장후 랜더링
     // console.log("useEffect setHeight");
     setHeight(
       Math.floor(
-        (viewRef.current.clientHeight - 64 - 45 - 24 * week) / (24 * week)
+        (viewRef.current!.clientHeight - 64 - 45 - 24 * week) / (24 * week)
       )
     );
   }, [viewRef, week]);
@@ -44,51 +61,41 @@ const MakeCalender = ({
   const getListBoxSize = useCallback(() => {
     setHeight(
       Math.floor(
-        (viewRef.current.clientHeight - 64 - 45 - 24 * week) / (24 * week)
+        (viewRef.current!.clientHeight - 64 - 45 - 24 * week) / (24 * week)
       )
     );
   }, [viewRef, week]);
 
   useEffect(() => {
     // 창 크기 조절시에 보이는 list 개수 달리 보여주기 위함.
-
     window.addEventListener("resize", getListBoxSize);
   });
 
-  const addClickHandler = (idx, day, week) => {
+  const addClickHandler = (idx: string, day: number, week: number) => {
     const type = "add";
-    if (!modalVisible) {
+    if (!addModalOpen) {
       dispatch(
-        modalActions.clickedDate({ type, idx, day, week, dateArray: [idx] })
+        dataActions.clickedDate({ type, idx, day, week, dateArray: [idx] })
       );
     }
   };
 
-  const listClickHandler = (event, object, week, day, index) => {
+  const dataClickHandler = (
+    event: React.MouseEvent,
+    isMore: boolean,
+    parameter: Parameter
+  ) => {
     clickedElement.current = event.target;
-    dispatch(
-      listActions.clickedList({
-        object,
-        week,
-        day,
-        index,
-      })
-    );
+    let type: string = isMore ? "list" : "more";
+    dispatch(modalActions.clickedList({ type, parameter }));
   };
 
-  const allListClickHandler = (event, date, day, week) => {
-    clickedElement.current = event.target;
-    if (listState.isVisible) {
-      dispatch(listActions.offModal());
-    }
-    dispatch(allListActions.clickedListBox({ date, day, week }));
-  };
-
-  const calculateWidth = (date, day, endDate) => {
-    // [년, 월, 일]
-    if (date === endDate) return;
-
-    let item = date.split("-");
+  const calculateWidth = (
+    date: string,
+    day: number,
+    endDate: string
+  ): number => {
+    let item = date.split("-"); // [년, 월, 일]
     item[2] = String(+item[2] + 7 - day).padStart(2, "0");
 
     let lastDateOfWeek = item[0] + "-" + item[1] + "-" + item[2];
@@ -97,23 +104,33 @@ const MakeCalender = ({
     else return new Date(endDate).getDay() + 1 - day + 1;
   };
 
-  const scheduleHandler = (date, day, week, array) => {
+  const scheduleHandler = (
+    date: string,
+    day: number,
+    week: number,
+    array: ReactNode[][]
+  ) => {
     if (!schedule[date]) return;
 
     const dateInfo = date.split("-");
-    let year = dateInfo[0];
-    let month = dateInfo[1];
-    let index = 0;
+    let year: string = dateInfo[0];
+    let month: string = dateInfo[1];
+    let index: number = 0;
+
     // array 배열 만들기
     for (const key in schedule[date]) {
       const object = schedule[date][key];
 
       if (object.startDate < date && day !== 1) continue;
-     
-      const isLong = object.startDate < object.endDate ? true : false;
-      let arrayCount = 0;
-      let barWidth = calculateWidth(date, day, object.endDate);
-      let thisDate = +dateInfo[2];
+
+      const isLong: boolean = object.startDate < object.endDate ? true : false;
+      let arrayCount: number = 0;
+      let barWidth: number =
+        object.startDate !== object.endDate
+          ? calculateWidth(date, day, object.endDate)
+          : 0;
+      let thisDate: number = +dateInfo[2];
+      let parameter: Parameter = { object, date, week, day, index };
 
       for (let item of array[day]) {
         if (arrayCount >= listBoxHeightCount) break;
@@ -129,7 +146,7 @@ const MakeCalender = ({
           if (i === 8) break;
 
           let date =
-            year + "-" + month + "-" + thisDate.toString().padStart(2, 0);
+            year + "-" + month + "-" + thisDate.toString().padStart(2, "0");
 
           if (date > object.endDate) break;
 
@@ -148,15 +165,12 @@ const MakeCalender = ({
                 top: `${24 * arrayCount}px`,
                 display: i === day || isMore ? "flex" : "none",
               }}
-
-              onClick={(event) => {
+              onClick={(event: React.MouseEvent) => {
                 event.stopPropagation();
-                !isMore
-                  ? listClickHandler(event, object, week, day, index)
-                  : allListClickHandler(event, date, day, week);
+                dataClickHandler(event, isMore, parameter);
               }}
               ref={(el) => {
-                listRef.current[`${date}${object.key}`] = el;
+                listRef.current[`${object.key}`] = el;
               }}
             >
               {!isLong && arrayCount < listBoxHeightCount - 1 && (
@@ -171,11 +185,10 @@ const MakeCalender = ({
                 }`}
                 style={{
                   backgroundColor:
-                    listState.isVisible &&
-                    object.key === listState.key &&
-                    "rgba(182, 182, 182, 0.6)",
+                    modal.listModalOpen && object.key === modal.key
+                      ? "rgba(182, 182, 182, 0.6)"
+                      : "",
                 }}
-                dayindex={day}
               >
                 <div
                   className={`${classes["type-one"]}  ${
@@ -188,7 +201,7 @@ const MakeCalender = ({
                         listBoxHeightCount +
                         1
                       }개 더보기`
-                    : (object.startTime + " " + object.title)}
+                    : object.startTime + " " + object.title}
                 </div>
                 <div
                   className={`${classes["type-two"]} ${
@@ -215,29 +228,29 @@ const MakeCalender = ({
     return array[day];
   };
 
-  const monthArray = [];
+  const dateArray: React.ReactNode[] = [];
 
-  ////////////////////////////////////////////////
-  /* 날짜 생성하기 */
-  const makeDay = (week, array) => {
+  // ////////////////////////////////////////////////
+  // /* 날짜 생성하기 */
+  const makeDay = (week: number, array: ReactNode[][]) => {
     const thisMonthArray = [];
 
     /* 첫 주에선 그 전 달과 이번 달을 표시하기 */
     if (week === 1) {
-      const prevMonthLastDate = new Date(year, month - 1, 0).getDate();
+      const prevMonthLastDate = new Date(+year, +month - 1, 0).getDate();
 
       for (let i = 1; i <= 7; i++) {
         if (i <= firstDay) {
           //ex) 첫 주에 28, 29, 30, 31, 1, 2, 3 표현하기 위함
-          const date = prevMonthLastDate - firstDay + i;
-          const idx = MakeIdx("prev", year, month, date);
-          const day = i; //모달창을 띄울 때 위치를 무슨 요일인지 저장
+          const date: number = prevMonthLastDate - firstDay + i;
+          const idx: string = MakeIdx("prev", year, month, date);
+          const day: number = i; //모달창을 띄울 때 위치를 무슨 요일인지 저장
 
           thisMonthArray.push(
             <td
               key={idx}
               onClick={() => {
-                addClickHandler(idx, day, week);
+                !modal.listModalOpen && addClickHandler(idx, day, week);
               }}
               className={classes.date_box}
               day-index={day}
@@ -261,24 +274,22 @@ const MakeCalender = ({
             </td>
           );
         } else {
-          const date = i - firstDay;
-          const idx = MakeIdx("", year, month, date);
-          const day = i;
+          const date: number = i - firstDay;
+          const idx: string = MakeIdx("", year, month, date);
+          const day: number = i;
 
           thisMonthArray.push(
             <td
               key={idx}
               onClick={() => {
-                if (!listState.isVisible) {
-                  addClickHandler(idx, day, week);
-                }
+                !modal.listModalOpen && addClickHandler(idx, day, week);
               }}
               className={classes.date_box}
               day-index={day}
             >
               <div className={classes.date}>
                 <h2
-                  style={{ width: date === 1 && "54px" }}
+                  style={{ width: date === 1 ? "54px" : "" }}
                   className={`
                   ${identify === idx && classes.Today}
                   ${
@@ -306,17 +317,15 @@ const MakeCalender = ({
 
       for (let i = startDate; i <= week * 7 - 1; i++) {
         if (i - firstDay < lastDate) {
-          const nowDate = i - firstDay + 1;
-          const idx = MakeIdx("", year, month, nowDate);
-          const day = (i % 7) + 1;
+          const nowDate: number = i - firstDay + 1;
+          const idx: string = MakeIdx("", year, month, nowDate);
+          const day: number = (i % 7) + 1;
 
           thisMonthArray.push(
             <td
               key={idx}
               onClick={() => {
-                if (!listState.isVisible) {
-                  addClickHandler(idx, day, week);
-                }
+                !modal.listModalOpen && addClickHandler(idx, day, week);
               }}
               className={classes.date_box}
               day-index={day}
@@ -340,17 +349,15 @@ const MakeCalender = ({
             </td>
           );
         } else {
-          const nowDate = i - lastDate - firstDay + 1;
-          const idx = MakeIdx("next", year, month, nowDate);
-          const day = (i % 7) + 1;
+          const nowDate: number = i - lastDate - firstDay + 1;
+          const idx: string = MakeIdx("next", year, month, nowDate);
+          const day: number = (i % 7) + 1;
 
           thisMonthArray.push(
             <td
               key={idx}
               onClick={() => {
-                if (!listState.isVisible) {
-                  addClickHandler(idx, day, week);
-                }
+                !modal.listModalOpen && addClickHandler(idx, day, week);
               }}
               className={classes.date_box}
               day-index={day}
@@ -362,10 +369,10 @@ const MakeCalender = ({
                       ? classes.sunday
                       : day === 7 && classes.saturday
                   }`}
-                  style={{ width: nowDate === 1 && "54px" }}
+                  style={{ width: nowDate === 1 ? "54px" : "" }}
                 >
                   {nowDate === 1
-                    ? month === 12
+                    ? month === "12"
                       ? "1월 1일"
                       : `${month + 1}월 1일`
                     : nowDate}
@@ -384,10 +391,9 @@ const MakeCalender = ({
     return thisMonthArray;
   };
 
-  /* 주 만들기, 달 마다 5주 6주 다르므로...*/
   for (let i = 1; i <= week; i++) {
-    const array = [
-      "",
+    const array: ReactNode[][] = [
+      [],
       new Array(25),
       new Array(25),
       new Array(25),
@@ -397,14 +403,14 @@ const MakeCalender = ({
       new Array(25),
     ];
 
-    monthArray.push(
+    dateArray.push(
       <tr key={i} className={`week ${i}`}>
         {makeDay(i, array)}
       </tr>
     );
   }
 
-  return monthArray;
+  return dateArray;
 };
 
 export default MakeCalender;

@@ -4,7 +4,7 @@ import { RootState } from "../store/store";
 import AddEvent from "../modal/AddEvent";
 import List from "../modal/List";
 import AllList from "../modal/AllList";
-import MakeCaledner from "./MakeCalender";
+import MakeCalender from "./MakeCalender";
 import classes from "./Calender.module.css";
 
 const date: Date = new Date();
@@ -62,7 +62,7 @@ const Main = ({ year, month, firstDay, lastDate, viewRef }: T) => {
             </tr>
           </thead>
           <tbody className={classes.presentation}>
-            {MakeCaledner({
+            {MakeCalender({
               year,
               month,
               firstDay,
@@ -72,6 +72,8 @@ const Main = ({ year, month, firstDay, lastDate, viewRef }: T) => {
               allListRef,
               viewRef,
               clickedElement,
+              data,
+              modal,
             })}
           </tbody>
         </table>

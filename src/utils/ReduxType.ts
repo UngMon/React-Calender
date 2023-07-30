@@ -23,7 +23,7 @@ export interface DataType {
   week: string;
   day: string;
   dataChanged: boolean;
-  userSchedule: { [key: string]: CalenderData };
+  userSchedule: { [key: string]: UserData };
   dateArray: string[];
 }
 
