@@ -39,4 +39,4 @@ const monthSlice = createSlice({
 
 export const monthActions = monthSlice.actions;
 
-export default monthSlice;
+export const monthReducer = monthSlice.reducer;

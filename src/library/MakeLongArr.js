@@ -1,7 +1,7 @@
 const MakeLongArr = (startInfo, endInfo) => {
   const idxArr = [];
-  console.log(startInfo);
-  console.log(endInfo);
+  // console.log(startInfo);
+  // console.log(endInfo);
   const firstYear = startInfo[0];
   const firstMonth = startInfo[1];
   const firstDate = startInfo[2];
@@ -117,7 +117,7 @@ const MakeLongArr = (startInfo, endInfo) => {
       }
     }
   }
-  console.log(idxArr);
+  // console.log(idxArr);
   return idxArr;
 };
 

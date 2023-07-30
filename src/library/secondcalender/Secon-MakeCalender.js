@@ -1,6 +1,6 @@
 import { useDispatch, useSelector } from "react-redux";
 import { monthActions } from "../../store/month-slice";
-import { modalActions } from "../../store/modal-slice";
+import { modalActions } from "../../store/data-slice";
 import MakeIdx from "../MakeIdx";
 import MakeLongArr from "../MakeLongArr";
 import classes from "./second.module.css";
@@ -33,24 +33,22 @@ const MakeCaledner = ({
     }
 
     // 해당 날짜로 addEvnet.js가 렌더링.. 한 마디로 모달창이 이동하는 기능...
-    if (!listState.isVisible) {
-      dispatch(modalActions.onModal());
-    }
+    // if (!listState.isVisible) {
+    //   dispatch(modalActions.onModal());
+    // }
 
     // 첫 번째 미니 달력 선택의 경우...
-    if (type) {
+    if (type === 'start') {
       const 마지막날 = modalState.endDate.split("-");
-      const longArr = MakeLongArr(선택날짜, 마지막날);
-      const type = "start";
+      const dateArray = MakeLongArr(선택날짜, 마지막날);
       dispatch(
-        modalActions.clickedDate({ type, idx, day, week, longArr })
+        modalActions.clickedDate({ type, idx, day, week, dateArray })
       );
     } else {
       // 두 번째 미니 달력 선택의 경우...
       const 시작날 = modalState.startDate.split("-");
-      const longArr = MakeLongArr(시작날, 선택날짜);
-      const type = "end";
-      dispatch(modalActions.clickedDate({ type, idx, longArr }));
+      const dateArray = MakeLongArr(시작날, 선택날짜);
+      dispatch(modalActions.clickedDate({ type, idx, dateArray }));
     }
     dateClose();
   };

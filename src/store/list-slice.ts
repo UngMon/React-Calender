@@ -4,47 +4,47 @@ const listSlice = createSlice({
   name: "list",
   initialState: {
     isVisible: false,
-    style: false,
+    isDone: false,
     color: "",
     startDate: "",
     endDate: "",
     startTime: "",
     endTime: "",
-    week: "",
-    day: "",
     title: "",
     key: "",
-    arr: "",
+    week: "",
+    day: "",
+    index: 0,
   },
   reducers: {
     clickedList(state, action) {
       state.isVisible = true;
-      state.style = action.payload.style;
-      state.color = action.payload.color;
-      state.startDate = action.payload.startDate;
-      state.endDate = action.payload.endDate;
-      state.startTime = action.payload.startTime;
-      state.endTime = action.payload.endTime;
+      state.isDone = action.payload.object.style;
+      state.color = action.payload.object.color;
+      state.startDate = action.payload.object.startDate;
+      state.endDate = action.payload.object.endDate;
+      state.startTime = action.payload.object.startTime;
+      state.endTime = action.payload.object.endTime;
+      state.title = action.payload.object.title;
+      state.key = action.payload.object.key;
       state.week = action.payload.week;
       state.day = action.payload.day;
-      state.title = action.payload.title;
-      state.key = action.payload.key;
-      state.arr = action.payload.arr;
+      state.index = action.payload.index;
     },
 
     offModal(state) {
       state.isVisible = false;
-      state.style = false;
+      state.isDone = false;
       state.color = "";
       state.startDate = "";
       state.endDate = "";
       state.startTime = "";
       state.endTime = "";
-      state.week = "";
-      state.day = "";
       state.title = "";
       state.key = "";
-      state.arr = "";
+      state.week = "";
+      state.day = "";
+      state.index = 0;
     },
   },
 });

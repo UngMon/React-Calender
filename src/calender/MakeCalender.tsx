@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { allListActions } from "../store/all-list-slice";
-import { modalActions } from "../store/modal-slice";
+import { modalActions } from "../store/data-slice";
 import { listActions } from "../store/list-slice";
 import MakeIdx from "../library/MakeIdx";
 import classes from "./Calender.module.css";
@@ -28,7 +28,7 @@ const MakeCaledner = ({
   const [listBoxHeightCount, setHeight] = useState("");
 
   // {idx: '', todo: [ ... {}...]}
-  const schedule = modalState.userSchedule.schedule;
+  const schedule = modalState.userSchedule;
   const modalVisible = modalState.isVisible;
 
   useEffect(() => {
@@ -51,45 +51,27 @@ const MakeCaledner = ({
 
   useEffect(() => {
     // 창 크기 조절시에 보이는 list 개수 달리 보여주기 위함.
-    // console.log("window addEveentListener");
+
     window.addEventListener("resize", getListBoxSize);
   });
 
   const addClickHandler = (idx, day, week) => {
     const type = "add";
     if (!modalVisible) {
-      dispatch(modalActions.clickedDate({ type, idx, day, week }));
+      dispatch(
+        modalActions.clickedDate({ type, idx, day, week, dateArray: [idx] })
+      );
     }
   };
 
-  const listClickHandler = (
-    event,
-    style,
-    color,
-    startDate,
-    endDate,
-    startTime,
-    endTime,
-    week,
-    day,
-    title,
-    key,
-    arr
-  ) => {
+  const listClickHandler = (event, object, week, day, index) => {
     clickedElement.current = event.target;
     dispatch(
       listActions.clickedList({
-        style,
-        color,
-        startDate,
-        endDate,
-        startTime,
-        endTime,
+        object,
         week,
         day,
-        title,
-        key,
-        arr,
+        index,
       })
     );
   };
@@ -102,28 +84,38 @@ const MakeCaledner = ({
     dispatch(allListActions.clickedListBox({ date, day, week }));
   };
 
+  const calculateWidth = (date, day, endDate) => {
+    // [년, 월, 일]
+    if (date === endDate) return;
+
+    let item = date.split("-");
+    item[2] = String(+item[2] + 7 - day).padStart(2, "0");
+
+    let lastDateOfWeek = item[0] + "-" + item[1] + "-" + item[2];
+
+    if (lastDateOfWeek < endDate) return 7 - day + 1;
+    else return new Date(endDate).getDay() + 1 - day + 1;
+  };
+
   const scheduleHandler = (date, day, week, array) => {
+    if (!schedule[date]) return;
+
     const dateInfo = date.split("-");
-    const year = dateInfo[0];
-    const month = dateInfo[1];
-
-    if (!schedule?.[year]?.[month]?.[date]) return;
-
+    let year = dateInfo[0];
+    let month = dateInfo[1];
+    let index = 0;
     // array 배열 만들기
-    for (const item in schedule[year][month][date]) {
-      const object = schedule[year][month][date][item];
-
-      const isLong = object.startDate !== object.endDate ? true : false;
+    for (const key in schedule[date]) {
+      const object = schedule[date][key];
 
       if (object.startDate < date && day !== 1) continue;
-
-      if (object.isMiddle || (object.isEnd && object.count !== 1)) continue;
-
+     
+      const isLong = object.startDate < object.endDate ? true : false;
       let arrayCount = 0;
-      let nowDate = +dateInfo[2];
+      let barWidth = calculateWidth(date, day, object.endDate);
+      let thisDate = +dateInfo[2];
 
       for (let item of array[day]) {
-        let isMore = arrayCount < listBoxHeightCount - 1 ? false : true;
         if (arrayCount >= listBoxHeightCount) break;
 
         if (item) {
@@ -131,10 +123,14 @@ const MakeCaledner = ({
           continue;
         }
 
+        let isMore = arrayCount < listBoxHeightCount - 1 ? false : true;
+
         for (let i = day; i <= 7; i++) {
           if (i === 8) break;
+
           let date =
-            year + "-" + month + "-" + nowDate.toString().padStart(2, 0);
+            year + "-" + month + "-" + thisDate.toString().padStart(2, 0);
+
           if (date > object.endDate) break;
 
           array[i][arrayCount] = (
@@ -148,27 +144,15 @@ const MakeCaledner = ({
                   : classes["list-more"]
               }`}
               style={{
-                width: isLong && !isMore ? `${object.length}00%` : "95%",
+                width: isLong && !isMore ? `${barWidth}00%` : "100%",
                 top: `${24 * arrayCount}px`,
                 display: i === day || isMore ? "flex" : "none",
               }}
+
               onClick={(event) => {
                 event.stopPropagation();
                 !isMore
-                  ? listClickHandler(
-                      event,
-                      object.style,
-                      object.color,
-                      object.startDate,
-                      object.endDate,
-                      object.startTime,
-                      object.endTime,
-                      week,
-                      day,
-                      object.title,
-                      object.key,
-                      object.arr
-                    )
+                  ? listClickHandler(event, object, week, day, index)
                   : allListClickHandler(event, date, day, week);
               }}
               ref={(el) => {
@@ -195,25 +179,25 @@ const MakeCaledner = ({
               >
                 <div
                   className={`${classes["type-one"]}  ${
-                    object.style && classes.done
+                    object.isDone && classes.done
                   }`}
                 >
                   {isMore
                     ? `${
-                        Object.keys(schedule[year][month][date]).length -
+                        Object.keys(schedule[date]).length -
                         listBoxHeightCount +
                         1
                       }개 더보기`
-                    : object.startTime + " " + object.title}
+                    : (object.startTime + " " + object.title)}
                 </div>
                 <div
                   className={`${classes["type-two"]} ${
-                    object.style && classes.done
+                    object.isDone && classes.done
                   }`}
                 >
                   {isMore
                     ? `+${
-                        Object.keys(schedule[year][month][date]).length -
+                        Object.keys(schedule[date]).length -
                         listBoxHeightCount +
                         1
                       }`
@@ -222,12 +206,11 @@ const MakeCaledner = ({
               </div>
             </div>
           );
-
-          nowDate += 1;
+          thisDate += 1;
         }
-
         break;
       }
+      index += 1;
     }
     return array[day];
   };

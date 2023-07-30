@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { modalActions } from "../store/modal-slice";
+import { modalActions } from "../store/data-slice";
 import { listActions } from "../store/list-slice";
 import { allListActions } from "../store/all-list-slice";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";

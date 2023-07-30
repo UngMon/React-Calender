@@ -3,7 +3,7 @@ import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { auth } from "../Auth/firebase";
 import { signOut } from "firebase/auth";
-import { modalActions } from "../store/modal-slice";
+import { modalActions } from "../store/data-slice";
 import "./UserInfo.css";
 import { useEffect } from "react";
 

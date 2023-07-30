@@ -1,7 +1,7 @@
 import { useRef, useState, useEffect, useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { listActions } from "../store/list-slice";
-import { modalActions } from "../store/modal-slice";
+import { modalActions } from "../store/data-slice";
 import { timeActions } from "../store/time-slice";
 import { comparisonHandler } from "../library/Comparioson";
 import ModalPosition from "../library/ModalPosition";
@@ -23,7 +23,7 @@ const List = ({ viewRef, listRef, allListRef, clickedElement, list }) => {
   const listState = useSelector((state) => state.list);
   const modalState = useSelector((state) => state.modal);
   const allListState = useSelector((state) => state.all);
-  const schedule = modalState.userSchedule.schedule;
+  const schedule = modalState.userSchedule;
 
   const startDate = modalState.startDate || listState.startDate;
   const endDate = modalState.endDate || listState.endDate;
@@ -217,10 +217,8 @@ const List = ({ viewRef, listRef, allListRef, clickedElement, list }) => {
     dispatch(modalActions.offModal());
     dispatch(timeActions.resetTime());
   };
-
-  const styleClass = schedule[dateArray[0]][dateArray[1]][listState.startDate][
-    listState.key
-  ].style
+  console.log(schedule[listState.startDate][listState.index])
+  const styleClass = schedule[listState.startDate][listState.index].isDone
     ? "done"
     : false;
 

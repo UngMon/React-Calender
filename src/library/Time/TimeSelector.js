@@ -176,7 +176,7 @@ const TimeSelector = ({
           <div className="second-calender">
             {fristDateIsVisible && (
               <Month
-                type={true}
+                type={'start'}
                 year={시작날[0]}
                 month={시작날[1]}
                 dateRef={dateRef}
@@ -219,7 +219,7 @@ const TimeSelector = ({
           <div className="second-calender">
             {lastDateIsVisible && (
               <Month
-                type={false}
+                type={'end'}
                 year={마지막날[0]}
                 month={마지막날[1]}
                 dateRef={dateRef}

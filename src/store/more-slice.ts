@@ -1,14 +1,17 @@
 import { createSlice } from "@reduxjs/toolkit";
+import { MoreType } from "../utils/ReduxType";
 
-const allListSlice = createSlice({
+const initialState: MoreType = {
+  isVisible: false,
+  date: "",
+  day: "",
+  week: "",
+  key: "",
+};
+
+const moreSlice = createSlice({
   name: "all",
-  initialState: {
-    isVisible: false,
-    date: "",
-    day: "",
-    week: "",
-    key: "",
-  },
+  initialState,
   reducers: {
     offModal(state) {
       state.isVisible = false;
@@ -23,6 +26,6 @@ const allListSlice = createSlice({
   },
 });
 
-export const allListActions = allListSlice.actions;
+export const moreActions = moreSlice.actions;
 
-export default allListSlice;
+export const moreReducer = moreSlice.reducer;
