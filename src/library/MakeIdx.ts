@@ -1,24 +1,19 @@
-const MakeIdx = (order, year, month, date) => {
-  date = date < 10 ? '0' + date : date;
-
-  if (order === "prev") {
-    if (month === 1) {
-      return year - 1 + "-" + 12 + "-" + date;
-    } else {
-      month = month - 1 < 10 ? "0" + (month - 1) : month - 1;
-      return year + "-" + month + "-" + date;
-    }
-  } else if (order === "next") {
-    if (month === 12) {
-      return year + 1 + "-01-" + date;
-    } else {
-      month = month + 1 < 10 ? "0" + (month + 1) : month + 1;
-      return year + "-" + month + "-" + date;
-    }
-  } else {
-    month = month < 10 ? "0" + (month) : month;
-    return year + "-" + month + "-" + date;
+const MakeIdx = (order: string, year: string, month: string, date: number) => {
+  switch (order) {
+    case "prev":
+      year = month === "01" ? `${+year - 1}` : year;
+      month = month === "01" ? "12" : month;
+      break;
+    case "next":
+      year = month === "12" ? `${+year + 1}` : year;
+      month = month === "12" ? "12" : month;
+      break;
+    default:
   }
+  
+  return (
+    year + "-" + month.padStart(2, "0") + "-" + String(date).padStart(2, "0")
+  );
 };
 
 export default MakeIdx;
