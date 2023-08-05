@@ -1,10 +1,22 @@
+import React from "react";
 import classes from "./second.module.css";
 import MakeCaledner from "./Secon-MakeCalender";
+import { ButtonRef } from "../../utils/RefType";
 
 const date = new Date();
 const fixYear = date.getFullYear();
 const fixMonth = date.getMonth() + 1;
 const fixDate = date.getDate();
+
+interface T {
+  year: number;
+  month: number;
+  firstDay: number;
+  lastDate: number;
+  type: string;
+  dateRef: React.MutableRefObject<ButtonRef>;
+  dateClose: () => void;
+}
 
 const Calender = ({
   year,
@@ -14,7 +26,7 @@ const Calender = ({
   type,
   dateRef,
   dateClose,
-}) => {
+}: T) => {
   const identify = fixYear + "." + fixMonth + "." + fixDate;
 
   return (
@@ -22,13 +34,13 @@ const Calender = ({
       <table className={classes.table}>
         <thead className={classes.weekname}>
           <tr>
-            <th dayindex="1">일</th>
-            <th dayindex="2">월</th>
-            <th dayindex="3">화</th>
-            <th dayindex="4">수</th>
-            <th dayindex="5">목</th>
-            <th dayindex="6">금</th>
-            <th dayindex="7">토</th>
+            <th>일</th>
+            <th>월</th>
+            <th>화</th>
+            <th>수</th>
+            <th>목</th>
+            <th>금</th>
+            <th>토</th>
           </tr>
         </thead>
         <tbody className={classes.presentation}>

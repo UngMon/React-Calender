@@ -1,5 +1,5 @@
 /* eslint-disable */
-import { useState, useCallback } from "react";
+import React, { useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { auth } from "../Auth/firebase";
 import {
@@ -12,38 +12,35 @@ import {
 import { FacebookAuthProvider } from "firebase/auth";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { createUserWithEmailAndPassword } from "firebase/auth";
-import { useDispatch } from "react-redux";
-import { modalActions } from "../store/modal-slice";
 import classes from "./LoginPage.module.css";
 
 let bool = false; // 첫 마운트시 confirmUser에서 작동하지 않기위함
 
 const LoginPage = () => {
-  const dispatch = useDispatch();
   const navigagte = useNavigate();
   console.log("loginpage");
   // 회원가입 인지 아닌지~
   const [creatingUser, setCreatingUser] = useState(false);
 
   // 이메일과 패스워드 state
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [name, setName] = useState<string>("");
+  const [email, setEmail] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
   // const [passwordConfirm, setPasswordConfirm] = useState("");
 
   // 이메일과 패스워드 유효성 검사 state
-  const [isName, setIsName] = useState(false);
-  const [isEmail, setIsEmail] = useState(false);
-  const [isPassword, setIsPassword] = useState(false);
+  const [isName, setIsName] = useState<boolean>(false);
+  const [isEmail, setIsEmail] = useState<boolean>(false);
+  const [isPassword, setIsPassword] = useState<boolean>(false);
   // const [isPasswordConfirm, setIsPasswordConfirm] = useState(false);
 
   // 이메일과 패스워드 에러메시지 state
-  const [nameMessage, setNameMessage] = useState("");
-  const [emailMessage, setEmailMessage] = useState("");
-  const [passwordMessage, setPasswordMessage] = useState("");
+  const [nameMessage, setNameMessage] = useState<string>("");
+  const [emailMessage, setEmailMessage] = useState<string>("");
+  const [passwordMessage, setPasswordMessage] = useState<string>("");
   // const [passwordConfirmMessage, setPasswordConfirmMessage] = useState("");
 
-  const onChangeName = useCallback((e) => {
+  const onChangeName = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     setName(e.target.value);
     if (e.target.value.length < 2 || e.target.value.length > 5) {
       setNameMessage("2글자 이상 5글자 이하로 입력해주세요.");
@@ -56,91 +53,84 @@ const LoginPage = () => {
     }
   }, []);
 
-  const onConfirmEmail = useCallback((e) => {
-    const regex =
-      /([\w-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([\w-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$/;
+  const onConfirmEmail = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const regex =
+        /([\w-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([\w-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$/;
 
-    if (regex.test(e.target.value)) {
-      setEmailMessage("올바른 이메일 형식이에요! ");
-      setIsEmail(true);
-      setEmail(e.target.value);
-    } else {
-      setEmailMessage("이메일 형식이 틀렸어요! ex)abc@abc.com");
-      setIsEmail(false);
-      setEmail("");
-    }
+      if (regex.test(e.target.value)) {
+        setEmailMessage("올바른 이메일 형식이에요! ");
+        setIsEmail(true);
+        setEmail(e.target.value);
+      } else {
+        setEmailMessage("이메일 형식이 틀렸어요! ex)abc@abc.com");
+        setIsEmail(false);
+        setEmail("");
+      }
 
-    if (e.target.value.trim() === "") {
-      setEmailMessage("");
-    }
-  }, []);
+      if (e.target.value.trim() === "") {
+        setEmailMessage("");
+      }
+    },
+    []
+  );
 
-  const confirmPassword = useCallback((e) => {
-    if (e.target.value.trim() !== "") {
-      setPasswordMessage("");
-      setIsPassword(true);
-      setPassword(e.target.value);
-    } else {
-      setPasswordMessage("패스워드를 입력해주세요!");
-      setIsPassword(false);
-      setPassword("");
-    }
-  }, []);
+  const confirmPassword = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      if (e.target.value.trim() !== "") {
+        setPasswordMessage("");
+        setIsPassword(true);
+        setPassword(e.target.value);
+      } else {
+        setPasswordMessage("패스워드를 입력해주세요!");
+        setIsPassword(false);
+        setPassword("");
+      }
+    },
+    []
+  );
 
   // 회원가입 버튼을 누른 후, 생성된 password input의 onClick 함수
-  const createPassword = useCallback((e) => {
-    const passwordRegex =
-      /^(?=.*[a-zA-Z])(?=.*[!@#$%^*+=-])(?=.*[0-9]).{8,25}$/;
+  const createPassword = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const passwordRegex =
+        /^(?=.*[a-zA-Z])(?=.*[!@#$%^*+=-])(?=.*[0-9]).{8,25}$/;
 
-    if (!passwordRegex.test(e.target.value)) {
-      setPasswordMessage(
-        "숫자+영문자+특수문자 조합으로 8자리 이상 입력해주세요!"
-      );
-      setIsPassword(false);
-      setPassword("");
-    } else {
-      setPasswordMessage("안전한 비밀번호에요!");
-      setIsPassword(true);
-      setPassword(e.target.value);
-    }
-  }, []);
+      if (!passwordRegex.test(e.target.value)) {
+        setPasswordMessage(
+          "숫자+영문자+특수문자 조합으로 8자리 이상 입력해주세요!"
+        );
+        setIsPassword(false);
+        setPassword("");
+      } else {
+        setPasswordMessage("안전한 비밀번호에요!");
+        setIsPassword(true);
+        setPassword(e.target.value);
+      }
+    },
+    []
+  );
 
-  const socialLoginHandler = (event, type) => {
+  const socialLoginHandler = (e: React.MouseEvent, type: string) => {
     // 구글 로그인을 위한 구글 provider 객체 생성
-    event.preventDefault();
+    e.preventDefault();
 
-    let provider;
+    let provider: any;
 
-    if (type === "Google") {
-      provider = new GoogleAuthProvider();
-    }
-
-    if (type === "Facebook") {
-      provider = new FacebookAuthProvider();
+    switch (type) {
+      case "Google":
+        provider = new GoogleAuthProvider();
+        break;
+      default:
+        provider = new FacebookAuthProvider();
     }
 
     setPersistence(auth, browserLocalPersistence).then(() => {
       signInWithPopup(auth, provider)
         .then((data) => {
           console.log(data);
-          localStorage.setItem(
-            "userInfo",
-            JSON.stringify({
-              email: data.user.email,
-              name: data.user.displayName,
-              uid: data.user.uid,
-            })
-          );
-
-          dispatch(
-            modalActions.setUser({
-              email: data.user.email,
-              name: data.user.displayName,
-              uid: data.user.uid,
-            })
-          );
-          // bool = true;
-          navigagte("/calender");
+          bool = true;
+          navigagte("/calender/date?year=2023&month=07");
         })
         .catch((err) => {
           alert("로그인하는데 실패했습니다.");
@@ -149,7 +139,11 @@ const LoginPage = () => {
     });
   };
 
-  const loginFormHandler = (email, password, e) => {
+  const loginFormHandler = (
+    e: React.FormEvent,
+    email: string,
+    password: string
+  ) => {
     e.preventDefault();
 
     if (creatingUser) return;
@@ -160,20 +154,9 @@ const LoginPage = () => {
       .then((userCredential) => {
         // Signed in
         console.log(userCredential);
-        const uid = userCredential.user.uid;
         const emailverified = userCredential.user.emailVerified;
 
         if (!emailverified) return alert("이메일 인증을 해주세요!");
-
-        // 이메일 인증 이후..
-        localStorage.setItem("userInfo", JSON.stringify({ email, name, uid }));
-        dispatch(
-          modalActions.setUser({
-            email: userCredential.user.email,
-            name: userCredential.user.displayName,
-            uid: userCredential.user.uid,
-          })
-        );
         navigagte("/calender");
       })
       .catch((err) => {
@@ -188,32 +171,29 @@ const LoginPage = () => {
       });
   };
 
-  const createAccount = (name, email, password) => {
+  const createAccount = (name: string, email: string, password: string) => {
     if (!isName || !isEmail || !isPassword) {
       return alert("올바른 양식을 기입해주세요!");
     }
 
     createUserWithEmailAndPassword(auth, email, password)
-      .then((userCredential) => {
-        const uid = userCredential.user.uid;
-        sendEmailVerification(auth.currentUser)
+      .then(() => {
+        sendEmailVerification(auth.currentUser!)
           .then(() => {
             alert("이메일 인증 링크를 보냈습니다! 링크를 따라 인증해주세요!");
-            dispatch(modalActions.setUser({ name, email, uid}));
             textClearHandler();
-            // navigagte("/");
+            navigagte("/login");
           })
           .catch((err) => {
             console.log(err);
             alert("인증 링크를 보내는데 실패했습니다!");
           });
-
       })
       .catch((err) => {
         if (err.message === "Firebase: Error (auth/email-already-in-use).") {
           alert("기입한 이메일이 이미 존재합니다.");
         } else {
-          console.log(err)
+          console.log(err);
           alert("계정 생성 중 오류가 발생했습니다.");
         }
       });
@@ -241,7 +221,7 @@ const LoginPage = () => {
         </div>
         <form
           className={classes["login-form"]}
-          onSubmit={(event) => loginFormHandler(email, password, event)}
+          onSubmit={(event) => loginFormHandler(event, email, password)}
         >
           <div className={classes["login-info-area"]}>
             {creatingUser && <label htmlFor="name">이름</label>}

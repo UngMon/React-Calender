@@ -26,7 +26,7 @@ const Header = ({ auth, year, month, movePrevMonth, moveNextMonth }: T) => {
             <FontAwesomeIcon icon={faAngleLeft} />
           </button>
           <span>
-            {year}년 {month + 1}월
+            {year}년 {+month}월
           </span>
           <button onClick={moveNextMonth}>
             <FontAwesomeIcon icon={faAngleRight} />

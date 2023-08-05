@@ -1,8 +1,6 @@
 import React, { useEffect, useRef } from "react";
 import { Auth, signOut } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
-import { dataActions } from "../store/data-slice";
-import { useAppDispatch } from "../store/store";
 import "./UserInfo.css";
 
 interface T {
@@ -11,13 +9,12 @@ interface T {
 }
 
 const UserInfo = ({ auth, setOpenUserInfo }: T) => {
-  const dispatch = useAppDispatch();
   const navigagte = useNavigate();
 
   const userInfoBoxRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const closeModalHandler = (e: React.MouseEvent) => {
+    const closeModalHandler = (e: MouseEvent) => {
       if (!userInfoBoxRef.current!.contains(e.target as HTMLElement)) {
         setTimeout(() => {
           setOpenUserInfo(false);
@@ -34,9 +31,7 @@ const UserInfo = ({ auth, setOpenUserInfo }: T) => {
   const logoutHandler = () => {
     signOut(auth)
       .then(() => {
-        localStorage.removeItem("userInfo");
-        dispatch(dataActions.logout());
-        navigagte("/");
+        navigagte("/login");
       })
       .catch((err) => {
         console.log(err);

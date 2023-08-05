@@ -7,7 +7,7 @@ const SetTime = () => {
   let currentTime = "";
   let lastTime = "";
 
-  const hourMakeHandler = (hour) => {
+  const hourMakeHandler = (hour: number) => {
     if (hour < 9) {
       currentTime = "오전 0" + hour;
       lastTime = "오전 0" + (hour + 1);
@@ -63,16 +63,16 @@ const SetTime = () => {
   minute = Math.ceil(minute / 15) * 15;
 
   if (minute === 60) {
-    minute = "00";
+    minute = 0;
     hourMakeHandler(hour + 1);
   }
 
   if (minute === 0) {
     hourMakeHandler(hour);
-    minute = "00";
+    minute = 0;
   }
 
-  if (0 < minute < 60) {
+  if (0 < minute && minute < 60) {
     hourMakeHandler(hour);
   }
 

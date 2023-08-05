@@ -1,14 +1,23 @@
+import React, { useState } from "react";
 import Calender from "./Secon-Caledner";
-import classes from "./second.module.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAngleLeft, faAngleRight } from "@fortawesome/free-solid-svg-icons";
-import { useState } from "react";
+import { ButtonRef } from "../../utils/RefType";
+import classes from "./second.module.css";
 
-const Month = ({ type, year, month, dateRef, dateClose }) => {
-  console.log('secondMonth')
-  console.log(dateRef.current)
-  const [thisYear, setYear] = useState(+year);
-  const [thisMonth, setMonth] = useState(+month);
+interface T {
+  type: string;
+  year: string;
+  month: string;
+  dateRef: React.MutableRefObject<ButtonRef>;
+  dateClose: () => void;
+}
+
+const Month = ({ type, year, month, dateRef, dateClose }: T) => {
+  console.log("secondMonth");
+  console.log(dateRef.current);
+  const [thisYear, setYear] = useState<number>(+year);
+  const [thisMonth, setMonth] = useState<number>(+month);
 
   const firstDay = new Date(thisYear, thisMonth - 1, 1).getDay();
   const lastDate = new Date(thisYear, thisMonth, 0).getDate();
@@ -40,7 +49,7 @@ const Month = ({ type, year, month, dateRef, dateClose }) => {
         <button
           onClick={movePrevMonthHandler}
           type="button"
-          ref={(el) => (dateRef.current[2] = el)}
+          ref={(el: HTMLButtonElement) => (dateRef.current[2] = el)}
         >
           <FontAwesomeIcon
             icon={faAngleLeft}
@@ -50,7 +59,7 @@ const Month = ({ type, year, month, dateRef, dateClose }) => {
         <button
           onClick={moveNextMonthHandler}
           type="button"
-          ref={(el) => (dateRef.current[3] = el)}
+          ref={(el: HTMLButtonElement) => (dateRef.current[3] = el)}
         >
           <FontAwesomeIcon
             icon={faAngleRight}

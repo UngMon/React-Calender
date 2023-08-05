@@ -1,10 +1,11 @@
-import React, { ReactNode, useCallback, useEffect, useState } from "react";
+import React, { ReactNode, useEffect, useState } from "react";
 import { CalenderData, DataType, ModalType } from "../utils/ReduxType";
 import { useAppDispatch } from "../store/store";
-import MakeIdx from "../library/MakeIdx";
-import classes from "./Calender.module.css";
 import { modalActions } from "../store/modal-slice";
 import { dataActions } from "../store/data-slice";
+import { ListOrMore } from "../utils/RefType";
+import MakeIdx from "../library/MakeIdx";
+import classes from "./Calender.module.css";
 
 interface T {
   year: string;
@@ -13,8 +14,8 @@ interface T {
   lastDate: number;
   identify: string;
   viewRef: React.RefObject<HTMLDivElement>;
-  listRef: React.MutableRefObject<{}>;
-  allListRef: React.MutableRefObject<{}>;
+  listRef: React.MutableRefObject<ListOrMore>;
+  allListRef: React.MutableRefObject<ListOrMore>;
   clickedElement: React.MutableRefObject<{}>;
   data: DataType;
   modal: ModalType;
@@ -58,15 +59,14 @@ const MakeCalender = ({
     );
   }, [viewRef, week]);
 
-  const getListBoxSize = useCallback(() => {
-    setHeight(
-      Math.floor(
-        (viewRef.current!.clientHeight - 64 - 45 - 24 * week) / (24 * week)
-      )
-    );
-  }, [viewRef, week]);
-
   useEffect(() => {
+    const getListBoxSize = () => {
+      setHeight(
+        Math.floor(
+          (viewRef.current!.clientHeight - 64 - 45 - 24 * week) / (24 * week)
+        )
+      );
+    };
     // 창 크기 조절시에 보이는 list 개수 달리 보여주기 위함.
     window.addEventListener("resize", getListBoxSize);
   });
@@ -169,8 +169,8 @@ const MakeCalender = ({
                 event.stopPropagation();
                 dataClickHandler(event, isMore, parameter);
               }}
-              ref={(el) => {
-                listRef.current[`${object.key}`] = el;
+              ref={(el: HTMLDivElement) => {
+                isMore ? allListRef.current[`${object.key}`] = el : listRef.current[`${object.key}`] = el;
               }}
             >
               {!isLong && arrayCount < listBoxHeightCount - 1 && (
@@ -298,7 +298,7 @@ const MakeCalender = ({
                       : day === 7 && classes.saturday
                   }`}
                 >
-                  {date === 1 ? `${month}월 1일` : date}
+                  {date === 1 ? `${+month}월 1일` : date}
                 </h2>
               </div>
               <div className={classes["list-box"]}>
@@ -374,7 +374,7 @@ const MakeCalender = ({
                   {nowDate === 1
                     ? month === "12"
                       ? "1월 1일"
-                      : `${month + 1}월 1일`
+                      : `${+month + 1}월 1일`
                     : nowDate}
                 </h2>
               </div>

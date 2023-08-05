@@ -1,4 +1,10 @@
-import { useRef, useState, useEffect, useCallback } from "react";
+import React, {
+  useRef,
+  useState,
+  useEffect,
+  useCallback,
+  FormEvent,
+} from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { listActions } from "../store/list-slice";
 import { modalActions } from "../store/data-slice";
@@ -15,34 +21,43 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import TimeSelector from "../library/Time/TimeSelector";
 import ColorBox from "../library/ColorBox";
-import { allListActions } from "../store/all-list-slice";
+import { modalActions } from "../store/modal-slice";
+import { RootState } from "../store/store";
+import { ListOrMore } from "../utils/RefType";
 
-const List = ({ viewRef, listRef, allListRef, clickedElement, list }) => {
+interface T {
+  listRef: React.MutableRefObject<{}>;
+  allListRef: React.MutableRefObject<{}>;
+  clickedElement: React.MutableRefObject<{}>;
+  viewRef: React.RefObject<HTMLDivElement>;
+  list: React.MutableRefObject<{}>;
+}
+
+const List = ({ viewRef, listRef, allListRef, clickedElement, list }: T) => {
   const dispatch = useDispatch();
 
-  const listState = useSelector((state) => state.list);
-  const modalState = useSelector((state) => state.modal);
-  const allListState = useSelector((state) => state.all);
-  const schedule = modalState.userSchedule;
+  const data = useSelector((state: RootState) => state.data);
+  const modal = useSelector((state: RootState) => state.modal);
+  const schedule = data.userSchedule;
 
-  const startDate = modalState.startDate || listState.startDate;
-  const endDate = modalState.endDate || listState.endDate;
+  const startDate = data.startDate || modal.startDate;
+  const endDate = data.endDate || modal.endDate;
 
   const dateArray =
-    listState.startDate === listState.endDate
-      ? listState.startDate.split("-")
-      : [...listState.startDate.split("-"), ...listState.endDate.split("-")];
+    modal.startDate === modal.endDate
+      ? modal.startDate.split("-")
+      : [...modal.startDate.split("-"), ...modal.endDate.split("-")];
 
-  const [editArea, setEditArea] = useState(false);
-  const [color, setColor] = useState(listState.color);
-  const [openColor, setOpenColor] = useState(false);
-  const [size, setSize] = useState(["", ""]);
+  const [color, setColor] = useState<string>(modal.color);
+  const [openColor, setOpenColor] = useState<boolean>(false);
+  const [size, setSize] = useState<[number, number]>([0, 0]);
+  const [editArea, setEditArea] = useState<boolean>(false);
 
-  const inputRef = useRef();
-  const colorRef = useRef();
+  const inputRef = useRef<HTMLInputElement>(null);
+  const colorRef = useRef<HTMLDivElement>(null);
 
-  const timeOneRef = useRef();
-  const timeTwoRef = useRef();
+  const timeOneRef = useRef<ListOrMore>({});
+  const timeTwoRef = useRef<ListOrMore>({});
 
   useEffect(() => {
     setSize([viewRef.current.clientWidth, viewRef.current.clientHeight]);
@@ -116,12 +131,12 @@ const List = ({ viewRef, listRef, allListRef, clickedElement, list }) => {
     };
   });
 
-  const removeListHandler = (date, key) => {
+  const removeListHandler = (date: string, key: string) => {
     dispatch(modalActions.removeList({ date, key }));
     dispatch(listActions.offModal());
   };
 
-  const listEditHandler = (startDate, endDate) => {
+  const listEditHandler = (startDate: string, endDate: string) => {
     const day = new Date(startDate).getDay() + 1;
     const arr = listState.arr;
     const key = listState.key;
@@ -136,7 +151,7 @@ const List = ({ viewRef, listRef, allListRef, clickedElement, list }) => {
     dispatch(modalActions.setDate({ day, startDate, endDate, arr, key }));
   };
 
-  const editListSubmitHandler = (event) => {
+  const editListSubmitHandler = (event: React.FormEvent) => {
     event.preventDefault();
     const key = listState.key;
 
@@ -208,7 +223,7 @@ const List = ({ viewRef, listRef, allListRef, clickedElement, list }) => {
     closeModalHandler();
   };
 
-  const listDoneHandler = (date, key) => {
+  const listDoneHandler = (date: string, key: string) => {
     dispatch(modalActions.listDone({ date, key }));
   };
 
@@ -217,13 +232,13 @@ const List = ({ viewRef, listRef, allListRef, clickedElement, list }) => {
     dispatch(modalActions.offModal());
     dispatch(timeActions.resetTime());
   };
-  console.log(schedule[listState.startDate][listState.index])
+  console.log(schedule[listState.startDate][listState.index]);
   const styleClass = schedule[listState.startDate][listState.index].isDone
     ? "done"
     : false;
 
   const marginSize =
-    size[0] !== "" ? ModalPosition(listState.day, listState.week, size) : false;
+    size[0] !== 0 ? ModalPosition(modal.day, modal.week, size) : false;
 
   return (
     <div
@@ -241,12 +256,12 @@ const List = ({ viewRef, listRef, allListRef, clickedElement, list }) => {
         <div onClick={() => listEditHandler(startDate, endDate)}>
           <FontAwesomeIcon icon={faEdit} />
         </div>
-        <div onClick={() => removeListHandler(startDate, listState.key)}>
+        <div onClick={() => removeListHandler(startDate, modal.key)}>
           <FontAwesomeIcon icon={faTrash} />
         </div>
         <div
           className="fa-check"
-          onClick={() => listDoneHandler(startDate, listState.key)}
+          onClick={() => listDoneHandler(startDate, modal.key)}
         >
           <FontAwesomeIcon icon={faCheck} />
         </div>
@@ -255,7 +270,10 @@ const List = ({ viewRef, listRef, allListRef, clickedElement, list }) => {
         </div>
       </div>
       {editArea && (
-        <form className="list-edit-form" onSubmit={editListSubmitHandler}>
+        <form
+          className="list-edit-form"
+          onSubmit={(e: React.FormEvent) => editListSubmitHandler(e)}
+        >
           <div className="edit-list">
             <img
               src="img/memo.png"
@@ -263,13 +281,13 @@ const List = ({ viewRef, listRef, allListRef, clickedElement, list }) => {
               width="17"
               className="input-icon"
             />
-            <input placeholder={listState.title} type="text" ref={inputRef} />
+            <input placeholder={modal.title} type="text" ref={inputRef} />
           </div>
-          <TimeSelector
+          {/* <TimeSelector
             startDate={startDate}
             endDate={endDate}
-            firstTime={listState.startTime}
-            lastTime={listState.endTime}
+            firstTime={modal.startTime}
+            lastTime={modal.endTime}
             timeOneRef={timeOneRef}
             timeTwoRef={timeTwoRef}
             comparison={comparison}
@@ -281,7 +299,7 @@ const List = ({ viewRef, listRef, allListRef, clickedElement, list }) => {
             openColor={openColor}
             setOpenColor={setOpenColor}
             colorRef={colorRef}
-          />
+          /> */}
           <div className="edit-button-box">
             <button type="submit">저장</button>
           </div>
@@ -290,16 +308,16 @@ const List = ({ viewRef, listRef, allListRef, clickedElement, list }) => {
       {!editArea && (
         <div className="list-info">
           <div className="list-title">
-            <div className={`list-color-box ${listState.color}`}></div>
-            <div className={`listName  ${styleClass}`}>{listState.title}</div>
+            <div className={`list-color-box ${modal.color}`}></div>
+            <div className={`listName  ${styleClass}`}>{modal.title}</div>
           </div>
           <div className="list-time">
             <div className="time-item">{`${dateArray[0]}년 ${dateArray[1]}월 ${dateArray[2]}일`}</div>
-            <div className="time-item">{listState.startTime}</div>
+            <div className="time-item">{modal.startTime}</div>
             <span className="time-item">~</span>
             <div
               className="time-item"
-              style={{ display: dateArray.length === 3 && "none" }}
+              style={{ display: dateArray.length === 3 ? "none" : "" }}
             >
               {`${
                 dateArray.length < 4
@@ -312,7 +330,7 @@ const List = ({ viewRef, listRef, allListRef, clickedElement, list }) => {
               }
               `}
             </div>
-            <div className="time-item">{listState.endTime}</div>
+            <div className="time-item">{modal.endTime}</div>
           </div>
         </div>
       )}

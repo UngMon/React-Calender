@@ -1,31 +1,37 @@
-import { useCallback, useEffect, useRef, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { modalActions } from "../store/data-slice";
-import { listActions } from "../store/list-slice";
-import { allListActions } from "../store/all-list-slice";
+import React, { useCallback, useEffect, useRef, useState } from "react";
+import { useSelector } from "react-redux";
+import { RootState, useAppDispatch } from "../store/store";
+import { modalActions } from "../store/modal-slice";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import ModalPositionTwo from "../library/ModalPositionTwo";
-import "./AllList.css";
+import "./MoreList.css";
 
-const AllList = ({ viewRef, listRef, allListRef, clickedElement, list }) => {
+interface T {
+  listRef: React.MutableRefObject<{}>;
+  allListRef: React.MutableRefObject<{}>;
+  clickedElement: React.MutableRefObject<{}>;
+  viewRef: React.RefObject<HTMLDivElement>;
+  list: React.MutableRefObject<{}>;
+}
+
+const MoreList = ({ viewRef, listRef, allListRef, clickedElement, list }: T) => {
   console.log("allList");
 
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
-  const schedule = useSelector((state) => state.modal.userSchedule.schedule);
-  const allModal = useSelector((state) => state.all);
-  const listIsVisible = useSelector((state) => state.list.isVisible);
+  const schedule = useSelector((state: RootState) => state.data.userSchedule);
+  const modal = useSelector((state: RootState) => state.modal);
 
-  const dateInfo = allModal.date.split("-");
-  const year = dateInfo[0];
-  const month = dateInfo[1];
-  const date = allModal.date;
+  // const dateInfo: string[] = modal.date.split("-");
+  // const year: string = dateInfo[0];
+  // const month: string = dateInfo[1];
+  const date: string = modal.date;
 
-  const [size, setSize] = useState([0, 0]);
-  const modalRef = useRef();
+  const [size, setSize] = useState<[number, number]>([0, 0]);
+  const modalRef = useRef<HTMLDivElement>(null);
   const makeListRef = useRef({});
-  const clickedAllListRef = useRef();
+  const clickedAllListRef = useRef({});
 
   useEffect(() => {
     document.addEventListener("mousedown", addModalCloseHandler);
@@ -37,12 +43,12 @@ const AllList = ({ viewRef, listRef, allListRef, clickedElement, list }) => {
   const addModalCloseHandler = (e) => {
     if (clickedAllListRef.current === e.target) {
       setTimeout(() => {
-        dispatch(allListActions.offModal());
+        dispatch(modalActions.offModal());
       }, 100);
       return;
     }
 
-    if (allModal.isVisible && !modalRef.current.contains(e.target)) {
+    if (modal.moreModalOpen && !modalRef.current.contains(e.target)) {
       for (const key in listRef.current) {
         if (listRef.current[key] === null) {
           continue;
@@ -51,7 +57,7 @@ const AllList = ({ viewRef, listRef, allListRef, clickedElement, list }) => {
         if (listRef.current[key].contains(e.target)) {
           clickedAllListRef.current = listRef.current[key];
           setTimeout(() => {
-            dispatch(allListActions.offModal());
+            dispatch(modalActions.offModal());
           }, 50);
           return;
         }
@@ -68,14 +74,14 @@ const AllList = ({ viewRef, listRef, allListRef, clickedElement, list }) => {
         }
       }
 
-      if (listIsVisible && list.current.contains(e.target)) {
+      if (modal.listModalOpen && list.current.contains(e.target)) {
         return;
       }
 
       setTimeout(() => {
-        dispatch(allListActions.offModal());
-        dispatch(listActions.offModal());
-        if (!listIsVisible) dispatch(modalActions.offModal());
+        dispatch(modalActions.offModal());
+        dispatch(modalActions.offModal());
+        if (!modal.listModalOpen) dispatch(modalActions.offModal());
       }, 90);
       return;
     }
@@ -88,7 +94,7 @@ const AllList = ({ viewRef, listRef, allListRef, clickedElement, list }) => {
 
     if (modalRef.current.contains(e.target)) {
       setTimeout(() => {
-        dispatch(listActions.offModal());
+        dispatch(modalActions.offModal());
       }, 100);
     }
   };
@@ -113,13 +119,13 @@ const AllList = ({ viewRef, listRef, allListRef, clickedElement, list }) => {
     const endDate = object.endDate;
     const startTime = object.startTime;
     const endTime = object.endTime;
-    const week = allModal.week;
-    const day = allModal.day;
+    const week = modal.week;
+    const day = modal.day;
     const title = object.title;
     const key = object.key;
     const arr = object.arr;
     dispatch(
-      listActions.clickedList({
+      modalActions.clickedList({
         style,
         color,
         startDate,
@@ -138,7 +144,7 @@ const AllList = ({ viewRef, listRef, allListRef, clickedElement, list }) => {
   const makeListHandler = () => {
     const result = [];
 
-    if (!schedule[year][month][date]) {
+    if (!schedule[date]) {
       result.push(
         <div className="AllList-nothing">등록된 일정이 없습니다.</div>
       );
@@ -146,9 +152,8 @@ const AllList = ({ viewRef, listRef, allListRef, clickedElement, list }) => {
 
     let objectIndex = 0;
 
-    for (const key in schedule[year][month][date]) {
-      const object = schedule[year][month][date][key];
-
+    for (const key in schedule[date]) {
+      const object = schedule[date][key];
       result.push(
         <div
           key={objectIndex}
@@ -193,27 +198,26 @@ const AllList = ({ viewRef, listRef, allListRef, clickedElement, list }) => {
   };
 
   const cancelHandler = () => {
-    dispatch(allListActions.offModal());
-    dispatch(listActions.offModal());
+    dispatch(modalActions.offModal());
   };
 
   const dayChangeHandler = () => {
-    return allModal.day === 1
+    return modal.day === '1'
       ? "일"
-      : allModal.day === 2
+      : modal.day === '2'
       ? "월"
-      : allModal.day === 3
+      : modal.day === '3'
       ? "화"
-      : allModal.day === 4
+      : modal.day === '4'
       ? "수"
-      : allModal.day === 5
+      : modal.day === '5'
       ? "목"
-      : allModal.day === 6
+      : modal.day === '6'
       ? "금"
       : "토";
   };
 
-  const marginPsition = ModalPositionTwo(allModal.day, allModal.week, size);
+  const margin = ModalPositionTwo(modal.day, modal.week, size);
 
   return (
     <div
@@ -221,8 +225,8 @@ const AllList = ({ viewRef, listRef, allListRef, clickedElement, list }) => {
       ref={modalRef}
       style={{
         display: `${size[0] === 0 ? "none" : "block"}`,
-        marginLeft: `${size[0] !== 0 && marginPsition[0]}px`,
-        marginTop: `${size[0] !== 0 && marginPsition[1]}px`,
+        marginLeft: `${size[0] !== 0 && margin![0]}px`,
+        marginTop: `${size[0] !== 0 && margin![1]}px`,
       }}
       onWheel={(e) => {
         e.stopPropagation();
@@ -234,10 +238,10 @@ const AllList = ({ viewRef, listRef, allListRef, clickedElement, list }) => {
           <FontAwesomeIcon icon={faXmark} />
         </button>
       </div>
-      <h3 className="AllList-date">{allModal.date}</h3>
+      <h3 className="AllList-date">{modal.date}</h3>
       <div className="AllList-box">{makeListHandler()}</div>
     </div>
   );
 };
 
-export default AllList;
+export default MoreList;

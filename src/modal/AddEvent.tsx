@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useCallback } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { modalActions } from "../store/data-slice";
 import { timeActions } from "../store/time-slice";
@@ -79,12 +79,6 @@ const AddEvent = ({ viewRef }) => {
   const listSubmitHandler = (event) => {
     event.preventDefault();
 
-    // const time = new Date();
-    // const month = time.getMonth().toString().padStart("0", 2);
-    // const date = time.getDate().toString().padStart("0", 2);
-
-    // const timeArr = [time.getFullYear(), month, date, time.toTimeString()];
-
     const pattern = /^(오전|오후)\s(([0][0-9]|[1][0-2])):([0-5][0-9])$/;
 
     let title = inputRef.current.value;
@@ -104,26 +98,6 @@ const AddEvent = ({ viewRef }) => {
 
     cancelHandler();
 
-    // if (startTime > endTime) {
-    //   if (comparison === 4) {
-    //     // 같은 날의 경우에만 아래와 같은 알림을 뜨게 함.
-    //     return alert("종료 시간이 시작 시간보다 작습니다!! ex) 00:30 ~ 01:30");
-    //   }
-    // }
-
-    // if (comparison === 5) {
-    //   return alert("시작 날이 마지막 날 보다 큽니다!!");
-    // }
-
-    // // 시작날과 마지막 날 일치
-    // if (comparison === 4) {
-    //   dispatch(modalActions.inputList({ title, startTime, endTime, color }));
-    // }
-
-    // // 마지막 날이 시작날 보다 큼.
-    // if (comparison <= 3) {
-    //   dispatch(modalActions.longDateList({ title, startTime, endTime, color }));
-    // }
   };
 
   const cancelHandler = () => {
@@ -157,7 +131,7 @@ const AddEvent = ({ viewRef }) => {
         <img src="img/memo.png" alt="memo" width="17" className="input-icon" />
         <input placeholder="(제목 추가)" type="text" ref={inputRef} />
       </div>
-      <TimeSelector
+      {/* <TimeSelector
         startDate={startDate}
         endDate={endDate}
         firstTime={firstTime}
@@ -166,14 +140,14 @@ const AddEvent = ({ viewRef }) => {
         timeTwoRef={timeTwoRef}
         comparison={comparison}
         viewRef={viewRef}
-      />
-      <ColorBox
+      /> */}
+      {/* <ColorBox
         color={color}
         setColor={setColor}
         openColor={openColor}
         setOpenColor={setOpenColor}
         colorRef={colorRef}
-      />
+      /> */}
       <div className="buttonBox">
         <button type="submit">저장</button>
         <button type="button" onClick={cancelHandler}>

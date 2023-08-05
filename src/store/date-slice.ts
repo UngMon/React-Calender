@@ -4,7 +4,7 @@ const today = new Date();
 const todayYear = today.getFullYear();
 const todayMonth = today.getMonth();
 
-const monthSlice = createSlice({
+const dateSlice = createSlice({
   name: "month",
 
   initialState: {
@@ -37,6 +37,6 @@ const monthSlice = createSlice({
   },
 });
 
-export const monthActions = monthSlice.actions;
+export const dateActions = dateSlice.actions;
 
-export const monthReducer = monthSlice.reducer;
+export const dateReducer = dateSlice.reducer;

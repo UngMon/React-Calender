@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { DataType, CalenderData } from "../utils/ReduxType";
+import { DataType } from "../utils/ReduxType";
 
 const initialState: DataType = {
   addModalOpen: false,
@@ -79,9 +79,9 @@ const dataSlice = createSlice({
       const clickedDate = action.payload.date.split("-");
       const key = action.payload.key;
 
-      const year = clickedDate[0];
-      const month = clickedDate[1];
-      const date = action.payload.date;
+      // const year = clickedDate[0];
+      // const month = clickedDate[1];
+      // const date = action.payload.date;
       //// 수정하세요!!!!!!!1......................................
       const dateArray = schedule;
 

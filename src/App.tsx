@@ -1,26 +1,20 @@
-import React, { useEffect } from "react";
+import React from "react";
 import {
   createBrowserRouter,
   RouterProvider,
   createRoutesFromElements,
   Route,
 } from "react-router-dom";
-// import Loading from "./pages/Loading";
-// import LoginPage from "./pages/LoginPage";
 import ResetPage from "./pages/ResetPage";
 import NotFound from "./pages/NotFound";
 import Root from "./pages/Root";
-import Month from "./calender/Calender";
+import Calender from "./calender/Calender";
+import LoginPage from "./pages/LoginPage";
+
 
 function App() {
   console.log("app");
-  // useEffect(() => {
-  //   onAuthStateChanged(auth, (user) => {
-  //     if (user) {
-  //       dispatch(fetchScheduleData(JSON.parse(loginData)));
-  //     }
-  //   });
-  // }, [dispatch, loginData]);
+
 
   //  useEffect(() => {
   //   if (modal.dataChanged) {
@@ -31,10 +25,10 @@ function App() {
   const router = createBrowserRouter(
     createRoutesFromElements(
       <Route path="" element={<Root />}>
-        <Route path="/reset-password" element={<ResetPage />} />
+        {/* <Route path="/login" element={<LoginPage />} /> */}
         <Route path="/reset-password" element={<ResetPage />} />
         <Route path="/calender">
-          <Route path=":dateParams" element={<Month />} />
+          <Route path=":dateParams" element={<Calender />} />
         </Route>
         <Route path="*" element={<NotFound />}></Route>
       </Route>

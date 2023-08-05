@@ -1,5 +1,5 @@
-import React, { useRef, useState } from "react";
-import { useSearchParams } from "react-router-dom";
+import React, { useRef, useState, useEffect } from "react";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { auth } from "../Auth/firebase";
 import Main from "./Main";
 import Header from "./Header";
@@ -7,40 +7,48 @@ import "./Calender.css";
 
 const Calender = () => {
   console.log("month");
-  const { dateParams } = useSearchParams();
 
-  const [year, setYear] = useState<string>(`${dateParams.year}`);
-  const [month, setMonth] = useState<string>(`${dateParams.month}`);
+  const navigate = useNavigate();
+  const [param] = useSearchParams();
+
+  const [year, setYear] = useState<string>(param.get("year")!);
+  const [month, setMonth] = useState<string>(param.get("month")!);
 
   const delayRef = useRef({ delay: true });
   const viewRef = useRef<HTMLDivElement>(null);
 
-  const firstDay = new Date(+year, +month, 1).getDay();
-  const lastDate = new Date(+year, +month + 1, 0).getDate();
+  const firstDay: number = new Date(+year, +month, 1).getDay();
+  const lastDate: number = new Date(+year, +month + 1, 0).getDate();
 
   const movePrevMonth = () => {
+    let mon = month;
     switch (month) {
       case "1":
-        setMonth("12");
+        mon = '12';
         setYear(String(+year - 1));
         break;
       default:
-        setMonth(String(+month - 1).padStart(2, "0"));
+        mon = String(+month - 1).padStart(2, "0");
     }
+    navigate(`/calender/date?year=${year}&month=${+mon}`);
+    setMonth(mon);
     setTimeout(() => {
       delayRef.current.delay = true;
     }, 350);
   };
 
   const moveNextMonth = () => {
+    let mon = month;
     switch (month) {
       case "12":
-        setMonth("1");
+        mon = '01';
         setYear(String(+year + 1));
         break;
       default:
-        setMonth(String(+month + 1).padStart(2, "0"));
+        mon = String(+month + 1).padStart(2, '0');
     }
+    navigate(`/calender/date?year=${year}&month=${+mon}`);
+    setMonth(mon);
     setTimeout(() => {
       delayRef.current.delay = true;
     }, 350);

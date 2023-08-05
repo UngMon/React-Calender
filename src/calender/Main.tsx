@@ -3,11 +3,10 @@ import { useSelector } from "react-redux";
 import { RootState } from "../store/store";
 import AddEvent from "../modal/AddEvent";
 import List from "../modal/List";
-import AllList from "../modal/AllList";
+import AllList from "../modal/MoreList";
 import MakeCalender from "./MakeCalender";
 import classes from "./Calender.module.css";
-
-
+import { ListOrMore } from "../utils/RefType";
 
 const date: Date = new Date();
 const fixYear: number = date.getFullYear();
@@ -38,10 +37,10 @@ const Main = ({ year, month, firstDay, lastDate, viewRef }: T) => {
     "-" +
     fixDate.toString().padStart(2, "0");
 
-  const listRef = useRef({}); // makeCalender에서 list ref
-  const allListRef = useRef({}); // makeCalender에서 all ref
-  const clickedElement = useRef();
-  const list = useRef(); // list모달창 ref
+  const listRef = useRef<ListOrMore>({}); // makeCalender에서 list ref
+  const allListRef = useRef<ListOrMore>({}); // makeCalender에서 all ref
+  const clickedElement = useRef<ListOrMore>({});
+  const list = useRef<ListOrMore>({}); // list모달창 ref
 
   useEffect(() => {
     listRef.current = {};
@@ -80,7 +79,7 @@ const Main = ({ year, month, firstDay, lastDate, viewRef }: T) => {
           </tbody>
         </table>
         <div className={classes["modal-container"]}>
-          {data.addModalOpen &&
+          {/* {data.addModalOpen &&
             !modal.listModalOpen &&
             !modal.moreModalOpen && <AddEvent viewRef={viewRef} />}
           {!modal.listModalOpen && modal.moreModalOpen && (
@@ -100,7 +99,7 @@ const Main = ({ year, month, firstDay, lastDate, viewRef }: T) => {
               clickedElement={clickedElement}
               list={list}
             />
-          )}
+          )} */}
         </div>
       </div>
     </main>
