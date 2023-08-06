@@ -2,17 +2,16 @@ import React, { useState } from "react";
 import UserInfo from "../modal/UserInfo";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAngleLeft, faAngleRight } from "@fortawesome/free-solid-svg-icons";
-import { Auth } from "firebase/auth";
+import { auth } from "../Auth/firebase";
 
 interface T {
-  auth: Auth;
   year: string;
   month: string;
   movePrevMonth: () => void;
   moveNextMonth: () => void;
 }
 
-const Header = ({ auth, year, month, movePrevMonth, moveNextMonth }: T) => {
+const Header = ({ year, month, movePrevMonth, moveNextMonth }: T) => {
   const [openUserInfo, setOpenUserInfo] = useState(false);
 
   return (

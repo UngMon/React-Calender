@@ -31,7 +31,7 @@ const UserInfo = ({ auth, setOpenUserInfo }: T) => {
   const logoutHandler = () => {
     signOut(auth)
       .then(() => {
-        navigagte("/login");
+        navigagte("/");
       })
       .catch((err) => {
         console.log(err);

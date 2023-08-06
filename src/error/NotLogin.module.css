@@ -1,0 +1,43 @@
+.NotLogin {
+  text-align: center;
+  font-size: 16px;
+}
+
+.NotLogin h2 {
+  margin-top: 30vh;
+  width: 100%;
+  font-size: 3em;
+  letter-spacing: 2px;
+}
+
+.NotLogin p {
+  margin-top: 50px;
+  width: 100%;
+  font-size: 1.5em;
+  font-weight: bold;
+}
+
+.NotLogin button {
+  margin-top: 50px;
+  width: 150px;
+  height: 50px;
+  background-color: rgb(158, 186, 248);
+  border: 0;
+  border-radius: 5px;
+  font-size: 1em;
+  font-weight: bold;
+  color: white;
+}
+
+.NotLogin button:hover {
+  background-color: rgb(119, 159, 244);
+}
+
+@media (max-width: 425px) {
+  .NotLogin {
+    font-size: 12px;
+  }
+  .NotLogin button {
+    font-size: 1.5em;
+  }
+}

@@ -14,13 +14,11 @@ import { signInWithEmailAndPassword } from "firebase/auth";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import classes from "./LoginPage.module.css";
 
-let bool = false; // 첫 마운트시 confirmUser에서 작동하지 않기위함
-
 const LoginPage = () => {
   const navigagte = useNavigate();
   console.log("loginpage");
   // 회원가입 인지 아닌지~
-  const [creatingUser, setCreatingUser] = useState(false);
+  const [creatingUser, setCreatingUser] = useState<boolean>(false);
 
   // 이메일과 패스워드 state
   const [name, setName] = useState<string>("");
@@ -43,7 +41,7 @@ const LoginPage = () => {
   const onChangeName = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     setName(e.target.value);
     if (e.target.value.length < 2 || e.target.value.length > 5) {
-      setNameMessage("2글자 이상 5글자 이하로 입력해주세요.");
+      setNameMessage("이름을 2글자 이상 5글자 이하로 입력해주세요.");
       setIsName(false);
       setName("");
     } else {
@@ -129,7 +127,6 @@ const LoginPage = () => {
       signInWithPopup(auth, provider)
         .then((data) => {
           console.log(data);
-          bool = true;
           navigagte("/calender/date?year=2023&month=07");
         })
         .catch((err) => {
@@ -154,9 +151,8 @@ const LoginPage = () => {
       .then((userCredential) => {
         // Signed in
         console.log(userCredential);
-        const emailverified = userCredential.user.emailVerified;
-
-        if (!emailverified) return alert("이메일 인증을 해주세요!");
+        if (!userCredential.user.emailVerified)
+          return alert("이메일 인증을 해주세요!");
         navigagte("/calender");
       })
       .catch((err) => {
@@ -171,7 +167,7 @@ const LoginPage = () => {
       });
   };
 
-  const createAccount = (name: string, email: string, password: string) => {
+  const createAccount = (email: string, password: string) => {
     if (!isName || !isEmail || !isPassword) {
       return alert("올바른 양식을 기입해주세요!");
     }
@@ -181,7 +177,9 @@ const LoginPage = () => {
         sendEmailVerification(auth.currentUser!)
           .then(() => {
             alert("이메일 인증 링크를 보냈습니다! 링크를 따라 인증해주세요!");
-            textClearHandler();
+            setName("");
+            setEmail("");
+            setPassword("");
             navigagte("/login");
           })
           .catch((err) => {
@@ -197,20 +195,6 @@ const LoginPage = () => {
           alert("계정 생성 중 오류가 발생했습니다.");
         }
       });
-  };
-
-  const changePassword = () => {
-    navigagte("/reset-password");
-  };
-
-  const toggleButtonHandler = () => {
-    setCreatingUser((prevState) => !prevState);
-  };
-
-  const textClearHandler = () => {
-    setName("");
-    setEmail("");
-    setPassword("");
   };
 
   return (
@@ -267,7 +251,7 @@ const LoginPage = () => {
           <button
             className={classes["form-button"]}
             type="submit"
-            onClick={() => creatingUser && createAccount(name, email, password)}
+            onClick={() => creatingUser && createAccount(email, password)}
           >
             {creatingUser ? "계정 생성" : "확인"}
           </button>
@@ -292,7 +276,7 @@ const LoginPage = () => {
           </div>
           <div
             className={classes.passwordChangeButton}
-            onClick={changePassword}
+            onClick={() => navigagte("/reset-password")}
           >
             <span>비밀번호를 잊으셨나요?</span>
           </div>
@@ -304,7 +288,7 @@ const LoginPage = () => {
             </span>
             <div
               className={classes["change-button"]}
-              onClick={toggleButtonHandler}
+              onClick={() => setCreatingUser((prevState) => !prevState)}
             >
               {creatingUser ? "로그인" : "회원 가입"}
             </div>
