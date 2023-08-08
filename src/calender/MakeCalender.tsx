@@ -24,8 +24,8 @@ interface T {
 interface Parameter {
   object: CalenderData;
   date: string;
-  week: number;
-  day: number;
+  week: string;
+  day: string;
   index: number;
 }
 
@@ -70,7 +70,7 @@ const MakeCalender = ({
     window.addEventListener("resize", getListBoxSize);
   });
 
-  const addClickHandler = (idx: string, day: number, week: number) => {
+  const addClickHandler = (idx: string, day: string, week: string) => {
     const type = "add";
     if (!addModalOpen) {
       dispatch(
@@ -91,22 +91,22 @@ const MakeCalender = ({
 
   const calculateWidth = (
     date: string,
-    day: number,
+    day: string,
     endDate: string
   ): number => {
     let item = date.split("-"); // [년, 월, 일]
-    item[2] = String(+item[2] + 7 - day).padStart(2, "0");
+    item[2] = String(+item[2] + 7 - +day).padStart(2, "0");
 
     let lastDateOfWeek = item[0] + "-" + item[1] + "-" + item[2];
 
-    if (lastDateOfWeek < endDate) return 7 - day + 1;
-    else return new Date(endDate).getDay() + 1 - day + 1;
+    if (lastDateOfWeek < endDate) return 7 - +day + 1;
+    else return new Date(endDate).getDay() + 1 - +day + 1;
   };
 
   const scheduleHandler = (
     date: string,
-    day: number,
-    week: number,
+    day: string,
+    week: string,
     array: ReactNode[][]
   ) => {
     if (!schedule[date]) return;
@@ -120,7 +120,7 @@ const MakeCalender = ({
     for (const key in schedule[date]) {
       const object = schedule[date][key];
 
-      if (object.startDate < date && day !== 1) continue;
+      if (object.startDate < date && day !== '1') continue;
 
       const isLong: boolean = object.startDate < object.endDate ? true : false;
       let arrayCount: number = 0;
@@ -131,7 +131,7 @@ const MakeCalender = ({
       let thisDate: number = +dateInfo[2];
       let parameter: Parameter = { object, date, week, day, index };
 
-      for (let item of array[day]) {
+      for (let item of array[+day]) {
         if (arrayCount >= listBoxHeightCount) break;
 
         if (item) {
@@ -141,7 +141,7 @@ const MakeCalender = ({
 
         let isMore = arrayCount < listBoxHeightCount - 1 ? false : true;
 
-        for (let i = day; i <= 7; i++) {
+        for (let i = +day; i <= 7; i++) {
           if (i === 8) break;
 
           let date =
@@ -162,7 +162,7 @@ const MakeCalender = ({
               style={{
                 width: isLong && !isMore ? `${barWidth}00%` : "100%",
                 top: `${24 * arrayCount}px`,
-                display: i === day || isMore ? "flex" : "none",
+                display: i === +day || isMore ? "flex" : "none",
               }}
               onClick={(event: React.MouseEvent) => {
                 event.stopPropagation();
@@ -226,7 +226,7 @@ const MakeCalender = ({
       }
       index += 1;
     }
-    return array[day];
+    return array[+day];
   };
 
   const dateArray: React.ReactNode[] = [];
@@ -245,13 +245,14 @@ const MakeCalender = ({
           //ex) 첫 주에 28, 29, 30, 31, 1, 2, 3 표현하기 위함
           const date: number = prevMonthLastDate - firstDay + i;
           const idx: string = MakeIdx("prev", year, month, date);
-          const day: number = i; //모달창을 띄울 때 위치를 무슨 요일인지 저장
+          const day: string = `${i}`; //모달창을 띄울 때 위치를 무슨 요일인지 저장
 
           thisMonthArray.push(
             <td
               key={idx}
               onClick={() => {
-                !modal.listModalOpen && addClickHandler(idx, day, week);
+                !modal.listModalOpen &&
+                  addClickHandler(idx, day, week.toString());
               }}
               className={classes.date_box}
               day-index={day}
@@ -259,9 +260,9 @@ const MakeCalender = ({
               <div className={classes.date}>
                 <h2
                   className={`${identify === idx && classes.Today} ${
-                    identify !== idx && day === 1
+                    identify !== idx && day === "1"
                       ? classes.sunday
-                      : day === 7 && classes.saturday
+                      : day === "7" && classes.saturday
                   }`}
                 >
                   {date}
@@ -269,7 +270,7 @@ const MakeCalender = ({
               </div>
               <div className={classes["list-box"]}>
                 <div className={classes["list-area"]}>
-                  {scheduleHandler(idx, day, week, array)}
+                  {scheduleHandler(idx, day, week.toString(), array)}
                 </div>
               </div>
             </td>
@@ -277,13 +278,14 @@ const MakeCalender = ({
         } else {
           const date: number = i - firstDay;
           const idx: string = MakeIdx("", year, month, date);
-          const day: number = i;
+          const day: string = `${i}`;
 
           thisMonthArray.push(
             <td
               key={idx}
               onClick={() => {
-                !modal.listModalOpen && addClickHandler(idx, day, week);
+                !modal.listModalOpen &&
+                  addClickHandler(idx, day, week.toString());
               }}
               className={classes.date_box}
               day-index={day}
@@ -294,9 +296,9 @@ const MakeCalender = ({
                   className={`
                   ${identify === idx && classes.Today}
                   ${
-                    identify !== idx && day === 1
+                    identify !== idx && day === "1"
                       ? classes.sunday
-                      : day === 7 && classes.saturday
+                      : day === "7" && classes.saturday
                   }`}
                 >
                   {date === 1 ? `${+month}월 1일` : date}
@@ -304,7 +306,7 @@ const MakeCalender = ({
               </div>
               <div className={classes["list-box"]}>
                 <div className={classes["list-area"]}>
-                  {scheduleHandler(idx, day, week, array)}
+                  {scheduleHandler(idx, day, week.toString(), array)}
                 </div>
               </div>
             </td>
@@ -320,13 +322,14 @@ const MakeCalender = ({
         if (i - firstDay < lastDate) {
           const nowDate: number = i - firstDay + 1;
           const idx: string = MakeIdx("", year, month, nowDate);
-          const day: number = (i % 7) + 1;
+          const day: string = `${(i % 7) + 1}`;
 
           thisMonthArray.push(
             <td
               key={idx}
               onClick={() => {
-                !modal.listModalOpen && addClickHandler(idx, day, week);
+                !modal.listModalOpen &&
+                  addClickHandler(idx, day, week.toString());
               }}
               className={classes.date_box}
               day-index={day}
@@ -334,9 +337,9 @@ const MakeCalender = ({
               <div className={classes.date}>
                 <h2
                   className={`${identify === idx && classes.Today} ${
-                    identify !== idx && day === 1
+                    identify !== idx && day === "1"
                       ? classes.sunday
-                      : day === 7 && classes.saturday
+                      : day === "7" && classes.saturday
                   }`}
                 >
                   {nowDate}
@@ -344,7 +347,7 @@ const MakeCalender = ({
               </div>
               <div className={classes["list-box"]}>
                 <div className={classes["list-area"]}>
-                  {scheduleHandler(idx, day, week, array)}
+                  {scheduleHandler(idx, day, week.toString(), array)}
                 </div>
               </div>
             </td>
@@ -352,13 +355,13 @@ const MakeCalender = ({
         } else {
           const nowDate: number = i - lastDate - firstDay + 1;
           const idx: string = MakeIdx("next", year, month, nowDate);
-          const day: number = (i % 7) + 1;
+          const day: string = `${(i % 7) + 1}`;
 
           thisMonthArray.push(
             <td
               key={idx}
               onClick={() => {
-                !modal.listModalOpen && addClickHandler(idx, day, week);
+                !modal.listModalOpen && addClickHandler(idx, day, week.toString());
               }}
               className={classes.date_box}
               day-index={day}
@@ -366,9 +369,9 @@ const MakeCalender = ({
               <div className={classes.date}>
                 <h2
                   className={`${identify === idx && classes.Today} ${
-                    identify !== idx && day === 1
+                    identify !== idx && day === '1'
                       ? classes.sunday
-                      : day === 7 && classes.saturday
+                      : day === '7' && classes.saturday
                   }`}
                   style={{ width: nowDate === 1 ? "54px" : "" }}
                 >
@@ -381,7 +384,7 @@ const MakeCalender = ({
               </div>
               <div className={classes["list-box"]}>
                 <div className={classes["list-area"]}>
-                  {scheduleHandler(idx, day, week, array)}
+                  {scheduleHandler(idx, day, week.toString(), array)}
                 </div>
               </div>
             </td>

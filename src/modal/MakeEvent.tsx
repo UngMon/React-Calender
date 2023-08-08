@@ -108,9 +108,7 @@ const MakeEvent = ({ viewRef }: T) => {
   // 여기는 size의 크기에 따라서 modalposition에서 값을 정해보자
   //  size > 425일때 이후의 과정 or media에서 정의한 사이즈 그대로 받아올것인지.
 
-  console.log(size)
-  const marginSize = ModalPosition(data.day, data.week, size);
-  console.log(marginSize);
+  const marginSize: number[] = ModalPosition(data.day, data.week, size);
 
   return (
     <form
