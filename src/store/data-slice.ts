@@ -122,8 +122,9 @@ const dataSlice = createSlice({
     },
 
     clickedDate(state, action) {
+      // type = 'start' || 'end' || 'add'
+      
       if (action.payload.type === "end") {
-        console.log(action.payload);
         state.endDate = action.payload.idx;
         state.dateArray = action.payload.dateArray;
         return;
@@ -188,7 +189,7 @@ const dataSlice = createSlice({
 
       let schedule = JSON.parse(JSON.stringify(state.userSchedule));
 
-      const date = action.payload.date;
+      const date = action.payload.startDate;
       const key = action.payload.key;
       // const dateInfo = action.payload.date.split("-");
       // const year = dateInfo[0];

@@ -27,11 +27,13 @@ function App() {
         console.log(user);
         // dispatch(getUserData(user.uid)));
         setLogged(true);
+      } else {
+        setLogged(false);
       }
     });
     setLoading(false);
   }, []);
-
+  console.log(loggedIn)
   //  useEffect(() => {
   //   if (modal.dataChanged) {
   //     dispatch(sendScheduleData(modal.userSchedule.schedule, modal.uid));

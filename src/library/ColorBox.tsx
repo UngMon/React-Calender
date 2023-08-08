@@ -1,12 +1,35 @@
-import './ColorBox.css';
+import React from "react";
+import "./ColorBox.css";
 
-const ColorBox = ({ color, setColor, openColor, setOpenColor, colorRef}) => {
+interface T {
+  color: string;
+  setColor: (value: string) => void;
+  openColor: boolean;
+  setOpenColor: (value: boolean) => void;
+  colorRef: React.RefObject<HTMLDivElement>;
+}
 
-  const openColorSelector = () => {
-    setOpenColor((prevState) => !prevState);
-  };
+const colorArray = [
+  "토마토",
+  "연분홍",
+  "세이지",
+  "바나나",
+  "바질",
+  "공작",
+  "블루베리",
+  "라벤더",
+  "포도",
+  "흑연",
+];
 
-  const selectedColor = (컬러) => {
+const ColorBox = ({
+  color,
+  setColor,
+  openColor,
+  setOpenColor,
+  colorRef,
+}: T) => {
+  const selectedColor = (컬러: string) => {
     setColor(컬러);
     setOpenColor(false);
   };
@@ -14,49 +37,18 @@ const ColorBox = ({ color, setColor, openColor, setOpenColor, colorRef}) => {
   return (
     <div className="color-picker">
       <img src="img/palette.png" alt="memo" width="20" className="color-icon" />
-      <div className={`${color} circle`} onClick={openColorSelector}></div>
+      <div
+        className={`${color} circle`}
+        onClick={() => setOpenColor(!openColor)}
+      ></div>
       {openColor && (
         <div className="color-box" ref={colorRef}>
-          <div
-            onClick={() => selectedColor("토마토")}
-            className={`토마토 circle`}
-          ></div>
-          <div
-            onClick={() => selectedColor("연분홍")}
-            className={`연분홍 circle`}
-          ></div>
-          <div
-            onClick={() => selectedColor("세이지")}
-            className={`세이지 circle`}
-          ></div>
-          <div
-            onClick={() => selectedColor("바나나")}
-            className={`바나나 circle`}
-          ></div>
-          <div
-            onClick={() => selectedColor("바질")}
-            className={`바질 circle`}
-          ></div>
-          <div
-            onClick={() => selectedColor("공작")}
-            className={`공작 circle`}
-          ></div>
-          <div
-            onClick={() => selectedColor("블루베리")}
-            className={`블루베리 circle`}
-          ></div>
-          <div
-            onClick={() => selectedColor("라벤더")}
-            className={`라벤더 circle`}
-          ></div>
-          <div
-            onClick={() => selectedColor("포도")}
-            className={`포도 circle`}
-          ></div>
-          <div
-            onClick={() => selectedColor("흑연")}
-            className={`흑연 circle`}
-          ></div>
+          {colorArray.map((item) => (
+            <div
+              onClick={() => selectedColor(item)}
+              className={`${item} circle`}
+            ></div>
+          ))}
         </div>
       )}
     </div>

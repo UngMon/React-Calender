@@ -9,24 +9,20 @@ const timeSlice = createSlice({
     lastTime: '',
   },
   reducers: {
-    firstTimetoggle(state) {
-      state.firstIsVisible = !state.firstIsVisible;
-    },
-
-    lastTimetoggle(state) {
-      state.lastIsVisible = !state.lastIsVisible;
-    },
-
     timeToggle(state) {
       state.firstIsVisible = false;
       state.lastIsVisible = false;
     },
 
     selectFristTime(state, action) {
+      state.firstIsVisible = !state.firstIsVisible;
+      state.lastIsVisible = false;
       state.firstTime = action.payload;
     },
 
     selectLastTime(state, action) {
+      state.lastIsVisible = !state.lastIsVisible;
+      state.firstIsVisible = false;
       state.lastTime = action.payload;
     },
 

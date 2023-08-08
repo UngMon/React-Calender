@@ -68,9 +68,9 @@
 .date h2 {
   display: block;
   box-sizing: border-box;
-  padding: 2px;
+  padding: 1px 2px;
   width: 24px;
-  height: 24px;
+  height: 100%;
   font-size: 1em;
   text-align: center;
   font-weight: 540;

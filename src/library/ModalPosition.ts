@@ -5,10 +5,6 @@ const ModalPosition = (day: string, week: string, size: [number, number]) => {
 
   const modalWidth = width > 500 ? 400 : width > 335 ? 300 : 230;
 
-  if (size[0] === 0) {
-    return ["", ""];
-  }
-
   let array = [0, 0];
   if (day === '1') {
     array[0] =

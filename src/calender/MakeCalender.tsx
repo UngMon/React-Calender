@@ -5,7 +5,7 @@ import { modalActions } from "../store/modal-slice";
 import { dataActions } from "../store/data-slice";
 import { ListOrMore } from "../utils/RefType";
 import MakeIdx from "../library/MakeIdx";
-import classes from "./Calender.module.css";
+import classes from "./MakeCalender.module.css";
 
 interface T {
   year: string;
@@ -16,7 +16,7 @@ interface T {
   viewRef: React.RefObject<HTMLDivElement>;
   listRef: React.MutableRefObject<ListOrMore>;
   allListRef: React.MutableRefObject<ListOrMore>;
-  clickedElement: React.MutableRefObject<{}>;
+  clickedElement: React.MutableRefObject<HTMLDivElement | null>;
   data: DataType;
   modal: ModalType;
 }
@@ -51,7 +51,6 @@ const MakeCalender = ({
 
   useEffect(() => {
     // 컴포넌트의 return 실행 후, state에 값을 저장후 랜더링
-    // console.log("useEffect setHeight");
     setHeight(
       Math.floor(
         (viewRef.current!.clientHeight - 64 - 45 - 24 * week) / (24 * week)
@@ -81,11 +80,11 @@ const MakeCalender = ({
   };
 
   const dataClickHandler = (
-    event: React.MouseEvent,
+    e: React.MouseEvent,
     isMore: boolean,
     parameter: Parameter
   ) => {
-    clickedElement.current = event.target;
+    clickedElement.current = e.target as HTMLDivElement;
     let type: string = isMore ? "list" : "more";
     dispatch(modalActions.clickedList({ type, parameter }));
   };
@@ -170,7 +169,9 @@ const MakeCalender = ({
                 dataClickHandler(event, isMore, parameter);
               }}
               ref={(el: HTMLDivElement) => {
-                isMore ? allListRef.current[`${object.key}`] = el : listRef.current[`${object.key}`] = el;
+                isMore
+                  ? (allListRef.current[`${object.key}`] = el)
+                  : (listRef.current[`${object.key}`] = el);
               }}
             >
               {!isLong && arrayCount < listBoxHeightCount - 1 && (

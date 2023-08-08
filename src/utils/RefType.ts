@@ -11,5 +11,9 @@ export interface ListOrMore {
 }
 
 export interface ButtonRef {
-  [key: string]: HTMLDivElement | HTMLButtonElement;
+  [key: string]: HTMLDivElement | HTMLButtonElement | HTMLTableRowElement | null;
+}
+
+export interface TableRef {
+  [key: string]: HTMLDivElement | HTMLTableRowElement | null;
 }

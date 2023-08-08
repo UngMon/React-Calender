@@ -1,11 +1,11 @@
 import React, { useEffect, useRef } from "react";
 import { useSelector } from "react-redux";
 import { RootState } from "../store/store";
-import AddEvent from "../modal/AddEvent";
+import AddEvent from "../modal/MakeEvent";
 import List from "../modal/List";
 import AllList from "../modal/MoreList";
 import MakeCalender from "./MakeCalender";
-import classes from "./Calender.module.css";
+import classes from "./MakeCalender.module.css";
 import { ListOrMore } from "../utils/RefType";
 
 const date: Date = new Date();
@@ -39,8 +39,8 @@ const Main = ({ year, month, firstDay, lastDate, viewRef }: T) => {
 
   const listRef = useRef<ListOrMore>({}); // makeCalender에서 list ref
   const allListRef = useRef<ListOrMore>({}); // makeCalender에서 all ref
-  const clickedElement = useRef<ListOrMore>({});
-  const list = useRef<ListOrMore>({}); // list모달창 ref
+  const clickedElement = useRef<HTMLDivElement | null>(null);
+  const list = useRef<HTMLDivElement>(null); // list모달창 ref
 
   useEffect(() => {
     listRef.current = {};
@@ -79,7 +79,7 @@ const Main = ({ year, month, firstDay, lastDate, viewRef }: T) => {
           </tbody>
         </table>
         <div className={classes["modal-container"]}>
-          {/* {data.addModalOpen &&
+          {data.addModalOpen &&
             !modal.listModalOpen &&
             !modal.moreModalOpen && <AddEvent viewRef={viewRef} />}
           {!modal.listModalOpen && modal.moreModalOpen && (
@@ -99,7 +99,7 @@ const Main = ({ year, month, firstDay, lastDate, viewRef }: T) => {
               clickedElement={clickedElement}
               list={list}
             />
-          )} */}
+          )}
         </div>
       </div>
     </main>

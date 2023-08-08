@@ -1,25 +1,20 @@
-import TimeBox from "./TimeBox";
-import TimeBoxTwo from "./TimeBoxTwo";
-import Month from "../secondcalender/Secon-Month";
-import { useDispatch, useSelector } from "react-redux";
-import { timeActions } from "../../store/time-slice";
 import React, { useRef, useState, useEffect } from "react";
-import "./TimeSelector.css";
+import { RootState, useAppDispatch } from "../../store/store";
+import { useSelector } from "react-redux";
+import { timeActions } from "../../store/time-slice";
 import { ButtonRef, ListOrMore } from "../../utils/RefType";
-import { RootState } from "../../store/store";
+import Month from "../secondcalender/Secon-Month";
+import TimeBoxOne from "./TimeBoxOne";
+import TimeBoxTwo from "./TimeBoxTwo";
+import "./TimeSelector.css";
 
 interface T {
   startDate: string;
   endDate: string;
   firstTime: string;
   lastTime: string;
-  timeOneRef: React.MutableRefObject<HTMLDivElement | HTMLInputElement[]>;
-  timeTwoRef: React.MutableRefObject<HTMLDivElement | HTMLInputElement[]>;
-  viewRef: React.RefObject<HTMLDivElement>;
-}
-
-interface Ref {
-  [key: string]: HTMLDivElement;
+  timeOneRef: React.RefObject<HTMLInputElement>;
+  timeTwoRef: React.RefObject<HTMLInputElement>;
 }
 
 const TimeSelector = ({
@@ -29,9 +24,8 @@ const TimeSelector = ({
   lastTime,
   timeOneRef,
   timeTwoRef,
-  viewRef,
 }: T) => {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const timeState = useSelector((state: RootState) => state.time);
 
   const 시작날 = startDate.split("-");
@@ -40,11 +34,11 @@ const TimeSelector = ({
   const [fristDateIsVisible, setFirstDateIsVisible] = useState<boolean>(false);
   const [lastDateIsVisible, setLastDateIsVisible] = useState<boolean>(false);
 
-  const dateRef = useRef<ButtonRef>({});
+  const dateRef = useRef<ListOrMore>({});
   const timeRef = useRef<ListOrMore>({});
   const calenderRef = useRef<ListOrMore>({});
-  const OneRef = useRef<HTMLDivElement[]>([]);
-  const TwoRef = useRef<HTMLDivElement[]>([]);
+  const oneRef = useRef<ListOrMore>({});
+  const twoRef = useRef<ListOrMore>({});
 
   const timeOneVisible = timeState.firstIsVisible;
   const timeTwoVisible = timeState.lastIsVisible;
@@ -57,114 +51,83 @@ const TimeSelector = ({
     setLastDateIsVisible((prevState) => !prevState);
   };
 
-  // const clickEventHandler = (e: React.MouseEvent, type: string) => {
-  //   let boolean = true;
+  useEffect(() => {
+    const clickEvent = (e: MouseEvent) => {
+      let target = e.target as Node;
 
-  //   for (let i in dateRef.current) {
-  //     if (!dateRef.current[i].contains(e.currentTarget)) {
-  //       boolean = false;
-  //       continue;
-  //     }
-  //     boolean = true;
+      for (let i in dateRef.current) {
+        if (!dateRef.current[i]!.contains(target)) {
+          continue;
+        }
 
-  //     switch (i) {
-  //       case "0":
-  //         setTimeout(() => {
-  //           setFirstDateIsVisible(false);
-  //         }, 100);
-  //         return;
-  //       case "1":
-  //         setTimeout(() => {
-  //           setLastDateIsVisible(false);
-  //         }, 100);
-  //         return;
-  //       default:
-  //     }
-  //   }
+        switch (i) {
+          case "0":
+            setTimeout(() => {
+              setFirstDateIsVisible(false);
+            }, 100);
+            return;
+          case "1":
+            setTimeout(() => {
+              setLastDateIsVisible(false);
+            }, 100);
+            return;
+          default:
+        }
+        break;
+      }
 
-  //   if (!boolean) {
-  //     setFirstDateIsVisible(false);
-  //     setLastDateIsVisible(false);
-  //     return;
-  //   }
-  // };
+      setFirstDateIsVisible(false);
+      setLastDateIsVisible(false);
+      return;
+    };
 
-  // useEffect(() => {
-  //   document.addEventListener("mousedown", clickEventHandler);
-  //   return () => {
-  //     document.removeEventListener("mousedown", clickEventHandler);
-  //   };
-  // });
+    document.addEventListener("mousedown", clickEvent);
+    return () => {
+      document.removeEventListener("mousedown", clickEvent);
+    };
+  });
 
-  // const timePickerCloseHandler = (e: React.MouseEvent) => {
-  //   let boolean = true;
+  const timePickerCloseHandler = (e: React.MouseEvent) => {
+    if (timeOneRef.current!.contains(e.currentTarget)) {
+      dispatch(timeActions.selectFristTime({}));
+      return;
+    }
 
-  //   if (timeOneRef.current.contains(e.currentTarget)) {
-  //     console.log("timeOnRef");
-  //     dispatch(timeActions.firstTimetoggle());
-  //     if (timeTwoVisible) {
-  //       dispatch(timeActions.lastTimetoggle());
-  //     }
-  //     return;
-  //   }
+    if (timeTwoRef.current!.contains(e.currentTarget)) {
+      dispatch(timeActions.selectLastTime({}));
+      return;
+    }
 
-  //   if (timeTwoRef.current.contains(e.target)) {
-  //     console.log("timetwoRef");
-  //     dispatch(timeActions.lastTimetoggle());
-  //     if (timeOneVisible) {
-  //       dispatch(timeActions.firstTimetoggle());
-  //     }
-  //     return;
-  //   }
+    for (let i in timeRef.current.length) {
+      if (!timeRef.current[i]) continue;
 
-  //   for (let i = 0; i < timeRef.current.length; i++) {
-  //     console.log(timeRef.current);
-  //     if (timeRef.current[i] === null || timeRef.current[i] === undefined) {
-  //       continue;
-  //     }
+      if (timeRef.current[i]!.contains(e.currentTarget)) return;
+    }
 
-  //     if (!timeRef.current[i].contains(e.target)) {
-  //       boolean = false;
-  //       console.log("false");
-  //     } else {
-  //       boolean = true;
-  //       console.log("true");
-  //       break;
-  //     }
-  //   }
-
-  //   if (!boolean) {
-  //     console.log("!boolean");
-  //     setTimeout(() => {
-  //       dispatch(timeActions.timeToggle());
-  //     }, 120);
-  //   }
-  // };
-
-
+    setTimeout(() => {
+      dispatch(timeActions.timeToggle());
+    }, 120);
+  };
 
   return (
     <div className="time-container">
       <img src="img/clock.png" alt="clock" width="19" className="clock-icon" />
       <div className="time-box">
         <div className="date-area">
-          <div
-            // onClick={(e: React.MouseEvent) => dateClickHandler(e, "start")}
-            ref={(el: HTMLDivElement) => (dateRef.current[0] = el)}
-          >
+          <div ref={(el: HTMLDivElement) => (dateRef.current[0] = el)}>
             <span onClick={startDateOpenHandler}>
               {시작날[0] + "년 " + 시작날[1] + "월 " + 시작날[2] + "일"}
             </span>
           </div>
           {fristDateIsVisible && (
             <div className="second-calender">
-              {/* <Month
+              <Month
                 type={"start"}
                 year={시작날[0]}
                 month={시작날[1]}
                 dateRef={dateRef}
                 dateClose={startDateOpenHandler}
-              /> */}
+              />
             </div>
           )}
         </div>
@@ -172,12 +135,12 @@ const TimeSelector = ({
           <input
             type="text"
             placeholder={timeState.firstTime || firstTime}
-            // ref={timeOneRef}
+            ref={timeOneRef}
           />
           {timeState.firstIsVisible && (
-            <TimeBox
+            <TimeBoxOne
               timeOneRef={timeOneRef}
-              OneRef={OneRef}
+              oneRef={oneRef}
               timeVisible={timeOneVisible}
               timeRef={timeRef}
             />
@@ -187,23 +150,20 @@ const TimeSelector = ({
           <span>~</span>
         </div>
         <div className="date-area">
-          <div
-            // onClick={(e: React.MouseEvent) => dateClickHandler(e, "end")}
-            ref={(el: HTMLDivElement) => (dateRef.current[1] = el)}
-          >
+          <div ref={(el: HTMLDivElement) => (dateRef.current[1] = el)}>
             <span onClick={endDateOpenHandler}>
               {마지막날[0] + "년 " + 마지막날[1] + "월 " + 마지막날[2] + "일"}
             </span>
           </div>
           {lastDateIsVisible && (
             <div className="second-calender">
-              {/* <Month
+              <Month
                 type={"end"}
                 year={마지막날[0]}
                 month={마지막날[1]}
                 dateRef={dateRef}
                 dateClose={endDateOpenHandler}
-              /> */}
+              />
             </div>
           )}
         </div>
@@ -211,12 +171,12 @@ const TimeSelector = ({
           <input
             type="text"
             placeholder={timeState.lastTime || lastTime}
-            // ref={timeTwoRef}
+            ref={timeTwoRef}
           />
           {timeState.lastIsVisible && (
             <TimeBoxTwo
               timeTwoRef={timeTwoRef}
-              TwoRef={TwoRef}
+              twoRef={twoRef}
               timeVisible={timeTwoVisible}
               timeRef={timeRef}
             />

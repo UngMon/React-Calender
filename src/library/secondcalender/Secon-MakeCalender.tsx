@@ -1,13 +1,12 @@
-import React, { useDispatch, useSelector } from "react-redux";
-import { MutableRefObject } from "react";
-import { dataActions } from "../../store/data-slice";
+import React from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { dateActions } from "../../store/date-slice";
-import { modalActions } from "../../store/modal-slice";
 import MakeIdx from "../MakeIdx";
 import MakeLongArr from "../MakeLongArr";
 import classes from "./second.module.css";
 import { RootState } from "../../store/store";
 import { ButtonRef } from "../../utils/RefType";
+import { dataActions } from "../../store/data-slice";
 
 interface T {
   year: number;
@@ -37,7 +36,12 @@ const MakeCaledner = ({
   const data = useSelector((state: RootState) => state.data);
   const modal = useSelector((state: RootState) => state.modal);
 
-  const clickHandler = (idx: string, day: number, week: number, type: string) => {
+  const clickHandler = (
+    idx: string,
+    day: number,
+    week: number,
+    type: string
+  ) => {
     const 선택날짜 = idx.split("-"); // ['year', 'month', 'date']
 
     // 미니 캘린더에서 다음달로 넘어가면 메인 캘린더도 같이 다음달과 넘어가기 위함.
@@ -47,24 +51,26 @@ const MakeCaledner = ({
       dispatch(dateActions.setMonth({ 선택날짜, thisMonth }));
     }
 
-    // 해당 날짜로 addEvnet.js가 렌더링.. 한 마디로 모달창이 이동하는 기능...
-    // if (!listState.isVisible) {
-    //   dispatch(modalActions.onModal());
-    // }
+    // 미니 캘린더에서 날짜를 클릭하면,
+    // 해당 날짜로 MakeEvent.tsx가 렌더링, 한 마디로 모달창이 이동하는 기능
+    if (!modal.listModalOpen) dispatch(dataActions.onModal());
 
     // 첫 번째 미니 달력 선택의 경우...
-    // if (type === 'start') {
-    //   const 마지막날 = data.endDate.split("-");
-    //   const dateArray = MakeLongArr(선택날짜, 마지막날);
-    //   dispatch(
-    //     dateActions.clickedDate({ type, idx, day, week, dateArray })
-    //   );
-    // } else {
-    //   // 두 번째 미니 달력 선택의 경우...
-    //   const 시작날 = modalState.startDate.split("-");
-    //   const dateArray = MakeLongArr(시작날, 선택날짜);
-    //   dispatch(modalActions.clickedDate({ type, idx, dateArray }));
-    // }
+
+    let dateArray: string[] = [];
+
+    switch (type) {
+      case "start":// 첫 번째 미니 달력에서 날짜 클릭
+        const 마지막날: string[] = data.endDate.split("-");
+        dateArray = MakeLongArr(선택날짜, 마지막날);
+        break;
+      case "end": // 두 번째 미니 달력에서 날짜 클릭
+        const 시작날: string[] = data.startDate.split("-");
+        dateArray = MakeLongArr(시작날, 선택날짜);
+        break;
+      default:
+    }
+    dispatch(dataActions.clickedDate({ type, idx, day, week, dateArray }));
     dateClose();
   };
 

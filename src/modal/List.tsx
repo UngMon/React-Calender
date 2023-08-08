@@ -1,18 +1,11 @@
-import React, {
-  useRef,
-  useState,
-  useEffect,
-  useCallback,
-  FormEvent,
-} from "react";
+import React, { useRef, useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { listActions } from "../store/list-slice";
-import { modalActions } from "../store/data-slice";
+import { dataActions } from "../store/data-slice";
 import { timeActions } from "../store/time-slice";
-import { comparisonHandler } from "../library/Comparioson";
-import ModalPosition from "../library/ModalPosition";
-import "./List.css";
+import { modalActions } from "../store/modal-slice";
+import { RootState } from "../store/store";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { ListOrMore } from "../utils/RefType";
 import {
   faXmark,
   faTrash,
@@ -21,16 +14,15 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import TimeSelector from "../library/Time/TimeSelector";
 import ColorBox from "../library/ColorBox";
-import { modalActions } from "../store/modal-slice";
-import { RootState } from "../store/store";
-import { ListOrMore } from "../utils/RefType";
+import ModalPosition from "../library/ModalPosition";
+import "./List.css";
 
 interface T {
-  listRef: React.MutableRefObject<{}>;
-  allListRef: React.MutableRefObject<{}>;
-  clickedElement: React.MutableRefObject<{}>;
+  listRef: React.MutableRefObject<ListOrMore>;
+  allListRef: React.MutableRefObject<ListOrMore>;
+  clickedElement: React.MutableRefObject<HTMLDivElement | null>;
   viewRef: React.RefObject<HTMLDivElement>;
-  list: React.MutableRefObject<{}>;
+  list: React.RefObject<HTMLDivElement>;
 }
 
 const List = ({ viewRef, listRef, allListRef, clickedElement, list }: T) => {
@@ -40,200 +32,172 @@ const List = ({ viewRef, listRef, allListRef, clickedElement, list }: T) => {
   const modal = useSelector((state: RootState) => state.modal);
   const schedule = data.userSchedule;
 
+  //?????? check
   const startDate = data.startDate || modal.startDate;
   const endDate = data.endDate || modal.endDate;
 
-  const dateArray =
+  const date =
     modal.startDate === modal.endDate
       ? modal.startDate.split("-")
       : [...modal.startDate.split("-"), ...modal.endDate.split("-")];
 
   const [color, setColor] = useState<string>(modal.color);
   const [openColor, setOpenColor] = useState<boolean>(false);
-  const [size, setSize] = useState<[number, number]>([0, 0]);
-  const [editArea, setEditArea] = useState<boolean>(false);
+  const [size, setSize] = useState<[number, number]>([
+    viewRef.current!.clientWidth,
+    viewRef.current!.clientHeight,
+  ]); //check
+  const [openEditArea, setOpenEditArea] = useState<boolean>(false);
 
   const inputRef = useRef<HTMLInputElement>(null);
   const colorRef = useRef<HTMLDivElement>(null);
 
-  const timeOneRef = useRef<ListOrMore>({});
-  const timeTwoRef = useRef<ListOrMore>({});
+  const timeOneRef = useRef<HTMLInputElement>(null);
+  const timeTwoRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    setSize([viewRef.current.clientWidth, viewRef.current.clientHeight]);
-  }, [viewRef]);
+    const widthCalculator = () => {
+      setSize([viewRef.current!.clientWidth, viewRef.current!.clientHeight]);
+    };
 
-  const widthCalculator = useCallback(() => {
-    setSize([viewRef.current.clientWidth, viewRef.current.clientHeight]);
-  }, [viewRef]);
-
-  useEffect(() => {
     window.addEventListener("resize", widthCalculator);
   });
 
-  const comparison = comparisonHandler(startDate, endDate);
+  // const comparison = comparisonHandler(startDate, endDate);
 
-  const modalCloseHandler = (e) => {
-    if (openColor) {
+  useEffect(() => {
+    //check 수정 필요
+    const closeHandler = (e: MouseEvent) => {
+      const target = e.target as Node;
+
       // 색상 선택 on, off
-      if (!colorRef.current.contains(e.target)) {
+      if (!colorRef.current!.contains(target) && openColor) {
         setTimeout(() => {
           setOpenColor(false);
-        }, [100]);
+        }, 100);
       }
-    }
-    // 같은 리스트를 클릭하면 모달창이 종료되게 끔..
-    if (e.target === clickedElement.current) {
-      setTimeout(() => {
-        dispatch(listActions.offModal());
-      }, 100);
-      return;
-    }
 
-    if (!list.current.contains(e.target)) {
-      for (const key in listRef.current) {
-        if (listRef.current[key] === null) {
-          continue;
-        }
+      // 같은 리스트를 클릭하면 모달창이 종료되게하기
+      if (target === clickedElement.current!) {
+        setTimeout(() => {
+          dispatch(modalActions.offModal());
+        }, 100);
+        return;
+      }
 
-        if (listRef.current[key].contains(e.target)) {
-          clickedElement.current = e.target;
+      // list 모달창 영역 밖을 클릭했을 때,
+      if (!list.current!.contains(target)) {
+        for (const key in listRef.current) {
+          if (listRef.current[key] === null) continue;
+
+          if (!listRef.current[key]!.contains(target)) continue;
+
+          clickedElement.current = target as HTMLDivElement;
           return;
         }
-      }
 
-      for (const key in allListRef.current) {
-        if (allListRef.current[key] === null) {
-          continue;
-        }
+        for (const key in allListRef.current) {
+          if (allListRef.current[key] === null) continue;
 
-        if (allListRef.current[key].contains(e.target)) {
-          clickedElement.current = e.target;
+          if (!allListRef.current[key]!.contains(target)) continue;
+
+          clickedElement.current = target as HTMLDivElement;
           setTimeout(() => {
-            dispatch(listActions.offModal());
+            dispatch(modalActions.offModal());
           }, 100);
           return;
         }
+
+        setTimeout(() => {
+          // !allListState.isVisible && dispatch(listActions.offModal());
+          dispatch(modalActions.offModal());
+          dispatch(timeActions.resetTime());
+        }, 80);
       }
+    };
 
-      setTimeout(() => {
-        !allListState.isVisible && dispatch(listActions.offModal());
-        dispatch(modalActions.offModal());
-        dispatch(timeActions.resetTime());
-      }, 80);
-    }
-  };
-
-  useEffect(() => {
-    document.addEventListener("mousedown", modalCloseHandler);
+    document.addEventListener("mousedown", closeHandler);
     return () => {
-      document.removeEventListener("mousedown", modalCloseHandler);
+      document.removeEventListener("mousedown", closeHandler);
     };
   });
 
   const removeListHandler = (date: string, key: string) => {
-    dispatch(modalActions.removeList({ date, key }));
-    dispatch(listActions.offModal());
+    dispatch(dataActions.removeList({ date, key }));
+    dispatch(modalActions.offModal());
   };
 
   const listEditHandler = (startDate: string, endDate: string) => {
-    const day = new Date(startDate).getDay() + 1;
-    const arr = listState.arr;
-    const key = listState.key;
+    // const day = new Date(startDate).getDay() + 1;
+    const day = modal.day;
+    const arr = data.dateArray;
+    const key = modal.key;
     console.log(day);
 
-    if (allListState.isVisible) {
-      dispatch(allListActions.offModal());
-    }
-    setEditArea((prevState) => !prevState);
+    // if (modal.moreModalOpen)
+    //   dispatch(modalActions.offModal());
+
+    setOpenEditArea((prevState) => !prevState);
     // 리스트 클릭시 modla-slice의 startDate와 endDate값이 원하는 값이 아니기에
     // 클릭할 때 값을 갱신해줘야 함. 추가로 arr 배열도..
-    dispatch(modalActions.setDate({ day, startDate, endDate, arr, key }));
+    dispatch(dataActions.setDate({ day, startDate, endDate, arr, key })); //check arr 부분
   };
 
   const editListSubmitHandler = (event: React.FormEvent) => {
     event.preventDefault();
-    const key = listState.key;
+    const key = modal.key;
 
-    const time = new Date();
-    const month = time.getMonth();
-    const datee = time.getDate();
-    const timeArr = [
-      time.getFullYear(),
-      month < 10 ? "0" + month : month,
-      datee < 10 ? "0" + datee : datee,
-      time.toTimeString(),
-    ];
+    // const time = new Date();
+    // const month = time.getMonth();
+    // const datee = time.getDate();
+    // const timeArr = [
+    //   time.getFullYear(),
+    //   month.toString().padStart(2, '0'),
+    //   datee.toString().padStart(2, '0'),
+    //   time.toTimeString(),
+    // ];
 
     const pattern = /^(오전|오후)\s(([0][0-9]|[1][0-2])):([0-5][0-9])$/;
-    let title = inputRef.current.value;
-    const date = listState.startDate;
-    let startTime = timeOneRef.current.value || listState.startTime;
-    let endTime = timeTwoRef.current.value || listState.endTime;
+    let title: string = inputRef.current!.value;
+    const startTime: string = timeOneRef.current!.value || modal.startTime;
+    const endTime: string = timeTwoRef.current!.value || modal.endTime;
 
-    if (!timeOneRef.current.value.length === 0) {
-      if (!pattern.test(timeOneRef.current.value)) {
-        return alert("시간을 제대로 입력해주세요! ex) 오후 02:30");
-      }
+    if (!pattern.test(timeOneRef.current!.value)) {
+      return alert("시간을 제대로 입력해주세요! ex) 오후 02:30");
     }
 
-    if (!timeTwoRef.current.value.length === 0) {
-      if (!pattern.test(timeTwoRef.current.value)) {
-        return alert("시간을 제대로 입력해주세요! ex) 오후 01:30");
-      }
+    if (!pattern.test(timeTwoRef.current!.value)) {
+      return alert("시간을 제대로 입력해주세요! ex) 오후 01:30");
     }
 
-    if (startTime > endTime) {
-      if (comparison === 4) {
-        return alert("시작시간이 끝나는 시간보다 큽니다!!");
-      }
-    }
+    if (startTime > endTime)
+      return alert("시작시간이 끝나는 시간보다 큽니다!!");
+    // if (comparison === 4) {
+    // }
 
-    if (comparison === 5) {
-      return alert("마지막 날이 시작날 보다 작습니다!!");
-    }
+    if (startDate > endDate) return alert("마지막 날이 시작날 보다 작습니다!!");
 
-    if (title.trim() === "") {
-      title = inputRef.current.placeholder;
-    }
+    if (title.length === 0) title = inputRef.current!.placeholder;
 
-    // startTime < endTime 이면서...
-    dispatch(modalActions.removeList({ date, key }));
+    dispatch(dataActions.removeList({ startDate, key }));
 
-    if (comparison === 4) {
-      dispatch(
-        modalActions.inputList({ startTime, endTime, title, color, timeArr })
-      );
-    }
+    dispatch(dataActions.makeList({ startTime, endTime, title, color }));
 
-    if (comparison <= 3) {
-      dispatch(
-        modalActions.longDateList({
-          startTime,
-          endTime,
-          title,
-          timeArr,
-          color,
-        })
-      );
-    }
-
-    inputRef.current.value = "";
+    inputRef.current!.value = "";
 
     closeModalHandler();
   };
 
   const listDoneHandler = (date: string, key: string) => {
-    dispatch(modalActions.listDone({ date, key }));
+    dispatch(dataActions.listDone({ date, key }));
   };
 
   const closeModalHandler = () => {
-    dispatch(listActions.offModal());
     dispatch(modalActions.offModal());
     dispatch(timeActions.resetTime());
   };
-  console.log(schedule[listState.startDate][listState.index]);
-  const styleClass = schedule[listState.startDate][listState.index].isDone
+
+  const styleClass = schedule[modal.startDate][modal.key].isDone
     ? "done"
     : false;
 
@@ -242,7 +206,7 @@ const List = ({ viewRef, listRef, allListRef, clickedElement, list }: T) => {
 
   return (
     <div
-      className={`list-box ${editArea ? "edit" : ""}`}
+      className={`list-box ${openEditArea ? "edit" : ""}`}
       ref={list}
       style={{
         // 마운트시에 width 가 ''이므로 display none
@@ -269,7 +233,7 @@ const List = ({ viewRef, listRef, allListRef, clickedElement, list }: T) => {
           <FontAwesomeIcon icon={faXmark} />
         </div>
       </div>
-      {editArea && (
+      {openEditArea && (
         <form
           className="list-edit-form"
           onSubmit={(e: React.FormEvent) => editListSubmitHandler(e)}
@@ -283,15 +247,13 @@ const List = ({ viewRef, listRef, allListRef, clickedElement, list }: T) => {
             />
             <input placeholder={modal.title} type="text" ref={inputRef} />
           </div>
-          {/* <TimeSelector
+          <TimeSelector
             startDate={startDate}
             endDate={endDate}
             firstTime={modal.startTime}
             lastTime={modal.endTime}
             timeOneRef={timeOneRef}
             timeTwoRef={timeTwoRef}
-            comparison={comparison}
-            viewRef={viewRef}
           />
           <ColorBox
             color={color}
@@ -299,34 +261,34 @@ const List = ({ viewRef, listRef, allListRef, clickedElement, list }: T) => {
             openColor={openColor}
             setOpenColor={setOpenColor}
             colorRef={colorRef}
-          /> */}
+          />
           <div className="edit-button-box">
             <button type="submit">저장</button>
           </div>
         </form>
       )}
-      {!editArea && (
+      {!openEditArea && (
         <div className="list-info">
           <div className="list-title">
             <div className={`list-color-box ${modal.color}`}></div>
             <div className={`listName  ${styleClass}`}>{modal.title}</div>
           </div>
           <div className="list-time">
-            <div className="time-item">{`${dateArray[0]}년 ${dateArray[1]}월 ${dateArray[2]}일`}</div>
+            <div className="time-item">{`${date[0]}년 ${date[1]}월 ${date[2]}일`}</div>
             <div className="time-item">{modal.startTime}</div>
             <span className="time-item">~</span>
             <div
               className="time-item"
-              style={{ display: dateArray.length === 3 ? "none" : "" }}
+              style={{ display: date.length === 3 ? "none" : "" }}
             >
               {`${
-                dateArray.length < 4
+                date.length < 4
                   ? "" // startDate === endDate
-                  : dateArray[0] === dateArray[3] // 같은 년도
-                  ? dateArray[1] === dateArray[4] // 같은 달
-                    ? `${dateArray[5]}일` // 다른 날
-                    : `${dateArray[4]}월 ${dateArray[5]}일` // 다른 달
-                  : `${dateArray[3]}년 ${dateArray[4]}월 ${dateArray[5]}일` // 다른 년도
+                  : date[0] === date[3] // 같은 년도
+                  ? date[1] === date[4] // 같은 달
+                    ? `${date[5]}일` // 다른 날
+                    : `${date[4]}월 ${date[5]}일` // 다른 달
+                  : `${date[3]}년 ${date[4]}월 ${date[5]}일` // 다른 년도
               }
               `}
             </div>
