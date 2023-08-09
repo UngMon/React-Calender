@@ -39,8 +39,8 @@ const Calender = ({ loading, loggedIn }: T) => {
   const delayRef = useRef({ delay: true });
   const viewRef = useRef<HTMLDivElement>(null);
 
-  const firstDay: number = new Date(+year, +month, 1).getDay();
-  const lastDate: number = new Date(+year, +month + 1, 0).getDate();
+  const firstDay: number = new Date(+year, +month - 1, 1).getDay();
+  const lastDate: number = new Date(+year, +month, 0).getDate();
 
   const movePrevMonth = () => {
     let mon = month;

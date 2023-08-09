@@ -125,7 +125,7 @@ const MakeEvent = ({ viewRef }: T) => {
     >
       <div className="add-modal-name">일정 추가</div>
       <div className="inputArea">
-        <img src="img/memo.png" alt="memo" width="17" className="input-icon" />
+        <img src="../images/memo.png" alt="memo" width="17" className="input-icon" />
         <input placeholder="(제목 추가)" type="text" ref={titleRef} />
       </div>
       <TimeSelector

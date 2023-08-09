@@ -120,7 +120,7 @@ const MakeCalender = ({
     for (const key in schedule[date]) {
       const object = schedule[date][key];
 
-      if (object.startDate < date && day !== '1') continue;
+      if (object.startDate < date && day !== "1") continue;
 
       const isLong: boolean = object.startDate < object.endDate ? true : false;
       let arrayCount: number = 0;
@@ -232,165 +232,74 @@ const MakeCalender = ({
   const dateArray: React.ReactNode[] = [];
 
   // ////////////////////////////////////////////////
+  let sunday: number = 0;
   // /* 날짜 생성하기 */
   const makeDay = (week: number, array: ReactNode[][]) => {
     const thisMonthArray = [];
 
-    /* 첫 주에선 그 전 달과 이번 달을 표시하기 */
-    if (week === 1) {
-      const prevMonthLastDate = new Date(+year, +month - 1, 0).getDate();
+    let date: number = 0;
+    let idx: string = "";
+    let isNext = false;
 
-      for (let i = 1; i <= 7; i++) {
+    for (let i = 1; i <= 7; i++) {
+    
+      if (week === 1) {
         if (i <= firstDay) {
-          //ex) 첫 주에 28, 29, 30, 31, 1, 2, 3 표현하기 위함
-          const date: number = prevMonthLastDate - firstDay + i;
-          const idx: string = MakeIdx("prev", year, month, date);
-          const day: string = `${i}`; //모달창을 띄울 때 위치를 무슨 요일인지 저장
-
-          thisMonthArray.push(
-            <td
-              key={idx}
-              onClick={() => {
-                !modal.listModalOpen &&
-                  addClickHandler(idx, day, week.toString());
-              }}
-              className={classes.date_box}
-              day-index={day}
-            >
-              <div className={classes.date}>
-                <h2
-                  className={`${identify === idx && classes.Today} ${
-                    identify !== idx && day === "1"
-                      ? classes.sunday
-                      : day === "7" && classes.saturday
-                  }`}
-                >
-                  {date}
-                </h2>
-              </div>
-              <div className={classes["list-box"]}>
-                <div className={classes["list-area"]}>
-                  {scheduleHandler(idx, day, week.toString(), array)}
-                </div>
-              </div>
-            </td>
-          );
+          const prevMonthLastDate = new Date(+year, +month - 1, 0).getDate();
+          date = prevMonthLastDate - firstDay + i;
+          idx = MakeIdx("prev", year, month, date);
         } else {
-          const date: number = i - firstDay;
-          const idx: string = MakeIdx("", year, month, date);
-          const day: string = `${i}`;
-
-          thisMonthArray.push(
-            <td
-              key={idx}
-              onClick={() => {
-                !modal.listModalOpen &&
-                  addClickHandler(idx, day, week.toString());
-              }}
-              className={classes.date_box}
-              day-index={day}
-            >
-              <div className={classes.date}>
-                <h2
-                  style={{ width: date === 1 ? "54px" : "" }}
-                  className={`
-                  ${identify === idx && classes.Today}
-                  ${
-                    identify !== idx && day === "1"
-                      ? classes.sunday
-                      : day === "7" && classes.saturday
-                  }`}
-                >
-                  {date === 1 ? `${+month}월 1일` : date}
-                </h2>
-              </div>
-              <div className={classes["list-box"]}>
-                <div className={classes["list-area"]}>
-                  {scheduleHandler(idx, day, week.toString(), array)}
-                </div>
-              </div>
-            </td>
-          );
+          date = i - firstDay;
+          idx = MakeIdx("", year, month, date);
+        }
+      } else {
+        if (sunday + i > lastDate) {
+          sunday = 0;
+          sunday += 1;
+          date = sunday;
+          isNext = true;
+          idx = MakeIdx("next", year, month, date);
+        } else {
+          date = !isNext ? sunday + i : date + 1;
+          idx = MakeIdx("", year, month, date);
         }
       }
-    }
 
-    if (week !== 1) {
-      const startDate = (week - 1) * 7;
+      if (i === 7 && sunday <= lastDate) sunday = date;
 
-      for (let i = startDate; i <= week * 7 - 1; i++) {
-        if (i - firstDay < lastDate) {
-          const nowDate: number = i - firstDay + 1;
-          const idx: string = MakeIdx("", year, month, nowDate);
-          const day: string = `${(i % 7) + 1}`;
-
-          thisMonthArray.push(
-            <td
-              key={idx}
-              onClick={() => {
-                !modal.listModalOpen &&
-                  addClickHandler(idx, day, week.toString());
-              }}
-              className={classes.date_box}
-              day-index={day}
+      thisMonthArray.push(
+        <td
+          key={idx}
+          // eslint-disable-next-line no-loop-func
+          onClick={() => {
+            !modal.listModalOpen &&
+              addClickHandler(idx, i.toString(), week.toString());
+          }}
+          className={classes.date_box}
+          day-index={i}
+        >
+          <div className={classes.date}>
+            <h2
+              className={`${identify === idx && classes.Today} ${
+                identify !== idx && i === 1
+                  ? classes.sunday
+                  : i === 7 && classes.saturday
+              }`}
             >
-              <div className={classes.date}>
-                <h2
-                  className={`${identify === idx && classes.Today} ${
-                    identify !== idx && day === "1"
-                      ? classes.sunday
-                      : day === "7" && classes.saturday
-                  }`}
-                >
-                  {nowDate}
-                </h2>
-              </div>
-              <div className={classes["list-box"]}>
-                <div className={classes["list-area"]}>
-                  {scheduleHandler(idx, day, week.toString(), array)}
-                </div>
-              </div>
-            </td>
-          );
-        } else {
-          const nowDate: number = i - lastDate - firstDay + 1;
-          const idx: string = MakeIdx("next", year, month, nowDate);
-          const day: string = `${(i % 7) + 1}`;
-
-          thisMonthArray.push(
-            <td
-              key={idx}
-              onClick={() => {
-                !modal.listModalOpen && addClickHandler(idx, day, week.toString());
-              }}
-              className={classes.date_box}
-              day-index={day}
-            >
-              <div className={classes.date}>
-                <h2
-                  className={`${identify === idx && classes.Today} ${
-                    identify !== idx && day === '1'
-                      ? classes.sunday
-                      : day === '7' && classes.saturday
-                  }`}
-                  style={{ width: nowDate === 1 ? "54px" : "" }}
-                >
-                  {nowDate === 1
-                    ? month === "12"
-                      ? "1월 1일"
-                      : `${+month + 1}월 1일`
-                    : nowDate}
-                </h2>
-              </div>
-              <div className={classes["list-box"]}>
-                <div className={classes["list-area"]}>
-                  {scheduleHandler(idx, day, week.toString(), array)}
-                </div>
-              </div>
-            </td>
-          );
-        }
-      }
+              {date === 1
+                ? isNext
+                  ? `${+month + 1}월 1일`
+                  : `${month}월 1일`
+                : date}
+            </h2>
+          </div>
+          <div className={classes["list-box"]}>
+            <div className={classes["list-area"]}>
+              {scheduleHandler(idx, i.toString(), week.toString(), array)}
+            </div>
+          </div>
+        </td>
+      );
     }
     return thisMonthArray;
   };

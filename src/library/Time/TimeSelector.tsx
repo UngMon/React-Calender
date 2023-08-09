@@ -111,7 +111,7 @@ const TimeSelector = ({
 
   return (
     <div className="time-container">
-      <img src="img/clock.png" alt="clock" width="19" className="clock-icon" />
+      <img src="../images/clock.png" alt="clock" width="19" className="clock-icon" />
       <div className="time-box">
         <div className="date-area">
           <div ref={(el: HTMLDivElement) => (dateRef.current[0] = el)}>

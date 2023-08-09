@@ -3,10 +3,7 @@ const ModalPosition = (day: string, week: string, size: [number, number]) => {
   let height = size[1];
   let array = [0, 0];
   // 캘린더 너비에 따른 모달창 위치 조절
-  console.log(day, week)
-  console.log(`day ${typeof day}`)
-  console.log(typeof week)
-  console.log(typeof size)
+
   const modalWidth = width > 500 ? 400 : width > 335 ? 300 : 230;
 
   switch (day) {
@@ -85,7 +82,6 @@ const ModalPosition = (day: string, week: string, size: [number, number]) => {
       break;
     default:
       array[1] = -20;
-      break;
   }
 
   console.log(array)

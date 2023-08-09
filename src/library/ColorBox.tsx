@@ -36,7 +36,7 @@ const ColorBox = ({
 
   return (
     <div className="color-picker">
-      <img src="img/palette.png" alt="memo" width="20" className="color-icon" />
+      <img src="../images/palette.png" alt="memo" width="20" className="color-icon" />
       <div
         className={`${color} circle`}
         onClick={() => setOpenColor(!openColor)}
