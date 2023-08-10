@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
-import { timeActions } from "../../store/time-slice";
+import { timeActions } from "../../redux/time-slice";
 import { ListOrMore } from "../../utils/RefType";
-import { useAppDispatch } from "../../store/store";
+import { useAppDispatch } from "../../redux/store";
 
 interface T {
   timeTwoRef: React.RefObject<HTMLInputElement>;

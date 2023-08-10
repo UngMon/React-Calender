@@ -1,8 +1,8 @@
 import React, { ReactNode, useEffect, useState } from "react";
 import { CalenderData, DataType, ModalType } from "../utils/ReduxType";
-import { useAppDispatch } from "../store/store";
-import { modalActions } from "../store/modal-slice";
-import { dataActions } from "../store/data-slice";
+import { useAppDispatch } from "../redux/store";
+import { modalActions } from "../redux/modal-slice";
+import { dataActions } from "../redux/data-slice";
 import { ListOrMore } from "../utils/RefType";
 import MakeIdx from "../library/MakeIdx";
 import classes from "./MakeCalender.module.css";
@@ -242,7 +242,6 @@ const MakeCalender = ({
     let isNext = false;
 
     for (let i = 1; i <= 7; i++) {
-    
       if (week === 1) {
         if (i <= firstDay) {
           const prevMonthLastDate = new Date(+year, +month - 1, 0).getDate();
@@ -279,19 +278,21 @@ const MakeCalender = ({
           day-index={i}
         >
           <div className={classes.date}>
-            <h2
-              className={`${identify === idx && classes.Today} ${
-                identify !== idx && i === 1
-                  ? classes.sunday
-                  : i === 7 && classes.saturday
-              }`}
-            >
-              {date === 1
-                ? isNext
-                  ? `${+month + 1}월 1일`
-                  : `${month}월 1일`
-                : date}
-            </h2>
+            <div className={classes["date-h"]}>
+              <h2
+                className={`${identify === idx && classes.Today} ${
+                  identify !== idx && i === 1
+                    ? classes.sunday
+                    : i === 7 && classes.saturday
+                }`}
+              >
+                {date === 1
+                  ? isNext
+                    ? `${+month + 1}월 1일`
+                    : `${+month}월 1일`
+                  : date}
+              </h2>
+            </div>
           </div>
           <div className={classes["list-box"]}>
             <div className={classes["list-area"]}>

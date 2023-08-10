@@ -35,7 +35,6 @@
 }
 
 .weekname th {
-  /* border-top: 1px solid rgb(193, 192, 192, 0.2); */
   border-bottom: 1px solid rgb(193, 192, 192, 0.2);
   padding-left: 6px;
 }
@@ -63,17 +62,16 @@
   height: 24px;
   text-align: left;
   display: flex;
-}
+} 
 
-.date h2 {
-  display: block;
+.date-h h2 {
   box-sizing: border-box;
-  padding: 1px 5px;
-  width: calc(100% - 10px);
+  padding: 0 5px;
+  width: auto;
   height: 100%;
   font-size: 1em;
   font-weight: 540;
-  line-height: 22px;
+  line-height: 25px;
 }
 
 .sunday {

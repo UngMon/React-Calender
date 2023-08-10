@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
-import { timeActions } from "../../store/time-slice";
+import { timeActions } from "../../redux/time-slice";
 import { ListOrMore } from "../../utils/RefType";
-import { useAppDispatch } from "../../store/store";
+import { useAppDispatch } from "../../redux/store";
 
 interface T {
   timeOneRef: React.RefObject<HTMLInputElement>;
@@ -108,15 +108,21 @@ const timeArray = [
   "오후 11:45",
 ];
 
-const TimeBox = ({ timeOneRef, oneRef, timeVisible, timeRef }: T) => {
+const TimeBox = ({
+  timeOneRef,
+  oneRef,
+  timeVisible,
+  timeRef,
+}: T) => {
   const dispatch = useAppDispatch();
 
   useEffect(() => {
-    Object.keys(oneRef.current).forEach(
-      (item, index) =>
-      oneRef.current[index]!.innerText === timeOneRef.current!.placeholder &&
-      oneRef.current[index]!.scrollIntoView()
-    );
+    console.log(timeOneRef.current?.innerText)
+    Object.keys(oneRef.current).forEach((item, index) => {
+      let value: string = timeOneRef.current!.value || timeOneRef.current!.placeholder;
+      oneRef.current[index]!.innerText === value &&
+        oneRef.current[index]!.scrollIntoView();
+    });
   });
 
   const clickHandler = (e: React.MouseEvent) => {
@@ -130,6 +136,7 @@ const TimeBox = ({ timeOneRef, oneRef, timeVisible, timeRef }: T) => {
       <div id="time-selector" ref={(el) => (timeRef.current[0] = el)}>
         {timeArray.map((item, index) => (
           <div
+            key={index}
             ref={(el) => (oneRef.current[index] = el)}
             onClick={(e: React.MouseEvent) => clickHandler(e)}
           >

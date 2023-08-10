@@ -1,12 +1,12 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { dateActions } from "../../store/date-slice";
+import { dateActions } from "../../redux/date-slice";
 import MakeIdx from "../MakeIdx";
 import MakeLongArr from "../MakeLongArr";
 import classes from "./second.module.css";
-import { RootState } from "../../store/store";
+import { RootState } from "../../redux/store";
 import { ButtonRef } from "../../utils/RefType";
-import { dataActions } from "../../store/data-slice";
+import { dataActions } from "../../redux/data-slice";
 
 interface T {
   year: number;
@@ -16,7 +16,7 @@ interface T {
   identify: string;
   type: string;
   dateRef: React.MutableRefObject<ButtonRef>;
-  dateClose: () => void;
+  dateClose: (value: string) => void;
 }
 
 const MakeCaledner = ({
@@ -71,7 +71,7 @@ const MakeCaledner = ({
       default:
     }
     dispatch(dataActions.clickedDate({ type, idx, day, week, dateArray }));
-    dateClose();
+    dateClose(type);
   };
 
   const monthArray = [];

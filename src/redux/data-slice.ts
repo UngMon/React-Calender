@@ -1,11 +1,13 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { DataType } from "../utils/ReduxType";
+import { getUserData } from "./fetch-action";
 
 const initialState: DataType = {
   addModalOpen: false,
   isLogin: false,
   isLoading: false,
   isCreated: false,
+  succesGetData: false,
   startDate: "",
   endDate: "",
   week: "",
@@ -112,6 +114,7 @@ const dataSlice = createSlice({
       state.week = "";
       state.day = "";
       state.dateArray = [];
+      state.dataChanged = false;
     },
 
     setDate(state, action) {
@@ -123,7 +126,7 @@ const dataSlice = createSlice({
 
     clickedDate(state, action) {
       // type = 'start' || 'end' || 'add'
-      
+
       if (action.payload.type === "end") {
         state.endDate = action.payload.idx;
         state.dateArray = action.payload.dateArray;
@@ -144,7 +147,6 @@ const dataSlice = createSlice({
     makeList(state, action) {
       state.dataChanged = true;
       console.log(action.payload);
-      console.log("makeList");
 
       const type = state.startDate === state.endDate ? "S" : "L";
       const array = JSON.parse(JSON.stringify(state.userSchedule.schedule));
@@ -188,27 +190,25 @@ const dataSlice = createSlice({
       state.dataChanged = true; // fetch (put)
 
       let schedule = JSON.parse(JSON.stringify(state.userSchedule));
-
-      const date = action.payload.startDate;
-      const key = action.payload.key;
-      // const dateInfo = action.payload.date.split("-");
-      // const year = dateInfo[0];
-      // const month = dateInfo[1];
-      // const dateArray = schedule[year][month][date][key].arr;
-
-      ///........................ 여기는 dateArray로 .....................//
-      for (const item of schedule[date]) {
-        const date = item.split("-");
-
-        delete schedule[date[0]][date[1]][item][key];
-
-        // if (Object.keys(schedule[date][key]).length === 0) {
-        //   delete schedule[date[0]][date[1]][item];
-        // }
+      ///...................... 여기는 dateArray로 .....................///
+      for (const item of action.payload.array) {
+        delete schedule[item][action.payload.key];
       }
-
       state.userSchedule = schedule;
     },
+  },
+  extraReducers: (builder) => {
+    builder.addCase(getUserData.pending, (state, action) => {
+      state.isLoading = true;
+    });
+    builder.addCase(getUserData.fulfilled, (state, action) => {
+      state.isLoading = false;
+      state.userSchedule = action.payload;
+    });
+    builder.addCase(getUserData.rejected, (state, action) => {
+      state.isLoading = false;
+      console.log(action.error)
+    });
   },
 });
 

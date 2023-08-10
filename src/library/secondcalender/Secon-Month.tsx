@@ -10,12 +10,12 @@ interface T {
   year: string;
   month: string;
   dateRef: React.MutableRefObject<ButtonRef>;
-  dateClose: () => void;
+  dateClose: (value: string) => void;
 }
 
 const Month = ({ type, year, month, dateRef, dateClose }: T) => {
   console.log("secondMonth");
-  console.log(dateRef.current);
+  // console.log(dateRef.current);
   const [thisYear, setYear] = useState<number>(+year);
   const [thisMonth, setMonth] = useState<number>(+month);
 

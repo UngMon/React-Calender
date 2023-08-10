@@ -10,7 +10,7 @@ export interface CalenderData {
 }
 
 export interface UserData {
-  [key: string]: CalenderData;
+  [key: string]: { [key: string]: CalenderData };
 }
 
 export interface DataType {
@@ -18,12 +18,13 @@ export interface DataType {
   isLogin: boolean;
   isLoading: boolean;
   isCreated: boolean;
+  succesGetData: boolean;
   startDate: string;
   endDate: string;
   week: string;
   day: string;
   dataChanged: boolean;
-  userSchedule: { [key: string]: UserData };
+  userSchedule: UserData;
   dateArray: string[];
 }
 
@@ -58,4 +59,12 @@ export interface ModalType {
   title: string;
   key: string;
   index: number;
+}
+
+///// time /////
+export interface Time {
+  firstIsVisible: boolean;
+  lastIsVisible: boolean;
+  firstTime: string;
+  lastTime: string;
 }

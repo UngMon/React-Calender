@@ -54,7 +54,6 @@ const ModalPositionTwo = (day: string, week: string, size: [number, number]) => 
         array[1] = height - (height * 2) / 6;
     }
 
-   
     return array;
   };
 

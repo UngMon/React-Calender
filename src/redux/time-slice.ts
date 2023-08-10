@@ -1,37 +1,40 @@
 import { createSlice } from "@reduxjs/toolkit";
+import { Time } from "../utils/ReduxType";
+
+const initialState: Time = {
+  firstIsVisible: false,
+  lastIsVisible: false,
+  firstTime: "",
+  lastTime: "",
+};
 
 const timeSlice = createSlice({
   name: "time",
-  initialState: {
-    firstIsVisible: false,
-    lastIsVisible: false,
-    firstTime: '',
-    lastTime: '',
-  },
+  initialState,
   reducers: {
-    timeToggle(state) {
-      state.firstIsVisible = false;
-      state.lastIsVisible = false;
-    },
+    // timeToggle(state) {
+    //   state.firstIsVisible = false;
+    //   state.lastIsVisible = false;
+    // },
 
     selectFristTime(state, action) {
       state.firstIsVisible = !state.firstIsVisible;
       state.lastIsVisible = false;
-      state.firstTime = action.payload;
+      state.firstTime = action.payload.firstTime;
     },
 
     selectLastTime(state, action) {
       state.lastIsVisible = !state.lastIsVisible;
       state.firstIsVisible = false;
-      state.lastTime = action.payload;
+      state.lastTime = action.payload.lastTime;
     },
 
     resetTime(state) {
       state.firstIsVisible = false;
       state.lastIsVisible = false;
-      state.firstTime = '';
-      state.lastTime = '';
-    }
+      state.firstTime = "";
+      state.lastTime = "";
+    },
   },
 });
 

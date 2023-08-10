@@ -1,5 +1,4 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
-// import { modalActions } from "./data-slice";
 import { firebaseConfig } from "../Auth/firebase";
 import { UserData } from "../utils/ReduxType";
 
@@ -8,26 +7,18 @@ interface obj {
   uid: string;
 }
 
-export const getUserData = createAsyncThunk(
-  "get/getUesrData",
-  async (userId: string) => {
-    const response = await fetch(
-      `https://${firebaseConfig.databaseURL}/userData/${userId}.json`
-    );
+export const getUserData = createAsyncThunk("get", async (userId: string) => {
+  console.log(`https://${firebaseConfig.databaseURL}/userData/${userId}.json`)
+  const response = await fetch(
+    `https://${firebaseConfig.databaseURL}/userData/${userId}.json`
+  );
 
-    if (!response.ok) {
-      throw new Error(
-        "일정에 관한 데이터를 얻지 못 했습니다! 다시 시도해주세요."
-      );
-    }
-
-    const data: UserData = await response.json();
-    return data;
-  }
-);
+  const data: UserData = await response.json();
+  return data;
+});
 
 export const sendUserData = createAsyncThunk(
-  "send/sendUserData",
+  "send",
   async (object: obj) => {
     const url = `https://${firebaseConfig.databaseURL}/userData/${object.uid}.json`;
 

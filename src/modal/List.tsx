@@ -1,9 +1,9 @@
 import React, { useRef, useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { dataActions } from "../store/data-slice";
-import { timeActions } from "../store/time-slice";
-import { modalActions } from "../store/modal-slice";
-import { RootState } from "../store/store";
+import { dataActions } from "../redux/data-slice";
+import { timeActions } from "../redux/time-slice";
+import { modalActions } from "../redux/modal-slice";
+import { RootState } from "../redux/store";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { ListOrMore } from "../utils/RefType";
 import {
@@ -15,6 +15,7 @@ import {
 import TimeSelector from "../library/Time/TimeSelector";
 import ColorBox from "../library/ColorBox";
 import ModalPosition from "../library/ModalPosition";
+import MakeLongArr from "../library/MakeLongArr";
 import "./List.css";
 
 interface T {
@@ -63,8 +64,6 @@ const List = ({ viewRef, listRef, allListRef, clickedElement, list }: T) => {
     window.addEventListener("resize", widthCalculator);
   });
 
-  // const comparison = comparisonHandler(startDate, endDate);
-
   useEffect(() => {
     //check 수정 필요
     const closeHandler = (e: MouseEvent) => {
@@ -109,7 +108,6 @@ const List = ({ viewRef, listRef, allListRef, clickedElement, list }: T) => {
         }
 
         setTimeout(() => {
-          // !allListState.isVisible && dispatch(listActions.offModal());
           dispatch(modalActions.offModal());
           dispatch(timeActions.resetTime());
         }, 80);
@@ -123,19 +121,21 @@ const List = ({ viewRef, listRef, allListRef, clickedElement, list }: T) => {
   });
 
   const removeListHandler = (date: string, key: string) => {
-    dispatch(dataActions.removeList({ date, key }));
+    const array = MakeLongArr(
+      modal.startDate.split("-"),
+      modal.endDate.split("-")
+    );
+
+    dispatch(dataActions.removeList({ date, key, array }));
     dispatch(modalActions.offModal());
   };
 
   const listEditHandler = (startDate: string, endDate: string) => {
-    // const day = new Date(startDate).getDay() + 1;
+
     const day = modal.day;
     const arr = data.dateArray;
     const key = modal.key;
     console.log(day);
-
-    // if (modal.moreModalOpen)
-    //   dispatch(modalActions.offModal());
 
     setOpenEditArea((prevState) => !prevState);
     // 리스트 클릭시 modla-slice의 startDate와 endDate값이 원하는 값이 아니기에
@@ -146,16 +146,6 @@ const List = ({ viewRef, listRef, allListRef, clickedElement, list }: T) => {
   const editListSubmitHandler = (event: React.FormEvent) => {
     event.preventDefault();
     const key = modal.key;
-
-    // const time = new Date();
-    // const month = time.getMonth();
-    // const datee = time.getDate();
-    // const timeArr = [
-    //   time.getFullYear(),
-    //   month.toString().padStart(2, '0'),
-    //   datee.toString().padStart(2, '0'),
-    //   time.toTimeString(),
-    // ];
 
     const pattern = /^(오전|오후)\s(([0][0-9]|[1][0-2])):([0-5][0-9])$/;
     let title: string = inputRef.current!.value;
@@ -172,8 +162,6 @@ const List = ({ viewRef, listRef, allListRef, clickedElement, list }: T) => {
 
     if (startTime > endTime)
       return alert("시작시간이 끝나는 시간보다 큽니다!!");
-    // if (comparison === 4) {
-    // }
 
     if (startDate > endDate) return alert("마지막 날이 시작날 보다 작습니다!!");
 
@@ -250,8 +238,6 @@ const List = ({ viewRef, listRef, allListRef, clickedElement, list }: T) => {
           <TimeSelector
             startDate={startDate}
             endDate={endDate}
-            firstTime={modal.startTime}
-            lastTime={modal.endTime}
             timeOneRef={timeOneRef}
             timeTwoRef={timeTwoRef}
           />

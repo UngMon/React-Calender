@@ -15,7 +15,7 @@ interface T {
   lastDate: number;
   type: string;
   dateRef: React.MutableRefObject<ButtonRef>;
-  dateClose: () => void;
+  dateClose: (value: string) => void;
 }
 
 const Calender = ({

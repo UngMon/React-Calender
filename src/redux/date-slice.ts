@@ -6,7 +6,6 @@ const todayMonth = today.getMonth();
 
 const dateSlice = createSlice({
   name: "month",
-
   initialState: {
     year: todayYear,
     month: todayMonth,

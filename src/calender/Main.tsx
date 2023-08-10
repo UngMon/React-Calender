@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from "react";
 import { useSelector } from "react-redux";
-import { RootState } from "../store/store";
+import { RootState } from "../redux/store";
 import { ListOrMore } from "../utils/RefType";
 import AddEvent from "../modal/MakeEvent";
 import List from "../modal/List";

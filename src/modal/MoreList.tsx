@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
-import { RootState, useAppDispatch } from "../store/store";
-import { modalActions } from "../store/modal-slice";
+import { RootState, useAppDispatch } from "../redux/store";
+import { modalActions } from "../redux/modal-slice";
 import { ListOrMore } from "../utils/RefType";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";

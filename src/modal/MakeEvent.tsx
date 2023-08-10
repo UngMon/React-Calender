@@ -1,18 +1,13 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useSelector } from "react-redux";
-import { RootState, useAppDispatch } from "../store/store";
-import { dataActions } from "../store/data-slice";
-import { modalActions } from "../store/modal-slice";
-import { timeActions } from "../store/time-slice";
+import { RootState, useAppDispatch } from "../redux/store";
+import { dataActions } from "../redux/data-slice";
+import { modalActions } from "../redux/modal-slice";
+import { timeActions } from "../redux/time-slice";
 import ModalPosition from "../library/ModalPosition";
-import SetTime from "../library/Time/SetTime";
 import TimeSelector from "../library/Time/TimeSelector";
 import ColorBox from "../library/ColorBox";
 import "./MakeEvent.css";
-
-const setTime = SetTime();
-const firstTime = setTime.currentTime;
-const LastTime = setTime.lastTime;
 
 interface T {
   viewRef: React.RefObject<HTMLDivElement>;
@@ -82,9 +77,10 @@ const MakeEvent = ({ viewRef }: T) => {
     const pattern = /^(오전|오후)\s(([0][0-9]|[1][0-2])):([0-5][0-9])$/;
 
     let title = titleRef.current!.value;
-    let startTime = timeOneRef.current!.value || firstTime;
-    let endTime = timeTwoRef.current!.value || LastTime;
-
+    let startTime =
+      timeOneRef.current!.value || timeOneRef.current!.placeholder;
+    let endTime = timeTwoRef.current!.value || timeOneRef.current!.placeholder;
+    
     if (!pattern.test(startTime) || !pattern.test(endTime))
       return alert("시간을 제대로 입력해주세요! ex) 오후 01:30");
 
@@ -93,7 +89,7 @@ const MakeEvent = ({ viewRef }: T) => {
     if (title.trim() === "") title = "(제목 없음)";
 
     dispatch(dataActions.makeList({ title, startTime, endTime, color }));
-
+    
     titleRef.current!.value = "";
 
     // 제출 후 아래 두개의 reducer 함수를 실행시켜 state 초기화
@@ -125,14 +121,17 @@ const MakeEvent = ({ viewRef }: T) => {
     >
       <div className="add-modal-name">일정 추가</div>
       <div className="inputArea">
-        <img src="../images/memo.png" alt="memo" width="17" className="input-icon" />
+        <img
+          src="../images/memo.png"
+          alt="memo"
+          width="17"
+          className="input-icon"
+        />
         <input placeholder="(제목 추가)" type="text" ref={titleRef} />
       </div>
       <TimeSelector
         startDate={startDate}
         endDate={endDate}
-        firstTime={firstTime}
-        lastTime={LastTime}
         timeOneRef={timeOneRef}
         timeTwoRef={timeTwoRef}
       />
