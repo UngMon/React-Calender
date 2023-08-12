@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { Time } from "../utils/ReduxType";
+import { Time } from "../type/ReduxType";
 
 const initialState: Time = {
   firstIsVisible: false,

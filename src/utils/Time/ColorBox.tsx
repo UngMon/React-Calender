@@ -36,21 +36,32 @@ const ColorBox = ({
 
   return (
     <div className="color-picker">
-      <img src="../images/palette.png" alt="memo" width="20" className="color-icon" />
+      <img
+        src="../images/palette.png"
+        alt="memo"
+        width="20"
+        className="color-icon"
+      />
       <div
         className={`${color} circle`}
-        onClick={() => setOpenColor(!openColor)}
+        onClick={() => {
+          console.log("colorClick");
+          setOpenColor(!openColor);
+        }}
       ></div>
-      {openColor && (
-        <div className="color-box" ref={colorRef}>
-          {colorArray.map((item) => (
-            <div
-              onClick={() => selectedColor(item)}
-              className={`${item} circle`}
-            ></div>
-          ))}
-        </div>
-      )}
+      <div
+        className="color-box"
+        ref={colorRef}
+        style={{ display: openColor ? "flex" : "none" }}
+      >
+        {colorArray.map((item) => (
+          <div
+            key={item}
+            onClick={() => selectedColor(item)}
+            className={`${item} circle`}
+          ></div>
+        ))}
+      </div>
     </div>
   );
 };

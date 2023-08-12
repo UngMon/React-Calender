@@ -1,14 +1,13 @@
 import React, { useEffect, useState } from "react";
+import { useAppDispatch } from "./redux/store";
 import { Route, Navigate, Routes } from "react-router-dom";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "./Auth/firebase";
 import { getUserData } from "./redux/fetch-action";
 import ResetPage from "./pages/ResetPage";
-import NotFound from "./pages/NotFound";
 import Calender from "./calender/Calender";
 import LoginPage from "./pages/LoginPage";
 import Loading from "./pages/Loading";
-import { useAppDispatch } from "./redux/store";
 
 function App() {
   console.log("app");
@@ -20,7 +19,6 @@ function App() {
   useEffect(() => {
     onAuthStateChanged(auth, (user) => {
       if (user) {
-        console.log(user)
         dispatch(getUserData(user.uid));
         setLogged(true);
       } else {
@@ -52,7 +50,7 @@ function App() {
       {loggedIn && (
         <Route
           path="*"
-          element={<Navigate to="/calender/date?year=2023&month=7" />}
+          element={<Navigate to="/calender/date?year=2023&month=8" />}
         />
       )}
     </Routes>

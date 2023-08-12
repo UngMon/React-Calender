@@ -18,7 +18,9 @@ export interface DataType {
   isLogin: boolean;
   isLoading: boolean;
   isCreated: boolean;
+  isSending: boolean;
   succesGetData: boolean;
+  succesSendData: boolean;
   startDate: string;
   endDate: string;
   week: string;
@@ -28,9 +30,7 @@ export interface DataType {
   dateArray: string[];
 }
 
-//////
-////// more slice
-//////
+////// more slice //////
 
 export interface MoreType {
   isVisible: boolean;
@@ -67,4 +67,12 @@ export interface Time {
   lastIsVisible: boolean;
   firstTime: string;
   lastTime: string;
+}
+
+//// fetch ////
+
+export interface Fetch {
+  email: string;
+  name: string;
+  schedule: UserData;
 }

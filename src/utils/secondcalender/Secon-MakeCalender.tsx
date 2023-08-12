@@ -5,7 +5,7 @@ import MakeIdx from "../MakeIdx";
 import MakeLongArr from "../MakeLongArr";
 import classes from "./second.module.css";
 import { RootState } from "../../redux/store";
-import { ButtonRef } from "../../utils/RefType";
+import { ButtonRef } from "../../type/RefType";
 import { dataActions } from "../../redux/data-slice";
 
 interface T {
@@ -58,7 +58,7 @@ const MakeCaledner = ({
     // 첫 번째 미니 달력 선택의 경우...
 
     let dateArray: string[] = [];
-
+  
     switch (type) {
       case "start":// 첫 번째 미니 달력에서 날짜 클릭
         const 마지막날: string[] = data.endDate.split("-");

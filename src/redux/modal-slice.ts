@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { ModalType } from "../utils/ReduxType";
+import { ModalType } from "../type/ReduxType";
 
 const initialState: ModalType = {
   listModalOpen: false,
@@ -27,19 +27,20 @@ const modalSlice = createSlice({
     clickedList(state, action) {
       state.week = action.payload.week;
       state.day = action.payload.day;
-
+      console.log(action.payload.parameter)
       switch (action.payload.type) {
         case "list":
           state.listModalOpen = true;
-          state.isDone = action.payload.object.style;
-          state.color = action.payload.object.color;
-          state.startDate = action.payload.object.startDate;
-          state.endDate = action.payload.object.endDate;
-          state.startTime = action.payload.object.startTime;
-          state.endTime = action.payload.object.endTime;
-          state.title = action.payload.object.title;
+          state.isDone = action.payload.parameter.object.isDone
+          state.color = action.payload.parameter.object.color;
+          state.startDate = action.payload.parameter.object.startDate;
+          state.endDate = action.payload.parameter.object.endDate;
+          state.startTime = action.payload.parameter.object.startTime;
+          state.endTime = action.payload.parameter.object.endTime;
+          state.title = action.payload.parameter.object.title;
           state.day = action.payload.day;
           state.index = action.payload.index;
+          state.key = action.payload.parameter.object.key;
           break;
         default:
           state.moreModalOpen = true;

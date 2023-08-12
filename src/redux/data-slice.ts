@@ -1,13 +1,15 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { DataType } from "../utils/ReduxType";
-import { getUserData } from "./fetch-action";
+import { DataType } from "../type/ReduxType";
+import { getUserData, sendUserData } from "./fetch-action";
 
 const initialState: DataType = {
   addModalOpen: false,
   isLogin: false,
   isLoading: false,
   isCreated: false,
+  isSending: false,
   succesGetData: false,
+  succesSendData: false,
   startDate: "",
   endDate: "",
   week: "",
@@ -76,33 +78,6 @@ const dataSlice = createSlice({
       state.isLoading = true;
     },
 
-    listDone(state, action) {
-      const schedule = JSON.parse(JSON.stringify(state.userSchedule));
-      const clickedDate = action.payload.date.split("-");
-      const key = action.payload.key;
-
-      // const year = clickedDate[0];
-      // const month = clickedDate[1];
-      // const date = action.payload.date;
-      //// 수정하세요!!!!!!!1......................................
-      const dateArray = schedule;
-
-      for (const item of dateArray) {
-        const arr = item.split("-");
-        const year = arr[0];
-        const month = arr[1];
-
-        schedule[year][month][item][key].style =
-          !schedule[year][month][item][key].style;
-      }
-
-      state.userSchedule = {
-        email: state.userSchedule.email,
-        name: state.userSchedule.name,
-        schedule,
-      };
-    },
-
     onModal(state) {
       state.addModalOpen = true;
     },
@@ -118,10 +93,12 @@ const dataSlice = createSlice({
     },
 
     setDate(state, action) {
+      console.log(action.payload.dateArray)
       state.day = action.payload.day;
+      state.week = action.payload.week;
       state.startDate = action.payload.startDate;
       state.endDate = action.payload.endDate;
-      state.dateArray = action.payload.arr;
+      state.dateArray = action.payload.dateArray;
     },
 
     clickedDate(state, action) {
@@ -139,8 +116,8 @@ const dataSlice = createSlice({
       }
 
       state.startDate = action.payload.idx;
-      state.week = action.payload.week;
-      state.day = action.payload.day;
+      state.week = action.payload.week.toString();
+      state.day = action.payload.day.toString();
       state.dateArray = action.payload.dateArray;
     },
 
@@ -186,16 +163,19 @@ const dataSlice = createSlice({
       state.userSchedule.schedule = array;
     },
 
-    removeList(state, action) {
-      state.dataChanged = true; // fetch (put)
+    // removeList(state, action) {
+    //   state.dataChanged = true; // fetch (put)
 
-      let schedule = JSON.parse(JSON.stringify(state.userSchedule));
-      ///...................... 여기는 dateArray로 .....................///
-      for (const item of action.payload.array) {
-        delete schedule[item][action.payload.key];
-      }
-      state.userSchedule = schedule;
-    },
+    //   let schedule = JSON.parse(JSON.stringify(state.userSchedule));
+    //   ///...................... 여기는 dateArray로 .....................///
+    //   console.log(action.payload)
+    //   for (const item of action.payload.array) {
+    //     console.log(item)
+    //     console.log(schedule[item])
+    //     delete schedule[item][action.payload.key];
+    //   }
+    //   state.userSchedule = schedule;
+    // },
   },
   extraReducers: (builder) => {
     builder.addCase(getUserData.pending, (state, action) => {
@@ -203,12 +183,26 @@ const dataSlice = createSlice({
     });
     builder.addCase(getUserData.fulfilled, (state, action) => {
       state.isLoading = false;
-      state.userSchedule = action.payload;
+      state.userSchedule = action.payload.schedule;
     });
     builder.addCase(getUserData.rejected, (state, action) => {
       state.isLoading = false;
       console.log(action.error)
     });
+    builder.addCase(sendUserData.pending, (state, action) => {
+      state.isSending = true;
+      state.succesSendData = false;
+    })
+    builder.addCase(sendUserData.fulfilled, (state, action) => {
+      state.isSending = false;
+      state.succesSendData = true;
+      state.userSchedule = action.payload.newSchedule;
+    })
+    builder.addCase(sendUserData.rejected, (state, action) => {
+      console.log(action.error)
+      state.isSending = false;
+      state.succesSendData = false;
+    })
   },
 });
 
@@ -457,3 +451,29 @@ export const dataReducer = dataSlice.reducer;
 //   };
 //   // state.dateARrayChanged = false;
 // },
+  // listDone(state, action) {
+    //   const schedule = JSON.parse(JSON.stringify(state.userSchedule));
+    //   const clickedDate = action.payload.date.split("-");
+    //   const key = action.payload.key;
+
+    //   // const year = clickedDate[0];
+    //   // const month = clickedDate[1];
+    //   // const date = action.payload.date;
+    //   //// 수정하세요!!!!!!!1......................................
+    //   const dateArray = schedule;
+
+    //   for (const item of dateArray) {
+    //     const arr = item.split("-");
+    //     const year = arr[0];
+    //     const month = arr[1];
+
+    //     schedule[year][month][item][key].style =
+    //       !schedule[year][month][item][key].style;
+    //   }
+
+    //   state.userSchedule = {
+    //     email: state.userSchedule.email,
+    //     name: state.userSchedule.name,
+    //     schedule,
+    //   };
+    // },

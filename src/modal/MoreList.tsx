@@ -2,11 +2,11 @@ import React, { useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
 import { RootState, useAppDispatch } from "../redux/store";
 import { modalActions } from "../redux/modal-slice";
-import { ListOrMore } from "../utils/RefType";
+import { ListOrMore } from "../type/RefType";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
-import { CalenderData } from "../utils/ReduxType";
-import ModalPositionTwo from "../library/ModalPositionTwo";
+import { CalenderData } from "../type/ReduxType";
+import ModalPositionTwo from "../utils/ModalPositionTwo";
 import "./MoreList.css";
 
 interface T {

@@ -126,7 +126,7 @@ const TimeSelector = ({
             style={{ display: dateIsVisible[0] ? "block" : "none" }}
           >
             <SecondCaleder
-              type={"start"}
+              type={dateIsVisible[1]}
               year={시작날[0]}
               month={시작날[1]}
               dateRef={dateRef}

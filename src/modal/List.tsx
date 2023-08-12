@@ -1,22 +1,26 @@
 import React, { useRef, useState, useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { RootState, useAppDispatch } from "../redux/store";
+import { useSelector } from "react-redux";
 import { dataActions } from "../redux/data-slice";
 import { timeActions } from "../redux/time-slice";
 import { modalActions } from "../redux/modal-slice";
-import { RootState } from "../redux/store";
+import { ListOrMore } from "../type/RefType";
+import { sendUserData } from "../redux/fetch-action";
+import { UserData } from "../type/ReduxType";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { ListOrMore } from "../utils/RefType";
 import {
   faXmark,
   faTrash,
   faCheck,
   faEdit,
 } from "@fortawesome/free-solid-svg-icons";
-import TimeSelector from "../library/Time/TimeSelector";
-import ColorBox from "../library/ColorBox";
-import ModalPosition from "../library/ModalPosition";
-import MakeLongArr from "../library/MakeLongArr";
+import TimeSelector from "../utils/Time/TimeSelector";
+import ColorBox from "../utils/Time/ColorBox";
+import ModalPosition from "../utils/ModalPosition";
+import MakeLongArr from "../utils/MakeLongArr";
 import "./List.css";
+import { MakeList } from "../utils/MakeList";
+import { MakeListParameter } from "../type/Etc";
 
 interface T {
   listRef: React.MutableRefObject<ListOrMore>;
@@ -24,16 +28,22 @@ interface T {
   clickedElement: React.MutableRefObject<HTMLDivElement | null>;
   viewRef: React.RefObject<HTMLDivElement>;
   list: React.RefObject<HTMLDivElement>;
+  uid: string;
 }
 
-const List = ({ viewRef, listRef, allListRef, clickedElement, list }: T) => {
-  const dispatch = useDispatch();
+const List = ({
+  viewRef,
+  listRef,
+  allListRef,
+  clickedElement,
+  list,
+  uid,
+}: T) => {
+  const dispatch = useAppDispatch();
 
   const data = useSelector((state: RootState) => state.data);
   const modal = useSelector((state: RootState) => state.modal);
-  const schedule = data.userSchedule;
 
-  //?????? check
   const startDate = data.startDate || modal.startDate;
   const endDate = data.endDate || modal.endDate;
 
@@ -70,10 +80,12 @@ const List = ({ viewRef, listRef, allListRef, clickedElement, list }: T) => {
       const target = e.target as Node;
 
       // 색상 선택 on, off
-      if (!colorRef.current!.contains(target) && openColor) {
-        setTimeout(() => {
-          setOpenColor(false);
-        }, 100);
+      if (openColor) {
+        if (!colorRef.current!.contains(target)) {
+          setTimeout(() => {
+            setOpenColor(false);
+          }, 100);
+        }
       }
 
       // 같은 리스트를 클릭하면 모달창이 종료되게하기
@@ -110,7 +122,7 @@ const List = ({ viewRef, listRef, allListRef, clickedElement, list }: T) => {
         setTimeout(() => {
           dispatch(modalActions.offModal());
           dispatch(timeActions.resetTime());
-        }, 80);
+        }, 150);
       }
     };
 
@@ -120,45 +132,47 @@ const List = ({ viewRef, listRef, allListRef, clickedElement, list }: T) => {
     };
   });
 
-  const removeListHandler = (date: string, key: string) => {
-    const array = MakeLongArr(
+  const removeListHandler = (key: string) => {
+    const dateArray = MakeLongArr(
       modal.startDate.split("-"),
       modal.endDate.split("-")
     );
 
-    dispatch(dataActions.removeList({ date, key, array }));
+    const newSchedule: UserData = JSON.parse(JSON.stringify(data.userSchedule));
+
+    for (const item of dateArray) {
+      delete newSchedule[item][key];
+    }
+
+    dispatch(sendUserData({ newSchedule, uid, type: "POST" }));
     dispatch(modalActions.offModal());
   };
 
   const listEditHandler = (startDate: string, endDate: string) => {
-
     const day = modal.day;
-    const arr = data.dateArray;
-    const key = modal.key;
-    console.log(day);
+    const week = modal.week;
+    const dateArray = MakeLongArr(
+      modal.startDate.split("-"),
+      modal.endDate.split("-")
+    );
 
     setOpenEditArea((prevState) => !prevState);
-    // 리스트 클릭시 modla-slice의 startDate와 endDate값이 원하는 값이 아니기에
-    // 클릭할 때 값을 갱신해줘야 함. 추가로 arr 배열도..
-    dispatch(dataActions.setDate({ day, startDate, endDate, arr, key })); //check arr 부분
+    dispatch(dataActions.setDate({ day, week, startDate, endDate, dateArray }));
   };
 
   const editListSubmitHandler = (event: React.FormEvent) => {
     event.preventDefault();
-    const key = modal.key;
 
     const pattern = /^(오전|오후)\s(([0][0-9]|[1][0-2])):([0-5][0-9])$/;
     let title: string = inputRef.current!.value;
     const startTime: string = timeOneRef.current!.value || modal.startTime;
     const endTime: string = timeTwoRef.current!.value || modal.endTime;
 
-    if (!pattern.test(timeOneRef.current!.value)) {
+    if (!pattern.test(startTime))
       return alert("시간을 제대로 입력해주세요! ex) 오후 02:30");
-    }
 
-    if (!pattern.test(timeTwoRef.current!.value)) {
+    if (!pattern.test(endTime))
       return alert("시간을 제대로 입력해주세요! ex) 오후 01:30");
-    }
 
     if (startTime > endTime)
       return alert("시작시간이 끝나는 시간보다 큽니다!!");
@@ -167,17 +181,34 @@ const List = ({ viewRef, listRef, allListRef, clickedElement, list }: T) => {
 
     if (title.length === 0) title = inputRef.current!.placeholder;
 
-    dispatch(dataActions.removeList({ startDate, key }));
+    const parameter: MakeListParameter = {
+      title,
+      startDate,
+      endDate,
+      startTime,
+      endTime,
+      color,
+      dateArray: data.dateArray,
+      userSchedule: data.userSchedule,
+    };
 
-    dispatch(dataActions.makeList({ startTime, endTime, title, color }));
-
+    const newSchedule: UserData = MakeList(parameter);
+    dispatch(sendUserData({ newSchedule, uid, type: "POST" }));
     inputRef.current!.value = "";
-
     closeModalHandler();
   };
 
-  const listDoneHandler = (date: string, key: string) => {
-    dispatch(dataActions.listDone({ date, key }));
+  const listDoneHandler = (key: string) => {
+    const newSchedule = JSON.parse(JSON.stringify(data.userSchedule));
+    const dateArray = MakeLongArr(
+      modal.startDate.split("-"),
+      modal.endDate.split("-")
+    );
+
+    for (const item of dateArray) {
+      newSchedule[item][key].isDone = !newSchedule[item][key].isDone;
+    }
+    dispatch(sendUserData({ newSchedule, uid, type: "POST" }));
   };
 
   const closeModalHandler = () => {
@@ -185,7 +216,7 @@ const List = ({ viewRef, listRef, allListRef, clickedElement, list }: T) => {
     dispatch(timeActions.resetTime());
   };
 
-  const styleClass = schedule[modal.startDate][modal.key].isDone
+  const styleClass = data.userSchedule[modal.startDate][modal.key].isDone
     ? "done"
     : false;
 
@@ -208,13 +239,10 @@ const List = ({ viewRef, listRef, allListRef, clickedElement, list }: T) => {
         <div onClick={() => listEditHandler(startDate, endDate)}>
           <FontAwesomeIcon icon={faEdit} />
         </div>
-        <div onClick={() => removeListHandler(startDate, modal.key)}>
+        <div onClick={() => removeListHandler(modal.key)}>
           <FontAwesomeIcon icon={faTrash} />
         </div>
-        <div
-          className="fa-check"
-          onClick={() => listDoneHandler(startDate, modal.key)}
-        >
+        <div className="fa-check" onClick={() => listDoneHandler(modal.key)}>
           <FontAwesomeIcon icon={faCheck} />
         </div>
         <div className="fa-xmark" onClick={closeModalHandler}>
@@ -228,7 +256,7 @@ const List = ({ viewRef, listRef, allListRef, clickedElement, list }: T) => {
         >
           <div className="edit-list">
             <img
-              src="img/memo.png"
+              src="../images/memo.png"
               alt="memo"
               width="17"
               className="input-icon"

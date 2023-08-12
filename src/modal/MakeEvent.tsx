@@ -4,16 +4,20 @@ import { RootState, useAppDispatch } from "../redux/store";
 import { dataActions } from "../redux/data-slice";
 import { modalActions } from "../redux/modal-slice";
 import { timeActions } from "../redux/time-slice";
-import ModalPosition from "../library/ModalPosition";
-import TimeSelector from "../library/Time/TimeSelector";
-import ColorBox from "../library/ColorBox";
+import { MakeList } from "../utils/MakeList";
+import { MakeListParameter } from "../type/Etc";
+import { sendUserData } from "../redux/fetch-action";
+import ModalPosition from "../utils/ModalPosition";
+import TimeSelector from "../utils/Time/TimeSelector";
+import ColorBox from "../utils/Time/ColorBox";
 import "./MakeEvent.css";
 
 interface T {
   viewRef: React.RefObject<HTMLDivElement>;
+  uid: string;
 }
 
-const MakeEvent = ({ viewRef }: T) => {
+const MakeEvent = ({ viewRef, uid }: T) => {
   const dispatch = useAppDispatch();
   const data = useSelector((state: RootState) => state.data);
 
@@ -71,25 +75,45 @@ const MakeEvent = ({ viewRef }: T) => {
     };
   });
 
-  const listSubmitHandler = (e: React.FormEvent) => {
+  const makeListHandler = async (e: React.FormEvent) => {
     e.preventDefault();
 
     const pattern = /^(오전|오후)\s(([0][0-9]|[1][0-2])):([0-5][0-9])$/;
-
-    let title = titleRef.current!.value;
+ 
     let startTime =
-      timeOneRef.current!.value || timeOneRef.current!.placeholder;
-    let endTime = timeTwoRef.current!.value || timeOneRef.current!.placeholder;
+      (timeOneRef.current!.value || timeOneRef.current!.placeholder).trim();
+    let endTime = (timeTwoRef.current!.value || timeOneRef.current!.placeholder).trim();
     
     if (!pattern.test(startTime) || !pattern.test(endTime))
       return alert("시간을 제대로 입력해주세요! ex) 오후 01:30");
-
     if (startDate > endDate) return alert("시작 날이 마지막 날 보다 큽니다!!");
 
-    if (title.trim() === "") title = "(제목 없음)";
+    let title = titleRef.current!.value;
+    if (title.trim() === '') title = "(제목 없음)";
 
-    dispatch(dataActions.makeList({ title, startTime, endTime, color }));
-    
+    const dateArray = data.dateArray;
+    const userSchedule = data.userSchedule;
+
+    const parameter: MakeListParameter = {
+      title,
+      startDate,
+      endDate,
+      startTime,
+      endTime,
+      color,
+      dateArray,
+      userSchedule,
+    };
+
+    try {
+      console.log("step2");
+      const newSchedule = MakeList(parameter);
+      dispatch(sendUserData({ newSchedule, uid, type: "PUT" }));
+    } catch (error) {
+      console.log(error);
+      alert("데이터 전송 실패...");
+    }
+
     titleRef.current!.value = "";
 
     // 제출 후 아래 두개의 reducer 함수를 실행시켜 state 초기화
@@ -109,7 +133,7 @@ const MakeEvent = ({ viewRef }: T) => {
   return (
     <form
       className={`addModal`}
-      onSubmit={(e: React.FormEvent) => listSubmitHandler(e)}
+      onSubmit={(e: React.FormEvent) => makeListHandler(e)}
       ref={modalRef}
       style={{
         // 마운트시에 width 가 ''이므로 display none

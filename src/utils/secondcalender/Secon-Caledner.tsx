@@ -1,7 +1,7 @@
 import React from "react";
 import classes from "./second.module.css";
 import MakeCaledner from "./Secon-MakeCalender";
-import { ButtonRef } from "../../utils/RefType";
+import { ButtonRef } from "../../type/RefType";
 
 const date = new Date();
 const fixYear = date.getFullYear();

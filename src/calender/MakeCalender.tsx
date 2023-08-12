@@ -1,10 +1,10 @@
 import React, { ReactNode, useEffect, useState } from "react";
-import { CalenderData, DataType, ModalType } from "../utils/ReduxType";
+import { CalenderData, DataType, ModalType } from "../type/ReduxType";
 import { useAppDispatch } from "../redux/store";
 import { modalActions } from "../redux/modal-slice";
 import { dataActions } from "../redux/data-slice";
-import { ListOrMore } from "../utils/RefType";
-import MakeIdx from "../library/MakeIdx";
+import { ListOrMore } from "../type/RefType";
+import MakeIdx from "../utils/MakeIdx";
 import classes from "./MakeCalender.module.css";
 
 interface T {
@@ -50,7 +50,7 @@ const MakeCalender = ({
   const addModalOpen = data.addModalOpen;
 
   useEffect(() => {
-    // 컴포넌트의 return 실행 후, state에 값을 저장후 랜더링
+    // 마운트 이후, state에 값을 저장후 랜더링
     setHeight(
       Math.floor(
         (viewRef.current!.clientHeight - 64 - 45 - 24 * week) / (24 * week)
@@ -71,7 +71,9 @@ const MakeCalender = ({
   });
 
   const addClickHandler = (idx: string, day: string, week: string) => {
+    if (modal.listModalOpen) return;
     const type = "add";
+
     if (!addModalOpen) {
       dispatch(
         dataActions.clickedDate({ type, idx, day, week, dateArray: [idx] })
@@ -85,7 +87,7 @@ const MakeCalender = ({
     parameter: Parameter
   ) => {
     clickedElement.current = e.target as HTMLDivElement;
-    let type: string = isMore ? "list" : "more";
+    let type: string = !isMore ? "list" : "more";
     dispatch(modalActions.clickedList({ type, parameter }));
   };
 
@@ -164,7 +166,7 @@ const MakeCalender = ({
                 top: `${24 * arrayCount}px`,
                 display: i === +day || isMore ? "flex" : "none",
               }}
-              onClick={(event: React.MouseEvent) => {
+              onMouseUp={(event: React.MouseEvent) => {
                 event.stopPropagation();
                 dataClickHandler(event, isMore, parameter);
               }}
@@ -238,10 +240,11 @@ const MakeCalender = ({
     const thisMonthArray = [];
 
     let date: number = 0;
-    let idx: string = "";
     let isNext = false;
 
     for (let i = 1; i <= 7; i++) {
+      let idx: string;
+
       if (week === 1) {
         if (i <= firstDay) {
           const prevMonthLastDate = new Date(+year, +month - 1, 0).getDate();
@@ -269,10 +272,9 @@ const MakeCalender = ({
       thisMonthArray.push(
         <td
           key={idx}
-          // eslint-disable-next-line no-loop-func
-          onClick={() => {
-            !modal.listModalOpen &&
-              addClickHandler(idx, i.toString(), week.toString());
+          onMouseUp={(e: React.MouseEvent) => {
+            e.stopPropagation();
+            addClickHandler(idx, i.toString(), week.toString());
           }}
           className={classes.date_box}
           day-index={i}

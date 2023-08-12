@@ -1,12 +1,13 @@
 import React, { useEffect, useRef } from "react";
 import { useSelector } from "react-redux";
 import { RootState } from "../redux/store";
-import { ListOrMore } from "../utils/RefType";
-import AddEvent from "../modal/MakeEvent";
+import { ListOrMore } from "../type/RefType";
+import MakeEvent from "../modal/MakeEvent";
 import List from "../modal/List";
-import AllList from "../modal/MoreList";
+import MoreList from "../modal/MoreList";
 import MakeCalender from "./MakeCalender";
 import classes from "./MakeCalender.module.css";
+import { auth } from "../Auth/firebase";
 
 const date: Date = new Date();
 const fixYear: number = date.getFullYear();
@@ -81,9 +82,9 @@ const Main = ({ year, month, firstDay, lastDate, viewRef }: T) => {
         <div className={classes["modal-container"]}>
           {data.addModalOpen &&
             !modal.listModalOpen &&
-            !modal.moreModalOpen && <AddEvent viewRef={viewRef} />}
+            !modal.moreModalOpen && <MakeEvent viewRef={viewRef} uid={auth.currentUser!.uid}/>}
           {!modal.listModalOpen && modal.moreModalOpen && (
-            <AllList
+            <MoreList
               viewRef={viewRef}
               listRef={listRef}
               allListRef={allListRef}
@@ -98,6 +99,7 @@ const Main = ({ year, month, firstDay, lastDate, viewRef }: T) => {
               allListRef={allListRef}
               clickedElement={clickedElement}
               list={list}
+              uid={auth.currentUser!.uid}
             />
           )}
         </div>

@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import Calender from "./Secon-Caledner";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAngleLeft, faAngleRight } from "@fortawesome/free-solid-svg-icons";
-import { ButtonRef } from "../../utils/RefType";
+import { ButtonRef } from "../../type/RefType";
 import classes from "./second.module.css";
 
 interface T {
