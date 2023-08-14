@@ -82,7 +82,9 @@ const Main = ({ year, month, firstDay, lastDate, viewRef }: T) => {
         <div className={classes["modal-container"]}>
           {data.addModalOpen &&
             !modal.listModalOpen &&
-            !modal.moreModalOpen && <MakeEvent viewRef={viewRef} uid={auth.currentUser!.uid}/>}
+            !modal.moreModalOpen && (
+              <MakeEvent viewRef={viewRef} uid={auth.currentUser!.uid} />
+            )}
           {!modal.listModalOpen && modal.moreModalOpen && (
             <MoreList
               viewRef={viewRef}

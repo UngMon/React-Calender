@@ -66,9 +66,9 @@ const MoreList = ({
   const clickedAllListRef = useRef({});
 
   useEffect(() => {
-    document.addEventListener("mousedown", addModalCloseHandler);
+    document.addEventListener("mouseup", addModalCloseHandler);
     return () => {
-      document.removeEventListener("mousedown", addModalCloseHandler);
+      document.removeEventListener("mouseup", addModalCloseHandler);
     };
   });
 
@@ -91,7 +91,7 @@ const MoreList = ({
         clickedAllListRef.current = listRef.current[key]!;
         setTimeout(() => {
           dispatch(modalActions.offModal());
-        }, 50);
+        }, 110);
         return;
       }
 
@@ -107,9 +107,7 @@ const MoreList = ({
 
       setTimeout(() => {
         dispatch(modalActions.offModal());
-        dispatch(modalActions.offModal());
-        !modal.listModalOpen && dispatch(modalActions.offModal());
-      }, 90);
+      }, 110);
       return;
     }
 
@@ -134,32 +132,17 @@ const MoreList = ({
     window.addEventListener("resize", widthCalculator);
   });
 
-  const listClickHandler = (e: React.MouseEvent, object: CalenderData) => {
+  const listClickHandler = (
+    e: React.MouseEvent,
+    object: CalenderData,
+    date: string,
+    index: number
+  ) => {
     clickedElement.current = e.target as HTMLDivElement;
-    const {
-      isDone,
-      color,
-      startDate,
-      endDate,
-      startTime,
-      endTime,
-      title,
-      key,
-    } = object;
-    const { week, day } = modal;
+    const type = "list";
+    const { day, week } = modal;
     dispatch(
-      modalActions.clickedList({
-        isDone,
-        color,
-        startDate,
-        endDate,
-        startTime,
-        endTime,
-        week,
-        day,
-        title,
-        key,
-      })
+      modalActions.clickedList({ type, object, date, day, week, index })
     );
   };
 
@@ -170,7 +153,7 @@ const MoreList = ({
       // 해당 날짜에 일정이 없을 때,
       return <div className="AllList-nothing">등록된 일정이 없습니다.</div>;
 
-    let objectIndex = 0;
+    let index: number = 0;
 
     for (const key in schedule[date]) {
       const object = schedule[date][key];
@@ -195,9 +178,9 @@ const MoreList = ({
 
       result.push(
         <div
-          key={objectIndex}
+          key={index}
           className="AllList-item"
-          onClick={(event) => listClickHandler(event, object)}
+          onClick={(event) => listClickHandler(event, object, date, index)}
           ref={(el: HTMLDivElement) => (listInMoreRef.current[`${key}`] = el)}
         >
           {object.startDate < modal.date && (
@@ -218,7 +201,7 @@ const MoreList = ({
           )}
         </div>
       );
-      objectIndex += 1;
+      index += 1;
     }
 
     return result;

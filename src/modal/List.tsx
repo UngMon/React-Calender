@@ -21,6 +21,7 @@ import MakeLongArr from "../utils/MakeLongArr";
 import "./List.css";
 import { MakeList } from "../utils/MakeList";
 import { MakeListParameter } from "../type/Etc";
+import { markDate } from "../utils/markDate";
 
 interface T {
   listRef: React.MutableRefObject<ListOrMore>;
@@ -59,6 +60,9 @@ const List = ({
     viewRef.current!.clientHeight,
   ]); //check
   const [openEditArea, setOpenEditArea] = useState<boolean>(false);
+  const [listDateArray] = useState<string[]>(
+    MakeLongArr(modal.startDate.split("-"), modal.endDate.split("-"))
+  );
 
   const inputRef = useRef<HTMLInputElement>(null);
   const colorRef = useRef<HTMLDivElement>(null);
@@ -76,6 +80,7 @@ const List = ({
 
   useEffect(() => {
     //check 수정 필요
+    console.log('effect')
     const closeHandler = (e: MouseEvent) => {
       const target = e.target as Node;
 
@@ -90,29 +95,35 @@ const List = ({
 
       // 같은 리스트를 클릭하면 모달창이 종료되게하기
       if (target === clickedElement.current!) {
+        console.log('same clicked')
         setTimeout(() => {
           dispatch(modalActions.offModal());
         }, 100);
         return;
       }
 
+      // 같은 리스트가 아닌 다른 element 클릭했을 때,
+      // 우선 clickedElement에 target 저장
+      clickedElement.current = target as HTMLDivElement;
+      console.log(listRef.current)
+      console.log(target)
       // list 모달창 영역 밖을 클릭했을 때,
       if (!list.current!.contains(target)) {
         for (const key in listRef.current) {
+          console.log(listRef.current[key])
           if (listRef.current[key] === null) continue;
 
           if (!listRef.current[key]!.contains(target)) continue;
 
-          clickedElement.current = target as HTMLDivElement;
           return;
         }
 
         for (const key in allListRef.current) {
+          console.log(allListRef.current[key]!)
           if (allListRef.current[key] === null) continue;
 
           if (!allListRef.current[key]!.contains(target)) continue;
 
-          clickedElement.current = target as HTMLDivElement;
           setTimeout(() => {
             dispatch(modalActions.offModal());
           }, 100);
@@ -148,7 +159,7 @@ const List = ({
     dispatch(modalActions.offModal());
   };
 
-  const listEditHandler = (startDate: string, endDate: string) => {
+  const editButtonHandler = (startDate: string, endDate: string) => {
     const day = modal.day;
     const week = modal.week;
     const dateArray = MakeLongArr(
@@ -181,6 +192,13 @@ const List = ({
 
     if (title.length === 0) title = inputRef.current!.placeholder;
 
+    const schedule = JSON.parse(JSON.stringify(data.userSchedule));
+
+    // 기존 항목 삭제 하고..
+    for (let date of listDateArray) {
+      delete schedule[date][modal.key];
+    }
+
     const parameter: MakeListParameter = {
       title,
       startDate,
@@ -189,10 +207,11 @@ const List = ({
       endTime,
       color,
       dateArray: data.dateArray,
-      userSchedule: data.userSchedule,
+      userSchedule: schedule,
     };
-
+    // 새롭게 설정된 기간에 일정 생성 후에
     const newSchedule: UserData = MakeList(parameter);
+    // 데이터 전송
     dispatch(sendUserData({ newSchedule, uid, type: "POST" }));
     inputRef.current!.value = "";
     closeModalHandler();
@@ -223,6 +242,8 @@ const List = ({
   const marginSize =
     size[0] !== 0 ? ModalPosition(modal.day, modal.week, size) : false;
 
+  const markD = markDate(modal.startDate, modal.endDate);
+
   return (
     <div
       className={`list-box ${openEditArea ? "edit" : ""}`}
@@ -236,7 +257,7 @@ const List = ({
       onWheel={(e) => e.stopPropagation()}
     >
       <div className="option-box">
-        <div onClick={() => listEditHandler(startDate, endDate)}>
+        <div onClick={() => editButtonHandler(startDate, endDate)}>
           <FontAwesomeIcon icon={faEdit} />
         </div>
         <div onClick={() => removeListHandler(modal.key)}>
@@ -288,23 +309,14 @@ const List = ({
             <div className={`listName  ${styleClass}`}>{modal.title}</div>
           </div>
           <div className="list-time">
-            <div className="time-item">{`${date[0]}년 ${date[1]}월 ${date[2]}일`}</div>
+            <div className="time-item">{markD[0]}</div>
             <div className="time-item">{modal.startTime}</div>
             <span className="time-item">~</span>
             <div
               className="time-item"
               style={{ display: date.length === 3 ? "none" : "" }}
             >
-              {`${
-                date.length < 4
-                  ? "" // startDate === endDate
-                  : date[0] === date[3] // 같은 년도
-                  ? date[1] === date[4] // 같은 달
-                    ? `${date[5]}일` // 다른 날
-                    : `${date[4]}월 ${date[5]}일` // 다른 달
-                  : `${date[3]}년 ${date[4]}월 ${date[5]}일` // 다른 년도
-              }
-              `}
+              {markD[1]}
             </div>
             <div className="time-item">{modal.endTime}</div>
           </div>

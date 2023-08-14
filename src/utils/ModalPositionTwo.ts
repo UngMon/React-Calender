@@ -5,7 +5,7 @@ const ModalPositionTwo = (day: string, week: string, size: [number, number]) => 
     const height = size[1];
 
     const array = [0, 0];
-
+    console.log(day, week)
     switch (day) {
       case '1':
         array[0] = width > 350 ? 0 : width / 2 - 120;

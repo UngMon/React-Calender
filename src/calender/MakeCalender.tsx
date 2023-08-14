@@ -71,7 +71,7 @@ const MakeCalender = ({
   });
 
   const addClickHandler = (idx: string, day: string, week: string) => {
-    if (modal.listModalOpen) return;
+    if (modal.listModalOpen || modal.moreModalOpen) return;
     const type = "add";
 
     if (!addModalOpen) {
@@ -79,16 +79,6 @@ const MakeCalender = ({
         dataActions.clickedDate({ type, idx, day, week, dateArray: [idx] })
       );
     }
-  };
-
-  const dataClickHandler = (
-    e: React.MouseEvent,
-    isMore: boolean,
-    parameter: Parameter
-  ) => {
-    clickedElement.current = e.target as HTMLDivElement;
-    let type: string = !isMore ? "list" : "more";
-    dispatch(modalActions.clickedList({ type, parameter }));
   };
 
   const calculateWidth = (
@@ -103,6 +93,19 @@ const MakeCalender = ({
 
     if (lastDateOfWeek < endDate) return 7 - +day + 1;
     else return new Date(endDate).getDay() + 1 - +day + 1;
+  };
+
+  const dataClickHandler = (
+    e: React.MouseEvent,
+    isMore: boolean,
+    parameter: Parameter
+  ) => {
+    clickedElement.current = e.target as HTMLDivElement;
+    const type: string = !isMore ? "list" : "more";
+    const { object, date, day, week, index } = parameter;
+    dispatch(
+      modalActions.clickedList({ type, object, date, day, week, index })
+    );
   };
 
   const scheduleHandler = (
@@ -171,10 +174,13 @@ const MakeCalender = ({
                 dataClickHandler(event, isMore, parameter);
               }}
               ref={(el: HTMLDivElement) => {
+                if (i !== +day) return;
                 isMore
                   ? (allListRef.current[`${object.key}`] = el)
                   : (listRef.current[`${object.key}`] = el);
               }}
+              day-index={day}
+              we-ek={week}
             >
               {!isLong && arrayCount < listBoxHeightCount - 1 && (
                 <div
@@ -228,6 +234,7 @@ const MakeCalender = ({
       }
       index += 1;
     }
+
     return array[+day];
   };
 
