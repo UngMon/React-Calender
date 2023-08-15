@@ -21,6 +21,7 @@
   border-collapse: collapse;
   text-align: left;
   font-size: 12px;
+  user-select: 'none';
 }
 
 .weekname {
@@ -62,7 +63,7 @@
   height: 24px;
   text-align: left;
   display: flex;
-} 
+}
 
 .date-h h2 {
   box-sizing: border-box;
@@ -191,10 +192,12 @@
 }
 
 .list:hover {
-  background-color: rgb(182, 182, 182);
+  opacity: 0.6;
+  /* background-color: rgb(182, 182, 182); */
 }
 .list-more:hover {
-  background-color: rgb(193, 193, 193);
+  opacity: 0.6;
+  /* background-color: rgb(193, 193, 193); */
 }
 
 .done {
@@ -206,6 +209,10 @@
   top: 0;
   left: 0;
   display: flex;
+}
+
+.dragging {
+  cursor: move;
 }
 
 @media screen and (max-width: 800px) {
@@ -226,6 +233,11 @@
   }
 }
 
+.dragover {
+  opacity: 0;
+  display: none;
+}
+
 @media screen and (max-width: 480px) {
   .weekname {
     font-size: 8px;
@@ -242,7 +254,6 @@
   .list-more {
     font-size: 8px;
   }
-
 }
 
 @media screen and (max-width: 250px) {

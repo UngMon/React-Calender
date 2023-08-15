@@ -180,7 +180,8 @@ const MoreList = ({
         <div
           key={index}
           className="AllList-item"
-          onClick={(event) => listClickHandler(event, object, date, index)}
+          // eslint-disable-next-line no-loop-func
+          onClick={(e) => listClickHandler(e, object, date, index)}
           ref={(el: HTMLDivElement) => (listInMoreRef.current[`${key}`] = el)}
         >
           {object.startDate < modal.date && (
