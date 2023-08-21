@@ -1,56 +1,73 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { useSelector } from "react-redux";
 import { RootState } from "../redux/store";
 import { ListOrMore } from "../type/RefType";
+import { auth } from "../Auth/firebase";
 import MakeEvent from "../modal/MakeEvent";
 import List from "../modal/List";
 import MoreList from "../modal/MoreList";
 import MakeCalender from "./MakeCalender";
+import CloneList from "./CloneList";
 import classes from "./MakeCalender.module.css";
-import { auth } from "../Auth/firebase";
-
-const date: Date = new Date();
-const fixYear: number = date.getFullYear();
-const fixMonth: number = date.getMonth() + 1;
-const fixDate: number = date.getDate();
 
 interface T {
   year: string;
   month: string;
-  firstDay: number;
-  lastDate: number;
-  viewRef: React.RefObject<HTMLDivElement>;
+  list: React.RefObject<HTMLDivElement>;
+  listRef: React.MutableRefObject<ListOrMore>;
+  allListRef: React.MutableRefObject<ListOrMore>;
+  clickedElement: React.MutableRefObject<HTMLDivElement | null>;
 }
 
-const Main = ({ year, month, firstDay, lastDate, viewRef }: T) => {
-  console.log("calender");
+const Main = ({
+  year,
+  month,
+  list,
+  listRef,
+  allListRef,
+  clickedElement,
+}: T) => {
+  console.log("Main");
 
   const data = useSelector((state: RootState) => state.data);
   const modal = useSelector((state: RootState) => state.modal);
+  // const [고정좌표, 고정좌표설정] = useState<[string, string]>(["", ""]);
+  // const [실시간좌표, 실시간좌표설정] = useState<[string, string]>(["", ""]);
 
-  // month가 10월 달 보다 작으면 ex) 01, 02, 03... 으로 표기
-  // data도 같은 원리.. 나중에 modalSlice에서 일정 추가 할 때, sort를 편하게 하기 위함.
-  // 아래 identify는 makeCalender에서 현재 날짜에 파란 원이 생기게 끔 식별
-  const identify: string =
-    fixYear +
-    "-" +
-    fixMonth.toString().padStart(2, "0") +
-    "-" +
-    fixDate.toString().padStart(2, "0");
+  const viewRef = useRef<HTMLDivElement>(null);
+  const [isDragging, setIsDragging] = useState<boolean>(false);
 
-  const listRef = useRef<ListOrMore>({}); // makeCalender에서 list ref
-  const allListRef = useRef<ListOrMore>({}); // makeCalender에서 all ref
-  const clickedElement = useRef<HTMLDivElement | null>(null);
-  const list = useRef<HTMLDivElement>(null); // list모달창 ref
+  const firstDay: number = new Date(+year, +month - 1, 1).getDay();
+  const lastDate: number = new Date(+year, +month, 0).getDate();
+  const week: number = Math.ceil((firstDay + lastDate) / 7); // 해당 month가 4주 ~ 5주인지?
 
   useEffect(() => {
     listRef.current = {};
     allListRef.current = {};
-  }, [month, data.userSchedule]);
+  }, [month, data, listRef, allListRef]);
+
+  // const mouseDown = (e: React.MouseEvent) => {
+  //   setIsDragging(true);
+  //   // 고정좌표.current = { x: e.pageX, y: e.pageY };
+  // };
+
+  // const mouseMove = (e: React.MouseEvent) => {
+  //   if (!isDragging) return;
+  //   // 실시간좌표.current = { x: e.pageX, y: e.pageY };
+  //   document.body.style.cursor = "move";
+  // };
+
+  // const mouseUp = (e: React.MouseEvent) => {
+  //   setIsDragging(false);
+  //   document.body.style.cursor = "auto";
+  // };
 
   return (
     <main className={classes["calender-view"]}>
-      <div className={classes.calender}>
+      <div
+        className={classes.calender}
+        ref={viewRef}
+      >
         <table className={classes.table}>
           <thead className={classes.weekname}>
             <tr>
@@ -67,9 +84,11 @@ const Main = ({ year, month, firstDay, lastDate, viewRef }: T) => {
             {MakeCalender({
               year,
               month,
+              week,
               firstDay,
               lastDate,
-              identify,
+              isDragging,
+              setIsDragging,
               listRef,
               allListRef,
               viewRef,
@@ -106,6 +125,15 @@ const Main = ({ year, month, firstDay, lastDate, viewRef }: T) => {
           )}
         </div>
       </div>
+      {isDragging && <CloneList
+        year={year}
+        month={month}
+        modal={modal}
+        firstDay={firstDay}
+        lastDate={lastDate}
+        lastWeek={week}
+        setIsDragging={setIsDragging}
+      />}
     </main>
   );
 };

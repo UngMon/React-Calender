@@ -1,4 +1,4 @@
-import React, { ReactNode, useState, useRef } from "react";
+import React, { ReactNode } from "react";
 import { useAppDispatch } from "../redux/store";
 import { CalenderData } from "../type/ReduxType";
 import { modalActions } from "../redux/modal-slice";
@@ -17,6 +17,8 @@ interface T {
   allListRef: React.MutableRefObject<ListOrMore>;
   clickedElement: React.MutableRefObject<HTMLDivElement | null>;
   listBoxHeightCount: number;
+  isDragging: boolean;
+  setIsDragging: (value: boolean) => void;
 }
 
 interface Parameter {
@@ -38,57 +40,13 @@ const Schedule = ({
   allListRef,
   clickedElement,
   listBoxHeightCount,
+  isDragging,
+  setIsDragging,
 }: T) => {
   const dispatch = useAppDispatch();
   const schedule = data.userSchedule;
-  const [dragOver, setDragOver] = useState<boolean>(false)
-  const [dragPos, setDragPos] = useState<[number, number]>([0, 0]);
-  const dragRef = useRef<ListOrMore>({});
 
   if (!schedule[date]) return;
-
-  const dragStartHandler = (e: React.DragEvent) => {
-    // e.preventDefault();
-    // console.log(e);
-    // dragRef.current['1'] = e.currentTarget;
-    setDragPos([e.clientX, e.clientY]);
-    e.currentTarget.setAttribute('draggable', 'false');
-    console.log("start");
-  };
-
-  const dragEndHander = (e: React.DragEvent) => {
-    e.preventDefault();
-    console.log(e);
-    console.log("end");
-  };
-
-  const dragLeaveHandler = (e: React.DragEvent) => {
-    e.preventDefault();
-    console.log(e);
-    console.log("leave");
-  };
-
-  const dragOverHandler = (e: React.DragEvent) => {
-    
-    console.log(e.movementX, e.movementY);
-    console.log(e.pageX, e.pageY);
-    // // console.log(e.currentTarget.classList.add(`${classes.dragover}`))
-    // // e.currentTarget.classList.add(`${classes.dragover}`)
-    console.log("over");
-  };
-
-  const dragHanlder = (e: React.MouseEvent) => {
-    e.preventDefault()
-    console.log(e);
-    console.log(e.pageX, e.pageY);
-    console.log(e.view)
-    //  e.currentTarget.classList.add(`${classes.dragover}`)
-    console.log('drag')
-  }
-
-  const mousemove = (e: React.MouseEvent) => {
-    console.log(e)
-  }
 
   const calculateWidth = (
     date: string,
@@ -97,7 +55,7 @@ const Schedule = ({
   ): number => {
     let item = date.split("-"); // [년, 월, 일]
     item[2] = String(+item[2] + 7 - +day).padStart(2, "0");
-
+    // 그 주의 마지막 날
     let lastDateOfWeek = item[0] + "-" + item[1] + "-" + item[2];
 
     if (lastDateOfWeek < endDate) return 7 - +day + 1;
@@ -107,10 +65,16 @@ const Schedule = ({
   const dataClickHandler = (
     e: React.MouseEvent,
     isMore: boolean,
-    parameter: Parameter
+    parameter: Parameter,
+    mouse: string
   ) => {
     clickedElement.current = e.target as HTMLDivElement;
-    const type: string = !isMore ? "list" : "more";
+
+    let type: string;
+    if (!isMore) type = "List";
+    else type = "More";
+    if (mouse === "move") type = "MoveList";
+    console.log(type)
     const { object, date, day, week, index } = parameter;
     dispatch(
       modalActions.clickedList({ type, object, date, day, week, index })
@@ -128,23 +92,29 @@ const Schedule = ({
 
     if (object.startDate < date && day !== "1") continue;
 
+    // 긴 일정인지 아닌지
     const isLong: boolean = object.startDate < object.endDate ? true : false;
+    // 화면에 보일 list 개수 저장
     let arrayCount: number = 0;
+    // 긴 일정의 경우 화면에 보일 너비(기간)
     let barWidth: number =
       object.startDate !== object.endDate
         ? calculateWidth(date, day, object.endDate)
         : 0;
+    // 년 , 월 , 일에서 일을 저장한 변수
     let thisDate: number = +dateInfo[2];
+    // modal-slice에 전달할 객체
     let parameter: Parameter = { object, date, week, day, index };
 
     for (let item of array[+day]) {
+      // 리스트 개수가 화면에 보이는 날짜 칸을 넘어가면 break;
       if (arrayCount >= listBoxHeightCount) break;
 
       if (item) {
         arrayCount += 1;
         continue;
       }
-
+      // arraCount가 list.. -1 이 되면 '더 보기'란 생성
       let isMore = arrayCount < listBoxHeightCount - 1 ? false : true;
 
       for (let i = +day; i <= 7; i++) {
@@ -170,9 +140,18 @@ const Schedule = ({
               top: `${24 * arrayCount}px`,
               display: i === +day || isMore ? "flex" : "none",
             }}
-            onMouseUp={(event: React.MouseEvent) => {
-              event.stopPropagation();
-              dataClickHandler(event, isMore, parameter);
+            onMouseDown={(e) => {
+              e.stopPropagation();
+              console.log('schedule MouseDown')
+              !isDragging && setIsDragging(true);
+              dataClickHandler(e, isMore, parameter, "move");
+              document.body.style.cursor = 'move';
+            }}
+            onMouseUp={(e) => {
+              e.stopPropagation();
+              isDragging && setIsDragging(false);
+              !isDragging && dataClickHandler(e, isMore, parameter, "click");
+              document.body.style.cursor = "auto";
             }}
             ref={(el: HTMLDivElement) => {
               if (i !== +day) return;
@@ -180,14 +159,6 @@ const Schedule = ({
                 ? (allListRef.current[`${object.key}`] = el)
                 : (listRef.current[`${object.key}`] = el);
             }}
-            // draggable
-            onMouseMove={mousemove}
-            onDragStart={dragStartHandler}
-            // onDragEnter={}
-            // onDrag={dragHanlder}
-            // onDragOver={dragOverHandler}
-            onDragEnd={dragEndHander}
-            onDragLeave={dragLeaveHandler}
           >
             {!isLong && arrayCount < listBoxHeightCount - 1 && (
               <div className={`${object.color} ${classes["color-bar"]}`}></div>

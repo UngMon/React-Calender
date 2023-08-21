@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
+import { ListOrMore } from "../type/RefType";
 import Main from "./Main";
 import Header from "./Header";
 import NotLogin from "../error/NotLogin";
@@ -37,7 +38,11 @@ const Calender = ({ loading, loggedIn }: T) => {
   const [month, setMonth] = useState<string>(param.get("month")!);
 
   const delayRef = useRef({ delay: true });
-  const viewRef = useRef<HTMLDivElement>(null);
+
+  const listRef = useRef<ListOrMore>({}); // makeCalender에서 list ref
+  const allListRef = useRef<ListOrMore>({}); // makeCalender에서 all ref
+  const clickedElement = useRef<HTMLDivElement | null>(null);
+  const list = useRef<HTMLDivElement>(null); // list모달창 ref
 
   const firstDay: number = new Date(+year, +month - 1, 1).getDay();
   const lastDate: number = new Date(+year, +month, 0).getDate();
@@ -92,7 +97,6 @@ const Calender = ({ loading, loggedIn }: T) => {
     <div
       className="view-area"
       onWheel={(e) => delayRef.current.delay && wheelHandler(e)}
-      ref={viewRef}
     >
       {loading && <Loading />}
       {!loading && !loggedIn && <NotLogin />}
@@ -107,9 +111,10 @@ const Calender = ({ loading, loggedIn }: T) => {
           <Main
             year={year}
             month={month}
-            firstDay={firstDay}
-            lastDate={lastDate}
-            viewRef={viewRef}
+            list={list}
+            listRef={listRef}
+            allListRef={allListRef}
+            clickedElement={clickedElement}
           />
         </>
       )}

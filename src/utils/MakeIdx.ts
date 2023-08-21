@@ -7,7 +7,7 @@ const MakeIdx = (order: string, year: string, month: string, date: number) => {
       break;
     case "next":
       year = month === "12" ? `${+year + 1}` : year;
-      month = month === "12" ? "12" : month;
+      month = month === "12" ? "1" : String(+month + 1);
       break;
     default:
   }

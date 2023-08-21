@@ -4,8 +4,6 @@ import { ModalType } from "../type/ReduxType";
 const initialState: ModalType = {
   listModalOpen: false,
   moreModalOpen: false,
-  year: "",
-  month: "",
   date: "",
   week: "",
   day: "",
@@ -17,7 +15,8 @@ const initialState: ModalType = {
   endTime: "",
   title: "",
   key: "",
-  index: 0,
+  index: 0, // 그 날 일정에서 몇 번째 항목인지
+  mouseType: '',
 };
 
 const modalSlice = createSlice({
@@ -28,29 +27,38 @@ const modalSlice = createSlice({
       state.week = action.payload.week;
       state.day = action.payload.day;
       switch (action.payload.type) {
-        case "list":
-          state.listModalOpen = true;
-          state.isDone = action.payload.object.isDone
-          state.color = action.payload.object.color;
-          state.startDate = action.payload.object.startDate;
-          state.endDate = action.payload.object.endDate;
-          state.startTime = action.payload.object.startTime;
-          state.endTime = action.payload.object.endTime;
-          state.title = action.payload.object.title;
-          state.key = action.payload.object.key;
-          state.index = action.payload.index;
-          break;
-        default:
+        case "More":
           state.moreModalOpen = true;
           state.date = action.payload.date;
+          return;
+        case "List":
+          state.listModalOpen = true;
+          break;
+        default:
+          state.mouseType = 'MoveList'
       }
+      state.isDone = action.payload.object.isDone;
+      state.color = action.payload.object.color;
+      state.startDate = action.payload.object.startDate;
+      state.endDate = action.payload.object.endDate;
+      state.startTime = action.payload.object.startTime;
+      state.endTime = action.payload.object.endTime;
+      state.title = action.payload.object.title;
+      state.key = action.payload.object.key;
+      state.index = action.payload.index;
+    },
+
+    mouseMove(state, action) {
+      state.startDate = action.payload.date;
+      state.endDate = action.payload.date;
+      state.day = action.payload.day;
+      state.week = action.payload.week;
+      state.mouseType = action.payload.type;
     },
 
     offModal(state) {
       state.listModalOpen = false;
       state.moreModalOpen = false;
-      state.year = "";
-      state.month = "";
       state.date = "";
       state.week = "";
       state.day = "";

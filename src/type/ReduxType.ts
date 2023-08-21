@@ -46,8 +46,6 @@ export interface ModalType {
   listModalOpen: boolean;
   moreModalOpen: boolean;
   isDone: boolean;
-  year: string;
-  month: string;
   date: string;
   week: string;
   day: string;
@@ -59,6 +57,7 @@ export interface ModalType {
   title: string;
   key: string;
   index: number;
+  mouseType: string;
 }
 
 ///// time /////
