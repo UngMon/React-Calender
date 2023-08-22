@@ -83,9 +83,6 @@ const CloneList = ({
       const time = new Date(date).getTime() + 24 * 60 * 60 * 1000 * (7 - day);
 
       let lastDateOfWeek = new Date(time).toISOString().split("T")[0];
-      console.log(date, day);
-      console.log(`lastDateOfWeek ${lastDateOfWeek}`);
-      console.log(`endDate ${endDate}`);
 
       if (lastDateOfWeek < endDate) return 7 - day + 1;
       else return new Date(endDate).getDay() + 1 - day + 1;
@@ -97,8 +94,7 @@ const CloneList = ({
     if (!newStart || !newEnd) return;
     if (date < newStart! || newEnd! < date) return;
     if (day !== 1 && date !== newStart) return;
-    // console.log(newStart, newEnd);
-    // console.log(date, day, week);
+
     //긴 일정인지 아닌지
     const isLong: boolean = newStart! < newEnd! ? true : false;
     // 긴 일정의 경우 화면에 보일 너비(기간)
@@ -113,8 +109,8 @@ const CloneList = ({
         }`}
         style={{
           width: `${barWidth}00%`,
-          top: `1px`,
-          opacity: "0.8",
+          top: `10px`,
+          opacity: "0.7",
         }}
       >
         {!isLong && (
@@ -122,7 +118,7 @@ const CloneList = ({
         )}
         <div
           className={`${classes.list}
-   ${isLong && classes.long} ${modal.color}`}
+   ${isLong && classes.long} ${modal.color || '라벤더'}`}
         >
           <div
             className={`${classes["type-two"]} ${modal.isDone && classes.done}`}
