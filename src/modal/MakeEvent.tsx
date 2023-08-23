@@ -15,9 +15,10 @@ import "./MakeEvent.css";
 interface T {
   viewRef: React.RefObject<HTMLDivElement>;
   uid: string;
+  setIsDragging: (value: boolean) => void;
 }
 
-const MakeEvent = ({ viewRef, uid }: T) => {
+const MakeEvent = ({ viewRef, uid, setIsDragging }: T) => {
   const dispatch = useAppDispatch();
   const data = useSelector((state: RootState) => state.data);
 
@@ -79,17 +80,20 @@ const MakeEvent = ({ viewRef, uid }: T) => {
     e.preventDefault();
 
     const pattern = /^(오전|오후)\s(([0][0-9]|[1][0-2])):([0-5][0-9])$/;
- 
-    let startTime =
-      (timeOneRef.current!.value || timeOneRef.current!.placeholder).trim();
-    let endTime = (timeTwoRef.current!.value || timeOneRef.current!.placeholder).trim();
-    
+
+    let startTime = (
+      timeOneRef.current!.value || timeOneRef.current!.placeholder
+    ).trim();
+    let endTime = (
+      timeTwoRef.current!.value || timeOneRef.current!.placeholder
+    ).trim();
+
     if (!pattern.test(startTime) || !pattern.test(endTime))
       return alert("시간을 제대로 입력해주세요! ex) 오후 01:30");
     if (startDate > endDate) return alert("시작 날이 마지막 날 보다 큽니다!!");
 
     let title = titleRef.current!.value;
-    if (title.trim() === '') title = "(제목 없음)";
+    if (title.trim() === "") title = "(제목 없음)";
 
     const dateArray = data.dateArray;
     const userSchedule = data.userSchedule;
@@ -106,7 +110,6 @@ const MakeEvent = ({ viewRef, uid }: T) => {
     };
 
     try {
-      console.log("step2");
       const newSchedule = MakeList(parameter);
       dispatch(sendUserData({ newSchedule, uid, type: "PUT" }));
     } catch (error) {
@@ -115,7 +118,6 @@ const MakeEvent = ({ viewRef, uid }: T) => {
     }
 
     titleRef.current!.value = "";
-
     // 제출 후 아래 두개의 reducer 함수를 실행시켜 state 초기화
     cancelHandler();
   };
@@ -123,6 +125,7 @@ const MakeEvent = ({ viewRef, uid }: T) => {
   const cancelHandler = () => {
     dispatch(dataActions.offModal());
     dispatch(timeActions.resetTime());
+    setIsDragging(false);
   };
 
   // 여기는 size의 크기에 따라서 modalposition에서 값을 정해보자

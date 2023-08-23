@@ -13,7 +13,7 @@ interface T {
 }
 
 const Calender = ({ loading, loggedIn }: T) => {
-  console.log("month");
+  console.log("Calender");
 
   const navigate = useNavigate();
   const [param] = useSearchParams();

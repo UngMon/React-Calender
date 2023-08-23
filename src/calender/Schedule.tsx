@@ -69,12 +69,12 @@ const Schedule = ({
     mouse: string
   ) => {
     clickedElement.current = e.target as HTMLDivElement;
-
+    console.log('type')
     let type: string;
     if (!isMore) type = "List";
     else type = "More";
     if (mouse === "move") type = "MoveList";
-    console.log(type)
+
     const { object, date, day, week, index } = parameter;
     dispatch(
       modalActions.clickedList({ type, object, date, day, week, index })

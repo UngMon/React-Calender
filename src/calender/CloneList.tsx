@@ -1,28 +1,40 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { ModalType } from "../type/ReduxType";
+import { useAppDispatch } from "../redux/store";
+import { dataActions } from "../redux/data-slice";
+import { sendUserData } from "../redux/fetch-action";
+import { ModalType, DataType, UserData } from "../type/ReduxType";
+import { MakeListParameter } from "../type/Etc";
+import { MakeList } from "../utils/MakeList";
 import MakeIdx from "../utils/MakeIdx";
 import classes from "./MakeCalender.module.css";
+import MakeLongArr from "../utils/MakeLongArr";
 
 interface T {
   year: string;
   month: string;
+  data: DataType;
   modal: ModalType;
   firstDay: number;
   lastDate: number;
   lastWeek: number;
+  uid: string;
   setIsDragging: (value: boolean) => void;
 }
 
 const CloneList = ({
   year,
   month,
+  data,
   modal,
   firstDay,
   lastDate,
   lastWeek,
+  uid,
   setIsDragging,
 }: T) => {
-  const [고정좌표] = useState<[number, number]>([+modal.day, +modal.week]);
+  const dispatch = useAppDispatch();
+
+  const [고정좌표, 고정좌표설정] = useState<[number, number]>([0, 0]);
   const [실시간좌표, 실시간좌표설정] = useState<[number, number]>([
     +modal.day,
     +modal.week,
@@ -48,15 +60,14 @@ const CloneList = ({
 
   useEffect(() => {
     if (!modal.startDate || !modal.endDate) return;
+    if (고정좌표[0] === 0 && 고정좌표[1] === 0) return;
     if (실시간좌표[0] === 이전좌표[0] && 실시간좌표[1] === 이전좌표[1]) return;
     const move: number =
       (실시간좌표[1] - 고정좌표[1]) * 7 + (실시간좌표[0] - 고정좌표[0]);
-
     let startDate: string;
     let endDate: string;
 
     if (modal.mouseType === "MakeList") {
-      // console.log(`MakeList ${move}`);
       startDate = move >= 0 ? modal.startDate : moveDate(modal.startDate, move);
       endDate = move >= 0 ? moveDate(modal.endDate, move) : modal.endDate;
     } else {
@@ -69,13 +80,70 @@ const CloneList = ({
   }, [moveDate, modal, 고정좌표, 실시간좌표, 이전좌표]);
 
   const mouseEnter = (day: number, week: number) => {
-    // console.log(`day, week ${day} ${week}`);
+    if (data.addModalOpen) return;
+    console.log(`day, week ${day} ${week}`);
     실시간좌표설정([day, week]);
+    고정좌표[0] === 0 && 고정좌표설정([day, week]);
   };
 
   const mouseUp = () => {
-    setIsDragging(false);
     document.body.style.cursor = "auto";
+    const array = MakeLongArr(newStart.split("-"), newEnd.split("-"));
+    if (modal.mouseType === "MakeList") {
+      let day = 0;
+      let week = 0;
+      const type = "MakeList";
+
+      switch (true) {
+        case 실시간좌표[1] > 고정좌표[1]:
+          day = 고정좌표[0];
+          week = 고정좌표[1];
+          break;
+        case 실시간좌표[1] === 고정좌표[1]:
+          day = 실시간좌표[0] < 고정좌표[0] ? 실시간좌표[0] : 고정좌표[0];
+          week = 고정좌표[1];
+          break;
+        default:
+          day = 실시간좌표[0];
+          week = 실시간좌표[1];
+      }
+      dispatch(
+        dataActions.clickedDate({ type, newStart, newEnd, array, day, week })
+      );
+    } else {
+      if (실시간좌표[0] === 고정좌표[0] && 실시간좌표[1] === 고정좌표[1]) {
+        setIsDragging(false);
+        return;
+      }
+
+      const schedule = JSON.parse(JSON.stringify(data.userSchedule));
+      const prevDateArray = MakeLongArr(
+        modal.startDate.split("-"),
+        modal.endDate.split("-")
+      );
+      // 기존 항목 삭제 하고..
+      for (let date of prevDateArray) {
+        console.log(date);
+        console.log(modal.key);
+        delete schedule[date][modal.key];
+      }
+
+      const parameter: MakeListParameter = {
+        title: modal.title,
+        startDate: newStart,
+        endDate: newEnd,
+        startTime: modal.startTime,
+        endTime: modal.endTime,
+        color: modal.color,
+        dateArray: array,
+        userSchedule: schedule,
+      };
+      // 새롭게 설정된 기간에 일정 생성 후에
+      const newSchedule: UserData = MakeList(parameter);
+      // 데이터 전송
+      dispatch(sendUserData({ newSchedule, uid, type: "POST" }));
+      setIsDragging(false);
+    }
   };
 
   const calculateWidth = useCallback(
@@ -95,30 +163,21 @@ const CloneList = ({
     if (date < newStart! || newEnd! < date) return;
     if (day !== 1 && date !== newStart) return;
 
-    //긴 일정인지 아닌지
-    const isLong: boolean = newStart! < newEnd! ? true : false;
-    // 긴 일정의 경우 화면에 보일 너비(기간)
-    let barWidth: number = isLong ? calculateWidth(date, day, newEnd!) : 1;
+    let barWidth: number =
+      newStart! < newEnd! ? calculateWidth(date, day, newEnd!) : 1;
 
     return (
       <div
-        className={`${
-          isLong
-            ? classes["list-boundary-long"]
-            : classes["list-boundary-short"]
-        }`}
+        className={classes["list-boundary-long"]}
         style={{
           width: `${barWidth}00%`,
-          top: `10px`,
-          opacity: "0.7",
+          top: `1px`,
+          opacity: "0.8",
         }}
       >
-        {!isLong && (
-          <div className={`${modal.color} ${classes["color-bar"]}`}></div>
-        )}
         <div
           className={`${classes.list}
-   ${isLong && classes.long} ${modal.color || '라벤더'}`}
+   ${classes.long} ${modal.color || "라벤더"}`}
         >
           <div
             className={`${classes["type-two"]} ${modal.isDone && classes.done}`}
@@ -131,7 +190,7 @@ const CloneList = ({
   };
 
   const dateArray: React.ReactNode[] = [];
-  // const array: ReactNode[] = [];
+
   let sunday: number = 0;
   // /* 날짜 생성하기 */
   const makeDay = (주: number) => {
@@ -164,7 +223,7 @@ const CloneList = ({
       }
 
       if (i === 7 && sunday < lastDate) sunday = thisDate;
-      // console.log(`handler ${idx} ${i} ${주}`)
+
       thisMonthArray.push(
         <td
           key={idx}
@@ -193,7 +252,6 @@ const CloneList = ({
       </tr>
     );
   }
-  // console.log(dateArray);
 
   return (
     <div
@@ -219,181 +277,3 @@ const CloneList = ({
 };
 
 export default CloneList;
-
-// let newStartDate = +startDate + move;
-// let newStartMonth: number = +startMonth;
-// let newStartYear: number = +startYear;
-
-// if (newStartDate < 0) {
-//   newStartDate =
-//     new Date(+startYear, +startMonth - 1, 0).getDate() - newStartDate;
-//   // 그래도 0 보다 작다는 의미는 일정이 저저번달로 넘어간 상황.
-//   if (newStartDate < 0) {
-//     if (+startMonth - 2 < 1) {
-//       newStartMonth = 12;
-//       newStartYear -= 1;
-//     } else {
-//       newStartMonth = +startMonth - 2;
-//     }
-//     newStartDate =
-//       new Date(newStartYear, newStartMonth - 1, +startDate).getDate() -
-//       newStartDate;
-//   }
-// }
-
-// let newEndDate = +endDate + move;
-// let newEndMonth: number = +startMonth;
-// let newEndYear: number = +startYear;
-
-// if (newEndDate < 0) {
-//   newEndDate =
-//     new Date(+endYear, +endMonth - 1, 0).getDate() - newEndDate;
-//   if (newEndDate < 0) {
-//     if (+endMonth - 2 < 1) {
-//       newEndMonth = 12;
-//       newEndYear -= 1;
-//     } else {
-//       newEndMonth = +endMonth - 2;
-//     }
-//     newEndDate =
-//       new Date(newEndYear, newEndMonth - 1, newEndDate).getDate() -
-//       newEndDate;
-//   }
-// }
-
-// setStartDate(
-//   newStartYear +
-//     "-" +
-//     String(newStartMonth).padStart(2, "0") +
-//     "-" +
-//     String(newStartDate).padStart(2, "0")
-// );
-// setEndDate(
-//   newEndYear +
-//     "-" +
-//     String(newEndMonth).padStart(2, "0") +
-//     "-" +
-//     String(newEndDate).padStart(2, "0")
-// );
-// const findFinalWeek = (): number => {
-//   switch (true) {
-//     case startYear === year && startMonth === month:
-//       return endYear === year && endMonth === month
-//         ? Math.ceil(
-//             new Date(endYear + endMonth + endDate).getDay() + +endDate / 7
-//           )
-//         : lastWeek;
-//     case endYear === year && endMonth === month:
-//       return Math.ceil(
-//         new Date(endYear + endMonth + endDate).getDay() + +endDate / 7
-//       );
-//     default:
-//       return lastWeek;
-//   }
-// };
-// 현재 달이 선택한 리스트와 같은 년, 달 인지 아닌지에 따라 week 가 다름.
-// const sw = year === startYear && month === startMonth ? +modal.week : 1;
-
-// const finalWeek: number = findFinalWeek(); // const [startYear, startMonth, startDate] = modal.startDate.split("-");
-// const [endYear, endMonth, endDate] = modal.endDate.split("-");
-// console.log(startDate);
-// const moveDay = useCallback(
-//   (x: number) => {
-//     switch (true) {
-//       case 0 < x && x <= viewRef.current!.clientWidth / 7:
-//         return 1;
-//       case viewRef.current!.clientWidth / 7 < x &&
-//         x <= (viewRef.current!.clientWidth * 2) / 7:
-//         return 2;
-//       case (viewRef.current!.clientWidth * 2) / 7 < x &&
-//         x <= (viewRef.current!.clientWidth * 3) / 7:
-//         return 3;
-//       case (viewRef.current!.clientWidth * 3) / 7 < x &&
-//         x <= (viewRef.current!.clientWidth * 4) / 7:
-//         return 4;
-//       case (viewRef.current!.clientWidth * 4) / 7 < x &&
-//         x <= (viewRef.current!.clientWidth * 5) / 7:
-//         return 5;
-//       case (viewRef.current!.clientWidth * 5) / 7 < x &&
-//         x <= (viewRef.current!.clientWidth * 6) / 7:
-//         return 6;
-//       case (viewRef.current!.clientWidth * 6) / 7 < x &&
-//         x <= viewRef.current!.clientWidth:
-//         return 7;
-//     }
-//   },
-//   [viewRef]
-// );
-
-// const moveWeek = useCallback(
-//   (y: number) => {
-//     switch (true) {
-//       case 0 < y && y <= viewRef.current!.clientHeight / lastWeek + 25:
-//         return 1;
-//       case viewRef.current!.clientHeight / lastWeek + 25 < y &&
-//         y <= (viewRef.current!.clientHeight * 2) / lastWeek + 25:
-//         return 2;
-//       case (viewRef.current!.clientHeight * 2) / lastWeek + 25 < y &&
-//         y <= (viewRef.current!.clientHeight * 3) / lastWeek + 25:
-//         return 3;
-//       case (viewRef.current!.clientHeight * 3) / lastWeek + 25 < y &&
-//         y <= (viewRef.current!.clientHeight * 4) / lastWeek + 25:
-//         return 4;
-//       case (viewRef.current!.clientHeight * 4) / lastWeek + 25 < y &&
-//         y <= viewRef.current!.clientHeight:
-//         return 5;
-//     }
-//   },
-//   [viewRef, lastWeek]
-// );
-
-// for (let item of array[+day]) {
-// // 리스트 개수가 화면에 보이는 날짜 칸을 넘어가면 break;
-
-//   for (let i = +day; i <= 7; i++) {
-//     if (i === 8) break;
-
-//     let date =
-//       year + "-" + month + "-" + thisDate.toString().padStart(2, "0");
-
-//     if (date > end) break;
-
-//     array[i] = (
-//       <div
-//         key={arrayCount}
-//         className={`${
-//           end > start
-//             ? classes["list-boundary-long"]
-//             : classes["list-boundary-short"]
-//         }`}
-//         style={{
-//           width: isLong ? `${barWidth}00%` : "100%",
-//           top: `24.5px`,
-//         }}
-//       >
-//         {/* {!isLong && (
-//           <div className={`${object.color} ${classes["color-bar"]}`}></div>
-//         )} */}
-//         <div
-//           className={`${classes.list}
-//              ${isLong && classes.long} ${modal.color}`}
-//           style={{
-//             opacity: "0.7",
-//           }}
-//         >
-//           <div
-//             className={`${classes["type-two"]} ${
-//               modal.isDone && classes.done
-//             }`}
-//           >
-//             {" " + modal.title}
-//           </div>
-//         </div>
-//       </div>
-//     );
-//     thisDate += 1;
-//   // }
-//   break;
-// }
-
-// return array[+day];

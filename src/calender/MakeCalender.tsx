@@ -48,8 +48,6 @@ const MakeCalender = ({
   listRef,
   allListRef,
   clickedElement,
-  // 고정좌표설정,
-  // 실시간좌표설정,
   data,
   modal,
 }: T): React.ReactNode => {
@@ -119,9 +117,7 @@ const MakeCalender = ({
         }
       } else {
         if (sunday + i > lastDate) {
-          sunday = 0;
-          sunday += 1;
-          thisDate = sunday;
+          thisDate = sunday + i - lastDate;
           isNext = true;
           idx = MakeIdx("next", year, month, thisDate);
         } else {
@@ -134,7 +130,7 @@ const MakeCalender = ({
       const date = idx;
       const day = String(i);
       const week = String(주);
-
+ 
       thisMonthArray.push(
         <td
           key={idx}
@@ -210,7 +206,7 @@ const MakeCalender = ({
     );
   }
 
-  return dateArray;
+  return <tbody className={classes.presentation}>{dateArray}</tbody>;
 };
 
 export default MakeCalender;

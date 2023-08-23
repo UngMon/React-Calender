@@ -46,28 +46,9 @@ const Main = ({
     allListRef.current = {};
   }, [month, data, listRef, allListRef]);
 
-  // const mouseDown = (e: React.MouseEvent) => {
-  //   setIsDragging(true);
-  //   // 고정좌표.current = { x: e.pageX, y: e.pageY };
-  // };
-
-  // const mouseMove = (e: React.MouseEvent) => {
-  //   if (!isDragging) return;
-  //   // 실시간좌표.current = { x: e.pageX, y: e.pageY };
-  //   document.body.style.cursor = "move";
-  // };
-
-  // const mouseUp = (e: React.MouseEvent) => {
-  //   setIsDragging(false);
-  //   document.body.style.cursor = "auto";
-  // };
-
   return (
     <main className={classes["calender-view"]}>
-      <div
-        className={classes.calender}
-        ref={viewRef}
-      >
+      <div className={classes.calender} ref={viewRef}>
         <table className={classes.table}>
           <thead className={classes.weekname}>
             <tr>
@@ -80,29 +61,31 @@ const Main = ({
               <th>토</th>
             </tr>
           </thead>
-          <tbody className={classes.presentation}>
-            {MakeCalender({
-              year,
-              month,
-              week,
-              firstDay,
-              lastDate,
-              isDragging,
-              setIsDragging,
-              listRef,
-              allListRef,
-              viewRef,
-              clickedElement,
-              data,
-              modal,
-            })}
-          </tbody>
+          {MakeCalender({
+            year,
+            month,
+            week,
+            firstDay,
+            lastDate,
+            isDragging,
+            setIsDragging,
+            listRef,
+            allListRef,
+            viewRef,
+            clickedElement,
+            data,
+            modal,
+          })}
         </table>
         <div className={classes["modal-container"]}>
           {data.addModalOpen &&
             !modal.listModalOpen &&
             !modal.moreModalOpen && (
-              <MakeEvent viewRef={viewRef} uid={auth.currentUser!.uid} />
+              <MakeEvent
+                viewRef={viewRef}
+                uid={auth.currentUser!.uid}
+                setIsDragging={setIsDragging}
+              />
             )}
           {!modal.listModalOpen && modal.moreModalOpen && (
             <MoreList
@@ -125,15 +108,19 @@ const Main = ({
           )}
         </div>
       </div>
-      {isDragging && <CloneList
-        year={year}
-        month={month}
-        modal={modal}
-        firstDay={firstDay}
-        lastDate={lastDate}
-        lastWeek={week}
-        setIsDragging={setIsDragging}
-      />}
+      {isDragging && (
+        <CloneList
+          year={year}
+          month={month}
+          data={data}
+          modal={modal}
+          firstDay={firstDay}
+          lastDate={lastDate}
+          lastWeek={week}
+          uid={auth.currentUser!.uid}
+          setIsDragging={setIsDragging}
+        />
+      )}
     </main>
   );
 };

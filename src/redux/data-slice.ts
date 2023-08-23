@@ -102,7 +102,15 @@ const dataSlice = createSlice({
     },
 
     clickedDate(state, action) {
-      // type = 'start' || 'end' || 'add'
+      if (action.payload.type === 'MakeList') {
+        state.startDate = action.payload.newStart;
+        state.endDate = action.payload.newEnd;
+        state.dateArray = action.payload.array;
+        state.day = String(action.payload.day);
+        state.week = String(action.payload.week);
+        state.addModalOpen = true;
+        return;
+      }
 
       if (action.payload.type === "end") {
         state.endDate = action.payload.idx;
