@@ -5,7 +5,7 @@ import { sendUserData } from "../redux/fetch-action";
 import { ModalType, DataType, UserData } from "../type/ReduxType";
 import { MakeListParameter } from "../type/Etc";
 import { MakeList } from "../utils/MakeList";
-import MakeIdx from "../utils/MakeIdx";
+import { calculateWidth } from "../utils/CalculateWidth";
 import classes from "./MakeCalender.module.css";
 import MakeLongArr from "../utils/MakeLongArr";
 
@@ -123,8 +123,6 @@ const CloneList = ({
       );
       // 기존 항목 삭제 하고..
       for (let date of prevDateArray) {
-        console.log(date);
-        console.log(modal.key);
         delete schedule[date][modal.key];
       }
 
@@ -145,18 +143,6 @@ const CloneList = ({
       setIsDragging(false);
     }
   };
-
-  const calculateWidth = useCallback(
-    (date: string, day: number, endDate: string): number => {
-      const time = new Date(date).getTime() + 24 * 60 * 60 * 1000 * (7 - day);
-
-      let lastDateOfWeek = new Date(time).toISOString().split("T")[0];
-
-      if (lastDateOfWeek < endDate) return 7 - day + 1;
-      else return new Date(endDate).getDay() + 1 - day + 1;
-    },
-    []
-  );
 
   const scheduleHandler = (date: string, day: number, week: number) => {
     if (!newStart || !newEnd) return;
@@ -191,42 +177,28 @@ const CloneList = ({
 
   const dateArray: React.ReactNode[] = [];
 
-  let sunday: number = 0;
   // /* 날짜 생성하기 */
   const makeDay = (주: number) => {
     const thisMonthArray = [];
 
-    let thisDate: number = 0;
-    let isNext = false;
+    let move: number;
+
+    if (주 === 1) move = -24 * 60 * 60 * 1000 * firstDay;
+    else move = 24 * 60 * 60 * 1000 * ((주 - 2) * 7 + (7 - firstDay));
+
+    const thisDate = new Date(new Date(+year, +month - 1, 1).getTime() + move)
+      .toISOString()
+      .split("T")[0];
 
     for (let i = 1; i <= 7; i++) {
-      let idx: string;
-
-      if (주 === 1) {
-        if (i <= firstDay) {
-          const prevMonthLastDate = new Date(+year, +month - 1, 0).getDate();
-          thisDate = prevMonthLastDate - firstDay + i;
-          idx = MakeIdx("prev", year, month, thisDate);
-        } else {
-          thisDate = i - firstDay;
-          idx = MakeIdx("", year, month, thisDate);
-        }
-      } else {
-        if (sunday + i > lastDate) {
-          thisDate = sunday + i - lastDate;
-          isNext = true;
-          idx = MakeIdx("next", year, month, thisDate);
-        } else {
-          thisDate = !isNext ? sunday + i : thisDate + 1;
-          idx = MakeIdx("", year, month, thisDate);
-        }
-      }
-
-      if (i === 7 && sunday < lastDate) sunday = thisDate;
+      let next: number = i * 24 * 60 * 60 * 1000;
+      const date = new Date(new Date(thisDate).getTime() + next)
+        .toISOString()
+        .split("T")[0];
 
       thisMonthArray.push(
         <td
-          key={idx}
+          key={date}
           className={classes.date_box}
           onMouseEnter={() => mouseEnter(i, 주)}
           onMouseUp={mouseUp}
@@ -236,7 +208,7 @@ const CloneList = ({
           </div>
           <div className={classes["list-box"]}>
             <div className={classes["list-area"]}>
-              {scheduleHandler(idx, i, 주)}
+              {scheduleHandler(date, i, 주)}
             </div>
           </div>
         </td>

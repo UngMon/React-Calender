@@ -44,9 +44,6 @@ const Calender = ({ loading, loggedIn }: T) => {
   const clickedElement = useRef<HTMLDivElement | null>(null);
   const list = useRef<HTMLDivElement>(null); // list모달창 ref
 
-  const firstDay: number = new Date(+year, +month - 1, 1).getDay();
-  const lastDate: number = new Date(+year, +month, 0).getDate();
-
   const movePrevMonth = () => {
     let mon = month;
     switch (+month) {

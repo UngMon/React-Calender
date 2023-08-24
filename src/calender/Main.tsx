@@ -61,21 +61,20 @@ const Main = ({
               <th>토</th>
             </tr>
           </thead>
-          {MakeCalender({
-            year,
-            month,
-            week,
-            firstDay,
-            lastDate,
-            isDragging,
-            setIsDragging,
-            listRef,
-            allListRef,
-            viewRef,
-            clickedElement,
-            data,
-            modal,
-          })}
+          <MakeCalender
+            year={year}
+            month={month}
+            week={week}
+            firstDay={firstDay}
+            isDragging={isDragging}
+            setIsDragging={setIsDragging}
+            listRef={listRef}
+            allListRef={allListRef}
+            viewRef={viewRef}
+            clickedElement={clickedElement}
+            data={data}
+            modal={modal}
+          />
         </table>
         <div className={classes["modal-container"]}>
           {data.addModalOpen &&

@@ -59,13 +59,10 @@ const MakeEvent = ({ viewRef, uid, setIsDragging }: T) => {
           }, 100);
         }
       }
-      // 사용자가
-      // AddEvent modal 닫을 때, state 초기화
+      // modal 영역 밖을 클릭할 때, state 초기화
       if (!modalRef.current!.contains(e.target as Node)) {
         setTimeout(() => {
-          dispatch(dataActions.offModal());
-          dispatch(modalActions.offModal());
-          dispatch(timeActions.resetTime());
+          cancelHandler();
         }, 130);
       }
     };

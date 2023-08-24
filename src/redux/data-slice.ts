@@ -102,28 +102,26 @@ const dataSlice = createSlice({
     },
 
     clickedDate(state, action) {
-      if (action.payload.type === 'MakeList') {
-        state.startDate = action.payload.newStart;
-        state.endDate = action.payload.newEnd;
-        state.dateArray = action.payload.array;
-        state.day = String(action.payload.day);
-        state.week = String(action.payload.week);
-        state.addModalOpen = true;
-        return;
+      switch(action.payload.type) {
+        case 'MakeList':
+          state.startDate = action.payload.newStart;
+          state.endDate = action.payload.newEnd;
+          state.dateArray = action.payload.array;
+          state.day = String(action.payload.day);
+          state.week = String(action.payload.week);
+          state.addModalOpen = true;
+          return;
+        case 'end':
+          state.endDate = action.payload.date;
+          state.dateArray = action.payload.dateArray;
+          return;
+        case 'add':
+          state.addModalOpen = true;
+          state.endDate = action.payload.date;
+          break;
       }
 
-      if (action.payload.type === "end") {
-        state.endDate = action.payload.idx;
-        state.dateArray = action.payload.dateArray;
-        return;
-      }
-
-      if (action.payload.type === "add") {
-        state.addModalOpen = true;
-        state.endDate = action.payload.idx;
-      }
-
-      state.startDate = action.payload.idx;
+      state.startDate = action.payload.date;
       state.week = action.payload.week.toString();
       state.day = action.payload.day.toString();
       state.dateArray = action.payload.dateArray;
@@ -170,20 +168,6 @@ const dataSlice = createSlice({
       if (array["dummy"]) delete array["dummy"];
       state.userSchedule.schedule = array;
     },
-
-    // removeList(state, action) {
-    //   state.dataChanged = true; // fetch (put)
-
-    //   let schedule = JSON.parse(JSON.stringify(state.userSchedule));
-    //   ///...................... 여기는 dateArray로 .....................///
-    //   console.log(action.payload)
-    //   for (const item of action.payload.array) {
-    //     console.log(item)
-    //     console.log(schedule[item])
-    //     delete schedule[item][action.payload.key];
-    //   }
-    //   state.userSchedule = schedule;
-    // },
   },
   extraReducers: (builder) => {
     builder.addCase(getUserData.pending, (state, action) => {
@@ -218,270 +202,3 @@ export const dataActions = dataSlice.actions;
 
 export const dataReducer = dataSlice.reducer;
 
-// inputList(state, action) {
-//   state.dataChanged = true;
-//   console.log('input')
-//   const array = { ...state.userSchedule.schedule };
-
-//   const startDate = state.startDate.split("-");
-//   const startTimeSplit = action.payload.startTime.split(" ");
-//   const endTimeSplit = action.payload.endTime.split(" ");
-//   console.log(action.payload.startTime, action.payload.endTime);
-//   console.log(action.payload.timeArr);
-//   const year = startDate[0];
-//   const month = startDate[1];
-//   const date = state.startDate;
-
-//   const startTime =
-//     `${startTimeSplit[0] === "오전" ? 1 : 2}` +
-//     startTimeSplit[1].split(":").join("") +
-//     "0";
-//   const endTime =
-//     `${endTimeSplit[0] === "오전" ? 1 : 2}` +
-//     endTimeSplit[1].split(":").join("");
-
-//   const start = startDate[0] + startDate[1] + startDate[2];
-//   const nowDate = action.payload.timeArr.slice(0, 3).join("");
-//   const nowTime = action.payload.timeArr[3].slice(0, 8).split(":").join("");
-
-//   const key =
-//     start +
-//     9999 +
-//     startTime +
-//     (30000 - endTime) +
-//     nowDate +
-//     (256161 - nowTime);
-
-//   const object = {
-//     startDate: state.startDate,
-//     endDate: state.endDate,
-//     startTime: action.payload.startTime,
-//     endTime: action.payload.endTime,
-//     title: action.payload.title,
-//     style: false,
-//     color: action.payload.color,
-//     key,
-//     arr: [state.startDate],
-//     length: 1,
-//     isStart: false,
-//     isMiddle: false,
-//     isEnd: false,
-//     isLong: false,
-//   };
-
-//   // 해당 연도에 아무런 일정이 없을 때,
-//   if (array[year] === undefined) {
-//     array[year] = {};
-//   }
-//   //해당 월에 아무런 일정이 없을 때,
-//   if (array[year][month] === undefined) {
-//     array[year][month] = {};
-//   }
-
-//   if (array[year][month][date] === undefined) {
-//     // 해당 날에 일정이 없을 때,
-//     array[year][month][date] = {};
-//     array[year][month][date][key] = { ...object };
-//   } else {
-//     //해당 날에 기존 일정이 있을 때,
-//     array[year][month][date][key] = { ...object };
-//     const newObj = Object.fromEntries(
-//       Object.entries(array[year][month][date]).sort(([a], [b]) =>
-//         a < b ? -1 : 1
-//       )
-//     );
-//     array[year][month][date] = newObj;
-//   }
-
-//   state.userSchedule = {
-//     email: state.userSchedule.email,
-//     name: state.userSchedule.name,
-//     schedule: { ...array },
-//   };
-//   // state.dateARrayChanged = false;
-// },
-
-// longDateList(state, action) {
-//   state.dataChanged = true;
-
-//   let schedule = { ...state.userSchedule.schedule };
-
-//   const startTimeSplit = action.payload.startTime.split(" ");
-//   const endTimeSplit = action.payload.endTime.split(" ");
-
-//   const startTime =
-//     `${startTimeSplit[0] === "오전" ? 1 : 2}` +
-//     startTimeSplit[1].split(":").join("");
-
-//   const endTime =
-//     `${endTimeSplit[0] === "오전" ? 1 : 2}` +
-//     endTimeSplit[1].split(":").join("");
-
-//   const nowDate = action.payload.timeArr.slice(0, 3).join("");
-//   const nowTime = action.payload.timeArr[3].slice(0, 8).split(":").join("");
-
-//   const arr = state.dateArray;
-
-//   let leng = arr.length;
-
-//   let count = state.day;
-
-//   const key =
-//     state.startDate +
-//     (9999 - arr.length) +
-//     startTime +
-//     (30000 - endTime) +
-//     nowDate +
-//     (256161 - nowTime);
-
-//   const object = {
-//     startDate: state.startDate,
-//     endDate: state.endDate,
-//     startTime: action.payload.startTime,
-//     endTime: action.payload.endTime,
-//     title: action.payload.title,
-//     style: false,
-//     color: action.payload.color,
-//     key,
-//     arr,
-//   };
-
-//   for (const i of arr) {
-//     const dateInfo = i.split("-");
-//     const year = dateInfo[0];
-//     const month = dateInfo[1];
-
-//     if (!schedule[year]) schedule[year] = {};
-
-//     if (!schedule[year][month]) schedule[year][month] = {};
-
-//     // schedule에서 dateArray 있는 i 가 존재할 때, 즉 기존 일정이 있을 때!
-//     if (schedule[year][month][i]) {
-//       if (i === state.startDate) {
-//         // longDate의 첫 째날 일 때,
-//         const Leng = leng - 8 + count > 0 ? 8 - count : leng;
-
-//         schedule[year][month][i][key] = {
-//           ...object,
-//           length: Leng,
-//           count,
-//           isLong: true,
-//           isStart: true,
-//           isMiddle: false,
-//           isEnd: false,
-//         };
-//       } else {
-//         // 첫 째날이 아닌 그 이후 Date일 때,
-//         if (count === 1) {
-//           // 시작 날 기준 다음주로 넘어갈 때, 일요일의 경우(count = 1) 남은 length만큼 표시
-//           const Leng = leng >= 7 ? 7 : leng; //시작 날 기준 다다음주 까지 넘어가는지
-
-//           schedule[year][month][i][key] = {
-//             ...object,
-//             length: Leng,
-//             count,
-//             isLong: true,
-//             isStart: leng === 1 ? false : true,
-//             isMiddle: false,
-//             isEnd: true,
-//           };
-//         } else {
-//           // 일요일이 아닌 요일
-//           schedule[year][month][i][key] = {
-//             ...object,
-//             length: 1,
-//             count,
-//             isLong: true,
-//             isStart: false,
-//             isMiddle: leng === 1 ? false : true,
-//             isEnd: leng === 1 ? true : false,
-//           };
-//         }
-//       }
-//       const newObj = Object.fromEntries(
-//         Object.entries(schedule[year][month][i]).sort(([a], [b]) =>
-//           a < b ? -1 : 1
-//         )
-//       );
-//       schedule[year][month][i] = newObj;
-//     }
-
-//     // 다시 돌아와서, schedule에 dateArray에 있는 날짜에 일정이 없을 때,
-//     if (!schedule[year][month][i]) {
-//       schedule[year][month][i] = {};
-//       // i가 longDate의 첫 째날 일 때,
-//       if (i === state.startDate) {
-//         const Leng = leng - 8 + count > 0 ? 8 - count : leng;
-
-//         schedule[year][month][i][key] = {
-//           ...object,
-//           length: Leng,
-//           count,
-//           isLong: true,
-//           isStart: true,
-//           isMiddle: false,
-//           isEnd: false,
-//         };
-//       } else {
-//         if (count === 1) {
-//           const Leng = leng >= 7 ? 7 : leng;
-
-//           schedule[year][month][i][key] = {
-//             ...object,
-//             length: Leng,
-//             count,
-//             isLong: true,
-//             isStart: leng === 1 ? false : true,
-//             isMiddle: false,
-//             isEnd: leng === 1 ? true : false,
-//           };
-//         } else {
-//           schedule[year][month][i][key] = {
-//             ...object,
-//             length: 1,
-//             count,
-//             isLong: true,
-//             isStart: false,
-//             isMiddle: leng === 1 ? false : true,
-//             isEnd: leng === 1 ? true : false,
-//           };
-//         }
-//       }
-//     }
-//     leng -= 1;
-//     count = count === 7 ? 1 : count + 1;
-//   } // for 문 끝.
-
-//   state.userSchedule = {
-//     email: state.userSchedule.email,
-//     name: state.userSchedule.name,
-//     schedule: { ...schedule },
-//   };
-//   // state.dateARrayChanged = false;
-// },
-  // listDone(state, action) {
-    //   const schedule = JSON.parse(JSON.stringify(state.userSchedule));
-    //   const clickedDate = action.payload.date.split("-");
-    //   const key = action.payload.key;
-
-    //   // const year = clickedDate[0];
-    //   // const month = clickedDate[1];
-    //   // const date = action.payload.date;
-    //   //// 수정하세요!!!!!!!1......................................
-    //   const dateArray = schedule;
-
-    //   for (const item of dateArray) {
-    //     const arr = item.split("-");
-    //     const year = arr[0];
-    //     const month = arr[1];
-
-    //     schedule[year][month][item][key].style =
-    //       !schedule[year][month][item][key].style;
-    //   }
-
-    //   state.userSchedule = {
-    //     email: state.userSchedule.email,
-    //     name: state.userSchedule.name,
-    //     schedule,
-    //   };
-    // },

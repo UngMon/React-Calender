@@ -4,6 +4,7 @@ import { CalenderData } from "../type/ReduxType";
 import { modalActions } from "../redux/modal-slice";
 import { ModalType, DataType } from "../type/ReduxType";
 import { ListOrMore } from "../type/RefType";
+import { calculateWidth } from "../utils/CalculateWidth";
 import classes from "./MakeCalender.module.css";
 
 interface T {
@@ -48,20 +49,6 @@ const Schedule = ({
 
   if (!schedule[date]) return;
 
-  const calculateWidth = (
-    date: string,
-    day: string,
-    endDate: string
-  ): number => {
-    let item = date.split("-"); // [년, 월, 일]
-    item[2] = String(+item[2] + 7 - +day).padStart(2, "0");
-    // 그 주의 마지막 날
-    let lastDateOfWeek = item[0] + "-" + item[1] + "-" + item[2];
-
-    if (lastDateOfWeek < endDate) return 7 - +day + 1;
-    else return new Date(endDate).getDay() + 1 - +day + 1;
-  };
-
   const dataClickHandler = (
     e: React.MouseEvent,
     isMore: boolean,
@@ -69,7 +56,7 @@ const Schedule = ({
     mouse: string
   ) => {
     clickedElement.current = e.target as HTMLDivElement;
-    console.log('type')
+    console.log("type");
     let type: string;
     if (!isMore) type = "List";
     else type = "More";
@@ -99,7 +86,7 @@ const Schedule = ({
     // 긴 일정의 경우 화면에 보일 너비(기간)
     let barWidth: number =
       object.startDate !== object.endDate
-        ? calculateWidth(date, day, object.endDate)
+        ? calculateWidth(date, +day, object.endDate)
         : 0;
     // 년 , 월 , 일에서 일을 저장한 변수
     let thisDate: number = +dateInfo[2];
@@ -142,10 +129,10 @@ const Schedule = ({
             }}
             onMouseDown={(e) => {
               e.stopPropagation();
-              console.log('schedule MouseDown')
+              console.log("schedule MouseDown");
               !isDragging && setIsDragging(true);
               dataClickHandler(e, isMore, parameter, "move");
-              document.body.style.cursor = 'move';
+              document.body.style.cursor = "move";
             }}
             onMouseUp={(e) => {
               e.stopPropagation();
