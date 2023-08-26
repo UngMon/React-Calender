@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { useAppDispatch } from "../redux/store";
 import { dataActions } from "../redux/data-slice";
+import { modalActions } from "../redux/modal-slice";
 import { sendUserData } from "../redux/fetch-action";
 import { ModalType, DataType, UserData } from "../type/ReduxType";
 import { MakeListParameter } from "../type/Etc";
@@ -15,9 +16,9 @@ interface T {
   data: DataType;
   modal: ModalType;
   firstDay: number;
-  lastDate: number;
   lastWeek: number;
   uid: string;
+  isDragging: boolean;
   setIsDragging: (value: boolean) => void;
 }
 
@@ -27,9 +28,9 @@ const CloneList = ({
   data,
   modal,
   firstDay,
-  lastDate,
   lastWeek,
   uid,
+  isDragging,
   setIsDragging,
 }: T) => {
   const dispatch = useAppDispatch();
@@ -39,7 +40,6 @@ const CloneList = ({
     +modal.day,
     +modal.week,
   ]);
-  const [이전좌표, 이전좌표설정] = useState<[number, number]>([0, 0]);
 
   const [newStart, setStartDate] = useState<string>(modal.startDate);
   const [newEnd, setEndDate] = useState<string>(modal.endDate);
@@ -61,7 +61,6 @@ const CloneList = ({
   useEffect(() => {
     if (!modal.startDate || !modal.endDate) return;
     if (고정좌표[0] === 0 && 고정좌표[1] === 0) return;
-    if (실시간좌표[0] === 이전좌표[0] && 실시간좌표[1] === 이전좌표[1]) return;
     const move: number =
       (실시간좌표[1] - 고정좌표[1]) * 7 + (실시간좌표[0] - 고정좌표[0]);
     let startDate: string;
@@ -76,8 +75,7 @@ const CloneList = ({
     }
     setStartDate(startDate);
     setEndDate(endDate);
-    이전좌표설정(실시간좌표);
-  }, [moveDate, modal, 고정좌표, 실시간좌표, 이전좌표]);
+  }, [moveDate, modal, 고정좌표, 실시간좌표]);
 
   const mouseEnter = (day: number, week: number) => {
     if (data.addModalOpen) return;
@@ -87,7 +85,9 @@ const CloneList = ({
   };
 
   const mouseUp = () => {
+    console.log(`mouseUp ${isDragging}`);
     document.body.style.cursor = "auto";
+
     const array = MakeLongArr(newStart.split("-"), newEnd.split("-"));
     if (modal.mouseType === "MakeList") {
       let day = 0;
@@ -113,6 +113,7 @@ const CloneList = ({
     } else {
       if (실시간좌표[0] === 고정좌표[0] && 실시간좌표[1] === 고정좌표[1]) {
         setIsDragging(false);
+        dispatch(modalActions.openList());
         return;
       }
 
@@ -142,6 +143,16 @@ const CloneList = ({
       dispatch(sendUserData({ newSchedule, uid, type: "POST" }));
       setIsDragging(false);
     }
+  };
+
+  const mouseMove = () => {
+    if (data.addModalOpen) {
+      // 모달창이 열려있으면 마우스 커서 icon을 기본으로, move이벤트 발생 x
+      if (document.body.style.cursor === "auto")
+        document.body.style.cursor = "auto";
+      return;
+    }
+    document.body.style.cursor = "move";
   };
 
   const scheduleHandler = (date: string, day: number, week: number) => {
@@ -202,6 +213,7 @@ const CloneList = ({
           className={classes.date_box}
           onMouseEnter={() => mouseEnter(i, 주)}
           onMouseUp={mouseUp}
+          onMouseMove={mouseMove}
         >
           <div className={classes.date}>
             <div className={classes["date-h"]} />
@@ -228,7 +240,7 @@ const CloneList = ({
   return (
     <div
       className={classes.calender}
-      style={{ position: "absolute", bottom: 0, zIndex: "20" }}
+      style={{ position: "absolute", bottom: 0, zIndex: 5 }}
     >
       <table className={classes.table}>
         <thead className={classes.weekname}>

@@ -31,8 +31,6 @@ const Main = ({
 
   const data = useSelector((state: RootState) => state.data);
   const modal = useSelector((state: RootState) => state.modal);
-  // const [고정좌표, 고정좌표설정] = useState<[string, string]>(["", ""]);
-  // const [실시간좌표, 실시간좌표설정] = useState<[string, string]>(["", ""]);
 
   const viewRef = useRef<HTMLDivElement>(null);
   const [isDragging, setIsDragging] = useState<boolean>(false);
@@ -114,9 +112,9 @@ const Main = ({
           data={data}
           modal={modal}
           firstDay={firstDay}
-          lastDate={lastDate}
           lastWeek={week}
           uid={auth.currentUser!.uid}
+          isDragging={isDragging}
           setIsDragging={setIsDragging}
         />
       )}

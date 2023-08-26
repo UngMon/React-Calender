@@ -16,7 +16,7 @@ const initialState: ModalType = {
   title: "",
   key: "",
   index: 0, // 그 날 일정에서 몇 번째 항목인지
-  mouseType: '',
+  mouseType: "",
 };
 
 const modalSlice = createSlice({
@@ -35,7 +35,7 @@ const modalSlice = createSlice({
           state.listModalOpen = true;
           break;
         default:
-          state.mouseType = 'MoveList'
+          state.mouseType = "MoveList";
       }
       state.isDone = action.payload.object.isDone;
       state.color = action.payload.object.color;
@@ -46,6 +46,10 @@ const modalSlice = createSlice({
       state.title = action.payload.object.title;
       state.key = action.payload.object.key;
       state.index = action.payload.index;
+    },
+
+    openList(state) {
+      state.listModalOpen = true;
     },
 
     mouseMove(state, action) {

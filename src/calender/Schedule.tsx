@@ -132,13 +132,19 @@ const Schedule = ({
               console.log("schedule MouseDown");
               !isDragging && setIsDragging(true);
               dataClickHandler(e, isMore, parameter, "move");
-              document.body.style.cursor = "move";
             }}
             onMouseUp={(e) => {
               e.stopPropagation();
+              console.log(`schedule mpuseUp ${isDragging}`);
+              dataClickHandler(e, isMore, parameter, "click");
               isDragging && setIsDragging(false);
-              !isDragging && dataClickHandler(e, isMore, parameter, "click");
+              // !isDragging && dataClickHandler(e, isMore, parameter, "click");
               document.body.style.cursor = "auto";
+            }}
+            onMouseMove={() => {
+              if (!isDragging) return;
+              console.log(isDragging);
+              document.body.style.cursor = "move";
             }}
             ref={(el: HTMLDivElement) => {
               if (i !== +day) return;
