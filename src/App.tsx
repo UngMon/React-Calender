@@ -6,8 +6,9 @@ import { auth } from "./Auth/firebase";
 import { getUserData } from "./redux/fetch-action";
 import ResetPage from "./pages/ResetPage";
 import Calender from "./calender/Calender";
-import LoginPage from "./pages/LoginPage";
+import Result from "./pages/Result";
 import Loading from "./pages/Loading";
+import LoginPage from "./pages/LoginPage";
 
 function App() {
   console.log("app");
@@ -21,22 +22,14 @@ function App() {
       if (user) {
         dispatch(getUserData(user.uid));
         setLogged(true);
-      } else {
-        setLogged(false);
-      }
+      } else setLogged(false);
     });
     setLoading(false);
   }, [dispatch]);
 
-  //  useEffect(() => {
-  //   if (modal.dataChanged) {
-  //     dispatch(sendScheduleData(modal.userSchedule.schedule, modal.uid));
-  //   }
-  // }, [dispatch, modal]);
-
   return (
     <Routes>
-      {!loggedIn && <Route path="/" element={<LoginPage />} />}
+      {!loggedIn && !loading && <Route path="/" element={<LoginPage />} />}
       {!loggedIn && <Route path="/reset-password" element={<ResetPage />} />}
       {loading && <Route path="*" element={<Loading />} />}
       {!loading && loggedIn && (
@@ -53,6 +46,7 @@ function App() {
           element={<Navigate to="/calender/date?year=2023&month=8" />}
         />
       )}
+      {loggedIn && <Route path=":search" element={<Result />} />}
     </Routes>
   );
 }

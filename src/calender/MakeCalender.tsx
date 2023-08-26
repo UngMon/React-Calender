@@ -51,6 +51,7 @@ const MakeCalender = ({
   console.log("MakeCalender");
   const dispatch = useAppDispatch();
   const [listBoxHeightCount, setHeight] = useState<number>(0);
+  const [position, setPosition] = useState<[number, number]>([0, 0]);
 
   useEffect(() => {
     // 마운트 이후, state에 값을 저장후 랜더링
@@ -71,12 +72,20 @@ const MakeCalender = ({
     window.addEventListener("resize", getListBoxSize);
   });
 
-  const mouseDown = (day: string, week: string, date: string) => {
+  const mouseDown = (e: React.MouseEvent, day: string, week: string, date: string) => {
     console.log("Make Down");
-    document.body.style.cursor = "move";
+    if (isDragging) return;
     setIsDragging(true);
+    setPosition([e.pageX, e.pageY])
     dispatch(modalActions.mouseMove({ type: "MakeList", day, week, date }));
   };
+
+  const mouseMove = (e: React.MouseEvent) => {
+    if (!isDragging) return;
+    console.log(`move ${e.pageX} ${e.pageY} ${position}}`)
+    if (e.pageX === position[0] && e.pageY === position[1]) return;
+    document.body.style.cursor = "move";
+  }
 
   const addClickHandler = (date: string, day: string, week: string) => {
     if (modal.listModalOpen || modal.moreModalOpen) return;
@@ -125,10 +134,11 @@ const MakeCalender = ({
           }}
           onMouseDown={(e) => {
             e.stopPropagation();
-            mouseDown(day, week, date);
+            mouseDown(e, day, week, date);
           }}
           className={classes.date_box}
           day-index={i}
+          // onMouseMove={mouseMove}
         >
           <div className={classes.date}>
             <div className={classes["date-h"]}>

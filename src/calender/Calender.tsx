@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { ListOrMore } from "../type/RefType";
 import Main from "./Main";
-import Header from "./Header";
+import Header from "./header/Header";
 import NotLogin from "../error/NotLogin";
 import Loading from "../pages/Loading";
 import "./Calender.css";
@@ -94,12 +94,14 @@ const Calender = ({ loading, loggedIn }: T) => {
     <div
       className="view-area"
       onWheel={(e) => delayRef.current.delay && wheelHandler(e)}
+      style={{ width: "100%", height: "100%" }}
     >
       {loading && <Loading />}
       {!loading && !loggedIn && <NotLogin />}
       {!loading && loggedIn && (
         <>
           <Header
+            type="calender"
             year={year}
             month={month}
             movePrevMonth={movePrevMonth}

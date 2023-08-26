@@ -1,0 +1,46 @@
+.result-page {
+  width: 95%;
+  max-height: calc(100vh - 64px);
+  margin: 0 auto;
+}
+
+.result-not-found {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.result-not-found p {
+  font-size: 20px;
+  text-align: center;
+  font-weight: 500;
+}
+
+.result-list {
+  box-sizing: border-box;
+  width: 100%;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  border-top: 0.5px solid black;
+}
+
+.result-list div {
+  box-sizing: border-box;
+  padding: 0 8px;
+  height: 100%;
+  line-height: 60px;
+}
+
+.result-list div:nth-child(1) {
+  width: 40px;
+  height: 40px;
+  text-align: center;
+  border-radius: 50%;
+  background-color: black;
+}
+
+.result-list div:nth-child(2) {
+}
