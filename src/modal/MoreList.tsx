@@ -63,66 +63,34 @@ const MoreList = ({
   ]);
   const modalRef = useRef<HTMLDivElement>(null);
   const listInMoreRef = useRef<ListOrMore>({});
-  const clickedAllListRef = useRef({});
+  // const clickedAllListRef = useRef({});
 
   useEffect(() => {
-    document.addEventListener("mouseup", addModalCloseHandler);
+    const modalCloseHandler = (e: MouseEvent) => {
+      const target = e.target as HTMLDivElement;
+      console.log('down')
+
+      clickedElement.current = target;
+      // 더 보기창 밖의 영역을 클릭한 경우
+      if (!modalRef.current!.contains(target)) {
+
+        // 밖의 영역중에서 더보기를 클릭한 경우
+        for (const key in allListRef.current) {
+          if(allListRef.current[key]!.contains(target)) return;
+        }
+        
+        console.log('here')
+        setTimeout(() => {
+          dispatch(modalActions.toggleMore());
+        }, 100);
+      }
+    };
+
+    document.addEventListener("mouseup", modalCloseHandler);
     return () => {
-      document.removeEventListener("mouseup", addModalCloseHandler);
+      document.removeEventListener("mouseup", modalCloseHandler);
     };
   });
-
-  const addModalCloseHandler = (e: MouseEvent) => {
-    const target = e.target as Node;
-
-    if (clickedAllListRef.current === e.target) {
-      setTimeout(() => {
-        dispatch(modalActions.offModal());
-      }, 100);
-      return;
-    }
-
-    if (modal.moreModalOpen && !modalRef.current!.contains(target)) {
-      for (const key in listRef.current) {
-        if (listRef.current[key] === null) continue;
-
-        if (!listRef.current[key]!.contains(target)) continue;
-
-        clickedAllListRef.current = listRef.current[key]!;
-        setTimeout(() => {
-          dispatch(modalActions.offModal());
-        }, 110);
-        return;
-      }
-
-      for (const key in allListRef.current) {
-        if (allListRef.current[key] === null) continue;
-
-        if (!allListRef.current[key]!.contains(target)) continue;
-        clickedAllListRef.current = allListRef.current[key]!;
-        return;
-      }
-
-      if (modal.listModalOpen && list.current!.contains(target)) return;
-
-      setTimeout(() => {
-        dispatch(modalActions.offModal());
-      }, 110);
-      return;
-    }
-
-    for (const key in listInMoreRef.current) {
-      if (listInMoreRef.current[key]!.contains(target)) {
-        return;
-      }
-    }
-
-    if (modalRef.current!.contains(target)) {
-      setTimeout(() => {
-        dispatch(modalActions.offModal());
-      }, 100);
-    }
-  };
 
   useEffect(() => {
     const widthCalculator = () => {
@@ -138,12 +106,13 @@ const MoreList = ({
     date: string,
     index: number
   ) => {
-    clickedElement.current = e.target as HTMLDivElement;
-    const type = "list";
-    const { day, week } = modal;
-    dispatch(
-      modalActions.clickedList({ type, object, date, day, week, index })
-    );
+    // clickedElement.current = e.target as HTMLDivElement;
+    // const type = "ListInMore";
+    // listInMoreRef.current = object.key;
+    // const { day, week } = modal;
+    // dispatch(
+    //   modalActions.clickedList({ type, object, date, day, week, index })
+    // );
   };
 
   const makeListHandler = () => {
@@ -219,13 +188,12 @@ const MoreList = ({
         marginLeft: `${size[0] !== 0 && margin![0]}px`,
         marginTop: `${size[0] !== 0 && margin![1]}px`,
       }}
-      onWheel={(e) => {
-        e.stopPropagation();
-      }}
     >
       <div className="AllList-header">
         <h2>{dayText[modal.day]}</h2>
-        <button onClick={() => dispatch(modalActions.offModal())}>
+        <button
+          onClick={() => dispatch(modalActions.onoffModal({ type: "more" }))}
+        >
           <FontAwesomeIcon icon={faXmark} />
         </button>
       </div>

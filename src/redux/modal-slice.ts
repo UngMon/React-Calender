@@ -26,16 +26,17 @@ const modalSlice = createSlice({
     clickedList(state, action) {
       state.week = action.payload.week;
       state.day = action.payload.day;
+      state.mouseType = action.payload.type;
       switch (action.payload.type) {
         case "More":
-          state.moreModalOpen = true;
           state.date = action.payload.date;
           return;
         case "List":
-          state.listModalOpen = true;
           break;
+        // case "ListInMore":
+        //   state.listModalOpen = !state.listModalOpen;
+        //   break;
         default:
-          state.mouseType = "MoveList";
       }
       state.isDone = action.payload.object.isDone;
       state.color = action.payload.object.color;
@@ -48,10 +49,6 @@ const modalSlice = createSlice({
       state.index = action.payload.index;
     },
 
-    openList(state) {
-      state.listModalOpen = true;
-    },
-
     mouseMove(state, action) {
       state.startDate = action.payload.date;
       state.endDate = action.payload.date;
@@ -60,21 +57,36 @@ const modalSlice = createSlice({
       state.mouseType = action.payload.type;
     },
 
-    offModal(state) {
-      state.listModalOpen = false;
-      state.moreModalOpen = false;
-      state.date = "";
-      state.week = "";
-      state.day = "";
-      state.isDone = false;
-      state.color = "";
-      state.startDate = "";
-      state.endDate = "";
-      state.startTime = "";
-      state.endTime = "";
-      state.title = "";
-      state.key = "";
-      state.index = 0;
+    toggleList(state) {
+      state.listModalOpen = !state.listModalOpen;
+      state.mouseType = '';
+    },
+
+    toggleMore(state) {
+      state.moreModalOpen = !state.moreModalOpen;
+      state.mouseType = '';
+    },
+
+    onoffModal(state, action) {
+      switch (action.payload.type) {
+        case "more":
+          state.moreModalOpen = !state.moreModalOpen;
+          break;
+        default:
+          state.listModalOpen = false;
+      }
+      // state.date = "";
+      // state.week = "";
+      // state.day = "";
+      // state.isDone = false;
+      // state.color = "";
+      // state.startDate = "";
+      // state.endDate = "";
+      // state.startTime = "";
+      // state.endTime = "";
+      // state.title = "";
+      // state.key = "";
+      // state.index = 0;
     },
   },
 });

@@ -20,13 +20,13 @@ interface T {
   listBoxHeightCount: number;
   isDragging: boolean;
   setIsDragging: (value: boolean) => void;
+  clicekdPoint: React.MutableRefObject<[number, number]>;
 }
 
 interface Parameter {
   object: CalenderData;
   date: string;
   week: string;
-  day: string;
   index: number;
 }
 
@@ -43,6 +43,7 @@ const Schedule = ({
   listBoxHeightCount,
   isDragging,
   setIsDragging,
+  clicekdPoint,
 }: T) => {
   const dispatch = useAppDispatch();
   const schedule = data.userSchedule;
@@ -53,19 +54,27 @@ const Schedule = ({
     e: React.MouseEvent,
     isMore: boolean,
     parameter: Parameter,
-    mouse: string
+    day: string,
+    mouse?: string
   ) => {
-    clickedElement.current = e.target as HTMLDivElement;
-    console.log("type");
     let type: string;
     if (!isMore) type = "List";
     else type = "More";
-    if (mouse === "move") type = "MoveList";
-
-    const { object, date, day, week, index } = parameter;
+    // if (mouse === "move") type = "MoveList";
+    const { object, date, week, index } = parameter;
     dispatch(
       modalActions.clickedList({ type, object, date, day, week, index })
     );
+  };
+
+  const mouseUp = (
+    e: React.MouseEvent,
+    isMore: boolean,
+    parameter: Parameter,
+    day: string
+  ) => {
+    console.log("schedule mouseUp");
+    dataClickHandler(e, isMore, parameter, day);
   };
 
   const dateInfo = date.split("-");
@@ -91,7 +100,7 @@ const Schedule = ({
     // 년 , 월 , 일에서 일을 저장한 변수
     let thisDate: number = +dateInfo[2];
     // modal-slice에 전달할 객체
-    let parameter: Parameter = { object, date, week, day, index };
+    let parameter: Parameter = { object, date, week, index };
 
     for (let item of array[+day]) {
       // 리스트 개수가 화면에 보이는 날짜 칸을 넘어가면 break;
@@ -114,7 +123,7 @@ const Schedule = ({
 
         array[i][arrayCount] = (
           <div
-            key={arrayCount}
+            key={object.key}
             className={`${
               !isMore
                 ? object.endDate > object.startDate
@@ -128,29 +137,26 @@ const Schedule = ({
               display: i === +day || isMore ? "flex" : "none",
             }}
             onMouseDown={(e) => {
-              e.stopPropagation();
               console.log("schedule MouseDown");
-              !isDragging && setIsDragging(true);
-              dataClickHandler(e, isMore, parameter, "move");
-            }}
-            onMouseUp={(e) => {
+              if (modal.listModalOpen || modal.moreModalOpen) return;
               e.stopPropagation();
-              console.log(`schedule mpuseUp ${isDragging}`);
-              dataClickHandler(e, isMore, parameter, "click");
-              isDragging && setIsDragging(false);
-              // !isDragging && dataClickHandler(e, isMore, parameter, "click");
-              document.body.style.cursor = "auto";
+              // clicekdPoint.current = [e.pageX, e.pageY];
+              dataClickHandler(e, isMore, parameter, String(i));
+              setIsDragging(true)
             }}
-            onMouseMove={() => {
-              if (!isDragging) return;
-              console.log(isDragging);
-              document.body.style.cursor = "move";
-            }}
+            // onMouseMove={(e) => {
+            //   console.log('movemovemove')
+            //   // const absX = Math.abs(e.pageX - clicekdPoint.current[0]);
+            //   // const absY = Math.abs(e.pageX - clicekdPoint.current[1]);
+            //   // console.log("??????");
+            //   // if (absX > 2 || absY > 2) setIsDragging(true);
+            // }}
+            onMouseUp={(e) => mouseUp(e, isMore, parameter, String(i))}
             ref={(el: HTMLDivElement) => {
-              if (i !== +day) return;
+              if (i !== +day && !isMore) return;
               isMore
-                ? (allListRef.current[`${object.key}`] = el)
-                : (listRef.current[`${object.key}`] = el);
+                ? (allListRef.current[`${object.key + i + week}`] = el)
+                : (listRef.current[`${object.key + i + week}`] = el);
             }}
           >
             {!isLong && arrayCount < listBoxHeightCount - 1 && (

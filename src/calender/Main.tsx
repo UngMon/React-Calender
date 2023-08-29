@@ -33,6 +33,7 @@ const Main = ({
   const modal = useSelector((state: RootState) => state.modal);
 
   const viewRef = useRef<HTMLDivElement>(null);
+  const clicekdPoint = useRef<[number, number]>([0, 0]);
   const [isDragging, setIsDragging] = useState<boolean>(false);
 
   const firstDay: number = new Date(+year, +month - 1, 1).getDay();
@@ -70,21 +71,20 @@ const Main = ({
             allListRef={allListRef}
             viewRef={viewRef}
             clickedElement={clickedElement}
+            clicekdPoint={clicekdPoint}
             data={data}
             modal={modal}
           />
         </table>
         <div className={classes["modal-container"]}>
-          {data.addModalOpen &&
-            !modal.listModalOpen &&
-            !modal.moreModalOpen && (
-              <MakeEvent
-                viewRef={viewRef}
-                uid={auth.currentUser!.uid}
-                setIsDragging={setIsDragging}
-              />
-            )}
-          {!modal.listModalOpen && modal.moreModalOpen && (
+          {data.addModalOpen && (
+            <MakeEvent
+              viewRef={viewRef}
+              uid={auth.currentUser!.uid}
+              setIsDragging={setIsDragging}
+            />
+          )}
+          {modal.moreModalOpen && (
             <MoreList
               viewRef={viewRef}
               listRef={listRef}
@@ -93,7 +93,7 @@ const Main = ({
               list={list}
             />
           )}
-          {!data.addModalOpen && modal.listModalOpen && (
+          {modal.listModalOpen && (
             <List
               viewRef={viewRef}
               listRef={listRef}

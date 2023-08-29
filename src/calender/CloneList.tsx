@@ -43,6 +43,7 @@ const CloneList = ({
 
   const [newStart, setStartDate] = useState<string>(modal.startDate);
   const [newEnd, setEndDate] = useState<string>(modal.endDate);
+  const [isMove, setIsMove] = useState<boolean>(false);
 
   const moveDate = useCallback((date: string, move: number) => {
     const currentDate = new Date(date);
@@ -65,7 +66,7 @@ const CloneList = ({
       (실시간좌표[1] - 고정좌표[1]) * 7 + (실시간좌표[0] - 고정좌표[0]);
     let startDate: string;
     let endDate: string;
-
+      
     if (modal.mouseType === "MakeList") {
       startDate = move >= 0 ? modal.startDate : moveDate(modal.startDate, move);
       endDate = move >= 0 ? moveDate(modal.endDate, move) : modal.endDate;
@@ -73,21 +74,21 @@ const CloneList = ({
       startDate = moveDate(modal.startDate, move);
       endDate = moveDate(modal.endDate, move);
     }
+  
     setStartDate(startDate);
     setEndDate(endDate);
   }, [moveDate, modal, 고정좌표, 실시간좌표]);
 
   const mouseEnter = (day: number, week: number) => {
     if (data.addModalOpen) return;
-    console.log(`day, week ${day} ${week}`);
     실시간좌표설정([day, week]);
     고정좌표[0] === 0 && 고정좌표설정([day, week]);
   };
 
-  const mouseUp = () => {
+  const mouseUp = (e: React.MouseEvent) => {
+    e.stopPropagation();
     console.log(`mouseUp ${isDragging}`);
     document.body.style.cursor = "auto";
-
     const array = MakeLongArr(newStart.split("-"), newEnd.split("-"));
     if (modal.mouseType === "MakeList") {
       let day = 0;
@@ -111,9 +112,10 @@ const CloneList = ({
         dataActions.clickedDate({ type, newStart, newEnd, array, day, week })
       );
     } else {
+      setIsDragging(false);
+      setIsMove(false);
       if (실시간좌표[0] === 고정좌표[0] && 실시간좌표[1] === 고정좌표[1]) {
-        setIsDragging(false);
-        dispatch(modalActions.openList());
+        dispatch(modalActions.toggleList());
         return;
       }
 
@@ -141,18 +143,14 @@ const CloneList = ({
       const newSchedule: UserData = MakeList(parameter);
       // 데이터 전송
       dispatch(sendUserData({ newSchedule, uid, type: "POST" }));
-      setIsDragging(false);
     }
   };
 
   const mouseMove = () => {
-    if (data.addModalOpen) {
-      // 모달창이 열려있으면 마우스 커서 icon을 기본으로, move이벤트 발생 x
-      if (document.body.style.cursor === "auto")
-        document.body.style.cursor = "auto";
-      return;
-    }
+    // 모달창이 열려있으면 마우스 커서 icon을 기본으로, move이벤트 발생 x
+    if (data.addModalOpen || !isMove) return;
     document.body.style.cursor = "move";
+    setIsMove(true);
   };
 
   const scheduleHandler = (date: string, day: number, week: number) => {
@@ -169,7 +167,7 @@ const CloneList = ({
         style={{
           width: `${barWidth}00%`,
           top: `1px`,
-          opacity: "0.8",
+          opacity: "0.9",
         }}
       >
         <div
@@ -215,9 +213,6 @@ const CloneList = ({
           onMouseUp={mouseUp}
           onMouseMove={mouseMove}
         >
-          <div className={classes.date}>
-            <div className={classes["date-h"]} />
-          </div>
           <div className={classes["list-box"]}>
             <div className={classes["list-area"]}>
               {scheduleHandler(date, i, 주)}

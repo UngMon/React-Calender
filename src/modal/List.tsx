@@ -76,70 +76,64 @@ const List = ({
     };
 
     window.addEventListener("resize", widthCalculator);
+
+    return () => window.removeEventListener("resize", widthCalculator);
   });
 
   useEffect(() => {
-    //check 수정 필요
-    console.log('effect')
+    console.log(modal);
+
     const closeHandler = (e: MouseEvent) => {
-      const target = e.target as Node;
-
-      // 색상 선택 on, off
-      if (openColor) {
-        if (!colorRef.current!.contains(target)) {
+      console.log('???')
+      const target = e.target as HTMLDivElement;
+      if (!list.current?.contains(target)) {
+        // list 밖을 클릭할 경우
+        console.log('????????')
+  
+        console.log(clickedElement.current?.contains(target))
+        if (clickedElement.current?.contains(target)) {
+          // list 밖 같은 리스트를 클릭하면 리스트 창이 닫게함.
+          console.log('같은거 클릭')
           setTimeout(() => {
-            setOpenColor(false);
-          }, 100);
+            clickedElement.current = null;
+            dispatch(modalActions.onoffModal({ type: "list" }));
+          }, 150);
         }
-      }
 
-      // 같은 리스트를 클릭하면 모달창이 종료되게하기
-      if (target === clickedElement.current!) {
-        console.log('same clicked')
-        setTimeout(() => {
-          dispatch(modalActions.offModal());
-        }, 100);
-        return;
-      }
-
-      // 같은 리스트가 아닌 다른 element 클릭했을 때,
-      // 우선 clickedElement에 target 저장
-      clickedElement.current = target as HTMLDivElement;
-      console.log(listRef.current)
-      console.log(target)
-      // list 모달창 영역 밖을 클릭했을 때,
-      if (!list.current!.contains(target)) {
         for (const key in listRef.current) {
-          console.log(listRef.current[key])
-          if (listRef.current[key] === null) continue;
-
-          if (!listRef.current[key]!.contains(target)) continue;
-
-          return;
+          // 모달 밖 일정을 클릭
+          console.log(listRef.current[key]?.contains(target))
+          if (listRef.current[key]?.contains(target)) return;
         }
 
         for (const key in allListRef.current) {
-          console.log(allListRef.current[key]!)
-          if (allListRef.current[key] === null) continue;
-
-          if (!allListRef.current[key]!.contains(target)) continue;
-
-          setTimeout(() => {
-            dispatch(modalActions.offModal());
-          }, 100);
-          return;
+          // 모달 밖 더보기를 클릭
+          console.log(allListRef.current[key]?.contains(target))
+          if (allListRef.current[key]?.contains(target)) return;
         }
 
+        // clickedElement Ref에 target저장
+        clickedElement.current = target;
+        console.log('list 모달 밖 클릭')
+        // 위 두가지가 아닌 영역을 클릭한 경우 list 모달창 닫음.
+        if (modal.mouseType === '') return;
         setTimeout(() => {
-          dispatch(modalActions.offModal());
+          dispatch(modalActions.onoffModal({ type: "list" }));
           dispatch(timeActions.resetTime());
+        }, 150);
+      }
+
+      // 리스트 영역안에서 컬러선택창이 열려있고, 컬러선택 창 밖을 클릭 한 경우
+      if (openColor && !colorRef.current?.contains(target)) {
+        setTimeout(() => {
+          setOpenColor(false);
         }, 150);
       }
     };
 
-    document.addEventListener("mousedown", closeHandler);
+    document.addEventListener("mouseup", closeHandler);
     return () => {
-      document.removeEventListener("mousedown", closeHandler);
+      document.removeEventListener("mouseup", closeHandler);
     };
   });
 
@@ -156,7 +150,7 @@ const List = ({
     }
 
     dispatch(sendUserData({ newSchedule, uid, type: "POST" }));
-    dispatch(modalActions.offModal());
+    dispatch(modalActions.onoffModal({ type: "list" }));
   };
 
   const editButtonHandler = (startDate: string, endDate: string) => {
@@ -231,10 +225,10 @@ const List = ({
   };
 
   const closeModalHandler = () => {
-    dispatch(modalActions.offModal());
+    dispatch(modalActions.onoffModal({ type: "list" }));
     dispatch(timeActions.resetTime());
   };
-
+  // console.log(data.userSchedule[modal.startDate]);
   const styleClass = data.userSchedule[modal.startDate][modal.key].isDone
     ? "done"
     : false;

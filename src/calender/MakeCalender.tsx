@@ -30,6 +30,7 @@ interface T {
   listRef: React.MutableRefObject<ListOrMore>;
   allListRef: React.MutableRefObject<ListOrMore>;
   clickedElement: React.MutableRefObject<HTMLDivElement | null>;
+  clicekdPoint: React.MutableRefObject<[number, number]>;
   data: DataType;
   modal: ModalType;
 }
@@ -45,6 +46,7 @@ const MakeCalender = ({
   listRef,
   allListRef,
   clickedElement,
+  clicekdPoint,
   data,
   modal,
 }: T) => {
@@ -72,8 +74,9 @@ const MakeCalender = ({
   });
 
   const mouseDown = (day: string, week: string, date: string) => {
-    console.log("Make Down");
+    if (modal.listModalOpen || modal.moreModalOpen) return;
     if (isDragging) return;
+    console.log("Make Down");
     setIsDragging(true);
     dispatch(modalActions.mouseMove({ type: "MakeList", day, week, date }));
   };
@@ -118,13 +121,7 @@ const MakeCalender = ({
       thisWeekArray.push(
         <td
           key={date}
-          // onMouseUp={() => {
-          //   console.log("Make mouseUp");
-          //   !isDragging && addClickHandler(date, day, week);
-          //   isDragging && setIsDragging(false);
-          // }}
-          onMouseDown={(e) => {
-            e.stopPropagation();
+          onMouseDown={() => {
             mouseDown(day, week, date);
           }}
           className={classes.date_box}
@@ -156,6 +153,7 @@ const MakeCalender = ({
                 listBoxHeightCount,
                 isDragging,
                 setIsDragging,
+                clicekdPoint,
               })}
             </div>
           </div>
