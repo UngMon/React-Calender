@@ -73,7 +73,7 @@ const MoreList = ({
       clickedElement.current = target;
       // 더 보기창 밖의 영역을 클릭한 경우
       if (!modalRef.current!.contains(target)) {
-
+        console.log('why')
         // 밖의 영역중에서 더보기를 클릭한 경우
         for (const key in allListRef.current) {
           if(allListRef.current[key]!.contains(target)) return;
@@ -192,7 +192,7 @@ const MoreList = ({
       <div className="AllList-header">
         <h2>{dayText[modal.day]}</h2>
         <button
-          onClick={() => dispatch(modalActions.onoffModal({ type: "more" }))}
+          onClick={() => dispatch(modalActions.onoffModal({ type: "More" }))}
         >
           <FontAwesomeIcon icon={faXmark} />
         </button>

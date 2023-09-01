@@ -2,7 +2,6 @@ import React, { ReactNode, useEffect, useState } from "react";
 import { DataType, ModalType } from "../type/ReduxType";
 import { useAppDispatch } from "../redux/store";
 import { modalActions } from "../redux/modal-slice";
-import { dataActions } from "../redux/data-slice";
 import { ListOrMore } from "../type/RefType";
 import classes from "./MakeCalender.module.css";
 import Schedule from "./Schedule";
@@ -30,7 +29,6 @@ interface T {
   listRef: React.MutableRefObject<ListOrMore>;
   allListRef: React.MutableRefObject<ListOrMore>;
   clickedElement: React.MutableRefObject<HTMLDivElement | null>;
-  clicekdPoint: React.MutableRefObject<[number, number]>;
   data: DataType;
   modal: ModalType;
 }
@@ -46,7 +44,6 @@ const MakeCalender = ({
   listRef,
   allListRef,
   clickedElement,
-  clicekdPoint,
   data,
   modal,
 }: T) => {
@@ -81,16 +78,16 @@ const MakeCalender = ({
     dispatch(modalActions.mouseMove({ type: "MakeList", day, week, date }));
   };
 
-  const addClickHandler = (date: string, day: string, week: string) => {
-    if (modal.listModalOpen || modal.moreModalOpen) return;
-    const type = "add";
+  // const addClickHandler = (date: string, day: string, week: string) => {
+  //   if (modal.listModalOpen || modal.moreModalOpen) return;
+  //   const type = "add";
 
-    if (!data.addModalOpen) {
-      dispatch(
-        dataActions.clickedDate({ type, date, day, week, dateArray: [date] })
-      );
-    }
-  };
+  //   if (!data.addModalOpen) {
+  //     dispatch(
+  //       dataActions.clickedDate({ type, date, day, week, dateArray: [date] })
+  //     );
+  //   }
+  // };
 
   const dateArray: React.ReactNode[] = [];
 
@@ -138,25 +135,19 @@ const MakeCalender = ({
               </h2>
             </div>
           </div>
-          <div className={classes["list-box"]}>
-            <div className={classes["list-area"]}>
-              {Schedule({
-                date,
-                day,
-                week,
-                array,
-                data,
-                modal,
-                listRef,
-                allListRef,
-                clickedElement,
-                listBoxHeightCount,
-                isDragging,
-                setIsDragging,
-                clicekdPoint,
-              })}
-            </div>
-          </div>
+          <Schedule
+            date={date}
+            day={day}
+            week={week}
+            array={array}
+            data={data}
+            modal={modal}
+            listRef={listRef}
+            allListRef={allListRef}
+            clickedElement={clickedElement}
+            listBoxHeightCount={listBoxHeightCount}
+            setIsDragging={setIsDragging}
+          />
         </td>
       );
     }

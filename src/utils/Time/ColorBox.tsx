@@ -35,7 +35,7 @@ const ColorBox = ({
   };
 
   return (
-    <div className="color-picker">
+    <div className="color-picker" ref={colorRef}>
       <img
         src="../images/palette.png"
         alt="memo"
@@ -51,7 +51,6 @@ const ColorBox = ({
       ></div>
       <div
         className="color-box"
-        ref={colorRef}
         style={{ display: openColor ? "flex" : "none" }}
       >
         {colorArray.map((item) => (

@@ -81,46 +81,38 @@ const List = ({
   });
 
   useEffect(() => {
-    console.log(modal);
-
     const closeHandler = (e: MouseEvent) => {
-      console.log('???')
       const target = e.target as HTMLDivElement;
+      console.log('???');
+      
       if (!list.current?.contains(target)) {
         // list 밖을 클릭할 경우
-        console.log('????????')
-  
-        console.log(clickedElement.current?.contains(target))
+        console.log(clickedElement.current);
+
         if (clickedElement.current?.contains(target)) {
           // list 밖 같은 리스트를 클릭하면 리스트 창이 닫게함.
-          console.log('같은거 클릭')
+          console.log(clickedElement.current?.contains(target));
           setTimeout(() => {
             clickedElement.current = null;
             dispatch(modalActions.onoffModal({ type: "list" }));
           }, 150);
+          return;
         }
+
+        clickedElement.current = target; // clickedElement Ref에 target저장
 
         for (const key in listRef.current) {
           // 모달 밖 일정을 클릭
-          console.log(listRef.current[key]?.contains(target))
+          console.log(listRef.current[key]?.contains(target));
           if (listRef.current[key]?.contains(target)) return;
         }
 
-        for (const key in allListRef.current) {
-          // 모달 밖 더보기를 클릭
-          console.log(allListRef.current[key]?.contains(target))
-          if (allListRef.current[key]?.contains(target)) return;
-        }
-
-        // clickedElement Ref에 target저장
-        clickedElement.current = target;
-        console.log('list 모달 밖 클릭')
         // 위 두가지가 아닌 영역을 클릭한 경우 list 모달창 닫음.
-        if (modal.mouseType === '') return;
+        if (modal.mouseType === "") return;
         setTimeout(() => {
-          dispatch(modalActions.onoffModal({ type: "list" }));
           dispatch(timeActions.resetTime());
-        }, 150);
+          dispatch(modalActions.onoffModal({ type: "list" }));
+        }, 0);
       }
 
       // 리스트 영역안에서 컬러선택창이 열려있고, 컬러선택 창 밖을 클릭 한 경우
@@ -130,10 +122,9 @@ const List = ({
         }, 150);
       }
     };
-
-    document.addEventListener("mouseup", closeHandler);
+    document.addEventListener("click", closeHandler);
     return () => {
-      document.removeEventListener("mouseup", closeHandler);
+      document.removeEventListener("click", closeHandler);
     };
   });
 
@@ -225,7 +216,7 @@ const List = ({
   };
 
   const closeModalHandler = () => {
-    dispatch(modalActions.onoffModal({ type: "list" }));
+    dispatch(modalActions.offList());
     dispatch(timeActions.resetTime());
   };
   // console.log(data.userSchedule[modal.startDate]);

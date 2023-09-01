@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { timeActions } from "../../redux/time-slice";
-import { ListOrMore } from "../../utils/RefType";
+import { ListOrMore } from "../../type/RefType";
 import { useAppDispatch } from "../../redux/store";
 
 interface T {

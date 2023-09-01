@@ -90,6 +90,7 @@ const TimeBoxTwo = ({ timeTwoRef, twoRef, timeVisible, timeRef }: T) => {
       <div id="time-selector">
         {timeArray.map((item, index) => (
           <div
+            key={index}
             ref={(el) => (twoRef.current[index] = el)}
             onClick={(e: React.MouseEvent) => clickHandler(e)}
           >

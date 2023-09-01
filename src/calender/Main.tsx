@@ -33,7 +33,6 @@ const Main = ({
   const modal = useSelector((state: RootState) => state.modal);
 
   const viewRef = useRef<HTMLDivElement>(null);
-  const clicekdPoint = useRef<[number, number]>([0, 0]);
   const [isDragging, setIsDragging] = useState<boolean>(false);
 
   const firstDay: number = new Date(+year, +month - 1, 1).getDay();
@@ -71,7 +70,6 @@ const Main = ({
             allListRef={allListRef}
             viewRef={viewRef}
             clickedElement={clickedElement}
-            clicekdPoint={clicekdPoint}
             data={data}
             modal={modal}
           />
@@ -116,6 +114,7 @@ const Main = ({
           uid={auth.currentUser!.uid}
           isDragging={isDragging}
           setIsDragging={setIsDragging}
+          clickedElement={clickedElement}
         />
       )}
     </main>

@@ -58,6 +58,7 @@ export interface ModalType {
   key: string;
   index: number;
   mouseType: string;
+  click: string;
 }
 
 ///// time /////

@@ -20,6 +20,7 @@ interface T {
   uid: string;
   isDragging: boolean;
   setIsDragging: (value: boolean) => void;
+  clickedElement: React.MutableRefObject<HTMLDivElement | null>;
 }
 
 const CloneList = ({
@@ -32,6 +33,7 @@ const CloneList = ({
   uid,
   isDragging,
   setIsDragging,
+  clickedElement,
 }: T) => {
   const dispatch = useAppDispatch();
 
@@ -43,7 +45,7 @@ const CloneList = ({
 
   const [newStart, setStartDate] = useState<string>(modal.startDate);
   const [newEnd, setEndDate] = useState<string>(modal.endDate);
-  const [isMove, setIsMove] = useState<boolean>(false);
+  const [isMoving, setIsMoving] = useState<boolean>(false);
 
   const moveDate = useCallback((date: string, move: number) => {
     const currentDate = new Date(date);
@@ -66,7 +68,7 @@ const CloneList = ({
       (실시간좌표[1] - 고정좌표[1]) * 7 + (실시간좌표[0] - 고정좌표[0]);
     let startDate: string;
     let endDate: string;
-      
+
     if (modal.mouseType === "MakeList") {
       startDate = move >= 0 ? modal.startDate : moveDate(modal.startDate, move);
       endDate = move >= 0 ? moveDate(modal.endDate, move) : modal.endDate;
@@ -74,7 +76,7 @@ const CloneList = ({
       startDate = moveDate(modal.startDate, move);
       endDate = moveDate(modal.endDate, move);
     }
-  
+
     setStartDate(startDate);
     setEndDate(endDate);
   }, [moveDate, modal, 고정좌표, 실시간좌표]);
@@ -85,10 +87,11 @@ const CloneList = ({
     고정좌표[0] === 0 && 고정좌표설정([day, week]);
   };
 
-  const mouseUp = (e: React.MouseEvent) => {
+  const mouseUp = (e: React.MouseEvent, day: number, week: number) => {
     e.stopPropagation();
     console.log(`mouseUp ${isDragging}`);
     document.body.style.cursor = "auto";
+    setIsMoving(false);
     const array = MakeLongArr(newStart.split("-"), newEnd.split("-"));
     if (modal.mouseType === "MakeList") {
       let day = 0;
@@ -111,11 +114,21 @@ const CloneList = ({
       dispatch(
         dataActions.clickedDate({ type, newStart, newEnd, array, day, week })
       );
-    } else {
+    }
+
+    if (modal.mouseType === "List") {
       setIsDragging(false);
-      setIsMove(false);
       if (실시간좌표[0] === 고정좌표[0] && 실시간좌표[1] === 고정좌표[1]) {
-        dispatch(modalActions.toggleList());
+        if (isMoving) {
+          clickedElement.current = null;
+          return;
+        }
+
+        if (modal.click === "same") {
+          dispatch(modalActions.offList());
+        } else {
+          dispatch(modalActions.onList());
+        }
         return;
       }
 
@@ -148,12 +161,14 @@ const CloneList = ({
 
   const mouseMove = () => {
     // 모달창이 열려있으면 마우스 커서 icon을 기본으로, move이벤트 발생 x
-    if (data.addModalOpen || !isMove) return;
+    if (data.addModalOpen || isMoving) return;
+    console.log("clone Mouse Move");
+    setIsMoving(true);
+    dispatch(modalActions.offList());
     document.body.style.cursor = "move";
-    setIsMove(true);
   };
 
-  const scheduleHandler = (date: string, day: number, week: number) => {
+  const scheduleHandler = (date: string, day: number) => {
     if (!newStart || !newEnd) return;
     if (date < newStart! || newEnd! < date) return;
     if (day !== 1 && date !== newStart) return;
@@ -172,10 +187,10 @@ const CloneList = ({
       >
         <div
           className={`${classes.list}
-   ${classes.long} ${modal.color || "라벤더"}`}
+          ${classes.long} ${modal.color || "라벤더"}`}
         >
           <div
-            className={`${classes["type-two"]} ${modal.isDone && classes.done}`}
+            className={`${classes["type-one"]} ${modal.isDone && classes.done}`}
           >
             {modal.startTime + " " + modal.title}
           </div>
@@ -210,12 +225,12 @@ const CloneList = ({
           key={date}
           className={classes.date_box}
           onMouseEnter={() => mouseEnter(i, 주)}
-          onMouseUp={mouseUp}
+          onMouseUp={(e) => mouseUp(e, i, 주)}
           onMouseMove={mouseMove}
         >
           <div className={classes["list-box"]}>
             <div className={classes["list-area"]}>
-              {scheduleHandler(date, i, 주)}
+              {isMoving && scheduleHandler(date, i)}
             </div>
           </div>
         </td>

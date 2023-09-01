@@ -17,6 +17,7 @@ const initialState: ModalType = {
   key: "",
   index: 0, // 그 날 일정에서 몇 번째 항목인지
   mouseType: "",
+  click: ''
 };
 
 const modalSlice = createSlice({
@@ -26,18 +27,7 @@ const modalSlice = createSlice({
     clickedList(state, action) {
       state.week = action.payload.week;
       state.day = action.payload.day;
-      state.mouseType = action.payload.type;
-      switch (action.payload.type) {
-        case "More":
-          state.date = action.payload.date;
-          return;
-        case "List":
-          break;
-        // case "ListInMore":
-        //   state.listModalOpen = !state.listModalOpen;
-        //   break;
-        default:
-      }
+      state.mouseType = "List";
       state.isDone = action.payload.object.isDone;
       state.color = action.payload.object.color;
       state.startDate = action.payload.object.startDate;
@@ -47,6 +37,23 @@ const modalSlice = createSlice({
       state.title = action.payload.object.title;
       state.key = action.payload.object.key;
       state.index = action.payload.index;
+      state.click = action.payload.click;
+    },
+
+    onList(state) {
+      state.listModalOpen = true;
+    },
+
+    offList(state) {
+      state.listModalOpen = false;
+    },
+
+    clickedMore(state, action) {
+      state.moreModalOpen = true;
+      state.date = action.payload.date;
+      state.week = action.payload.week;
+      state.day = action.payload.day;
+      state.mouseType = "More";
     },
 
     mouseMove(state, action) {
@@ -57,36 +64,19 @@ const modalSlice = createSlice({
       state.mouseType = action.payload.type;
     },
 
-    toggleList(state) {
-      state.listModalOpen = !state.listModalOpen;
-      state.mouseType = '';
-    },
-
     toggleMore(state) {
       state.moreModalOpen = !state.moreModalOpen;
-      state.mouseType = '';
+      state.mouseType = "";
+    },
+
+    offMore(state) {
+      state.moreModalOpen = false;
     },
 
     onoffModal(state, action) {
-      switch (action.payload.type) {
-        case "more":
-          state.moreModalOpen = !state.moreModalOpen;
-          break;
-        default:
-          state.listModalOpen = false;
-      }
-      // state.date = "";
-      // state.week = "";
-      // state.day = "";
-      // state.isDone = false;
-      // state.color = "";
-      // state.startDate = "";
-      // state.endDate = "";
-      // state.startTime = "";
-      // state.endTime = "";
-      // state.title = "";
-      // state.key = "";
-      // state.index = 0;
+      if (action.payload.type === "More")
+        state.moreModalOpen = !state.moreModalOpen;
+      else state.listModalOpen = !state.listModalOpen;
     },
   },
 });
@@ -94,3 +84,30 @@ const modalSlice = createSlice({
 export const modalActions = modalSlice.actions;
 
 export const modalReducer = modalSlice.reducer;
+
+// state.date = "";
+// state.week = "";
+// state.day = "";
+// state.isDone = false;
+// state.color = "";
+// state.startDate = "";
+// state.endDate = "";
+// state.startTime = "";
+// state.endTime = "";
+// state.title = "";
+// state.key = "";
+// state.index = 0;
+// state.mouseType = '';
+
+// switch (action.payload.type) {
+//   // case "More":
+//   //   state.date = action.payload.date;
+//   //   state.moreModalOpen = !state.moreModalOpen;
+//   //   return;
+//   case "List":
+//     break;
+//   // case "ListInMore":
+//   //   state.listModalOpen = !state.listModalOpen;
+//   //   break;
+//   default:
+// }

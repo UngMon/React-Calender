@@ -18,9 +18,7 @@ interface T {
   allListRef: React.MutableRefObject<ListOrMore>;
   clickedElement: React.MutableRefObject<HTMLDivElement | null>;
   listBoxHeightCount: number;
-  isDragging: boolean;
   setIsDragging: (value: boolean) => void;
-  clicekdPoint: React.MutableRefObject<[number, number]>;
 }
 
 interface Parameter {
@@ -41,40 +39,43 @@ const Schedule = ({
   allListRef,
   clickedElement,
   listBoxHeightCount,
-  isDragging,
   setIsDragging,
-  clicekdPoint,
-}: T) => {
+}: T): JSX.Element => {
   const dispatch = useAppDispatch();
   const schedule = data.userSchedule;
 
-  if (!schedule[date]) return;
+  if (!schedule[date]) <></>;
 
-  const dataClickHandler = (
-    e: React.MouseEvent,
-    isMore: boolean,
-    parameter: Parameter,
-    day: string,
-    mouse?: string
-  ) => {
-    let type: string;
-    if (!isMore) type = "List";
-    else type = "More";
-    // if (mouse === "move") type = "MoveList";
-    const { object, date, week, index } = parameter;
-    dispatch(
-      modalActions.clickedList({ type, object, date, day, week, index })
-    );
+  const listClickHandler = (param: Parameter, day: string, click: string) => {
+    dispatch(modalActions.clickedList({ type: "List", ...param, day, click }));
   };
 
-  const mouseUp = (
-    e: React.MouseEvent,
-    isMore: boolean,
-    parameter: Parameter,
-    day: string
-  ) => {
+  const mouseDown = (e: React.MouseEvent, param: Parameter, day: string) => {
+    console.log("schedule MouseDown");
+    let click = "";
+
+    if (clickedElement.current === e.target) {
+      click = "same";
+      clickedElement.current = null;
+    } else {
+      click = "no";
+      clickedElement.current = e.target as HTMLDivElement;
+    }
+
+    listClickHandler(param, day, click);
+    setIsDragging(true);
+  };
+
+  const mouseUp = (isMore: boolean, param: Parameter, day: string) => {
     console.log("schedule mouseUp");
-    dataClickHandler(e, isMore, parameter, day);
+    if (isMore) {
+      const [date, week, key] = [param.date, param.week, param.object.key];
+      dispatch(modalActions.clickedMore({ date, week, day, key }));
+    } else {
+      listClickHandler(param, day, "no");
+      dispatch(modalActions.onList());
+      dispatch(modalActions.offMore());
+    }
   };
 
   const dateInfo = date.split("-");
@@ -137,21 +138,14 @@ const Schedule = ({
               display: i === +day || isMore ? "flex" : "none",
             }}
             onMouseDown={(e) => {
-              console.log("schedule MouseDown");
-              if (modal.listModalOpen || modal.moreModalOpen) return;
               e.stopPropagation();
-              // clicekdPoint.current = [e.pageX, e.pageY];
-              dataClickHandler(e, isMore, parameter, String(i));
-              setIsDragging(true)
+              if (modal.moreModalOpen || isMore) return;
+              mouseDown(e, parameter, String(i));
             }}
-            // onMouseMove={(e) => {
-            //   console.log('movemovemove')
-            //   // const absX = Math.abs(e.pageX - clicekdPoint.current[0]);
-            //   // const absY = Math.abs(e.pageX - clicekdPoint.current[1]);
-            //   // console.log("??????");
-            //   // if (absX > 2 || absY > 2) setIsDragging(true);
-            // }}
-            onMouseUp={(e) => mouseUp(e, isMore, parameter, String(i))}
+            onMouseUp={(e) => {
+              e.stopPropagation();
+              mouseUp(isMore, parameter, String(i));
+            }}
             ref={(el: HTMLDivElement) => {
               if (i !== +day && !isMore) return;
               isMore
@@ -210,7 +204,11 @@ const Schedule = ({
     index += 1;
   }
 
-  return array[+day];
+  return (
+    <div className={classes["list-box"]}>
+      <div className={classes["list-area"]}>{array[+day]}</div>
+    </div>
+  );
 };
 
 export default Schedule;
