@@ -1,5 +1,8 @@
-import React, { useState } from "react";
+import React from "react";
 import Calender from "./Secon-Caledner";
+import { RootState, useAppDispatch } from "../../redux/store";
+import { useSelector } from "react-redux";
+import { dateActions } from "../../redux/date-slice";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAngleLeft, faAngleRight } from "@fortawesome/free-solid-svg-icons";
 import { ButtonRef } from "../../type/RefType";
@@ -7,44 +10,32 @@ import classes from "./second.module.css";
 
 interface T {
   type: string;
-  year: string;
-  month: string;
   dateRef: React.MutableRefObject<ButtonRef>;
   dateClose: (value: string) => void;
 }
 
-const Month = ({ type, year, month, dateRef, dateClose }: T) => {
+const Month = ({ type, dateRef, dateClose }: T) => {
   console.log("secondMonth");
-  // console.log(dateRef.current);
-  const [thisYear, setYear] = useState<number>(+year);
-  const [thisMonth, setMonth] = useState<number>(+month);
 
-  const firstDay = new Date(thisYear, thisMonth - 1, 1).getDay();
-  const lastDate = new Date(thisYear, thisMonth, 0).getDate();
+  const dispatch = useAppDispatch();
+  const date = useSelector((state: RootState) => state.date);
+
+  const firstDay = new Date(+date.year, +date.month - 1, 1).getDay();
+  const lastDate = new Date(+date.year, +date.month, 0).getDate();
 
   const movePrevMonthHandler = () => {
-    if (thisMonth === 1) {
-      setMonth(12);
-      setYear((prevState) => prevState - 1);
-    } else {
-      setMonth((prevState) => prevState - 1);
-    }
+    dispatch(dateActions.prevMonth());
   };
 
   const moveNextMonthHandler = () => {
-    if (thisMonth === 12) {
-      setYear((prevState) => prevState + 1);
-      setMonth(1);
-    } else {
-      setMonth((prevState) => prevState + 1);
-    }
+    dispatch(dateActions.nextMonth());
   };
 
   return (
     <div className={classes["second-month-box"]}>
       <div className={classes["month-area"]}>
         <span>
-          {thisYear}년 {thisMonth}월
+          {date.year}년 {+date.month}월
         </span>
         <button
           onClick={movePrevMonthHandler}
@@ -68,11 +59,11 @@ const Month = ({ type, year, month, dateRef, dateClose }: T) => {
         </button>
       </div>
       <Calender
-        year={thisYear}
-        month={thisMonth}
+        type={type}
+        year={+date.year}
+        month={+date.month}
         firstDay={firstDay}
         lastDate={lastDate}
-        type={type}
         dateRef={dateRef}
         dateClose={dateClose}
       />

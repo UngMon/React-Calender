@@ -78,17 +78,6 @@ const MakeCalender = ({
     dispatch(modalActions.mouseMove({ type: "MakeList", day, week, date }));
   };
 
-  // const addClickHandler = (date: string, day: string, week: string) => {
-  //   if (modal.listModalOpen || modal.moreModalOpen) return;
-  //   const type = "add";
-
-  //   if (!data.addModalOpen) {
-  //     dispatch(
-  //       dataActions.clickedDate({ type, date, day, week, dateArray: [date] })
-  //     );
-  //   }
-  // };
-
   const dateArray: React.ReactNode[] = [];
 
   /* 날짜 생성하기 */

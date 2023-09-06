@@ -6,12 +6,10 @@
 
 html,
 body {
+  min-width: 320px;
   width: 100%;
   height: 100%;
-  background-color: rgb(246, 245, 245);
-  /* background-image: linear-gradient( #5810f3 10%, #ce9bf3 100%); */
-  /* background-repeat: no-repeat; */
-  /* background-image: linear-gradient(to bottom ,rgba(255,244,169,1), rgba(255,244,234,1)); */
+  background-color: rgb(251, 251, 251);
 }
 
 body {
@@ -39,4 +37,32 @@ code {
   margin: 0 auto;
   text-align: center;
   align-items: center;
+}
+
+button {
+  background-color: transparent;
+  border: 0;
+  border-radius: 50%;
+}
+
+button:hover {
+  background-color: lightgray;
+}
+
+input:focus {
+  outline: none;
+}
+
+.logo span{
+  font-family: "Pacifico", cursive;
+}
+
+.logo:hover {
+  cursor: pointer;
+}
+
+@media (max-width: 500px) {
+  .logo {
+    display: none;
+  }
 }

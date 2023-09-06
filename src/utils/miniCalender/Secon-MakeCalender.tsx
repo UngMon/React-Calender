@@ -3,28 +3,27 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../redux/store";
 import { ButtonRef } from "../../type/RefType";
 import { dataActions } from "../../redux/data-slice";
-import { dateActions } from "../../redux/date-slice";
 import MakeLongArr from "../MakeLongArr";
 import classes from "./second.module.css";
 
 interface T {
+  type: string;
   year: number;
   month: number;
   firstDay: number;
   lastDate: number;
   identify: string;
-  type: string;
   dateRef: React.MutableRefObject<ButtonRef>;
   dateClose: (value: string) => void;
 }
 
 const MakeCaledner = ({
+  type,
   year,
   month,
   firstDay,
   lastDate,
   identify,
-  type,
   dateRef,
   dateClose,
 }: T) => {
@@ -35,20 +34,15 @@ const MakeCaledner = ({
   const data = useSelector((state: RootState) => state.data);
   const modal = useSelector((state: RootState) => state.modal);
 
-  const clickHandler = (
-    date: string,
-    day: number,
-    week: number,
-    type: string
-  ) => {
+  const clickHandler = (date: string, day: number, week: number) => {
     const 선택날짜 = date.split("-"); // ['year', 'month', 'date']
 
     // 미니 캘린더에서 다음달로 넘어가면 메인 캘린더도 같이 다음달과 넘어가기 위함.
-    if (data.startDate !== date) {
-      // 기존 modalState를 갱신해줌..
-      const thisMonth = month - 1;
-      dispatch(dateActions.setMonth({ 선택날짜, thisMonth }));
-    }
+    // if (data.startDate !== date) {
+    //   // 기존 modalState를 갱신해줌..
+    //   // const thisMonth = month - 1;
+    //   // dispatch(dateActions.setMonth({ 선택날짜, thisMonth }));
+    // }
 
     // 미니 캘린더에서 날짜를 클릭하면,
     // 해당 날짜로 MakeEvent.tsx가 렌더링, 한 마디로 모달창이 이동하는 기능
@@ -94,24 +88,24 @@ const MakeCaledner = ({
         .toISOString()
         .split("T")[0];
 
-      const [_, 월, 일] = date.split("-");
+      const 일 = date.split("-")[2];
 
       thisMonthArray.push(
         <td
           key={date}
-          onMouseUp={() => clickHandler}
-          className={classes.date_box}
+          onClick={() => clickHandler(date, i, week)}
+          className={`classes.date_box ${
+            date === data.startDate && classes["startDate"]
+          } ${date === data.endDate && classes["endDate"]}`}
         >
-          <div className={classes.date}>
-            <div className={classes["date-h"]}>
-              <h2
-                className={`${
-                  i === 1 ? classes.sunday : i === 7 && classes.saturday
-                } ${identify === date && classes.Today}`}
-              >
-                {일 === "01" ? `${+월}월 1일` : +일}
-              </h2>
-            </div>
+          <div className={classes["date-h"]}>
+            <span
+              className={`${
+                i === 1 ? classes.sunday : i === 7 && classes.saturday
+              } ${identify === date && classes.Today}`}
+            >
+              {일}
+            </span>
           </div>
         </td>
       );
@@ -133,7 +127,7 @@ const MakeCaledner = ({
     );
   }
 
-  return monthArray;
+  return <>{monthArray}</>;
 };
 
 export default MakeCaledner;

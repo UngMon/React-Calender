@@ -9,7 +9,7 @@ const ModalPosition = (day: string, week: string, size: [number, number]) => {
   switch (day) {
     case "1":
       array[0] =
-        width > 500 ? (width * +day) / 7 - 20 : (width - modalWidth) / 2;
+        width > 500 ? (width * +day) / 7 : (width - modalWidth) / 2;
       break;
     case "2":
       array[0] =
@@ -46,43 +46,43 @@ const ModalPosition = (day: string, week: string, size: [number, number]) => {
 
   switch (week) {
     case "1":
-      array[1] = height > 400 ? 0 : -20;
+      array[1] = height > 400 ? (height * 1) / 6 : -20;
       break;
     case "2":
-      array[1] = height > 560 ? (height * 1) / 6 : -20;
+      array[1] = height > 560 ? (height * 1.5) / 6 : -20;
       break;
     case "3":
       array[1] = height > 550 ? (height * 2) / 6 - 100 : -20;
       break;
     case "4":
       array[1] = ((height - 24 - 64) / 6) * 2.5 - 24;
-  
+
       if (height < 700) array[1] = (height - 24 - 64 - 300) / 3;
-  
+
       if (height < 520) array[1] = -20;
       break;
     case "5":
-      array[1] = ((height - 24 - 64) / 6) * 3 - 24;
-  
-      if (height < 790) array[1] = (height - 24 - 64 - 300) / 2;
-  
-      if (height < 550) array[1] = -20;
+      array[1] = ((height * 3) / 6);
+
+      // if (height < 790) array[1] = (height - 24 - 64 - 300) / 2;
+
+      // if (height < 550) array[1] = -20;
       break;
     case "6":
-      array[1] = (height * 3) / 6 - 70;
-  
+      array[1] = (height * 4) / 6 ;
+
       if (height < 790) array[1] = (height - 24 - 64 - 300) / 1.5;
-  
+
       if (height < 650) array[1] = (height - 24 - 64 - 300) / 2;
-  
+
       if (height < 550) array[1] = (height - 24 - 64 - 300) / 2.5;
-  
+
       if (height < 520) array[1] = -20;
       break;
     default:
       array[1] = -20;
   }
-
+  console.log(array);
   return array;
 };
 

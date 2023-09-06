@@ -9,21 +9,21 @@ const fixMonth = date.getMonth() + 1;
 const fixDate = date.getDate();
 
 interface T {
+  type: string;
   year: number;
   month: number;
   firstDay: number;
   lastDate: number;
-  type: string;
   dateRef: React.MutableRefObject<ButtonRef>;
   dateClose: (value: string) => void;
 }
 
 const Calender = ({
+  type,
   year,
   month,
   firstDay,
   lastDate,
-  type,
   dateRef,
   dateClose,
 }: T) => {
@@ -44,16 +44,16 @@ const Calender = ({
           </tr>
         </thead>
         <tbody className={classes.presentation}>
-          {MakeCaledner({
-            year,
-            month,
-            firstDay,
-            lastDate,
-            identify,
-            type,
-            dateRef,
-            dateClose,
-          })}
+          <MakeCaledner
+            type={type}
+            year={year}
+            month={month}
+            firstDay={firstDay}
+            lastDate={lastDate}
+            identify={identify}
+            dateRef={dateRef}
+            dateClose={dateClose}
+          />
         </tbody>
       </table>
     </div>

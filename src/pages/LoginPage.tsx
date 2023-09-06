@@ -13,6 +13,7 @@ import { FacebookAuthProvider } from "firebase/auth";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import classes from "./LoginPage.module.css";
+import StartImages from "./StartImages";
 
 const LoginPage = () => {
   const navigagte = useNavigate();
@@ -199,9 +200,22 @@ const LoginPage = () => {
 
   return (
     <section className={classes["login-area"]}>
+      <StartImages />
       <div className={classes["login-box"]}>
-        <div className={classes["login-box-title"]}>
-          <span>{creatingUser ? "회원 가입" : "로그인"}</span>
+        <div className='logo'>
+          <span>Y</span>
+          <span>o</span>
+          <span>u</span>
+          <span>r</span>
+          <span> </span>
+          <span>C</span>
+          <span>a</span>
+          <span>l</span>
+          <span>e</span>
+          <span>n</span>
+          <span>d</span>
+          <span>e</span>
+          <span>r</span>
         </div>
         <form
           className={classes["login-form"]}
@@ -262,7 +276,7 @@ const LoginPage = () => {
               onClick={(e) => socialLoginHandler(e, "Google")}
               width="40"
               height="40"
-              src="img/Google.jpeg"
+              src="/images/Google.jpeg"
               alt="Google"
             />
             <img
@@ -270,7 +284,7 @@ const LoginPage = () => {
               onClick={(e) => socialLoginHandler(e, "Facebook")}
               width="35"
               height="35"
-              src="img/Facebook_Logo.png"
+              src="/images/Facebook_Logo.png"
               alt="Google"
             />
           </div>

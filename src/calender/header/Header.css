@@ -1,20 +1,23 @@
 .header {
+  position: fixed;
+  z-index: 15;
+  left: 1.5%;
   width: 97%;
   padding: 10px 0;
-  margin: 0 auto;
   font-size: 16px;
 }
 
 .header-box {
   box-sizing: border-box;
-  width: 100%;
   height: 44px;
   padding: 0 20px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background-color: rgba(252, 252, 252, 0.9);
-  border-radius: 20px 20px;
+}
+
+.header-ttitle {
+  font-size: 18px;
 }
 
 .header-name {
@@ -30,10 +33,11 @@
 }
 
 .header-user-info {
-  box-sizing: border-box;
-  padding: 6px;
-  width: 44px;
-  height: 44px;
+  position: absolute;
+  right: 15px;
+  padding: 5px;
+  width: 34px;
+  height: 34px;
   text-align: center;
 }
 
@@ -42,7 +46,7 @@
   height: 100%;
   font-size: 0.8em;
   font-weight: bold;
-  line-height: 2.5em;
+  line-height: 35px;
   color: rgb(240, 240, 240);
   border-radius: 50%;
   background-color: blueviolet;
@@ -56,15 +60,68 @@
 .search {
   position: absolute;
   top: 14px;
-  right: 80px;
+  right: 60px;
+}
+
+.search-b {
+  display: flex;
+  align-items: center;
+}
+
+.search-b button {
+  width: 40px;
+  height: 40px;
+  font-size: 20px;
+  margin-right: 5px;
+}
+
+.search-b button:hover {
+  cursor: pointer;
+}
+
+.search-b span {
+  font-size: 18px;
+  height: 40px;
+  font-weight: 500;
+  letter-spacing: 1px;
+  /* font-family: ; */
+}
+
+.search-form {
+  position: relative;
+  min-width: 200px;
+  width: 50%;
+}
+
+.search-form button {
+  position: absolute;
+  left: 0px;
+  top: 0px;
+  width: 40px;
+  height: 40px;
+  font-size: 17px;
+  border-radius: 5px;
+}
+
+.search-form input {
+  box-sizing: border-box;
+  padding: 5px 10px 5px 42px;
+  height: 40px;
+  width: calc(100% - 40px);
+  border: 1px solid black;
+  border-radius: 5px;
+  box-shadow: 4px 4px 0px rgba(60, 64, 67, 0.3);
+  font-size: 16px;
 }
 
 .search button {
   width: 40px;
   height: 40px;
-  border: 0;
-  background-color: transparent;
   font-size: 20px;
+}
+
+.search button {
+  cursor: pointer;
 }
 
 .search input {
@@ -79,22 +136,48 @@
   font-size: 16px;
 }
 
-@media screen and (max-width: 400px) {
-  .header {
-    font-size: 14px;
-  }
-
-  .header-name {
-    line-height: 1.8em;
-  }
-
-  .user-info-circle {
-    line-height: 3em;
-  }
+.select-month {
+  position: absolute;
+  left: calc(50vw - 95px);
+  box-sizing: border-box;
+  width: 190px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 1em;
+  font-weight: 600;
 }
 
-@media screen and (max-width: 310px) {
-  .header-name {
+.select-month div {
+  width: 110px;
+  text-align: center;
+}
+
+.select-month button {
+  width: 40px;
+  height: 40px;
+  border: 0;
+  font-size: 1.2em;
+}
+
+.select-month button:hover {
+  cursor: pointer;
+  border-radius: 50%;
+  background-color: rgb(231, 231, 231);
+}
+
+
+@media (max-width: 500px) {
+  .select-month {
+    left: 10px;
+  }
+  
+  .search {
+    right: 10px;
+  }
+
+  .header-user-info {
     display: none;
   }
 }
+

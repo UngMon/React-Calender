@@ -1,11 +1,13 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { ListOrMore } from "../type/RefType";
 import Main from "./Main";
 import Header from "./header/Header";
 import NotLogin from "../error/NotLogin";
 import Loading from "../pages/Loading";
-import "./Calender.css";
+import { useSelector } from "react-redux";
+import { RootState, useAppDispatch } from "../redux/store";
+import { dateActions } from "../redux/date-slice";
 
 interface T {
   loading: boolean;
@@ -14,7 +16,7 @@ interface T {
 
 const Calender = ({ loading, loggedIn }: T) => {
   console.log("Calender");
-
+  const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const [param] = useSearchParams();
 
@@ -27,15 +29,14 @@ const Calender = ({ loading, loggedIn }: T) => {
     if (+y > 9999) y = "9999";
     if (+y < 1000) y = "1000";
     if (+m > 12) m = "12";
-    if (+m < 1) m = "1";
-
-    setYear(y);
-    setMonth(m);
+    if (+m < 1) m = "01";
+    console.log('caledner effect')
+    dispatch(dateActions.setDate({ y, m }));
     navigate(`/calender/date?year=${y}&month=${m}`);
-  }, [param, navigate]);
+  }, [dispatch, param, navigate]);
 
-  const [year, setYear] = useState<string>(param.get("year")!);
-  const [month, setMonth] = useState<string>(param.get("month")!);
+
+  const date = useSelector((state: RootState) => state.date);
 
   const delayRef = useRef({ delay: true });
 
@@ -45,42 +46,48 @@ const Calender = ({ loading, loggedIn }: T) => {
   const list = useRef<HTMLDivElement>(null); // list모달창 ref
 
   const movePrevMonth = () => {
-    let mon = month;
-    switch (+month) {
-      case 1:
+    let year = date.year;
+    let mon = date.month;
+
+    switch (date.month) {
+      case "1":
         mon = "12";
-        setYear(String(+year - 1));
+        year = String(+date.year - 1);
         break;
       default:
-        mon = String(+month - 1).padStart(2, "0");
+        mon = String(+date.month - 1).padStart(2, "0");
     }
-    navigate(`/calender/date?year=${year}&month=${+mon}`);
-    setMonth(mon);
+
+    dispatch(dateActions.prevMonth());
+    navigate(`/calender/date?year=${year}&month=${mon}`);
+    delayRef.current.delay = false;
     setTimeout(() => {
       delayRef.current.delay = true;
     }, 350);
   };
 
   const moveNextMonth = () => {
-    let mon = month;
-    switch (+month) {
-      case 12:
+    let year = date.year;
+    let mon = date.month;
+
+    switch (date.month) {
+      case "12":
         mon = "01";
-        setYear(String(+year + 1));
+        year = String(+date.year + 1);
         break;
       default:
-        mon = String(+month + 1).padStart(2, "0");
+        mon = String(+date.month + 1).padStart(2, "0");
     }
-    navigate(`/calender/date?year=${year}&month=${+mon}`);
-    setMonth(mon);
+
+    dispatch(dateActions.nextMonth());
+    navigate(`/calender/date?year=${year}&month=${mon}`);
+    delayRef.current.delay = false;
     setTimeout(() => {
       delayRef.current.delay = true;
     }, 350);
   };
 
   const wheelHandler = (e: React.WheelEvent) => {
-    delayRef.current.delay = false;
-
     switch (e.deltaY > 0) {
       case true:
         movePrevMonth();
@@ -92,7 +99,6 @@ const Calender = ({ loading, loggedIn }: T) => {
 
   return (
     <div
-      className="view-area"
       onWheel={(e) => delayRef.current.delay && wheelHandler(e)}
       style={{ width: "100%", height: "100%" }}
     >
@@ -102,14 +108,14 @@ const Calender = ({ loading, loggedIn }: T) => {
         <>
           <Header
             type="calender"
-            year={year}
-            month={month}
+            year={date.year}
+            month={date.month}
             movePrevMonth={movePrevMonth}
             moveNextMonth={moveNextMonth}
           />
           <Main
-            year={year}
-            month={month}
+            year={date.year}
+            month={date.month}
             list={list}
             listRef={listRef}
             allListRef={allListRef}

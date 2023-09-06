@@ -91,7 +91,7 @@ const CloneList = ({
     e.stopPropagation();
     console.log(`mouseUp ${isDragging}`);
     document.body.style.cursor = "auto";
-    setIsMoving(false);
+
     const array = MakeLongArr(newStart.split("-"), newEnd.split("-"));
     if (modal.mouseType === "MakeList") {
       let day = 0;
@@ -117,13 +117,15 @@ const CloneList = ({
     }
 
     if (modal.mouseType === "List") {
+      setIsMoving(false);
       setIsDragging(false);
       if (실시간좌표[0] === 고정좌표[0] && 실시간좌표[1] === 고정좌표[1]) {
+        console.log('!!!')
         if (isMoving) {
           clickedElement.current = null;
           return;
         }
-
+        console.log('!!!!!!')
         if (modal.click === "same") {
           dispatch(modalActions.offList());
         } else {
@@ -250,7 +252,12 @@ const CloneList = ({
   return (
     <div
       className={classes.calender}
-      style={{ position: "absolute", bottom: 0, zIndex: 5 }}
+      style={{
+        position: "absolute",
+        top: "80px",
+        zIndex: 5,
+        height: "calc(100% - 80px)",
+      }}
     >
       <table className={classes.table}>
         <thead className={classes.weekname}>

@@ -78,9 +78,6 @@ const Schedule = ({
     }
   };
 
-  const dateInfo = date.split("-");
-  let year: string = dateInfo[0];
-  let month: string = dateInfo[1];
   let index: number = 0;
 
   // array 배열 만들기
@@ -98,8 +95,7 @@ const Schedule = ({
       object.startDate !== object.endDate
         ? calculateWidth(date, +day, object.endDate)
         : 0;
-    // 년 , 월 , 일에서 일을 저장한 변수
-    let thisDate: number = +dateInfo[2];
+
     // modal-slice에 전달할 객체
     let parameter: Parameter = { object, date, week, index };
 
@@ -117,10 +113,16 @@ const Schedule = ({
       for (let i = +day; i <= 7; i++) {
         if (i === 8) break;
 
-        let date =
-          year + "-" + month + "-" + thisDate.toString().padStart(2, "0");
+        let next: string;
 
-        if (date > object.endDate) break;
+        const currentDate = new Date(date);
+
+        const previousDate = new Date(
+          currentDate.getTime() + 24 * 60 * 60 * 1000 * (i - +day)
+        );
+        next = previousDate.toISOString().split("T")[0];
+
+        if (next > object.endDate) break;
 
         array[i][arrayCount] = (
           <div
@@ -179,7 +181,9 @@ const Schedule = ({
                       listBoxHeightCount +
                       1
                     }개 더보기`
-                  : object.startTime + " " + object.title}
+                  : object.startDate === object.endDate
+                  ? object.startTime + " " + object.title
+                  : object.title}
               </div>
               <div
                 className={`${classes["type-two"]} ${
@@ -192,15 +196,15 @@ const Schedule = ({
                       listBoxHeightCount +
                       1
                     }`
-                  : " " + object.title}
+                  : object.title}
               </div>
             </div>
           </div>
         );
-        thisDate += 1;
       }
       break;
     }
+
     index += 1;
   }
 

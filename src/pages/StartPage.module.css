@@ -65,9 +65,9 @@
   h1 span:nth-child(7) { animation-delay: .6s; } /*l*/
   h1 span:nth-child(8) { animation-delay: .7s; } /*e*/
   h1 span:nth-child(9) { animation-delay: .8s; } /*n*/
-  h1 span:nth-child(10) { animation-delay: .9s; } /*d*/
-  h1 span:nth-child(11) { animation-delay: .10s; } /*e*/
-  h1 span:nth-child(12) { animation-delay: .3s; } /*r*/
+  h1 span:nth-child(10) { animation-delay: .90s; } /*d*/
+  h1 span:nth-child(11) { animation-delay: 1s; } /*e*/
+  h1 span:nth-child(12) { animation-delay: 1.1s; } /*r*/
 
   
   @keyframes bounce {

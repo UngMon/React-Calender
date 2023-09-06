@@ -2,9 +2,9 @@ import React, { useRef, useState, useEffect } from "react";
 import { RootState, useAppDispatch } from "../../redux/store";
 import { useSelector } from "react-redux";
 import { timeActions } from "../../redux/time-slice";
-import { ListOrMore } from "../../utils/RefType";
+import { ListOrMore } from "../../type/RefType";
 import SetTime from "./SetTime";
-import SecondCaleder from "../secondcalender/Secon-Month";
+import SecondCaleder from "../miniCalender/Secon-Month";
 import TimeBoxOne from "./TimeBoxOne";
 import TimeBoxTwo from "./TimeBoxTwo";
 import "./TimeSelector.css";
@@ -127,8 +127,6 @@ const TimeSelector = ({
           >
             <SecondCaleder
               type={dateIsVisible[1]}
-              year={시작날[0]}
-              month={시작날[1]}
               dateRef={dateRef}
               dateClose={dateOpenHandler}
             />
