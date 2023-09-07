@@ -75,11 +75,13 @@ const Main = ({
           />
         </table>
         <div className={classes["modal-container"]}>
-          {data.addModalOpen && (
+          {modal.addModalOpen && (
             <MakeEvent
               viewRef={viewRef}
               uid={auth.currentUser!.uid}
               setIsDragging={setIsDragging}
+              data={data}
+              modal={modal}
             />
           )}
           {modal.moreModalOpen && (
@@ -99,6 +101,8 @@ const Main = ({
               clickedElement={clickedElement}
               list={list}
               uid={auth.currentUser!.uid}
+              data={data}
+              modal={modal}
             />
           )}
         </div>

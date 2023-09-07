@@ -1,26 +1,26 @@
 import React, { useState, useEffect, useRef } from "react";
-import { useSelector } from "react-redux";
-import { RootState, useAppDispatch } from "../redux/store";
-import { dataActions } from "../redux/data-slice";
-import { modalActions } from "../redux/modal-slice";
+import { useAppDispatch } from "../redux/store";
 import { timeActions } from "../redux/time-slice";
 import { MakeList } from "../utils/MakeList";
 import { MakeListParameter } from "../type/Etc";
 import { sendUserData } from "../redux/fetch-action";
+import { DataType, ModalType } from "../type/ReduxType";
 import ModalPosition from "../utils/ModalPosition";
 import TimeSelector from "../utils/Time/TimeSelector";
 import ColorBox from "../utils/Time/ColorBox";
 import "./MakeEvent.css";
+import { modalActions } from "../redux/modal-slice";
 
 interface T {
   viewRef: React.RefObject<HTMLDivElement>;
   uid: string;
   setIsDragging: (value: boolean) => void;
+  data: DataType;
+  modal: ModalType;
 }
 
-const MakeEvent = ({ viewRef, uid, setIsDragging }: T) => {
+const MakeEvent = ({ viewRef, uid, setIsDragging, data, modal }: T) => {
   const dispatch = useAppDispatch();
-  const data = useSelector((state: RootState) => state.data);
 
   const [color, setColor] = useState<string>("라벤더");
   const [openColor, setOpenColor] = useState<boolean>(false);
@@ -29,8 +29,8 @@ const MakeEvent = ({ viewRef, uid, setIsDragging }: T) => {
     viewRef.current!.clientHeight,
   ]);
 
-  const startDate: string = data.startDate;
-  const endDate: string = data.endDate;
+  const startDate: string = modal.startDate;
+  const endDate: string = modal.endDate;
 
   const modalRef = useRef<HTMLFormElement>(null);
   const colorRef = useRef<HTMLDivElement>(null);
@@ -92,7 +92,7 @@ const MakeEvent = ({ viewRef, uid, setIsDragging }: T) => {
     let title = titleRef.current!.value;
     if (title.trim() === "") title = "(제목 없음)";
 
-    const dateArray = data.dateArray;
+    const dateArray = modal.dateArray;
     const userSchedule = data.userSchedule;
 
     const parameter: MakeListParameter = {
@@ -120,7 +120,7 @@ const MakeEvent = ({ viewRef, uid, setIsDragging }: T) => {
   };
 
   const cancelHandler = () => {
-    dispatch(dataActions.offModal());
+    dispatch(modalActions.offAdd());
     dispatch(timeActions.resetTime());
     setIsDragging(false);
   };
@@ -128,7 +128,7 @@ const MakeEvent = ({ viewRef, uid, setIsDragging }: T) => {
   // 여기는 size의 크기에 따라서 modalposition에서 값을 정해보자
   //  size > 425일때 이후의 과정 or media에서 정의한 사이즈 그대로 받아올것인지.
 
-  const marginSize: number[] = ModalPosition(data.day, data.week, size);
+  const marginSize: number[] = ModalPosition(modal.day, modal.week, size);
 
   return (
     <form

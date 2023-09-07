@@ -12,8 +12,6 @@ import "./TimeSelector.css";
 interface T {
   startDate: string;
   endDate: string;
-  // firstTime: string;
-  // lastTime: string;
   timeOneRef: React.RefObject<HTMLInputElement>;
   timeTwoRef: React.RefObject<HTMLInputElement>;
 }
@@ -21,8 +19,6 @@ interface T {
 const TimeSelector = ({
   startDate,
   endDate,
-  // firstTime,
-  // lastTime,
   timeOneRef,
   timeTwoRef,
 }: T) => {

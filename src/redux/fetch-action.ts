@@ -1,7 +1,7 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { firebaseConfig } from "../Auth/firebase";
-import { CalenderData, Fetch, UserData } from "../type/ReduxType";
-import { getDatabase, ref, child, push, update } from "firebase/database";
+import { Fetch, UserData } from "../type/ReduxType";
+import { getDatabase, ref, update } from "firebase/database";
 
 interface Obj {
   newSchedule: UserData;

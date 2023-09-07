@@ -82,7 +82,7 @@ const ModalPosition = (day: string, week: string, size: [number, number]) => {
     default:
       array[1] = -20;
   }
-  console.log(array);
+
   return array;
 };
 

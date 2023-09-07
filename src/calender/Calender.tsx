@@ -20,6 +20,8 @@ const Calender = ({ loading, loggedIn }: T) => {
   const navigate = useNavigate();
   const [param] = useSearchParams();
 
+  const delayRef = useRef({ delay: false });
+
   useEffect(() => {
     if (!delayRef.current.delay) return;
 
@@ -37,8 +39,6 @@ const Calender = ({ loading, loggedIn }: T) => {
 
 
   const date = useSelector((state: RootState) => state.date);
-
-  const delayRef = useRef({ delay: true });
 
   const listRef = useRef<ListOrMore>({}); // makeCalender에서 list ref
   const allListRef = useRef<ListOrMore>({}); // makeCalender에서 all ref

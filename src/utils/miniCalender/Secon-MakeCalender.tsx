@@ -2,7 +2,7 @@ import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../redux/store";
 import { ButtonRef } from "../../type/RefType";
-import { dataActions } from "../../redux/data-slice";
+import { modalActions } from "../../redux/modal-slice";
 import MakeLongArr from "../MakeLongArr";
 import classes from "./second.module.css";
 
@@ -30,23 +30,15 @@ const MakeCaledner = ({
   console.log("second");
 
   const dispatch = useDispatch();
-
-  const data = useSelector((state: RootState) => state.data);
   const modal = useSelector((state: RootState) => state.modal);
 
   const clickHandler = (date: string, day: number, week: number) => {
     const 선택날짜 = date.split("-"); // ['year', 'month', 'date']
-
-    // 미니 캘린더에서 다음달로 넘어가면 메인 캘린더도 같이 다음달과 넘어가기 위함.
-    // if (data.startDate !== date) {
-    //   // 기존 modalState를 갱신해줌..
-    //   // const thisMonth = month - 1;
-    //   // dispatch(dateActions.setMonth({ 선택날짜, thisMonth }));
-    // }
-
+    let startDate: string = modal.startDate;
+    let endDate: string = modal.endDate;
     // 미니 캘린더에서 날짜를 클릭하면,
     // 해당 날짜로 MakeEvent.tsx가 렌더링, 한 마디로 모달창이 이동하는 기능
-    if (!modal.listModalOpen) dispatch(dataActions.onModal());
+    if (!modal.listModalOpen) dispatch(modalActions.onAdd());
 
     // 첫 번째 미니 달력 선택의 경우...
 
@@ -54,16 +46,28 @@ const MakeCaledner = ({
 
     switch (type) {
       case "start": // 첫 번째 미니 달력에서 날짜 클릭
-        const 마지막날: string[] = data.endDate.split("-");
+        const 마지막날: string[] = modal.endDate.split("-");
         dateArray = MakeLongArr(선택날짜, 마지막날);
+        startDate = date;
         break;
       case "end": // 두 번째 미니 달력에서 날짜 클릭
-        const 시작날: string[] = data.startDate.split("-");
+        const 시작날: string[] = modal.startDate.split("-");
         dateArray = MakeLongArr(시작날, 선택날짜);
+        endDate = date;
         break;
       default:
     }
-    dispatch(dataActions.clickedDate({ type, date, day, week, dateArray }));
+
+    dispatch(
+      modalActions.clickedDate({
+        type,
+        startDate,
+        endDate,
+        day: String(day),
+        week: String(week),
+        dateArray,
+      })
+    );
     dateClose(type);
   };
 
@@ -95,8 +99,8 @@ const MakeCaledner = ({
           key={date}
           onClick={() => clickHandler(date, i, week)}
           className={`classes.date_box ${
-            date === data.startDate && classes["startDate"]
-          } ${date === data.endDate && classes["endDate"]}`}
+            date === modal.startDate && classes["startDate"]
+          } ${date === modal.endDate && classes["endDate"]}`}
         >
           <div className={classes["date-h"]}>
             <span

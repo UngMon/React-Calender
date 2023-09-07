@@ -3,8 +3,8 @@ import { DataType, ModalType } from "../type/ReduxType";
 import { useAppDispatch } from "../redux/store";
 import { modalActions } from "../redux/modal-slice";
 import { ListOrMore } from "../type/RefType";
-import classes from "./MakeCalender.module.css";
 import Schedule from "./Schedule";
+import classes from "./MakeCalender.module.css";
 
 const date: Date = new Date();
 const fixYear: number = date.getFullYear();
@@ -68,14 +68,18 @@ const MakeCalender = ({
     };
     // 창 크기 조절시에 보이는 list 개수 달리 보여주기 위함.
     window.addEventListener("resize", getListBoxSize);
+
+    return () => window.removeEventListener("resize", getListBoxSize);
   });
 
   const mouseDown = (day: string, week: string, date: string) => {
     if (modal.listModalOpen || modal.moreModalOpen) return;
     if (isDragging) return;
     console.log("Make Down");
+    const type = "MakeList";
+    const [startDate, endDate] = [date, date];
     setIsDragging(true);
-    dispatch(modalActions.mouseMove({ type: "MakeList", day, week, date }));
+    dispatch(modalActions.clickedDate({ type, startDate, endDate, day, week }));
   };
 
   const dateArray: React.ReactNode[] = [];

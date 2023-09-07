@@ -2,6 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 import { ModalType } from "../type/ReduxType";
 
 const initialState: ModalType = {
+  addModalOpen: false,
   listModalOpen: false,
   moreModalOpen: false,
   date: "",
@@ -17,13 +18,47 @@ const initialState: ModalType = {
   key: "",
   index: 0, // 그 날 일정에서 몇 번째 항목인지
   mouseType: "",
-  click: ''
+  click: "",
+  실시간좌표: [0, 0],
+  dateArray: [],
 };
 
 const modalSlice = createSlice({
   name: "modal",
   initialState,
   reducers: {
+    clickedDate(state, action) {
+      state.dateArray = action.payload.dateArray || [action.payload.startDate];
+      state.mouseType = action.payload.type || state.mouseType;
+      if (action.payload.type === 'start') {
+        state.startDate = action.payload.startDate;
+        state.day = action.payload.day;
+        state.week = action.payload.week;
+        return;
+      }
+
+      if (action.payload.type === "end") {
+        state.endDate = action.payload.endDate;
+        state.dateArray = action.payload.dateArray;
+        return;
+      }
+
+      state.startDate = action.payload.startDate;
+      state.endDate = action.payload.endDate;
+      state.day = action.payload.day;
+      state.week = action.payload.week;
+
+      state.dateArray = action.payload.dateArray || [action.payload.startDate];
+    },
+
+    onAdd(state) {
+      state.addModalOpen = true;
+    },
+
+    offAdd(state) {
+      state.addModalOpen = false;
+    },
+
     clickedList(state, action) {
       state.week = action.payload.week;
       state.day = action.payload.day;
@@ -77,6 +112,25 @@ const modalSlice = createSlice({
       if (action.payload.type === "More")
         state.moreModalOpen = !state.moreModalOpen;
       else state.listModalOpen = !state.listModalOpen;
+
+      state.date = "";
+      state.week = "";
+      state.day = "";
+      state.isDone = false;
+      state.color = "";
+      state.startDate = "";
+      state.endDate = "";
+      state.startTime = "";
+      state.endTime = "";
+      state.title = "";
+      state.key = "";
+      state.index = 0; // 그 날 일정에서 몇 번째 항목인지
+      state.mouseType = "";
+      state.click = "";
+    },
+
+    실시간좌표설정(state, action) {
+      state.실시간좌표 = [action.payload.day, action.payload.week];
     },
   },
 });
@@ -84,30 +138,3 @@ const modalSlice = createSlice({
 export const modalActions = modalSlice.actions;
 
 export const modalReducer = modalSlice.reducer;
-
-// state.date = "";
-// state.week = "";
-// state.day = "";
-// state.isDone = false;
-// state.color = "";
-// state.startDate = "";
-// state.endDate = "";
-// state.startTime = "";
-// state.endTime = "";
-// state.title = "";
-// state.key = "";
-// state.index = 0;
-// state.mouseType = '';
-
-// switch (action.payload.type) {
-//   // case "More":
-//   //   state.date = action.payload.date;
-//   //   state.moreModalOpen = !state.moreModalOpen;
-//   //   return;
-//   case "List":
-//     break;
-//   // case "ListInMore":
-//   //   state.listModalOpen = !state.listModalOpen;
-//   //   break;
-//   default:
-// }

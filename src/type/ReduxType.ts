@@ -14,17 +14,17 @@ export interface UserData {
 }
 
 export interface DataType {
-  addModalOpen: boolean;
+  // addModalOpen: boolean;
   isLogin: boolean;
   isLoading: boolean;
   isCreated: boolean;
   isSending: boolean;
   succesGetData: boolean;
   succesSendData: boolean;
-  startDate: string;
-  endDate: string;
-  week: string;
-  day: string;
+  // startDate: string;
+  // endDate: string;
+  // week: string;
+  // day: string;
   dataChanged: boolean;
   userSchedule: UserData;
   dateArray: string[];
@@ -43,6 +43,7 @@ export interface MoreType {
 ////////////// Modal Type ////////////
 
 export interface ModalType {
+  addModalOpen: boolean;
   listModalOpen: boolean;
   moreModalOpen: boolean;
   isDone: boolean;
@@ -59,6 +60,8 @@ export interface ModalType {
   index: number;
   mouseType: string;
   click: string;
+  실시간좌표: [number, number];
+  dateArray: string[];
 }
 
 ///// time /////

@@ -1,6 +1,5 @@
 import React, { useRef, useState, useEffect } from "react";
-import { RootState, useAppDispatch } from "../redux/store";
-import { useSelector } from "react-redux";
+import { useAppDispatch } from "../redux/store";
 import { dataActions } from "../redux/data-slice";
 import { timeActions } from "../redux/time-slice";
 import { modalActions } from "../redux/modal-slice";
@@ -18,10 +17,11 @@ import TimeSelector from "../utils/Time/TimeSelector";
 import ColorBox from "../utils/Time/ColorBox";
 import ModalPosition from "../utils/ModalPosition";
 import MakeLongArr from "../utils/MakeLongArr";
-import "./List.css";
 import { MakeList } from "../utils/MakeList";
 import { MakeListParameter } from "../type/Etc";
 import { markDate } from "../utils/markDate";
+import { DataType, ModalType } from "../type/ReduxType";
+import "./List.css";
 
 interface T {
   listRef: React.MutableRefObject<ListOrMore>;
@@ -30,6 +30,8 @@ interface T {
   viewRef: React.RefObject<HTMLDivElement>;
   list: React.RefObject<HTMLDivElement>;
   uid: string;
+  data: DataType;
+  modal: ModalType;
 }
 
 const List = ({
@@ -39,14 +41,13 @@ const List = ({
   clickedElement,
   list,
   uid,
+  data,
+  modal,
 }: T) => {
   const dispatch = useAppDispatch();
 
-  const data = useSelector((state: RootState) => state.data);
-  const modal = useSelector((state: RootState) => state.modal);
-
-  const startDate = data.startDate || modal.startDate;
-  const endDate = data.endDate || modal.endDate;
+  const startDate = modal.startDate
+  const endDate = modal.endDate
 
   const date =
     modal.startDate === modal.endDate
@@ -83,8 +84,8 @@ const List = ({
   useEffect(() => {
     const closeHandler = (e: MouseEvent) => {
       const target = e.target as HTMLDivElement;
-      console.log('???');
-      
+      console.log("???");
+
       if (!list.current?.contains(target)) {
         // list 밖을 클릭할 경우
         console.log(clickedElement.current);
