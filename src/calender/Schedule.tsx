@@ -135,7 +135,7 @@ const Schedule = ({
                 : classes["list-more"]
             }`}
             style={{
-              width: isLong && !isMore ? `${barWidth}00%` : "100%",
+              width: isLong && !isMore ? `${barWidth}00%` : "98%",
               top: `${24 * arrayCount}px`,
               display: i === +day || isMore ? "flex" : "none",
             }}

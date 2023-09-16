@@ -101,26 +101,3 @@
 .passwordChangeButton:hover {
   cursor: pointer;
 }
-
-/* .form-button {
-  display: block;
-  margin: 16px auto;
-  width: 200px;
-  height: 34px;
-  cursor: pointer;
-  border: 0;
-  border-radius: 6px;
-  background-image: linear-gradient(
-    to right,
-    #771af9 0%,
-    #678df6 75%,
-    #d2fce1 100%
-  );
-  color: white;
-  font-size: 0.8rem;
-  font-weight: bold;
-} */
-/* 
-.form-button:hover {
-  border-radius: 6px;
-} */

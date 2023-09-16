@@ -6,8 +6,7 @@
   box-shadow: 7px 7px 20px rgb(121, 120, 120);
   text-align: center;
   background-color: white;
-  transition: background-color 2s ease-in-out;
-  font-size: 16px;
+  font-size: 16px;  
 }
 
 .add-modal-name {
@@ -126,7 +125,7 @@
     width: 300px;
   }
 
-  .inputArea input{
+  .inputArea input {
     font-size: 10px;
   }
 }

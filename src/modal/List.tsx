@@ -4,8 +4,8 @@ import { dataActions } from "../redux/data-slice";
 import { timeActions } from "../redux/time-slice";
 import { modalActions } from "../redux/modal-slice";
 import { ListOrMore } from "../type/RefType";
+import { DataType, ModalType, UserData } from "../type/ReduxType";
 import { sendUserData } from "../redux/fetch-action";
-import { UserData } from "../type/ReduxType";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faXmark,
@@ -20,7 +20,6 @@ import MakeLongArr from "../utils/MakeLongArr";
 import { MakeList } from "../utils/MakeList";
 import { MakeListParameter } from "../type/Etc";
 import { markDate } from "../utils/markDate";
-import { DataType, ModalType } from "../type/ReduxType";
 import "./List.css";
 
 interface T {
@@ -46,14 +45,15 @@ const List = ({
 }: T) => {
   const dispatch = useAppDispatch();
 
-  const startDate = modal.startDate
-  const endDate = modal.endDate
+  const startDate = modal.startDate;
+  const endDate = modal.endDate;
 
   const date =
     modal.startDate === modal.endDate
       ? modal.startDate.split("-")
       : [...modal.startDate.split("-"), ...modal.endDate.split("-")];
 
+  const [toggle, setToggle] = useState<boolean>(true);    
   const [color, setColor] = useState<string>(modal.color);
   const [openColor, setOpenColor] = useState<boolean>(false);
   const [size, setSize] = useState<[number, number]>([
@@ -88,11 +88,9 @@ const List = ({
 
       if (!list.current?.contains(target)) {
         // list 밖을 클릭할 경우
-        console.log(clickedElement.current);
 
         if (clickedElement.current?.contains(target)) {
           // list 밖 같은 리스트를 클릭하면 리스트 창이 닫게함.
-          console.log(clickedElement.current?.contains(target));
           setTimeout(() => {
             clickedElement.current = null;
             dispatch(modalActions.onoffModal({ type: "list" }));
@@ -103,13 +101,18 @@ const List = ({
         clickedElement.current = target; // clickedElement Ref에 target저장
 
         for (const key in listRef.current) {
-          // 모달 밖 일정을 클릭
-          console.log(listRef.current[key]?.contains(target));
           if (listRef.current[key]?.contains(target)) return;
         }
 
+        for (const key in allListRef.current) {
+          if (allListRef.current[key]!.contains(target)) {
+            dispatch(modalActions.offList());
+            return;
+          }
+        }
+
         // 위 두가지가 아닌 영역을 클릭한 경우 list 모달창 닫음.
-        if (modal.mouseType === "") return;
+
         setTimeout(() => {
           dispatch(timeActions.resetTime());
           dispatch(modalActions.onoffModal({ type: "list" }));
@@ -217,8 +220,11 @@ const List = ({
   };
 
   const closeModalHandler = () => {
-    dispatch(modalActions.offList());
-    dispatch(timeActions.resetTime());
+    setToggle(false);
+    setTimeout(() => {
+      dispatch(modalActions.offList());
+      dispatch(timeActions.resetTime());
+    }, 250)
   };
   // console.log(data.userSchedule[modal.startDate]);
   const styleClass = data.userSchedule[modal.startDate][modal.key].isDone
@@ -232,7 +238,7 @@ const List = ({
 
   return (
     <div
-      className={`list-box ${openEditArea ? "edit" : ""}`}
+      className={`list-box ${openEditArea ? "edit" : ""} ${toggle ? 'on' : 'off'}`}
       ref={list}
       style={{
         // 마운트시에 width 가 ''이므로 display none

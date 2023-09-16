@@ -24,6 +24,7 @@ const MakeEvent = ({ viewRef, uid, setIsDragging, data, modal }: T) => {
 
   const [color, setColor] = useState<string>("라벤더");
   const [openColor, setOpenColor] = useState<boolean>(false);
+  const [toggleModal, setToggleModal] = useState<boolean>(true);
   const [size, setSize] = useState<[number, number]>([
     viewRef.current!.clientWidth,
     viewRef.current!.clientHeight,
@@ -60,11 +61,7 @@ const MakeEvent = ({ viewRef, uid, setIsDragging, data, modal }: T) => {
         }
       }
       // modal 영역 밖을 클릭할 때, state 초기화
-      if (!modalRef.current!.contains(e.target as Node)) {
-        setTimeout(() => {
-          cancelHandler();
-        }, 130);
-      }
+      if (!modalRef.current!.contains(e.target as Node)) cancelHandler();
     };
 
     document.addEventListener("mousedown", closeHandler);
@@ -120,8 +117,11 @@ const MakeEvent = ({ viewRef, uid, setIsDragging, data, modal }: T) => {
   };
 
   const cancelHandler = () => {
-    dispatch(modalActions.offAdd());
-    dispatch(timeActions.resetTime());
+    setToggleModal(false);
+    setTimeout(() => {
+      dispatch(modalActions.offAdd());
+      dispatch(timeActions.resetTime());
+    }, 250);
     setIsDragging(false);
   };
 
@@ -132,7 +132,7 @@ const MakeEvent = ({ viewRef, uid, setIsDragging, data, modal }: T) => {
 
   return (
     <form
-      className={`addModal`}
+      className={`addModal ${toggleModal ? "on" : "off"}`}
       onSubmit={(e: React.FormEvent) => makeListHandler(e)}
       ref={modalRef}
       style={{
@@ -140,6 +140,8 @@ const MakeEvent = ({ viewRef, uid, setIsDragging, data, modal }: T) => {
         display: `${!marginSize ? "none" : "block"}`,
         marginLeft: `${marginSize && marginSize[0]}px`,
         marginTop: `${marginSize && marginSize[1]}px`,
+        transition: "opacity 0.3s ease",
+        opacity: modal.addModalOpen ? 1 : 0,
       }}
       onWheel={(e) => e.stopPropagation()}
     >

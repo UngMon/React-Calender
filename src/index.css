@@ -66,3 +66,38 @@ input:focus {
     display: none;
   }
 }
+
+
+/* 모달 애니메이션 */
+@keyframes On {
+  0% {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+
+  85% {
+    opacity: 0.5;
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes Off {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+.on {
+  animation: On .25s linear forwards;
+}
+
+.off {
+  animation: Off .25s linear forwards;
+}

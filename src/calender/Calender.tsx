@@ -4,7 +4,7 @@ import { ListOrMore } from "../type/RefType";
 import Main from "./Main";
 import Header from "./header/Header";
 import NotLogin from "../error/NotLogin";
-import Loading from "../pages/Loading";
+import Loading from "../ui/Loading";
 import { useSelector } from "react-redux";
 import { RootState, useAppDispatch } from "../redux/store";
 import { dateActions } from "../redux/date-slice";

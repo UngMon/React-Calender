@@ -73,7 +73,8 @@ const MakeCalender = ({
   });
 
   const mouseDown = (day: string, week: string, date: string) => {
-    if (modal.listModalOpen || modal.moreModalOpen) return;
+    if (modal.addModalOpen || modal.listModalOpen || modal.moreModalOpen)
+      return;
     if (isDragging) return;
     console.log("Make Down");
     const type = "MakeList";

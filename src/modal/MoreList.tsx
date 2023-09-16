@@ -181,7 +181,7 @@ const MoreList = ({
 
   return (
     <div
-      className={`AllList`}
+      className={`AllList on`}
       ref={modalRef}
       style={{
         display: `${size[0] === 0 ? "none" : "block"}`,

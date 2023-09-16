@@ -7,8 +7,9 @@ import { getUserData } from "./redux/fetch-action";
 import ResetPage from "./pages/ResetPage";
 import Calender from "./calender/Calender";
 import Result from "./pages/Result";
-import Loading from "./pages/Loading";
+import Loading from "./ui/Loading";
 import LoginPage from "./pages/LoginPage";
+import MakeEvent from "./pages/MakeEvent";
 
 function App() {
   console.log("app");
@@ -38,6 +39,7 @@ function App() {
             path=":date"
             element={<Calender loading={loading} loggedIn={loggedIn} />}
           />
+          <Route path='makeEvent' element={<MakeEvent/>}/>
         </Route>
       )}
       {loggedIn && (

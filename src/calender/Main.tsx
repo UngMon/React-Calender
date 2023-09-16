@@ -119,6 +119,7 @@ const Main = ({
           isDragging={isDragging}
           setIsDragging={setIsDragging}
           clickedElement={clickedElement}
+          viewRef={viewRef}
         />
       )}
     </main>

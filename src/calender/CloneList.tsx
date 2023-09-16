@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useState } from "react";
 import { useAppDispatch } from "../redux/store";
 import { modalActions } from "../redux/modal-slice";
 import { sendUserData } from "../redux/fetch-action";
+import { useNavigate } from "react-router-dom";
 import { ModalType, DataType, UserData } from "../type/ReduxType";
 import { MakeListParameter } from "../type/Etc";
 import { MakeList } from "../utils/MakeList";
@@ -20,6 +21,7 @@ interface T {
   isDragging: boolean;
   setIsDragging: (value: boolean) => void;
   clickedElement: React.MutableRefObject<HTMLDivElement | null>;
+  viewRef: React.RefObject<HTMLDivElement>;
 }
 
 const CloneList = ({
@@ -33,10 +35,13 @@ const CloneList = ({
   isDragging,
   setIsDragging,
   clickedElement,
+  viewRef,
 }: T) => {
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
 
   const [고정좌표, 고정좌표설정] = useState<[number, number]>([0, 0]);
+  const [실시간좌표, 실시간좌표설정] = useState<[number, number]>([0, 0]);
 
   const [enter, setEnter] = useState<boolean>(false);
 
@@ -64,15 +69,13 @@ const CloneList = ({
     if (!modal.startDate || !modal.endDate) return;
     if (고정좌표[0] === 0 && 고정좌표[1] === 0) return;
     const move: number =
-      (modal.실시간좌표[1] - 고정좌표[1]) * 7 +
-      (modal.실시간좌표[0] - 고정좌표[0]);
+      (실시간좌표[1] - 고정좌표[1]) * 7 + (실시간좌표[0] - 고정좌표[0]);
     let start: string;
     let end: string;
 
     if (modal.mouseType === "MakeList") {
       start = move >= 0 ? modal.startDate : moveDate(modal.startDate, move);
       end = move >= 0 ? moveDate(modal.endDate, move) : endDate;
-      console.log(move, start, end, startDate, modal.startDate);
     } else if (modal.mouseType === "List") {
       start = moveDate(modal.startDate, move);
       end = moveDate(modal.endDate, move);
@@ -84,11 +87,11 @@ const CloneList = ({
     setStartDate(start);
     setEndDate(end);
     setEnter(false);
-  }, [moveDate, modal, 고정좌표, startDate, endDate, enter]);
+  }, [moveDate, modal, 고정좌표, 실시간좌표, startDate, endDate, enter]);
 
   const mouseEnter = (day: number, week: number) => {
     if (modal.addModalOpen) return;
-    dispatch(modalActions.실시간좌표설정({ day, week }));
+    실시간좌표설정([day, week]);
     setEnter(true);
     고정좌표[0] === 0 && 고정좌표설정([day, week]);
   };
@@ -101,25 +104,28 @@ const CloneList = ({
     const dateArray = MakeLongArr(startDate.split("-"), endDate.split("-"));
 
     if (modal.mouseType === "MakeList") {
+      if (viewRef.current!.clientWidth <= 500) navigate("/calender/makeEvent");
+      else dispatch(modalActions.onAdd());
+
+      if (실시간좌표[0] === 고정좌표[0] && 실시간좌표[1] === 고정좌표[1])
+        return;
+
       let day = 0;
       let week = 0;
       const type = "MakeList";
 
       switch (true) {
-        case modal.실시간좌표[1] > 고정좌표[1]:
+        case 실시간좌표[1] > 고정좌표[1]:
           day = 고정좌표[0];
           week = 고정좌표[1];
           break;
-        case modal.실시간좌표[1] === 고정좌표[1]:
-          day =
-            modal.실시간좌표[0] < 고정좌표[0]
-              ? modal.실시간좌표[0]
-              : 고정좌표[0];
+        case 실시간좌표[1] === 고정좌표[1]:
+          day = 실시간좌표[0] < 고정좌표[0] ? 실시간좌표[0] : 고정좌표[0];
           week = 고정좌표[1];
           break;
         default:
-          day = modal.실시간좌표[0];
-          week = modal.실시간좌표[1];
+          day = 실시간좌표[0];
+          week = 실시간좌표[1];
       }
 
       dispatch(
@@ -132,22 +138,17 @@ const CloneList = ({
           dateArray,
         })
       );
-      dispatch(modalActions.onAdd());
     }
 
     if (modal.mouseType === "List") {
       setIsMoving(false);
       setIsDragging(false);
-      if (
-        modal.실시간좌표[0] === 고정좌표[0] &&
-        modal.실시간좌표[1] === 고정좌표[1]
-      ) {
-        console.log("!!!");
+      if (실시간좌표[0] === 고정좌표[0] && 실시간좌표[1] === 고정좌표[1]) {
         if (isMoving) {
           clickedElement.current = null;
           return;
         }
-        console.log("!!!!!!");
+
         if (modal.click === "same") {
           dispatch(modalActions.offList());
         } else {
@@ -195,7 +196,7 @@ const CloneList = ({
     if (!startDate || !endDate) return;
     if (date < startDate! || endDate! < date) return;
     if (day !== 1 && date !== startDate) return;
-    console.log(startDate, endDate);
+
     let barWidth: number =
       startDate! < endDate! ? calculateWidth(date, day, endDate!) : 1;
     const isLong = startDate !== endDate ? true : false;
@@ -284,13 +285,13 @@ const CloneList = ({
       <table className={classes.table}>
         <thead className={classes.weekname}>
           <tr>
-            <th>일</th>
-            <th>월</th>
-            <th>화</th>
-            <th>수</th>
-            <th>목</th>
-            <th>금</th>
-            <th>토</th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
           </tr>
         </thead>
         <tbody className={classes.presentation}>{dateArray}</tbody>
