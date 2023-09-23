@@ -168,10 +168,6 @@
 
 
 @media (max-width: 500px) {
-  .select-month {
-    left: 10px;
-  }
-  
   .search {
     right: 10px;
   }

@@ -63,7 +63,6 @@ const MoreList = ({
   ]);
   const modalRef = useRef<HTMLDivElement>(null);
   const listInMoreRef = useRef<ListOrMore>({});
-  // const clickedAllListRef = useRef({});
 
   useEffect(() => {
     const modalCloseHandler = (e: MouseEvent) => {

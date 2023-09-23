@@ -8,6 +8,7 @@ import List from "../modal/List";
 import MoreList from "../modal/MoreList";
 import MakeCalender from "./MakeCalender";
 import CloneList from "./CloneList";
+import MobileModal from "../modal/MoblieModal";
 import classes from "./MakeCalender.module.css";
 
 interface T {
@@ -34,6 +35,10 @@ const Main = ({
 
   const viewRef = useRef<HTMLDivElement>(null);
   const [isDragging, setIsDragging] = useState<boolean>(false);
+  const [listBoxHeightCount, setCount] = useState<number>(0);
+  const [listHeight, setListHegiht] = useState<number>(
+    window.innerWidth > 500 ? 24 : 20
+  );
 
   const firstDay: number = new Date(+year, +month - 1, 1).getDay();
   const lastDate: number = new Date(+year, +month, 0).getDate();
@@ -43,6 +48,36 @@ const Main = ({
     listRef.current = {};
     allListRef.current = {};
   }, [month, data, listRef, allListRef]);
+
+  useEffect(() => {
+    // 마운트 이후, state에 값을 저장후 랜더링
+    let listElementHeight = window.innerWidth > 500 ? 24 : 20;
+
+    setCount(
+      Math.floor(
+        (viewRef.current!.clientHeight - 45 - listElementHeight * week) /
+          (listElementHeight * week)
+      )
+    );
+  }, [viewRef, week]);
+
+  useEffect(() => {
+    const getListBoxSize = () => {
+      let listElementHeight = window.innerWidth > 500 ? 24 : 20;
+
+      setListHegiht(window.innerWidth > 500 ? 24 : 20);
+      setCount(
+        Math.floor(
+          (viewRef.current!.clientHeight - 45 - listElementHeight * week) /
+            (listElementHeight * week)
+        )
+      );
+    };
+    // 창 크기 조절시에 보이는 list 개수 달리 보여주기 위함.
+    window.addEventListener("resize", getListBoxSize);
+
+    return () => window.removeEventListener("resize", getListBoxSize);
+  });
 
   return (
     <main className={classes["calender-view"]}>
@@ -60,6 +95,8 @@ const Main = ({
             </tr>
           </thead>
           <MakeCalender
+            data={data}
+            modal={modal}
             year={year}
             month={month}
             week={week}
@@ -68,10 +105,8 @@ const Main = ({
             setIsDragging={setIsDragging}
             listRef={listRef}
             allListRef={allListRef}
-            viewRef={viewRef}
             clickedElement={clickedElement}
-            data={data}
-            modal={modal}
+            listBoxHeightCount={listBoxHeightCount}
           />
         </table>
         <div className={classes["modal-container"]}>
@@ -121,6 +156,9 @@ const Main = ({
           clickedElement={clickedElement}
           viewRef={viewRef}
         />
+      )}
+      {window.innerWidth <= 500 && modal.mobileModalOpen && (
+        <MobileModal data={data} modal={modal} />
       )}
     </main>
   );

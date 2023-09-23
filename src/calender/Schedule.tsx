@@ -43,6 +43,7 @@ const Schedule = ({
 }: T): JSX.Element => {
   const dispatch = useAppDispatch();
   const schedule = data.userSchedule;
+  const listElementHeight = window.innerWidth > 500 ? 24 : 20;
 
   if (!schedule[date]) <></>;
 
@@ -51,7 +52,7 @@ const Schedule = ({
   };
 
   const mouseDown = (e: React.MouseEvent, param: Parameter, day: string) => {
-    console.log("schedule MouseDown");
+    // console.log("schedule MouseDown");
     let click = "";
 
     if (clickedElement.current === e.target) {
@@ -67,7 +68,7 @@ const Schedule = ({
   };
 
   const mouseUp = (isMore: boolean, param: Parameter, day: string) => {
-    console.log("schedule mouseUp");
+    // console.log("schedule mouseUp");
     if (isMore) {
       const [date, week, key] = [param.date, param.week, param.object.key];
       dispatch(modalActions.clickedMore({ date, week, day, key }));
@@ -136,15 +137,17 @@ const Schedule = ({
             }`}
             style={{
               width: isLong && !isMore ? `${barWidth}00%` : "98%",
-              top: `${24 * arrayCount}px`,
+              top: `${listElementHeight * arrayCount}px`,
               display: i === +day || isMore ? "flex" : "none",
             }}
             onMouseDown={(e) => {
+              if (window.innerWidth < 500) return; 
               e.stopPropagation();
               if (modal.moreModalOpen || isMore) return;
               mouseDown(e, parameter, String(i));
             }}
             onMouseUp={(e) => {
+              if (window.innerWidth < 500) return; 
               e.stopPropagation();
               mouseUp(isMore, parameter, String(i));
             }}

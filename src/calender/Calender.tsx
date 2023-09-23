@@ -1,13 +1,13 @@
 import React, { useEffect, useRef } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
+import { useSelector } from "react-redux";
+import { RootState, useAppDispatch } from "../redux/store";
+import { dateActions } from "../redux/date-slice";
 import { ListOrMore } from "../type/RefType";
 import Main from "./Main";
 import Header from "./header/Header";
 import NotLogin from "../error/NotLogin";
 import Loading from "../ui/Loading";
-import { useSelector } from "react-redux";
-import { RootState, useAppDispatch } from "../redux/store";
-import { dateActions } from "../redux/date-slice";
 
 interface T {
   loading: boolean;
@@ -32,11 +32,10 @@ const Calender = ({ loading, loggedIn }: T) => {
     if (+y < 1000) y = "1000";
     if (+m > 12) m = "12";
     if (+m < 1) m = "01";
-    console.log('caledner effect')
+
     dispatch(dateActions.setDate({ y, m }));
     navigate(`/calender/date?year=${y}&month=${m}`);
   }, [dispatch, param, navigate]);
-
 
   const date = useSelector((state: RootState) => state.date);
 

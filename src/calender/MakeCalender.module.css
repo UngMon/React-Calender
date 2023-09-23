@@ -95,7 +95,7 @@
   margin-top: 24px;
   width: 100%;
   height: calc(100% - 24px);
-  font-size: 24px;
+  font-size: 2em;
 }
 
 .list-area {
@@ -235,7 +235,16 @@
   width: 100%;
 }
 
-@media screen and (max-width: 425px) {
+@media (max-width: 500px) {
+  .calender-view {
+    height: calc(100% - 140px);
+    padding-top: 60px;
+  }
+
+  .table {
+    font-size: 8px;
+  }
+
   .weekname {
     font-size: 8px;
   }
@@ -244,12 +253,19 @@
     font-size: 4px;
   }
 
+  .list-boundary-long {
+    height: 20px;
+  }
+
   .list {
-    font-size: 8px;
+    height: 18px;
+  }
+
+  .list div {
+    line-height: 19px;
   }
 
   .list-more {
     font-size: 8px;
   }
 }
-

@@ -19,6 +19,8 @@ interface T {
   moveNextMonth?: () => void;
 }
 
+const fixYear = new Date().getFullYear();
+
 const Header = ({ type, year, month, movePrevMonth, moveNextMonth }: T) => {
   const navigate = useNavigate();
   const param = useLocation();
@@ -97,17 +99,21 @@ const Header = ({ type, year, month, movePrevMonth, moveNextMonth }: T) => {
         )}
         {!openSearch && type === "calender" && (
           <div className="select-month">
-            <button onClick={movePrevMonth}>
-              <FontAwesomeIcon icon={faAngleLeft} />
-            </button>
+            {window.innerWidth > 500 && (
+              <button onClick={movePrevMonth}>
+                <FontAwesomeIcon icon={faAngleLeft} />
+              </button>
+            )}
             <div>
               <span>
-                {year}년 {+month!}월
+                {+year! === fixYear ? `${+month!}월` : `${year}년 ${+month!}월`}
               </span>
             </div>
-            <button onClick={moveNextMonth}>
-              <FontAwesomeIcon icon={faAngleRight} />
-            </button>
+            {window.innerWidth > 500 && (
+              <button onClick={moveNextMonth}>
+                <FontAwesomeIcon icon={faAngleRight} />
+              </button>
+            )}
           </div>
         )}
         {openSearch && (
@@ -148,9 +154,7 @@ const Header = ({ type, year, month, movePrevMonth, moveNextMonth }: T) => {
             <UserInfo auth={auth} setOpenUserInfo={setOpenUserInfo} />
           )}
         </div>
-        <div>
-
-        </div>
+        <div></div>
       </div>
     </header>
   );

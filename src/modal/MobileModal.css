@@ -1,0 +1,106 @@
+li {
+  list-style: none;
+}
+
+.mobile-background {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 55;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+.mobile {
+  position: absolute;
+  top: 20%;
+  left: 10%;
+  width: 80%;
+  min-width: 256px;
+  height: 400px;
+  background-color: rgb(241, 241, 241);
+  border-radius: 15px;
+}
+
+.mobile-modal-title {
+  margin: 5px auto 0;
+  width: 85%;
+  height: 50px;
+  line-height: 50px;
+  border-bottom: 1px dotted gray;
+}
+
+.mobile-modal-title span {
+  padding-left: 10px;
+  padding-right: 5px;
+  font-weight: bold;
+}
+
+.mobile main {
+  margin: 15px 27px 10px 30px;
+  height: calc(100% - 170px);
+  overflow: auto;
+}
+
+.mobile main::-webkit-scrollbar {
+  width: 2px;
+}
+
+.mobile main::-webkit-scrollbar-thumb {
+  background-color: #888; /* 원하는 스크롤바 색상으로 조정하세요 */
+}
+
+.mobile-lists li {
+  display: flex;
+  padding: 7px 0 14px;
+}
+
+.mobile-lists li div:nth-child(1) {
+  width: 30px;
+  font-size: 22px;
+}
+
+.mobile-lists li div:nth-child(2) {
+  width: 5px;
+  margin-right: 5px;
+  margin-bottom: 5px;
+  font-size: 22px;
+}
+
+.mobile-lists li div:nth-child(3) {
+  font-size: 15px;
+  width: 160px;
+}
+
+.mobile-make {
+  position: absolute;
+  bottom: 25px;
+  left: 10%;
+  width: 80%;
+  height: 40px;
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+}
+
+.mobile-make input {
+  box-sizing: border-box;
+  padding: 5px 10px;
+  min-width: 170px;
+  width: 80%;
+  max-width: 280px;
+  height: 100%;
+  border: 1.5px solid gray;
+  border-radius: 10px;
+}
+
+.mobile-make button {
+  width: 40px;
+  height: 40px;
+  font-size: 30px;
+  display: flex;
+  justify-content: center;
+}

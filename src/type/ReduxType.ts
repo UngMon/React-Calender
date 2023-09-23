@@ -46,6 +46,7 @@ export interface ModalType {
   addModalOpen: boolean;
   listModalOpen: boolean;
   moreModalOpen: boolean;
+  mobileModalOpen: boolean;
   isDone: boolean;
   date: string;
   week: string;

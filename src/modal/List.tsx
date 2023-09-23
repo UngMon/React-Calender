@@ -226,7 +226,7 @@ const List = ({
       dispatch(timeActions.resetTime());
     }, 250)
   };
-  // console.log(data.userSchedule[modal.startDate]);
+
   const styleClass = data.userSchedule[modal.startDate][modal.key].isDone
     ? "done"
     : false;

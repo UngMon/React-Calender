@@ -5,6 +5,7 @@ const initialState: ModalType = {
   addModalOpen: false,
   listModalOpen: false,
   moreModalOpen: false,
+  mobileModalOpen: false,
   date: "",
   week: "",
   day: "",
@@ -30,7 +31,7 @@ const modalSlice = createSlice({
     clickedDate(state, action) {
       state.dateArray = action.payload.dateArray || [action.payload.startDate];
       state.mouseType = action.payload.type || state.mouseType;
-      if (action.payload.type === 'start') {
+      if (action.payload.type === "start") {
         state.startDate = action.payload.startDate;
         state.day = action.payload.day;
         state.week = action.payload.week;
@@ -51,6 +52,10 @@ const modalSlice = createSlice({
       state.dateArray = action.payload.dateArray || [action.payload.startDate];
     },
 
+    toggleMobilModal(state) {
+      state.mobileModalOpen = !state.mobileModalOpen;
+    },
+
     onAdd(state) {
       state.addModalOpen = true;
     },
@@ -60,18 +65,18 @@ const modalSlice = createSlice({
     },
 
     clickedList(state, action) {
-      state.week = action.payload.week;
-      state.day = action.payload.day;
-      state.mouseType = "List";
-      state.isDone = action.payload.object.isDone;
       state.color = action.payload.object.color;
       state.startDate = action.payload.object.startDate;
       state.endDate = action.payload.object.endDate;
       state.startTime = action.payload.object.startTime;
       state.endTime = action.payload.object.endTime;
       state.title = action.payload.object.title;
-      state.key = action.payload.object.key;
       state.index = action.payload.index;
+      state.key = action.payload.object.key;
+      state.isDone = action.payload.object.isDone;
+      state.week = action.payload.week;
+      state.day = action.payload.day;
+      state.mouseType = "List";
       state.click = action.payload.click;
     },
 
@@ -127,6 +132,14 @@ const modalSlice = createSlice({
       state.index = 0; // 그 날 일정에서 몇 번째 항목인지
       state.mouseType = "";
       state.click = "";
+    },
+
+    clickedListInMobile(state, action) {
+      state.title = action.payload.title;
+      state.startDate = action.payload.startDate;
+      state.endDate = action.payload.endDate;
+      state.startTime = action.payload.startTime;
+      state.endTime = action.payload.endTime;
     },
 
     실시간좌표설정(state, action) {

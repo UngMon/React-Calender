@@ -8,6 +8,7 @@ interface T {
 }
 
 const MobileTimePicker = ({ type, startTime, endTime }: T) => {
+
   const hours = useRef<{ [key: string]: string }>(hour);
   const minutes = useRef<{ [key: string]: string }>(minute);
 
@@ -62,11 +63,9 @@ const MobileTimePicker = ({ type, startTime, endTime }: T) => {
   ]);
 
   useEffect(() => {
-    console.log("effect", scrollY, isScrolling, touch);
     if (scrollY === -10) return;
     if (isScrolling) return;
-
-    console.log("??");
+    // console.log("effect", scrollY, isScrolling, touch);
     const scrollTop = Math.round(scrollY / 40) * 40;
     let hegith: number;
     if (clickedDial === "one") {
@@ -83,11 +82,12 @@ const MobileTimePicker = ({ type, startTime, endTime }: T) => {
     setScrollY(-10);
     setHeightFix(true);
     setTimeout(() => {
-      // if (scrollTop <= 400) hegith = 480 + scrollTop;
-      // if (scrollTop >= 840) hegith = scrollTop - 480;
-      // console.log(scrollTop, hegith);
-      // if (clickedDial === "two") dialTwo.current!.scrollTop = hegith;
-      // if (clickedDial === "three") dialThree.current!.scrollTop = hegith;
+      if (scrollTop <= 400) hegith = 480 + scrollTop;
+      else if (scrollTop >= 840) hegith = scrollTop - 480;
+      else hegith = scrollTop
+
+      if (clickedDial === "two") dialTwo.current!.scrollTop = hegith;
+      if (clickedDial === "three") dialThree.current!.scrollTop = hegith;
     }, 80);
     setTimeout(() => {
       setHeightFix(false);
@@ -98,7 +98,6 @@ const MobileTimePicker = ({ type, startTime, endTime }: T) => {
     if (heightFix) return;
     if (!isScrolling) setIsScrolling(true);
 
-    console.log("scroll", e.currentTarget.scrollTop);
     setScrollY(e.currentTarget.scrollTop);
 
     if (touch) return;
@@ -129,8 +128,7 @@ const MobileTimePicker = ({ type, startTime, endTime }: T) => {
     setTouch(true);
   };
 
-  const touchEndHandler = (e: React.TouchEvent, type: string) => {
-    console.log("end");
+  const touchEndHandler = (type: string) => {
     setTouch(false);
     setIsScrolling(false);
     setClickedDial(type);
@@ -138,12 +136,17 @@ const MobileTimePicker = ({ type, startTime, endTime }: T) => {
 
   return (
     <div className="time-selector">
+      <div className="t-seperate" style={{ left: 0 }}>
+        <div></div>
+        <div></div>
+        <div></div>
+      </div>
       <div
         className="t-box"
         ref={dialOne}
         onScroll={scrollHandler}
         onTouchStart={touchStartHandler}
-        onTouchEnd={(e) => touchEndHandler(e, "one")}
+        onTouchEnd={() => touchEndHandler("one")}
       >
         <div className="dial-two">
           <div className="dial-item"></div>
@@ -161,7 +164,7 @@ const MobileTimePicker = ({ type, startTime, endTime }: T) => {
         ref={dialTwo}
         onScroll={scrollHandler}
         onTouchStart={touchStartHandler}
-        onTouchEnd={(e) => touchEndHandler(e, "two")}
+        onTouchEnd={() => touchEndHandler("two")}
       >
         <div className="dial-two">
           {Object.values(hours.current).map((item, index) => (
@@ -180,7 +183,7 @@ const MobileTimePicker = ({ type, startTime, endTime }: T) => {
         ref={dialThree}
         onScroll={scrollHandler}
         onTouchStart={touchStartHandler}
-        onTouchEnd={(e) => touchEndHandler(e, "three")}
+        onTouchEnd={() => touchEndHandler("three")}
       >
         <div className="dial-two">
           {Object.values(minutes.current).map((item, index) => (
