@@ -134,12 +134,36 @@ const modalSlice = createSlice({
       state.click = "";
     },
 
+    allOffModal(state) {
+      state.addModalOpen = false;
+      state.listModalOpen = false;
+      state.moreModalOpen = false;
+    },
+
     clickedListInMobile(state, action) {
       state.title = action.payload.title;
       state.startDate = action.payload.startDate;
       state.endDate = action.payload.endDate;
       state.startTime = action.payload.startTime;
       state.endTime = action.payload.endTime;
+    },
+
+    addEvent(state, action) {
+      state.title = action.payload.title;
+      state.date = "";
+      state.isDone = false;
+      state.color = "";
+      state.startTime = "";
+      state.endTime = "";
+      state.key = "";
+      state.index = 0;
+      state.mouseType = "";
+      state.click = "";
+    },
+
+    setStartEndDate(state, action) {
+      state.startDate = action.payload.date;
+      state.endDate = action.payload.date;
     },
 
     실시간좌표설정(state, action) {

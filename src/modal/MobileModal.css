@@ -76,9 +76,7 @@ li {
 }
 
 .mobile-make {
-  position: absolute;
-  bottom: 25px;
-  left: 10%;
+  margin: 20px auto;
   width: 80%;
   height: 40px;
   display: flex;
@@ -89,8 +87,7 @@ li {
 .mobile-make input {
   box-sizing: border-box;
   padding: 5px 10px;
-  min-width: 170px;
-  width: 80%;
+  width: calc(100% - 40px);
   max-width: 280px;
   height: 100%;
   border: 1.5px solid gray;

@@ -45,14 +45,24 @@ const Schedule = ({
   const schedule = data.userSchedule;
   const listElementHeight = window.innerWidth > 500 ? 24 : 20;
 
-  if (!schedule[date]) <></>;
-
-  const listClickHandler = (param: Parameter, day: string, click: string) => {
-    dispatch(modalActions.clickedList({ type: "List", ...param, day, click }));
+  const listClickHandler = (
+    param: Parameter,
+    day: string,
+    click: string,
+    index: number
+  ) => {
+    dispatch(
+      modalActions.clickedList({ type: "List", ...param, day, click, index })
+    );
   };
 
-  const mouseDown = (e: React.MouseEvent, param: Parameter, day: string) => {
-    // console.log("schedule MouseDown");
+  const mouseDown = (
+    e: React.MouseEvent,
+    param: Parameter,
+    day: string,
+    index: number
+  ) => {
+    console.log("schedule MouseDown");
     let click = "";
 
     if (clickedElement.current === e.target) {
@@ -63,17 +73,22 @@ const Schedule = ({
       clickedElement.current = e.target as HTMLDivElement;
     }
 
-    listClickHandler(param, day, click);
+    listClickHandler(param, day, click, index);
     setIsDragging(true);
   };
 
-  const mouseUp = (isMore: boolean, param: Parameter, day: string) => {
-    // console.log("schedule mouseUp");
+  const mouseUp = (
+    isMore: boolean,
+    param: Parameter,
+    day: string,
+    index: number
+  ) => {
+    console.log("schedule mouseUp");
     if (isMore) {
       const [date, week, key] = [param.date, param.week, param.object.key];
       dispatch(modalActions.clickedMore({ date, week, day, key }));
     } else {
-      listClickHandler(param, day, "no");
+      listClickHandler(param, day, "no", index);
       dispatch(modalActions.onList());
       dispatch(modalActions.offMore());
     }
@@ -102,12 +117,14 @@ const Schedule = ({
 
     for (let item of array[+day]) {
       // 리스트 개수가 화면에 보이는 날짜 칸을 넘어가면 break;
+      console.log(arrayCount, listBoxHeightCount)
       if (arrayCount >= listBoxHeightCount) break;
-
+      console.log('자ㄱ동하는기?')
       if (item) {
         arrayCount += 1;
         continue;
       }
+
       // arraCount가 list.. -1 이 되면 '더 보기'란 생성
       let isMore = arrayCount < listBoxHeightCount - 1 ? false : true;
 
@@ -125,6 +142,8 @@ const Schedule = ({
 
         if (next > object.endDate) break;
 
+        const index = arrayCount;
+        console.log('자ㄱ동하는기?')
         array[i][arrayCount] = (
           <div
             key={object.key}
@@ -141,15 +160,15 @@ const Schedule = ({
               display: i === +day || isMore ? "flex" : "none",
             }}
             onMouseDown={(e) => {
-              if (window.innerWidth < 500) return; 
               e.stopPropagation();
+              if (window.innerWidth < 500) return;
               if (modal.moreModalOpen || isMore) return;
-              mouseDown(e, parameter, String(i));
+              mouseDown(e, parameter, String(i), index);
             }}
             onMouseUp={(e) => {
-              if (window.innerWidth < 500) return; 
               e.stopPropagation();
-              mouseUp(isMore, parameter, String(i));
+              if (window.innerWidth < 500) return;
+              mouseUp(isMore, parameter, String(i), index);
             }}
             ref={(el: HTMLDivElement) => {
               if (i !== +day && !isMore) return;

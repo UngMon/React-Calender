@@ -4,10 +4,11 @@
   width: 400px;
   height: 150px;
   border-radius: 10px;
-  background-color: white;
+  background-color: rgb(251, 251, 251);
   box-shadow: 7px 7px 20px rgb(121, 120, 120);
   transition: all .5s ease-in-out;
   animation: ModalAnimation .2s forwards linear;
+  overflow: hidden;
 }
 
 .edit {
@@ -68,11 +69,13 @@
 
 .edit-list input {
   width: 78%;
+  padding: 2px;
   height: 22px;
   border-top: 0;
   border-left: 0;
   border-right: 0;
   margin-right: 5px;
+  background-color: transparent;
 }
 
 .edit-list input::placeholder {

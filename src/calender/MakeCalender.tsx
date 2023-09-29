@@ -1,8 +1,8 @@
-import React, { ReactNode } from "react";
+import React, { ReactNode, useEffect, useState } from "react";
 import { DataType, ModalType } from "../type/ReduxType";
 import { useAppDispatch } from "../redux/store";
 import { modalActions } from "../redux/modal-slice";
-import { ListOrMore } from "../type/RefType";
+import { ListOrMore, TableRef } from "../type/RefType";
 import Schedule from "./Schedule";
 import classes from "./MakeCalender.module.css";
 
@@ -27,10 +27,11 @@ interface T {
   firstDay: number;
   isDragging: boolean;
   setIsDragging: (value: boolean) => void;
+  weekRef: React.MutableRefObject<TableRef>;
   listRef: React.MutableRefObject<ListOrMore>;
   allListRef: React.MutableRefObject<ListOrMore>;
   clickedElement: React.MutableRefObject<HTMLDivElement | null>;
-  listBoxHeightCount: number;
+  // listBoxHeightCount: number;
 }
 
 const MakeCalender = ({
@@ -42,13 +43,18 @@ const MakeCalender = ({
   firstDay,
   isDragging,
   setIsDragging,
+  weekRef,
   listRef,
   allListRef,
   clickedElement,
-  listBoxHeightCount,
-}: T) => {
+}: // listBoxHeightCount,
+T) => {
   console.log("MakeCalender");
   const dispatch = useAppDispatch();
+  const [listBoxHeightCount, setCount] = useState<number>(0);
+  // const [listHeight, setListHegiht] = useState<number>(
+  //   window.innerWidth > 500 ? 24 : 20
+  // );
 
   const mouseDown = (day: string, week: string, date: string) => {
     if (modal.addModalOpen || modal.listModalOpen || modal.moreModalOpen)
@@ -61,17 +67,51 @@ const MakeCalender = ({
     dispatch(modalActions.clickedDate({ type, startDate, endDate, day, week }));
   };
 
-  // const touchStartHandler = () => {
-  //   if (window.innerWidth > 500) return;
-  // };
-
   const touchEndHandler = (day: string, week: string, date: string) => {
     if (window.innerWidth > 500) return;
+    console.log("tocuhEnd");
     const type = "MakeList";
     const [startDate, endDate] = [date, date];
     dispatch(modalActions.clickedDate({ type, startDate, endDate, day, week }));
     dispatch(modalActions.toggleMobilModal());
   };
+
+  useEffect(() => {
+    // 마운트 이후, state에 값을 저장후 랜더링
+    let elementHeight = window.innerWidth > 500 ? 24 : 20; // 일정 막대기 높이
+
+    // setCount(
+    //   Math.floor(
+    //     (weekRef.current["1"]!.clientHeight * 7 - 45 - elementHeight * week) /
+    //       (elementHeight * week)
+    //   )
+    // );
+    setCount(
+      Math.floor((weekRef.current["1"]!.clientHeight - 24) / elementHeight)
+    );
+  }, [weekRef, week]);
+
+  useEffect(() => {
+    const getListBoxSize = () => {
+      console.log("!!!!!!!!!!!!!");
+      let elementHeight = window.innerWidth > 500 ? 24 : 20; // 일정 막대기 높이
+
+      setCount(
+        Math.floor((weekRef.current["1"]!.clientHeight - 24) / elementHeight)
+      );
+
+      if (window.innerWidth <= 500) {
+        // mobile영역으로 사이즈가 줄어들면 pc 모달창 지우기 및 clone 삭제
+        if (modal.addModalOpen || modal.listModalOpen || modal.moreModalOpen)
+          dispatch(modalActions.allOffModal());
+        setIsDragging(false);
+      }
+    };
+    // 창 크기 조절시에 보이는 list 개수 달리 보여주기 위함.
+    window.addEventListener("resize", getListBoxSize);
+
+    return () => window.removeEventListener("resize", getListBoxSize);
+  });
 
   const dateArray: React.ReactNode[] = [];
 
@@ -105,7 +145,6 @@ const MakeCalender = ({
           onMouseDown={() => {
             mouseDown(day, week, date);
           }}
-          // onTouchStart={() => touchStartHandler}
           onTouchEnd={() => touchEndHandler(day, week, date)}
           className={classes.date_box}
           day-index={i}
@@ -153,7 +192,11 @@ const MakeCalender = ({
     ];
 
     dateArray.push(
-      <tr key={i} className={`week ${i}`}>
+      <tr
+        key={i}
+        className={`week ${i}`}
+        ref={(el: HTMLTableRowElement) => (weekRef.current[i] = el)}
+      >
         {makeDay(i, array)}
       </tr>
     );

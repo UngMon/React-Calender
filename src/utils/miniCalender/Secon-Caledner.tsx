@@ -1,11 +1,11 @@
 import React from "react";
-import classes from "./second.module.css";
 import MakeCaledner from "./Secon-MakeCalender";
 import { ButtonRef } from "../../type/RefType";
+import classes from "./second.module.css";
 
 const date = new Date();
 const fixYear = date.getFullYear();
-const fixMonth = date.getMonth() + 1;
+const fixMonth = String(date.getMonth() + 1).padStart(2, '0');
 const fixDate = date.getDate();
 
 interface T {
@@ -15,7 +15,7 @@ interface T {
   firstDay: number;
   lastDate: number;
   dateRef: React.MutableRefObject<ButtonRef>;
-  dateClose: (value: string) => void;
+  dateClose?: (value: string) => void;
 }
 
 const Calender = ({
@@ -27,7 +27,7 @@ const Calender = ({
   dateRef,
   dateClose,
 }: T) => {
-  const identify = fixYear + "." + fixMonth + "." + fixDate;
+  const identify = fixYear + "-" + fixMonth + "-" + fixDate;
 
   return (
     <div className={classes.calender}>

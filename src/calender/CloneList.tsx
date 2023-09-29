@@ -277,9 +277,9 @@ const CloneList = ({
       className={classes.calender}
       style={{
         position: "absolute",
-        top: "80px",
+        top: "0px",
         zIndex: 5,
-        height: "calc(100% - 80px)",
+        height: "calc(100vh - 80px)",
       }}
     >
       <table className={classes.table}>

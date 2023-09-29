@@ -23,8 +23,9 @@ const dayText: { [key: string]: string } = {
 };
 
 const MobileModal = ({ data, modal }: T) => {
-  const navigate = useNavigate();
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
+
   const inputRef = useRef<HTMLInputElement>(null);
   const backRef = useRef<HTMLDivElement>(null);
 
@@ -35,7 +36,6 @@ const MobileModal = ({ data, modal }: T) => {
 
   useEffect(() => {
     const clickHandler = (e: TouchEvent) => {
-      console.log("????");
       e.preventDefault();
       if (e.target === backRef.current) {
         dispatch(modalActions.toggleMobilModal());
@@ -43,9 +43,13 @@ const MobileModal = ({ data, modal }: T) => {
     };
 
     window.addEventListener("touchend", clickHandler);
-
     return () => window.removeEventListener("touchend", clickHandler);
   });
+
+  const addEvent = () => {
+    dispatch(modalActions.addEvent({ title: inputRef.current!.value }));
+    navigate(`/calender/makeEvent`);
+  };
 
   return (
     <div className="mobile-background" ref={backRef}>
@@ -56,29 +60,36 @@ const MobileModal = ({ data, modal }: T) => {
         </header>
         <main>
           <ul className="mobile-lists">
-            {Object.values(data.userSchedule[modal.startDate]).map(
-              (item, index) => (
-                <li key={index} onTouchEnd={() => listClickHandler(item)}>
-                  <div>
-                    <FontAwesomeIcon icon={faCalendarDay} />
-                  </div>
-                  <div className={`color-bar ${item.color}`}></div>
-                  <div>
-                    <h4>{item.title}</h4>
-                    <span>{item.startDate + item.endDate}</span>
-                  </div>
-                </li>
-              )
-            )}
+            {data.userSchedule[modal.startDate] &&
+              Object.values(data.userSchedule[modal.startDate]).map(
+                (item, index) => (
+                  <li key={index} onTouchEnd={() => listClickHandler(item)}>
+                    <div>
+                      <FontAwesomeIcon icon={faCalendarDay} />
+                    </div>
+                    <div className={`color-bar ${item.color}`}></div>
+                    <div>
+                      <h4>{item.title}</h4>
+                      <span>{item.startDate + item.endDate}</span>
+                    </div>
+                  </li>
+                )
+              )}
           </ul>
         </main>
-        <footer className="mobile-make">
-          <label htmlFor="text" />
-          <input id="text" placeholder="제목을 입력하세요" ref={inputRef} />
-          <button>
+        <form className="mobile-make" onSubmit={() => addEvent()}>
+          <label htmlFor="title" />
+          <input
+            id="title"
+            type="text"
+            placeholder="제목을 입력하세요"
+            onTouchEnd={() => inputRef.current!.focus()}
+            ref={inputRef}
+          />
+          <button type="button">
             <span>+</span>
           </button>
-        </footer>
+        </form>
       </div>
     </div>
   );

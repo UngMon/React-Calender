@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
-import { RootState } from "../redux/store";
+import { RootState, useAppDispatch } from "../redux/store";
 import { useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -8,17 +8,36 @@ import {
   faClock,
   faXmark,
 } from "@fortawesome/free-solid-svg-icons";
+import { ListOrMore } from "../type/RefType";
 import MobileTimePicker from "../ui/MobileTimePicker";
 import SetTime from "../utils/Time/SetTime";
+import Month from "../utils/miniCalender/Secon-Month";
 import "./MakeEvent.css";
+import { modalActions } from "../redux/modal-slice";
 
 const time = SetTime();
 
+const date = new Date().toISOString().split("T")[0];
+
 const MakeEvent = () => {
+  const dispatch = useAppDispatch();
+
   const modal = useSelector((state: RootState) => state.modal);
-  const [openDateSelector, setOpenDate] = useState<boolean>(false);
-  const [openTimeSelector, setOpenTime] = useState<boolean>(false);
+  const [openDateSelector, setOpenDate] = useState<[boolean, string]>([
+    false,
+    "",
+  ]);
+  const [openTimeSelector, setOpenTime] = useState<[boolean, string]>([
+    false,
+    "",
+  ]);
   const [type, setType] = useState<string>("");
+
+  const dateRef = useRef<ListOrMore>({});
+  const startDateRef = useRef<HTMLSpanElement>(null);
+  const endDateRef = useRef<HTMLSpanElement>(null);
+  const startTimeRef = useRef<HTMLSpanElement>(null);
+  const endTimeRef = useRef<HTMLSpanElement>(null);
 
   const navigate = useNavigate();
 
@@ -38,9 +57,35 @@ const MakeEvent = () => {
   const endTime = modal.endTime || time.lastTime;
 
   const openHandler = (v: string, t: string) => {
-    if (v === "date") setOpenDate(!openDateSelector);
-    else setOpenTime(!openTimeSelector);
+
+    if (v === "date") {
+      setOpenTime([false, ""]);
+      setOpenDate([
+        openDateSelector[1] === t ? false : true,
+        openDateSelector[1] === t ? "" : t,
+      ]);
+    } else {
+      setOpenTime([
+        openTimeSelector[1] === t ? false : true,
+        openTimeSelector[1] === t ? "" : t,
+      ]);
+      setOpenDate([false, ""]);
+    }
     setType(t);
+  };
+
+  const submitHandler = (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (modal.startDate > modal.endDate) {
+      alert("종료 날짜가 시작 날짜 보다 뒤에 있어야 합니다.");
+      return;
+    }
+
+    if (modal.startTime > modal.endTime) {
+      alert("종료 날짜가 시작 날짜 보다 뒤에 있어야 합니다.");
+      return;
+    }
   };
 
   return (
@@ -54,7 +99,7 @@ const MakeEvent = () => {
         </div>
       )}
       {window.innerWidth <= 500 && (
-        <form className="Make-Form">
+        <form className="Make-Form" onSubmit={submitHandler}>
           <div className="X-mark">
             <div onClick={() => navigate(-1)}>
               <FontAwesomeIcon icon={faXmark} />
@@ -72,35 +117,40 @@ const MakeEvent = () => {
           </div>
           <div className="Make-time">
             <div className="time">
-              <div onClick={() => openHandler("date", "start")}>
-                <span>{modal.startDate}</span>
+              <div onTouchEnd={(e) => openHandler("date", "start")}>
+                <span ref={startDateRef}>{modal.startDate || date}</span>
               </div>
-              <div onClick={() => openHandler("time", "start")}>
-                <span>{startTime}</span>
+              <div onTouchEnd={(e) => openHandler("time", "start")}>
+                <span ref={startTimeRef}>{startTime}</span>
               </div>
             </div>
             <div className="arrow">
               <FontAwesomeIcon icon={faArrowRight} />
             </div>
             <div className="time">
-              <div onClick={() => openHandler("date", "end")}>
-                <span>{modal.endDate}</span>
+              <div onTouchEnd={(e) => openHandler("date", "end")}>
+                <span ref={endDateRef}>{modal.endDate || date}</span>
               </div>
-              <div onClick={() => openHandler("time", "end")}>
-                <span>{endTime}</span>
+              <div onTouchEnd={(e) => openHandler("time", "end")}>
+                <span ref={endTimeRef}>{endTime}</span>
               </div>
             </div>
           </div>
-          {openDateSelector && <div className="date-selector"></div>}
-          {openTimeSelector && (
-            <MobileTimePicker
-              type={type}
-              startTime={startTime}
-              endTime={endTime}
-            />
-          )}
-          <button type="button">취소</button>
-          <button type="submit">생성</button>
+          <div className="picker-box">
+            {openDateSelector[0] && (
+              <Month platform="mobile" type={openDateSelector[1]} dateRef={dateRef} />
+            )}
+            {openTimeSelector[0] && (
+              <MobileTimePicker
+                type={type}
+                startTime={startTime}
+                endTime={endTime}
+              />
+            )}
+          </div>
+          <button className="mobile-button" type="submit">
+            생성
+          </button>
         </form>
       )}
     </div>

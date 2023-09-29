@@ -53,7 +53,7 @@ const ModalPositionTwo = (day: string, week: string, size: [number, number]) => 
       default:
         array[1] = height - (height * 2) / 6;
     }
-
+    console.log(array)
     return array;
   };
 

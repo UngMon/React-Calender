@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef } from "react";
 import { useSelector } from "react-redux";
-import { RootState } from "../redux/store";
-import { ListOrMore } from "../type/RefType";
+import { RootState, useAppDispatch } from "../redux/store";
+import { ListOrMore, TableRef } from "../type/RefType";
 import { auth } from "../Auth/firebase";
 import MakeEvent from "../modal/MakeEvent";
 import List from "../modal/List";
@@ -10,6 +10,7 @@ import MakeCalender from "./MakeCalender";
 import CloneList from "./CloneList";
 import MobileModal from "../modal/MoblieModal";
 import classes from "./MakeCalender.module.css";
+import { modalActions } from "../redux/modal-slice";
 
 interface T {
   year: string;
@@ -30,15 +31,18 @@ const Main = ({
 }: T) => {
   console.log("Main");
 
+  const dispatch = useAppDispatch();
+
   const data = useSelector((state: RootState) => state.data);
   const modal = useSelector((state: RootState) => state.modal);
 
   const viewRef = useRef<HTMLDivElement>(null);
+  const weekRef = useRef<TableRef>({});
   const [isDragging, setIsDragging] = useState<boolean>(false);
-  const [listBoxHeightCount, setCount] = useState<number>(0);
-  const [listHeight, setListHegiht] = useState<number>(
-    window.innerWidth > 500 ? 24 : 20
-  );
+  // const [listBoxHeightCount, setCount] = useState<number>(0);
+  // const [listHeight, setListHegiht] = useState<number>(
+  //   window.innerWidth > 500 ? 24 : 20
+  // );
 
   const firstDay: number = new Date(+year, +month - 1, 1).getDay();
   const lastDate: number = new Date(+year, +month, 0).getDate();
@@ -49,36 +53,42 @@ const Main = ({
     allListRef.current = {};
   }, [month, data, listRef, allListRef]);
 
-  useEffect(() => {
-    // 마운트 이후, state에 값을 저장후 랜더링
-    let listElementHeight = window.innerWidth > 500 ? 24 : 20;
+  // useEffect(() => {
+  //   // 마운트 이후, state에 값을 저장후 랜더링
+  //   let listElementHeight = window.innerWidth > 500 ? 24 : 20;
 
-    setCount(
-      Math.floor(
-        (viewRef.current!.clientHeight - 45 - listElementHeight * week) /
-          (listElementHeight * week)
-      )
-    );
-  }, [viewRef, week]);
+  //   setCount(
+  //     Math.floor(
+  //       (viewRef.current!.clientHeight - 45 - listElementHeight * week) /
+  //         (listElementHeight * week)
+  //     )
+  //   );
+  // }, [viewRef, week]);
 
-  useEffect(() => {
-    const getListBoxSize = () => {
-      let listElementHeight = window.innerWidth > 500 ? 24 : 20;
+  // useEffect(() => {
+  //   const getListBoxSize = () => {
+  //     let listElementHeight = window.innerWidth > 500 ? 24 : 20;
 
-      setListHegiht(window.innerWidth > 500 ? 24 : 20);
-      setCount(
-        Math.floor(
-          (viewRef.current!.clientHeight - 45 - listElementHeight * week) /
-            (listElementHeight * week)
-        )
-      );
-    };
-    // 창 크기 조절시에 보이는 list 개수 달리 보여주기 위함.
-    window.addEventListener("resize", getListBoxSize);
+  //     setListHegiht(window.innerWidth > 500 ? 24 : 20);
+  //     setCount(
+  //       Math.floor(
+  //         (viewRef.current!.clientHeight - 45 - listElementHeight * week) /
+  //           (listElementHeight * week)
+  //       )
+  //     );
 
-    return () => window.removeEventListener("resize", getListBoxSize);
-  });
+  //     if (window.innerWidth <= 500) { // mobile영역으로 사이즈가 줄어들면 pc 모달창 지우기 및 clone 삭제
+  //       if (modal.addModalOpen || modal.listModalOpen || modal.moreModalOpen)
+  //         dispatch(modalActions.allOffModal());
+  //       setIsDragging(false);
+  //     }
+  //   };
+  //   // 창 크기 조절시에 보이는 list 개수 달리 보여주기 위함.
+  //   window.addEventListener("resize", getListBoxSize);
 
+  //   return () => window.removeEventListener("resize", getListBoxSize);
+  // });
+  
   return (
     <main className={classes["calender-view"]}>
       <div className={classes.calender} ref={viewRef}>
@@ -103,10 +113,11 @@ const Main = ({
             firstDay={firstDay}
             isDragging={isDragging}
             setIsDragging={setIsDragging}
+            weekRef={weekRef}
             listRef={listRef}
             allListRef={allListRef}
             clickedElement={clickedElement}
-            listBoxHeightCount={listBoxHeightCount}
+            // listBoxHeightCount={listBoxHeightCount}
           />
         </table>
         <div className={classes["modal-container"]}>
@@ -130,7 +141,7 @@ const Main = ({
           )}
           {modal.listModalOpen && (
             <List
-              viewRef={viewRef}
+              weekRef={weekRef}
               listRef={listRef}
               allListRef={allListRef}
               clickedElement={clickedElement}

@@ -8,6 +8,7 @@ import Main from "./Main";
 import Header from "./header/Header";
 import NotLogin from "../error/NotLogin";
 import Loading from "../ui/Loading";
+import { modalActions } from "../redux/modal-slice";
 
 interface T {
   loading: boolean;
@@ -20,7 +21,7 @@ const Calender = ({ loading, loggedIn }: T) => {
   const navigate = useNavigate();
   const [param] = useSearchParams();
 
-  const delayRef = useRef({ delay: false });
+  const delayRef = useRef({ delay: true });
 
   useEffect(() => {
     if (!delayRef.current.delay) return;
@@ -87,6 +88,7 @@ const Calender = ({ loading, loggedIn }: T) => {
   };
 
   const wheelHandler = (e: React.WheelEvent) => {
+    dispatch(modalActions.allOffModal());
     switch (e.deltaY > 0) {
       case true:
         movePrevMonth();
@@ -99,7 +101,7 @@ const Calender = ({ loading, loggedIn }: T) => {
   return (
     <div
       onWheel={(e) => delayRef.current.delay && wheelHandler(e)}
-      style={{ width: "100%", height: "100%" }}
+      style={{ width: "100%" }}
     >
       {loading && <Loading />}
       {!loading && !loggedIn && <NotLogin />}

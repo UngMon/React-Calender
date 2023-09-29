@@ -16,12 +16,7 @@ interface T {
   timeTwoRef: React.RefObject<HTMLInputElement>;
 }
 
-const TimeSelector = ({
-  startDate,
-  endDate,
-  timeOneRef,
-  timeTwoRef,
-}: T) => {
+const TimeSelector = ({ startDate, endDate, timeOneRef, timeTwoRef }: T) => {
   const setTime = SetTime();
   const firstTime = setTime.currentTime;
   const lastTime = setTime.lastTime;
@@ -122,6 +117,7 @@ const TimeSelector = ({
             style={{ display: dateIsVisible[0] ? "block" : "none" }}
           >
             <SecondCaleder
+              platform="pc"
               type={dateIsVisible[1]}
               dateRef={dateRef}
               dateClose={dateOpenHandler}

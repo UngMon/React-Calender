@@ -3,7 +3,7 @@ import { useAppDispatch } from "../redux/store";
 import { dataActions } from "../redux/data-slice";
 import { timeActions } from "../redux/time-slice";
 import { modalActions } from "../redux/modal-slice";
-import { ListOrMore } from "../type/RefType";
+import { ListOrMore, TableRef } from "../type/RefType";
 import { DataType, ModalType, UserData } from "../type/ReduxType";
 import { sendUserData } from "../redux/fetch-action";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -23,10 +23,10 @@ import { markDate } from "../utils/markDate";
 import "./List.css";
 
 interface T {
+  weekRef: React.MutableRefObject<TableRef>;
   listRef: React.MutableRefObject<ListOrMore>;
   allListRef: React.MutableRefObject<ListOrMore>;
   clickedElement: React.MutableRefObject<HTMLDivElement | null>;
-  viewRef: React.RefObject<HTMLDivElement>;
   list: React.RefObject<HTMLDivElement>;
   uid: string;
   data: DataType;
@@ -34,7 +34,7 @@ interface T {
 }
 
 const List = ({
-  viewRef,
+  weekRef,
   listRef,
   allListRef,
   clickedElement,
@@ -56,9 +56,10 @@ const List = ({
   const [toggle, setToggle] = useState<boolean>(true);    
   const [color, setColor] = useState<string>(modal.color);
   const [openColor, setOpenColor] = useState<boolean>(false);
+  console.log(weekRef)
   const [size, setSize] = useState<[number, number]>([
-    viewRef.current!.clientWidth,
-    viewRef.current!.clientHeight,
+    weekRef.current['1']!.clientWidth,
+    weekRef.current['1']!.clientHeight,
   ]); //check
   const [openEditArea, setOpenEditArea] = useState<boolean>(false);
   const [listDateArray] = useState<string[]>(
@@ -73,7 +74,7 @@ const List = ({
 
   useEffect(() => {
     const widthCalculator = () => {
-      setSize([viewRef.current!.clientWidth, viewRef.current!.clientHeight]);
+      setSize([weekRef.current['1']!.clientWidth, weekRef.current['1']!.clientHeight]);
     };
 
     window.addEventListener("resize", widthCalculator);
@@ -230,7 +231,7 @@ const List = ({
   const styleClass = data.userSchedule[modal.startDate][modal.key].isDone
     ? "done"
     : false;
-
+  console.log(size)
   const marginSize =
     size[0] !== 0 ? ModalPosition(modal.day, modal.week, size) : false;
 

@@ -1,8 +1,7 @@
 .calender-view {
-  padding-top: 80px;
-  margin: 0 auto;
+  margin: 80px auto 0;
   width: 97%;
-  height: calc(100% - 80px);
+  height: calc(100vh - 80px);
   position: relative;
   background-color: rgb(251, 251, 251);
   border-radius: 10px;
@@ -237,8 +236,7 @@
 
 @media (max-width: 500px) {
   .calender-view {
-    height: calc(100% - 140px);
-    padding-top: 60px;
+    /* height: calc(100% - 140px); */
   }
 
   .table {

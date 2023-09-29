@@ -9,12 +9,13 @@ import { ButtonRef } from "../../type/RefType";
 import classes from "./second.module.css";
 
 interface T {
+  platform: string;
   type: string;
   dateRef: React.MutableRefObject<ButtonRef>;
-  dateClose: (value: string) => void;
+  dateClose?: (value: string) => void;
 }
 
-const Month = ({ type, dateRef, dateClose }: T) => {
+const Month = ({ platform, type, dateRef, dateClose }: T) => {
   console.log("secondMonth");
 
   const dispatch = useAppDispatch();
@@ -32,7 +33,11 @@ const Month = ({ type, dateRef, dateClose }: T) => {
   };
 
   return (
-    <div className={classes["second-month-box"]}>
+    <div
+      className={`${classes["second-month-box"]} ${
+        platform === "pc" ? classes["platform-pc"] : ""
+      }`}
+    >
       <div className={classes["month-area"]}>
         <span>
           {date.year}년 {+date.month}월

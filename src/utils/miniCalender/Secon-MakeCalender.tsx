@@ -14,7 +14,7 @@ interface T {
   lastDate: number;
   identify: string;
   dateRef: React.MutableRefObject<ButtonRef>;
-  dateClose: (value: string) => void;
+  dateClose?: (value: string) => void;
 }
 
 const MakeCaledner = ({
@@ -38,7 +38,8 @@ const MakeCaledner = ({
     let endDate: string = modal.endDate;
     // 미니 캘린더에서 날짜를 클릭하면,
     // 해당 날짜로 MakeEvent.tsx가 렌더링, 한 마디로 모달창이 이동하는 기능
-    if (!modal.listModalOpen) dispatch(modalActions.onAdd());
+    if (!modal.listModalOpen && window.innerWidth > 500)
+      dispatch(modalActions.onAdd());
 
     // 첫 번째 미니 달력 선택의 경우...
 
@@ -68,7 +69,7 @@ const MakeCaledner = ({
         dateArray,
       })
     );
-    dateClose(type);
+    if (dateClose) dateClose(type);
   };
 
   const monthArray = [];
@@ -98,15 +99,23 @@ const MakeCaledner = ({
         <td
           key={date}
           onClick={() => clickHandler(date, i, week)}
-          className={`classes.date_box ${
-            date === modal.startDate && classes["startDate"]
-          } ${date === modal.endDate && classes["endDate"]}`}
+          className={classes.date_box}
         >
-          <div className={classes["date-h"]}>
+          <div
+            className={`${classes["date-h"]} ${
+              identify === date && classes["Today"]
+            } ${
+              date === modal.startDate &&
+              type === "start" &&
+              classes["startDate"]
+            } ${
+              date === modal.endDate && type === "end" && classes["endDate"]
+            }`}
+          >
             <span
               className={`${
                 i === 1 ? classes.sunday : i === 7 && classes.saturday
-              } ${identify === date && classes.Today}`}
+              }`}
             >
               {일}
             </span>
@@ -124,7 +133,7 @@ const MakeCaledner = ({
       <tr
         key={i}
         className={classes["week-box"]}
-        ref={(el) => (dateRef.current[i + 3] = el)}
+        ref={(el) => (dateRef.current![i + 3] = el)}
       >
         {makeDay(i)}
       </tr>

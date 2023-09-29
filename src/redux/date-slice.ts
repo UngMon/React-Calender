@@ -2,7 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const today = new Date();
 const todayYear = String(today.getFullYear());
-const todayMonth = String(today.getMonth());
+const todayMonth = String(today.getMonth() + 1).padStart(2, "0");
 
 const dateSlice = createSlice({
   name: "month",
