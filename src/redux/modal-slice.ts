@@ -11,6 +11,8 @@ const initialState: ModalType = {
   day: "",
   isDone: false,
   color: "",
+  newStart: "",
+  newEnd: "",
   startDate: "",
   endDate: "",
   startTime: "",
@@ -22,6 +24,7 @@ const initialState: ModalType = {
   click: "",
   실시간좌표: [0, 0],
   dateArray: [],
+  openEdit: false,
 };
 
 const modalSlice = createSlice({
@@ -86,6 +89,7 @@ const modalSlice = createSlice({
 
     offList(state) {
       state.listModalOpen = false;
+      state.openEdit = false;
     },
 
     clickedMore(state, action) {
@@ -169,6 +173,15 @@ const modalSlice = createSlice({
     실시간좌표설정(state, action) {
       state.실시간좌표 = [action.payload.day, action.payload.week];
     },
+
+    clickedEdit(state) {
+      state.openEdit = !state.openEdit;
+    },
+
+    moveDate(state, action) {
+      state.startDate = action.payload.start;
+      state.endDate = action.payload.end;
+    }
   },
 });
 

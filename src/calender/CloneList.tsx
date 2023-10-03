@@ -18,7 +18,6 @@ interface T {
   firstDay: number;
   lastWeek: number;
   uid: string;
-  isDragging: boolean;
   setIsDragging: (value: boolean) => void;
   clickedElement: React.MutableRefObject<HTMLDivElement | null>;
   viewRef: React.RefObject<HTMLDivElement>;
@@ -32,13 +31,13 @@ const CloneList = ({
   firstDay,
   lastWeek,
   uid,
-  isDragging,
   setIsDragging,
   clickedElement,
   viewRef,
 }: T) => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
+  console.log("??");
 
   const [고정좌표, 고정좌표설정] = useState<[number, number]>([0, 0]);
   const [실시간좌표, 실시간좌표설정] = useState<[number, number]>([0, 0]);
@@ -75,7 +74,7 @@ const CloneList = ({
 
     if (modal.mouseType === "MakeList") {
       start = move >= 0 ? modal.startDate : moveDate(modal.startDate, move);
-      end = move >= 0 ? moveDate(modal.endDate, move) : endDate;
+      end = move >= 0 ? moveDate(modal.endDate, move) : modal.endDate;
     } else if (modal.mouseType === "List") {
       start = moveDate(modal.startDate, move);
       end = moveDate(modal.endDate, move);
@@ -87,10 +86,10 @@ const CloneList = ({
     setStartDate(start);
     setEndDate(end);
     setEnter(false);
-  }, [moveDate, modal, 고정좌표, 실시간좌표, startDate, endDate, enter]);
+  }, [moveDate, modal, 고정좌표, startDate, endDate, 실시간좌표, enter]);
 
   const mouseEnter = (day: number, week: number) => {
-    if (modal.addModalOpen) return;
+    if (modal.addModalOpen || modal.openEdit) return;
     실시간좌표설정([day, week]);
     setEnter(true);
     고정좌표[0] === 0 && 고정좌표설정([day, week]);
@@ -98,7 +97,6 @@ const CloneList = ({
 
   const mouseUp = (e: React.MouseEvent) => {
     e.stopPropagation();
-    console.log(`mouseUp ${isDragging}`);
     document.body.style.cursor = "auto";
 
     const dateArray = MakeLongArr(startDate.split("-"), endDate.split("-"));
@@ -186,28 +184,35 @@ const CloneList = ({
 
   const mouseMove = () => {
     // 모달창이 열려있으면 마우스 커서 icon을 기본으로, move이벤트 발생 x
-    if (modal.addModalOpen || isMoving) return;
+    if (modal.addModalOpen || isMoving || modal.openEdit) return;
     setIsMoving(true);
     modal.listModalOpen && dispatch(modalActions.offList());
     document.body.style.cursor = "move";
   };
 
   const scheduleHandler = (date: string, day: number) => {
-    if (!startDate || !endDate) return;
-    if (date < startDate! || endDate! < date) return;
-    if (day !== 1 && date !== startDate) return;
+    const start = modal.mouseType === "Edit" ? modal.startDate : startDate;
+    const end = modal.mouseType === "Edit" ? modal.endDate : endDate;
 
-    let barWidth: number =
-      startDate! < endDate! ? calculateWidth(date, day, endDate!) : 1;
-    const isLong = startDate !== endDate ? true : false;
+    if (!start || !end) return;
+    if (date < start || end < date) return;
+    if (day !== 1 && date !== start) return;
+
+    let barWidth: number = start < end ? calculateWidth(date, day, end) : 1;
+    const isLong = start !== end ? true : false;
+    const title =
+      modal.mouseType === "MakeList"
+        ? " "
+        : !isLong
+        ? modal.startTime + " " + modal.title
+        : modal.title;
 
     return (
       <div
         className={classes["list-boundary-long"]}
         style={{
           width: `${barWidth}00%`,
-          top: `1px`,
-          opacity: "0.9",
+          top: `1.5px`,
         }}
       >
         <div
@@ -217,7 +222,7 @@ const CloneList = ({
           <div
             className={`${classes["type-one"]} ${modal.isDone && classes.done}`}
           >
-            {!isLong ? modal.startTime + " " + modal.title : modal.title}
+            {title}
           </div>
         </div>
       </div>

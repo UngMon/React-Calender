@@ -31,7 +31,6 @@ interface T {
   listRef: React.MutableRefObject<ListOrMore>;
   allListRef: React.MutableRefObject<ListOrMore>;
   clickedElement: React.MutableRefObject<HTMLDivElement | null>;
-  // listBoxHeightCount: number;
 }
 
 const MakeCalender = ({
@@ -52,9 +51,6 @@ T) => {
   console.log("MakeCalender");
   const dispatch = useAppDispatch();
   const [listBoxHeightCount, setCount] = useState<number>(0);
-  // const [listHeight, setListHegiht] = useState<number>(
-  //   window.innerWidth > 500 ? 24 : 20
-  // );
 
   const mouseDown = (day: string, week: string, date: string) => {
     if (modal.addModalOpen || modal.listModalOpen || modal.moreModalOpen)
@@ -79,13 +75,6 @@ T) => {
   useEffect(() => {
     // 마운트 이후, state에 값을 저장후 랜더링
     let elementHeight = window.innerWidth > 500 ? 24 : 20; // 일정 막대기 높이
-
-    // setCount(
-    //   Math.floor(
-    //     (weekRef.current["1"]!.clientHeight * 7 - 45 - elementHeight * week) /
-    //       (elementHeight * week)
-    //   )
-    // );
     setCount(
       Math.floor((weekRef.current["1"]!.clientHeight - 24) / elementHeight)
     );

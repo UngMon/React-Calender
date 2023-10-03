@@ -86,7 +86,7 @@ const MobileModal = ({ data, modal }: T) => {
             onTouchEnd={() => inputRef.current!.focus()}
             ref={inputRef}
           />
-          <button type="button">
+          <button type="submit" onTouchEnd={() => addEvent()}>
             <span>+</span>
           </button>
         </form>

@@ -61,7 +61,7 @@ const MakeCaledner = ({
 
     dispatch(
       modalActions.clickedDate({
-        type,
+        type: 'Edit',
         startDate,
         endDate,
         day: String(day),

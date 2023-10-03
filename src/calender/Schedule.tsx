@@ -117,9 +117,9 @@ const Schedule = ({
 
     for (let item of array[+day]) {
       // 리스트 개수가 화면에 보이는 날짜 칸을 넘어가면 break;
-      console.log(arrayCount, listBoxHeightCount)
+
       if (arrayCount >= listBoxHeightCount) break;
-      console.log('자ㄱ동하는기?')
+
       if (item) {
         arrayCount += 1;
         continue;
@@ -143,7 +143,7 @@ const Schedule = ({
         if (next > object.endDate) break;
 
         const index = arrayCount;
-        console.log('자ㄱ동하는기?')
+
         array[i][arrayCount] = (
           <div
             key={object.key}

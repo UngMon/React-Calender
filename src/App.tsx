@@ -39,7 +39,7 @@ function App() {
             path=":date"
             element={<Calender loading={loading} loggedIn={loggedIn} />}
           />
-          <Route path='makeEvent' element={<MakeEvent/>}/>
+          <Route path='makeEvent' element={<MakeEvent/>} />
         </Route>
       )}
       {loggedIn && (

@@ -1,6 +1,5 @@
 import React, { useRef, useState, useEffect } from "react";
 import { useAppDispatch } from "../redux/store";
-import { dataActions } from "../redux/data-slice";
 import { timeActions } from "../redux/time-slice";
 import { modalActions } from "../redux/modal-slice";
 import { ListOrMore, TableRef } from "../type/RefType";
@@ -31,6 +30,7 @@ interface T {
   uid: string;
   data: DataType;
   modal: ModalType;
+  setIsDragging: React.Dispatch<React.SetStateAction<boolean>>
 }
 
 const List = ({
@@ -42,6 +42,7 @@ const List = ({
   uid,
   data,
   modal,
+  setIsDragging
 }: T) => {
   const dispatch = useAppDispatch();
 
@@ -53,15 +54,13 @@ const List = ({
       ? modal.startDate.split("-")
       : [...modal.startDate.split("-"), ...modal.endDate.split("-")];
 
-  const [toggle, setToggle] = useState<boolean>(true);    
+  const [toggle, setToggle] = useState<boolean>(true);
   const [color, setColor] = useState<string>(modal.color);
   const [openColor, setOpenColor] = useState<boolean>(false);
-  console.log(weekRef)
   const [size, setSize] = useState<[number, number]>([
-    weekRef.current['1']!.clientWidth,
-    weekRef.current['1']!.clientHeight,
+    weekRef.current["1"]!.clientWidth,
+    weekRef.current["1"]!.clientHeight,
   ]); //check
-  const [openEditArea, setOpenEditArea] = useState<boolean>(false);
   const [listDateArray] = useState<string[]>(
     MakeLongArr(modal.startDate.split("-"), modal.endDate.split("-"))
   );
@@ -74,7 +73,10 @@ const List = ({
 
   useEffect(() => {
     const widthCalculator = () => {
-      setSize([weekRef.current['1']!.clientWidth, weekRef.current['1']!.clientHeight]);
+      setSize([
+        weekRef.current["1"]!.clientWidth,
+        weekRef.current["1"]!.clientHeight,
+      ]);
     };
 
     window.addEventListener("resize", widthCalculator);
@@ -144,21 +146,14 @@ const List = ({
     for (const item of dateArray) {
       delete newSchedule[item][key];
     }
-
+    
     dispatch(sendUserData({ newSchedule, uid, type: "POST" }));
     dispatch(modalActions.onoffModal({ type: "list" }));
   };
 
-  const editButtonHandler = (startDate: string, endDate: string) => {
-    const day = modal.day;
-    const week = modal.week;
-    const dateArray = MakeLongArr(
-      modal.startDate.split("-"),
-      modal.endDate.split("-")
-    );
-
-    setOpenEditArea((prevState) => !prevState);
-    dispatch(dataActions.setDate({ day, week, startDate, endDate, dateArray }));
+  const editButtonHandler = () => {
+    setIsDragging(((prevState) => !prevState));
+    dispatch(modalActions.clickedEdit());
   };
 
   const editListSubmitHandler = (event: React.FormEvent) => {
@@ -183,7 +178,7 @@ const List = ({
     if (title.length === 0) title = inputRef.current!.placeholder;
 
     const schedule = JSON.parse(JSON.stringify(data.userSchedule));
-
+    
     // 기존 항목 삭제 하고..
     for (let date of listDateArray) {
       delete schedule[date][modal.key];
@@ -196,9 +191,10 @@ const List = ({
       startTime,
       endTime,
       color,
-      dateArray: data.dateArray,
+      dateArray: modal.dateArray,
       userSchedule: schedule,
     };
+
     // 새롭게 설정된 기간에 일정 생성 후에
     const newSchedule: UserData = MakeList(parameter);
     // 데이터 전송
@@ -222,16 +218,17 @@ const List = ({
 
   const closeModalHandler = () => {
     setToggle(false);
+    setIsDragging(false);
     setTimeout(() => {
       dispatch(modalActions.offList());
       dispatch(timeActions.resetTime());
-    }, 250)
+    }, 250);
   };
 
-  const styleClass = data.userSchedule[modal.startDate][modal.key].isDone
+  const styleClass = data.userSchedule[modal.startDate]?.[modal.key]?.isDone
     ? "done"
     : false;
-  console.log(size)
+
   const marginSize =
     size[0] !== 0 ? ModalPosition(modal.day, modal.week, size) : false;
 
@@ -239,7 +236,9 @@ const List = ({
 
   return (
     <div
-      className={`list-box ${openEditArea ? "edit" : ""} ${toggle ? 'on' : 'off'}`}
+      className={`list-box ${modal.openEdit ? "edit" : ""} ${
+        toggle ? "on" : "off"
+      }`}
       ref={list}
       style={{
         // 마운트시에 width 가 ''이므로 display none
@@ -250,7 +249,7 @@ const List = ({
       onWheel={(e) => e.stopPropagation()}
     >
       <div className="option-box">
-        <div onClick={() => editButtonHandler(startDate, endDate)}>
+        <div onClick={editButtonHandler}>
           <FontAwesomeIcon icon={faEdit} />
         </div>
         <div onClick={() => removeListHandler(modal.key)}>
@@ -263,7 +262,7 @@ const List = ({
           <FontAwesomeIcon icon={faXmark} />
         </div>
       </div>
-      {openEditArea && (
+      {modal.openEdit && (
         <form
           className="list-edit-form"
           onSubmit={(e: React.FormEvent) => editListSubmitHandler(e)}
@@ -295,7 +294,7 @@ const List = ({
           </div>
         </form>
       )}
-      {!openEditArea && (
+      {!modal.openEdit && (
         <div className="list-info">
           <div className="list-title">
             <div className={`list-color-box ${modal.color}`}></div>

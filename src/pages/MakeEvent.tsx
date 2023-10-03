@@ -1,19 +1,28 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
 import { RootState, useAppDispatch } from "../redux/store";
-import { useNavigate } from "react-router-dom";
+import {
+  useLocation,
+  useNavigate,
+  useParams,
+  useSearchParams,
+} from "react-router-dom";
+import { ListOrMore } from "../type/RefType";
+import { MakeList } from "../utils/MakeList";
+import { MakeListParameter } from "../type/Etc";
+import { UserData } from "../type/ReduxType";
+import { auth } from "../Auth/firebase";
+import { sendUserData } from "../redux/fetch-action";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faArrowRight,
   faClock,
   faXmark,
 } from "@fortawesome/free-solid-svg-icons";
-import { ListOrMore } from "../type/RefType";
 import MobileTimePicker from "../ui/MobileTimePicker";
 import SetTime from "../utils/Time/SetTime";
 import Month from "../utils/miniCalender/Secon-Month";
 import "./MakeEvent.css";
-import { modalActions } from "../redux/modal-slice";
 
 const time = SetTime();
 
@@ -21,8 +30,15 @@ const date = new Date().toISOString().split("T")[0];
 
 const MakeEvent = () => {
   const dispatch = useAppDispatch();
+  const loca = useLocation();
+  const pa = useParams();
+  const [params] = useSearchParams();
 
+  console.log(loca, pa, params)
+
+  const data = useSelector((state: RootState) => state.data);
   const modal = useSelector((state: RootState) => state.modal);
+
   const [openDateSelector, setOpenDate] = useState<[boolean, string]>([
     false,
     "",
@@ -57,7 +73,6 @@ const MakeEvent = () => {
   const endTime = modal.endTime || time.lastTime;
 
   const openHandler = (v: string, t: string) => {
-
     if (v === "date") {
       setOpenTime([false, ""]);
       setOpenDate([
@@ -76,7 +91,7 @@ const MakeEvent = () => {
 
   const submitHandler = (e: React.FormEvent) => {
     e.preventDefault();
-
+    console.log("submit");
     if (modal.startDate > modal.endDate) {
       alert("종료 날짜가 시작 날짜 보다 뒤에 있어야 합니다.");
       return;
@@ -86,6 +101,38 @@ const MakeEvent = () => {
       alert("종료 날짜가 시작 날짜 보다 뒤에 있어야 합니다.");
       return;
     }
+
+    const schedule = JSON.parse(JSON.stringify(data.userSchedule));
+
+    // 기존 항목 삭제 하고..
+    if (params.get("sex")) {
+      const listDateArray = modal.dateArray;
+
+      for (let date of listDateArray) {
+        delete schedule[date][modal.key];
+      }
+    }
+
+    const parameter: MakeListParameter = {
+      title: modal.title,
+      startDate: modal.startDate,
+      endDate: modal.endDate,
+      startTime,
+      endTime,
+      color: "라벤더",
+      dateArray: modal.dateArray,
+      userSchedule: schedule,
+    };
+
+    // 새롭게 설정된 기간에 일정 생성 후에
+    const newSchedule: UserData = MakeList(parameter);
+
+    // 데이터 전송
+    dispatch(
+      sendUserData({ newSchedule, uid: auth.currentUser!.uid, type: "POST" })
+    );
+    console.log("전송", newSchedule);
+    navigate(-1);
   };
 
   return (
@@ -138,7 +185,11 @@ const MakeEvent = () => {
           </div>
           <div className="picker-box">
             {openDateSelector[0] && (
-              <Month platform="mobile" type={openDateSelector[1]} dateRef={dateRef} />
+              <Month
+                platform="mobile"
+                type={openDateSelector[1]}
+                dateRef={dateRef}
+              />
             )}
             {openTimeSelector[0] && (
               <MobileTimePicker
