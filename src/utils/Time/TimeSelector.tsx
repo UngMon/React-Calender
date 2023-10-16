@@ -12,15 +12,20 @@ import "./TimeSelector.css";
 interface T {
   startDate: string;
   endDate: string;
-  timeOneRef: React.RefObject<HTMLInputElement>;
-  timeTwoRef: React.RefObject<HTMLInputElement>;
+  timeInputOneRef: React.RefObject<HTMLInputElement>;
+  timeInputTwoRef: React.RefObject<HTMLInputElement>;
 }
 
-const TimeSelector = ({ startDate, endDate, timeOneRef, timeTwoRef }: T) => {
-  const setTime = SetTime();
-  const firstTime = setTime.currentTime;
-  const lastTime = setTime.lastTime;
+const setTime = SetTime();
+const firstTime = setTime.currentTime;
+const lastTime = setTime.lastTime;
 
+const TimeSelector = ({
+  startDate,
+  endDate,
+  timeInputOneRef,
+  timeInputTwoRef,
+}: T) => {
   const dispatch = useAppDispatch();
   const timeState = useSelector((state: RootState) => state.time);
 
@@ -29,7 +34,7 @@ const TimeSelector = ({ startDate, endDate, timeOneRef, timeTwoRef }: T) => {
 
   const [dateIsVisible, setDateIsVisible] = useState<[boolean, string]>([
     false,
-    "start",
+    "",
   ]);
 
   const dateRef = useRef<ListOrMore>({});
@@ -37,59 +42,51 @@ const TimeSelector = ({ startDate, endDate, timeOneRef, timeTwoRef }: T) => {
   const oneRef = useRef<ListOrMore>({});
   const twoRef = useRef<ListOrMore>({});
 
-  const timeOneVisible = timeState.firstIsVisible;
-  const timeTwoVisible = timeState.lastIsVisible;
-
   const dateOpenHandler = (type: string) => {
-    let boolean: boolean = false;
-    if (dateIsVisible[1] === type) boolean = !dateIsVisible[0];
-    if (dateIsVisible[1] !== type) boolean = true;
-    setDateIsVisible([boolean, type]);
+    if (dateIsVisible[1] === type) {
+      setDateIsVisible([false, ""]);
+    }
+
+    if (dateIsVisible[1] !== type) {
+      setDateIsVisible([true, type]);
+    }
+
+    if (timeState.firstIsVisible || timeState.lastIsVisible)
+      dispatch(timeActions.timeToggle());
   };
-
-  useEffect(() => {
-    const clickEvent = (e: MouseEvent) => {
-      let target = e.target as Node;
-
-      for (let i in dateRef.current) {
-        if (dateRef.current[i]!.contains(target)) return;
-      }
-      console.log("working?");
-      setTimeout(() => {
-        setDateIsVisible([false, dateIsVisible[1]]);
-      }, 100);
-      return;
-    };
-
-    document.addEventListener("mousedown", clickEvent);
-    return () => {
-      document.removeEventListener("mousedown", clickEvent);
-    };
-  });
 
   useEffect(() => {
     const timePickerHandler = (e: MouseEvent) => {
       const target = e.target as Node;
+      console.log("time click");
 
-      if (timeOneRef.current!.contains(target)) {
+      for (let i in dateRef.current) {
+        if (dateRef.current[i]?.contains(target)) return;
+      }
+
+      if (timeInputOneRef.current?.contains(target)) {
+        if (dateIsVisible[0]) setDateIsVisible([false, ""]);
         dispatch(timeActions.selectFristTime({ firstTime, lastTime }));
         return;
       }
 
-      if (timeTwoRef.current!.contains(target)) {
+      if (timeInputTwoRef.current?.contains(target)) {
+        if (dateIsVisible[0]) setDateIsVisible([false, ""]);
         dispatch(timeActions.selectLastTime({ firstTime, lastTime }));
         return;
       }
 
       for (let i in timeRef.current) {
         if (!timeRef.current[i]) continue;
-
-        if (timeRef.current[i]!.contains(target)) return;
+        if (timeRef.current[i]?.contains(target)) return;
       }
 
+      console.log("reset");
       setTimeout(() => {
-        dispatch(timeActions.resetTime());
-      }, 120);
+        setDateIsVisible([false, ""]);
+        (timeState.firstTime !== "" || timeState.lastTime !== "") &&
+          dispatch(timeActions.resetTime());
+      }, 150);
     };
 
     window.addEventListener("click", timePickerHandler);
@@ -102,68 +99,87 @@ const TimeSelector = ({ startDate, endDate, timeOneRef, timeTwoRef }: T) => {
       <img
         src="../images/clock.png"
         alt="clock"
-        width="19"
+        width="20"
         className="clock-icon"
       />
       <div className="time-box">
-        <div className="date-area">
-          <div ref={(el: HTMLDivElement) => (dateRef.current[0] = el)}>
-            <span onClick={() => dateOpenHandler("start")}>
-              {시작날[0] + "년 " + 시작날[1] + "월 " + 시작날[2] + "일"}
-            </span>
+        <div className="picker-one">
+          <div className="date-area">
+            <div
+              className={dateIsVisible[1] === "start" ? "date-on" : ""}
+              ref={(el: HTMLDivElement) => (dateRef.current[0] = el)}
+              onClick={() => dateOpenHandler("start")}
+            >
+              <span>
+                {시작날[0] + "년 " + 시작날[1] + "월 " + 시작날[2] + "일"}
+              </span>
+            </div>
           </div>
-          <div
-            className="second-calender"
-            style={{ display: dateIsVisible[0] ? "block" : "none" }}
-          >
-            <SecondCaleder
-              platform="pc"
-              type={dateIsVisible[1]}
-              dateRef={dateRef}
-              dateClose={dateOpenHandler}
+          <div className="time-picker">
+            <input
+              type="text"
+              placeholder={timeState.firstTime || firstTime}
+              ref={timeInputOneRef}
             />
           </div>
-        </div>
-        <div className="time-one">
-          <input
-            type="text"
-            placeholder={timeState.firstTime || firstTime}
-            ref={timeOneRef}
-          />
-          {timeState.firstIsVisible && (
-            <TimeBoxOne
-              timeOneRef={timeOneRef}
-              oneRef={oneRef}
-              timeVisible={timeOneVisible}
-              timeRef={timeRef}
-            />
-          )}
         </div>
         <div className="time-box-span">
           <span>~</span>
         </div>
-        <div className="date-area">
-          <div ref={(el: HTMLDivElement) => (dateRef.current[1] = el)}>
-            <span onClick={() => dateOpenHandler("end")}>
-              {마지막날[0] + "년 " + 마지막날[1] + "월 " + 마지막날[2] + "일"}
-            </span>
+        <div className="picker-one">
+          <div className="date-area">
+            <div
+              className={dateIsVisible[1] === "end" ? "date-on" : ""}
+              ref={(el: HTMLDivElement) => (dateRef.current[1] = el)}
+              onClick={() => dateOpenHandler("end")}
+            >
+              <span>
+                {마지막날[0] + "년 " + 마지막날[1] + "월 " + 마지막날[2] + "일"}
+              </span>
+            </div>
+          </div>
+          <div className="time-picker">
+            <input
+              type="text"
+              placeholder={timeState.lastTime || lastTime}
+              ref={timeInputTwoRef}
+            />
           </div>
         </div>
-        <div className="time-two">
-          <input
-            type="text"
-            placeholder={timeState.lastTime || lastTime}
-            ref={timeTwoRef}
-          />
-          {timeState.lastIsVisible && (
-            <TimeBoxTwo
-              timeTwoRef={timeTwoRef}
-              twoRef={twoRef}
-              timeVisible={timeTwoVisible}
-              timeRef={timeRef}
+      </div>
+      <div
+        className="picker-two"
+        style={{
+          height:
+            dateIsVisible[0] ||
+            timeState.firstIsVisible ||
+            timeState.lastIsVisible
+              ? "220px"
+              : "0",
+        }}
+      >
+        {dateIsVisible[0] && (
+          <div className="second-calender">
+            <SecondCaleder
+              platform="pc"
+              type={dateIsVisible[1]}
+              dateRef={dateRef}
+              dateOpenHandler={dateOpenHandler}
             />
-          )}
-        </div>
+          </div>
+        )}
+        <TimeBoxOne
+          timeInputOneRef={timeInputOneRef}
+          oneRef={oneRef}
+          timeVisible={timeState.firstIsVisible}
+          timeRef={timeRef}
+        />
+        <TimeBoxTwo
+          timeInputOneRef={timeInputTwoRef}
+          twoRef={twoRef}
+          timeVisible={timeState.lastIsVisible}
+          timeRef={timeRef}
+        />
       </div>
     </div>
   );

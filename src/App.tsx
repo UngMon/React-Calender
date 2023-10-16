@@ -5,7 +5,7 @@ import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "./Auth/firebase";
 import { getUserData } from "./redux/fetch-action";
 import ResetPage from "./pages/ResetPage";
-import Calender from "./calender/Calender";
+import Content from "./calender/Content";
 import Result from "./pages/Result";
 import Loading from "./ui/Loading";
 import LoginPage from "./pages/LoginPage";
@@ -37,9 +37,12 @@ function App() {
         <Route path="/calender">
           <Route
             path=":date"
-            element={<Calender loading={loading} loggedIn={loggedIn} />}
+            element={<Content loading={loading} loggedIn={loggedIn} />}
           />
-          <Route path='makeEvent' element={<MakeEvent/>} />
+          <Route path="event">
+            <Route path=":edit" element={<MakeEvent />} />
+            <Route path=":make" element={<MakeEvent />} />
+          </Route>
         </Route>
       )}
       {loggedIn && (

@@ -3,12 +3,12 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { RootState, useAppDispatch } from "../redux/store";
 import { dateActions } from "../redux/date-slice";
+import { modalActions } from "../redux/modal-slice";
 import { ListOrMore } from "../type/RefType";
-import Main from "./Main";
+import Main from "./main/Main";
 import Header from "./header/Header";
 import NotLogin from "../error/NotLogin";
 import Loading from "../ui/Loading";
-import { modalActions } from "../redux/modal-slice";
 
 interface T {
   loading: boolean;
@@ -20,11 +20,11 @@ const Calender = ({ loading, loggedIn }: T) => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const [param] = useSearchParams();
-
+  
   const delayRef = useRef({ delay: true });
 
   useEffect(() => {
-    if (!delayRef.current.delay) return;
+    if (delayRef.current.delay) return;
 
     let y = param.get("year")!;
     let m = param.get("month")!;
@@ -88,7 +88,7 @@ const Calender = ({ loading, loggedIn }: T) => {
   };
 
   const wheelHandler = (e: React.WheelEvent) => {
-    dispatch(modalActions.allOffModal());
+    dispatch(modalActions.offModal());
     switch (e.deltaY > 0) {
       case true:
         movePrevMonth();

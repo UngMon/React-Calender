@@ -1,6 +1,6 @@
 .mob {
   margin-top: 30px;
-  width: 100%
+  width: 100%;
 }
 
 .second-month-box {
@@ -52,8 +52,6 @@
   right: 5%;
 }
 
-
-
 .month-area button:hover {
   cursor: pointer;
   border-radius: 100%;
@@ -61,7 +59,6 @@
 }
 
 .calender {
-
 }
 
 .table {
@@ -121,3 +118,10 @@
   border-radius: 100%;
 }
 
+.sunday {
+  color: red;
+}
+
+.saturday {
+  color: blue;
+}

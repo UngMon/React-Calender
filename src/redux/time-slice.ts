@@ -12,10 +12,10 @@ const timeSlice = createSlice({
   name: "time",
   initialState,
   reducers: {
-    // timeToggle(state) {
-    //   state.firstIsVisible = false;
-    //   state.lastIsVisible = false;
-    // },
+    timeToggle(state) {
+      state.firstIsVisible = false;
+      state.lastIsVisible = false;
+    },
 
     selectFristTime(state, action) {
       state.firstIsVisible = !state.firstIsVisible;

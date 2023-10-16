@@ -1,0 +1,47 @@
+.color-container {
+  width: 340px;
+  height: 30px;
+  margin: 20px auto 10px;
+  display: flex;
+  align-items: center;
+}
+
+.color-icon {
+  width: 40px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+}
+
+.color-icon img {
+  display: block;
+}
+
+.circle {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+}
+
+.colors {
+  width: 80%;
+  height: 100%;
+  margin-left: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.colors div {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  margin: 0 4px;
+}
+
+
+
+.circle:hover {
+  cursor: pointer;
+}
+

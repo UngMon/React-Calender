@@ -7,7 +7,6 @@ export interface MakeListParameter {
   startTime: string;
   endTime: string;
   color: string;
-  dateArray: string[];
   userSchedule: UserData;
 }
 

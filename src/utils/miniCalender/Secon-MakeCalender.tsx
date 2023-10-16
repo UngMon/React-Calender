@@ -2,9 +2,8 @@ import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../redux/store";
 import { ButtonRef } from "../../type/RefType";
-import { modalActions } from "../../redux/modal-slice";
-import MakeLongArr from "../MakeLongArr";
-import classes from "./second.module.css";
+import { cloneActions } from "../../redux/clone-slice";
+import style from "./second.module.css";
 
 interface T {
   type: string;
@@ -14,7 +13,7 @@ interface T {
   lastDate: number;
   identify: string;
   dateRef: React.MutableRefObject<ButtonRef>;
-  dateClose?: (value: string) => void;
+  dateOpenHandler?: (value: string) => void;
 }
 
 const MakeCaledner = ({
@@ -25,51 +24,26 @@ const MakeCaledner = ({
   lastDate,
   identify,
   dateRef,
-  dateClose,
+  dateOpenHandler,
 }: T) => {
   console.log("second");
 
   const dispatch = useDispatch();
-  const modal = useSelector((state: RootState) => state.modal);
+  const clone = useSelector((state: RootState) => state.clone);
 
   const clickHandler = (date: string, day: number, week: number) => {
-    const 선택날짜 = date.split("-"); // ['year', 'month', 'date']
-    let startDate: string = modal.startDate;
-    let endDate: string = modal.endDate;
-    // 미니 캘린더에서 날짜를 클릭하면,
-    // 해당 날짜로 MakeEvent.tsx가 렌더링, 한 마디로 모달창이 이동하는 기능
-    if (!modal.listModalOpen && window.innerWidth > 500)
-      dispatch(modalActions.onAdd());
-
-    // 첫 번째 미니 달력 선택의 경우...
-
-    let dateArray: string[] = [];
-
-    switch (type) {
-      case "start": // 첫 번째 미니 달력에서 날짜 클릭
-        const 마지막날: string[] = modal.endDate.split("-");
-        dateArray = MakeLongArr(선택날짜, 마지막날);
-        startDate = date;
-        break;
-      case "end": // 두 번째 미니 달력에서 날짜 클릭
-        const 시작날: string[] = modal.startDate.split("-");
-        dateArray = MakeLongArr(시작날, 선택날짜);
-        endDate = date;
-        break;
-      default:
-    }
+    let startDate: string = type === "start" ? date : clone.startDate;
+    let endDate: string = type === "end" ? date : clone.endDate;
 
     dispatch(
-      modalActions.clickedDate({
-        type: 'Edit',
+      cloneActions.clickedDate({
+        type,
         startDate,
         endDate,
         day: String(day),
         week: String(week),
-        dateArray,
       })
     );
-    if (dateClose) dateClose(type);
   };
 
   const monthArray = [];
@@ -99,22 +73,18 @@ const MakeCaledner = ({
         <td
           key={date}
           onClick={() => clickHandler(date, i, week)}
-          className={classes.date_box}
+          className={style.date_box}
         >
           <div
-            className={`${classes["date-h"]} ${
-              identify === date && classes["Today"]
+            className={`${style["date-h"]} ${
+              identify === date && style["Today"]
             } ${
-              date === modal.startDate &&
-              type === "start" &&
-              classes["startDate"]
-            } ${
-              date === modal.endDate && type === "end" && classes["endDate"]
-            }`}
+              date === clone.startDate && type === "start" && style["startDate"]
+            } ${date === clone.endDate && type === "end" && style["endDate"]}`}
           >
             <span
-              className={`${
-                i === 1 ? classes.sunday : i === 7 && classes.saturday
+              className={`${i === 1 ? style["sunday"] : ""}${
+                i === 7 ? style["saturday"] : ""
               }`}
             >
               {일}
@@ -132,7 +102,7 @@ const MakeCaledner = ({
     monthArray.push(
       <tr
         key={i}
-        className={classes["week-box"]}
+        className={style["week-box"]}
         ref={(el) => (dateRef.current![i + 3] = el)}
       >
         {makeDay(i)}

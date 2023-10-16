@@ -1,7 +1,9 @@
 import React from "react";
-import "./ColorBox.css";
+import pc from "./PcColorBox.module.css";
+import mobile from "./MobileColorBox.module.css";
 
 interface T {
+  platform: string;
   color: string;
   setColor: (value: string) => void;
   openColor: boolean;
@@ -23,41 +25,44 @@ const colorArray = [
 ];
 
 const ColorBox = ({
+  platform,
   color,
   setColor,
   openColor,
   setOpenColor,
   colorRef,
 }: T) => {
-  const selectedColor = (컬러: string) => {
-    setColor(컬러);
+  const selectedColor = (color: string) => {
+    setColor(color);
     setOpenColor(false);
   };
 
   return (
-    <div className="color-picker" ref={colorRef}>
-      <img
-        src="../images/palette.png"
-        alt="memo"
-        width="20"
-        className="color-icon"
-      />
+    <div
+      className={`${
+        platform === "pc" ? pc["color-container"] : mobile["color-container"]
+      } ${platform === "mobile" ? color : "none"}`}
+      ref={colorRef}
+    >
+      {platform === "pc" && (
+        <div className={pc["color-icon"]}>
+          <img src="../images/palette.png" alt="palette" width="20" />
+        </div>
+      )}
       <div
-        className={`${color} circle`}
-        onClick={() => {
-          console.log("colorClick");
-          setOpenColor(!openColor);
-        }}
+        className={`${color} ${platform === "pc" ? pc.circle : mobile.circle}`}
+        onClick={() => setOpenColor(!openColor)}
       ></div>
       <div
-        className="color-box"
+        className={`${platform === "pc" ? pc["colors"] : mobile["colors"]}`}
         style={{ display: openColor ? "flex" : "none" }}
       >
         {colorArray.map((item) => (
           <div
             key={item}
-            onClick={() => selectedColor(item)}
-            className={`${item} circle`}
+            onClick={() => platform === "pc" && selectedColor(item)}
+            onTouchEnd={() => platform === "mobile" && selectedColor(item)}
+            className={`${item} ${color === item && "picked"}`}
           ></div>
         ))}
       </div>

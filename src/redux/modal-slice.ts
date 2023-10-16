@@ -6,13 +6,12 @@ const initialState: ModalType = {
   listModalOpen: false,
   moreModalOpen: false,
   mobileModalOpen: false,
+  openEdit: false,
   date: "",
   week: "",
   day: "",
   isDone: false,
   color: "",
-  newStart: "",
-  newEnd: "",
   startDate: "",
   endDate: "",
   startTime: "",
@@ -23,16 +22,18 @@ const initialState: ModalType = {
   mouseType: "",
   click: "",
   실시간좌표: [0, 0],
-  dateArray: [],
-  openEdit: false,
 };
 
 const modalSlice = createSlice({
   name: "modal",
   initialState,
   reducers: {
+    setPosition(state, action) {
+      state.day = action.payload.day;
+      state.week = action.payload.week;
+    },
+
     clickedDate(state, action) {
-      state.dateArray = action.payload.dateArray || [action.payload.startDate];
       state.mouseType = action.payload.type || state.mouseType;
       if (action.payload.type === "start") {
         state.startDate = action.payload.startDate;
@@ -42,8 +43,11 @@ const modalSlice = createSlice({
       }
 
       if (action.payload.type === "end") {
+        if (state.startDate > action.payload.endDate) {
+          console.log("redux end < start");
+          state.startDate = action.payload.endDate;
+        }
         state.endDate = action.payload.endDate;
-        state.dateArray = action.payload.dateArray;
         return;
       }
 
@@ -51,8 +55,6 @@ const modalSlice = createSlice({
       state.endDate = action.payload.endDate;
       state.day = action.payload.day;
       state.week = action.payload.week;
-
-      state.dateArray = action.payload.dateArray || [action.payload.startDate];
     },
 
     toggleMobilModal(state) {
@@ -67,24 +69,29 @@ const modalSlice = createSlice({
       state.addModalOpen = false;
     },
 
-    clickedList(state, action) {
-      state.color = action.payload.object.color;
-      state.startDate = action.payload.object.startDate;
-      state.endDate = action.payload.object.endDate;
-      state.startTime = action.payload.object.startTime;
-      state.endTime = action.payload.object.endTime;
-      state.title = action.payload.object.title;
+    setListInfo(state, action) {
+      state.color = action.payload?.object?.color || action.payload.color;
+      state.startDate =
+        action.payload?.object?.startDate || action.payload.startDate;
+      state.endDate = action.payload?.object?.endDate || action.payload.endDate;
+      state.startTime =
+        action.payload?.object?.startTime || action.payload.startTime;
+      state.endTime = action.payload?.object?.endTime || action.payload.endTime;
+      state.title = action.payload?.object?.title || action.payload.title;
+      state.isDone = action.payload?.object?.isDone || action.payload.isDone;
+      state.key = action.payload?.object?.key || action.payload.key;
       state.index = action.payload.index;
-      state.key = action.payload.object.key;
-      state.isDone = action.payload.object.isDone;
       state.week = action.payload.week;
       state.day = action.payload.day;
-      state.mouseType = "List";
+      state.mouseType = action.payload.type;
       state.click = action.payload.click;
     },
 
     onList(state) {
       state.listModalOpen = true;
+      state.addModalOpen = false;
+      state.moreModalOpen = false;
+      state.mobileModalOpen = false;
     },
 
     offList(state) {
@@ -95,8 +102,8 @@ const modalSlice = createSlice({
     clickedMore(state, action) {
       state.moreModalOpen = true;
       state.date = action.payload.date;
-      state.week = action.payload.week;
       state.day = action.payload.day;
+      state.week = action.payload.week;
       state.mouseType = "More";
     },
 
@@ -117,11 +124,11 @@ const modalSlice = createSlice({
       state.moreModalOpen = false;
     },
 
-    onoffModal(state, action) {
-      if (action.payload.type === "More")
-        state.moreModalOpen = !state.moreModalOpen;
-      else state.listModalOpen = !state.listModalOpen;
-
+    offModal(state) {
+      state.addModalOpen = false;
+      state.listModalOpen = false;
+      state.moreModalOpen = false;
+      state.mobileModalOpen = false;
       state.date = "";
       state.week = "";
       state.day = "";
@@ -136,12 +143,8 @@ const modalSlice = createSlice({
       state.index = 0; // 그 날 일정에서 몇 번째 항목인지
       state.mouseType = "";
       state.click = "";
-    },
-
-    allOffModal(state) {
-      state.addModalOpen = false;
-      state.listModalOpen = false;
-      state.moreModalOpen = false;
+      state.실시간좌표 = [0, 0];
+      state.openEdit = false;
     },
 
     clickedListInMobile(state, action) {
@@ -150,6 +153,8 @@ const modalSlice = createSlice({
       state.endDate = action.payload.endDate;
       state.startTime = action.payload.startTime;
       state.endTime = action.payload.endTime;
+      state.key = action.payload.key;
+      state.color = action.payload.color;
     },
 
     addEvent(state, action) {
@@ -181,7 +186,7 @@ const modalSlice = createSlice({
     moveDate(state, action) {
       state.startDate = action.payload.start;
       state.endDate = action.payload.end;
-    }
+    },
   },
 });
 

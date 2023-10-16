@@ -1,5 +1,7 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { useAppDispatch } from "../redux/store";
+import { useSelector } from "react-redux";
+import { RootState, useAppDispatch } from "../redux/store";
+import { cloneActions } from "../redux/clone-slice";
 import { modalActions } from "../redux/modal-slice";
 import { sendUserData } from "../redux/fetch-action";
 import { useNavigate } from "react-router-dom";
@@ -7,8 +9,8 @@ import { ModalType, DataType, UserData } from "../type/ReduxType";
 import { MakeListParameter } from "../type/Etc";
 import { MakeList } from "../utils/MakeList";
 import { calculateWidth } from "../utils/CalculateWidth";
-import classes from "./MakeCalender.module.css";
-import MakeLongArr from "../utils/MakeLongArr";
+import { makeDateArray } from "../utils/MakeLongArr";
+import style from "./Calender.module.css";
 
 interface T {
   year: string;
@@ -37,16 +39,15 @@ const CloneList = ({
 }: T) => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  console.log("??");
-
+  // console.log("cloneList");
+  const cloneRedux = useSelector((state: RootState) => state.clone);
   const [고정좌표, 고정좌표설정] = useState<[number, number]>([0, 0]);
   const [실시간좌표, 실시간좌표설정] = useState<[number, number]>([0, 0]);
 
-  const [enter, setEnter] = useState<boolean>(false);
-
-  const [startDate, setStartDate] = useState<string>(modal.startDate);
-  const [endDate, setEndDate] = useState<string>(modal.endDate);
+  const [mouseEnter, setMouseEnter] = useState<boolean>(false);
   const [isMoving, setIsMoving] = useState<boolean>(false);
+  const [startDate, setStartDate] = useState<string>(cloneRedux.startDate);
+  const [endDate, setEndDate] = useState<string>(cloneRedux.endDate);
 
   const moveDate = useCallback((date: string, move: number) => {
     const currentDate = new Date(date);
@@ -64,44 +65,52 @@ const CloneList = ({
   }, []);
 
   useEffect(() => {
-    if (!enter && modal.mouseType === "MakeList") return;
-    if (!modal.startDate || !modal.endDate) return;
-    if (고정좌표[0] === 0 && 고정좌표[1] === 0) return;
+    if (!cloneRedux.startDate || !cloneRedux.endDate) return;
+    if (!mouseEnter && cloneRedux.mouseType === "MakeList") return;
+
     const move: number =
       (실시간좌표[1] - 고정좌표[1]) * 7 + (실시간좌표[0] - 고정좌표[0]);
     let start: string;
     let end: string;
 
-    if (modal.mouseType === "MakeList") {
-      start = move >= 0 ? modal.startDate : moveDate(modal.startDate, move);
-      end = move >= 0 ? moveDate(modal.endDate, move) : modal.endDate;
-    } else if (modal.mouseType === "List") {
-      start = moveDate(modal.startDate, move);
-      end = moveDate(modal.endDate, move);
+    if (cloneRedux.mouseType === "MakeList") {
+      start =
+        move >= 0 ? cloneRedux.startDate : moveDate(cloneRedux.startDate, move);
+      end = move >= 0 ? moveDate(cloneRedux.endDate, move) : cloneRedux.endDate;
+    } else if (cloneRedux.mouseType === "List") {
+      start = moveDate(cloneRedux.startDate, move);
+      end = moveDate(cloneRedux.endDate, move);
     } else {
-      start = modal.startDate;
-      end = modal.endDate;
+      start = cloneRedux.startDate;
+      end = cloneRedux.endDate;
     }
 
     setStartDate(start);
     setEndDate(end);
-    setEnter(false);
-  }, [moveDate, modal, 고정좌표, startDate, endDate, 실시간좌표, enter]);
+    setMouseEnter(false);
+  }, [moveDate, cloneRedux, 고정좌표, 실시간좌표, mouseEnter]);
 
-  const mouseEnter = (day: number, week: number) => {
+  const mouseEnterHandler = (day: number, week: number) => {
     if (modal.addModalOpen || modal.openEdit) return;
+    if (고정좌표[0] === 0) 고정좌표설정([day, week]);
     실시간좌표설정([day, week]);
-    setEnter(true);
-    고정좌표[0] === 0 && 고정좌표설정([day, week]);
+    setMouseEnter(true);
   };
 
   const mouseUp = (e: React.MouseEvent) => {
     e.stopPropagation();
+    // console.log("CloneList MouseUp");
+    clickedElement.current = null;
+    if (modal.openEdit) {
+      dispatch(modalActions.offModal());
+      setIsDragging(false);
+      return;
+    }
+
     document.body.style.cursor = "auto";
 
-    const dateArray = MakeLongArr(startDate.split("-"), endDate.split("-"));
-
-    if (modal.mouseType === "MakeList") {
+    if (cloneRedux.mouseType === "MakeList") {
+      console.log("MakeList CloneList");
       if (viewRef.current!.clientWidth <= 500) navigate("/calender/makeEvent");
       else dispatch(modalActions.onAdd());
 
@@ -127,79 +136,75 @@ const CloneList = ({
       }
 
       dispatch(
-        modalActions.clickedDate({
+        cloneActions.clickedDate({
           type,
           startDate,
           endDate,
           day: String(day),
           week: String(week),
-          dateArray,
         })
       );
+      return;
     }
 
-    if (modal.mouseType === "List") {
+    if (cloneRedux.mouseType === "List") {
       setIsMoving(false);
       setIsDragging(false);
+      console.log("List ClonList Type");
       if (실시간좌표[0] === 고정좌표[0] && 실시간좌표[1] === 고정좌표[1]) {
-        if (isMoving) {
-          clickedElement.current = null;
-          return;
-        }
-
-        if (modal.click === "same") {
-          dispatch(modalActions.offList());
-        } else {
-          dispatch(modalActions.onList());
-        }
+        if (modal.click === "same") dispatch(modalActions.offList());
+        else dispatch(modalActions.onList());
         return;
       }
 
       const schedule = JSON.parse(JSON.stringify(data.userSchedule));
-      const prevDateArray = MakeLongArr(
-        modal.startDate.split("-"),
-        modal.endDate.split("-")
+      const prevDateArray = makeDateArray(
+        cloneRedux.startDate,
+        cloneRedux.endDate
       );
       // 기존 항목 삭제 하고..
       for (let date of prevDateArray) {
-        delete schedule[date][modal.key];
+        console.log(schedule[date], cloneRedux.key);
+        delete schedule[date][cloneRedux.key];
       }
-
+      console.log(schedule);
       const parameter: MakeListParameter = {
-        title: modal.title,
+        title: cloneRedux.title,
         startDate,
         endDate,
-        startTime: modal.startTime,
-        endTime: modal.endTime,
-        color: modal.color,
-        dateArray,
+        startTime: cloneRedux.startTime,
+        endTime: cloneRedux.endTime,
+        color: cloneRedux.color,
         userSchedule: schedule,
       };
       // 새롭게 설정된 기간에 일정 생성 후에
       const newSchedule: UserData = MakeList(parameter);
       // 데이터 전송
       dispatch(sendUserData({ newSchedule, uid, type: "POST" }));
+      dispatch(cloneActions.clear());
     }
   };
 
   const mouseMove = () => {
     // 모달창이 열려있으면 마우스 커서 icon을 기본으로, move이벤트 발생 x
     if (modal.addModalOpen || isMoving || modal.openEdit) return;
+    console.log("Clone List Mouse Move");
     setIsMoving(true);
     modal.listModalOpen && dispatch(modalActions.offList());
     document.body.style.cursor = "move";
   };
 
   const scheduleHandler = (date: string, day: number) => {
-    const start = modal.mouseType === "Edit" ? modal.startDate : startDate;
-    const end = modal.mouseType === "Edit" ? modal.endDate : endDate;
+    if (!startDate || !endDate) return;
 
-    if (!start || !end) return;
-    if (date < start || end < date) return;
-    if (day !== 1 && date !== start) return;
+    if (date < startDate || endDate < date) return;
 
-    let barWidth: number = start < end ? calculateWidth(date, day, end) : 1;
-    const isLong = start !== end ? true : false;
+    if (day !== 1 && date !== startDate) return;
+
+    let barWidth: number =
+      startDate < endDate ? calculateWidth(date, day, endDate) : 1;
+
+    const isLong = startDate !== endDate ? true : false;
     const title =
       modal.mouseType === "MakeList"
         ? " "
@@ -209,19 +214,17 @@ const CloneList = ({
 
     return (
       <div
-        className={classes["list-boundary-long"]}
+        className={style["list-boundary-long"]}
         style={{
           width: `${barWidth}00%`,
           top: `1.5px`,
         }}
       >
         <div
-          className={`${classes.list}
-          ${classes.long} ${modal.color || "라벤더"}`}
+          className={`${style.list}
+          ${style.long} ${modal.color || "라벤더"}`}
         >
-          <div
-            className={`${classes["type-one"]} ${modal.isDone && classes.done}`}
-          >
+          <div className={`${style["type-one"]} ${modal.isDone && style.done}`}>
             {title}
           </div>
         </div>
@@ -229,7 +232,7 @@ const CloneList = ({
     );
   };
 
-  const dateArray: React.ReactNode[] = [];
+  const dateElements: React.ReactNode[] = [];
 
   // /* 날짜 생성하기 */
   const makeDay = (주: number) => {
@@ -253,15 +256,13 @@ const CloneList = ({
       thisMonthArray.push(
         <td
           key={date}
-          className={classes.date_box}
-          onMouseEnter={() => mouseEnter(i, 주)}
+          className={style.date_box}
+          onMouseEnter={() => mouseEnterHandler(i, 주)}
           onMouseUp={(e) => mouseUp(e)}
           onMouseMove={mouseMove}
         >
-          <div className={classes["list-box"]}>
-            <div className={classes["list-area"]}>
-              {scheduleHandler(date, i)}
-            </div>
+          <div className={style["list-box"]}>
+            <div className={style["list-area"]}>{scheduleHandler(date, i)}</div>
           </div>
         </td>
       );
@@ -270,7 +271,7 @@ const CloneList = ({
   };
 
   for (let i = 1; i <= lastWeek; i++) {
-    dateArray.push(
+    dateElements.push(
       <tr key={i} className={`week ${i}`}>
         {makeDay(i)}
       </tr>
@@ -279,7 +280,7 @@ const CloneList = ({
 
   return (
     <div
-      className={classes.calender}
+      className={style.calender}
       style={{
         position: "absolute",
         top: "0px",
@@ -287,8 +288,8 @@ const CloneList = ({
         height: "calc(100vh - 80px)",
       }}
     >
-      <table className={classes.table}>
-        <thead className={classes.weekname}>
+      <table className={style.table}>
+        <thead className={style.weekname}>
           <tr>
             <th></th>
             <th></th>
@@ -299,7 +300,7 @@ const CloneList = ({
             <th></th>
           </tr>
         </thead>
-        <tbody className={classes.presentation}>{dateArray}</tbody>
+        <tbody className={style.presentation}>{dateElements}</tbody>
       </table>
     </div>
   );

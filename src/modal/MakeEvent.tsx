@@ -1,44 +1,48 @@
 import React, { useState, useEffect, useRef } from "react";
-import { useAppDispatch } from "../redux/store";
+import { useSelector } from "react-redux";
+import { RootState, useAppDispatch } from "../redux/store";
+import { modalActions } from "../redux/modal-slice";
 import { timeActions } from "../redux/time-slice";
 import { MakeList } from "../utils/MakeList";
 import { MakeListParameter } from "../type/Etc";
 import { sendUserData } from "../redux/fetch-action";
-import { DataType, ModalType } from "../type/ReduxType";
+import { DataType } from "../type/ReduxType";
 import ModalPosition from "../utils/ModalPosition";
 import TimeSelector from "../utils/Time/TimeSelector";
 import ColorBox from "../utils/Time/ColorBox";
 import "./MakeEvent.css";
-import { modalActions } from "../redux/modal-slice";
 
 interface T {
-  viewRef: React.RefObject<HTMLDivElement>;
-  uid: string;
-  setIsDragging: (value: boolean) => void;
   data: DataType;
-  modal: ModalType;
+  week: number;
+  uid: string;
+  viewRef: React.RefObject<HTMLDivElement>;
+  setIsDragging: (value: boolean) => void;
 }
 
-const MakeEvent = ({ viewRef, uid, setIsDragging, data, modal }: T) => {
+const MakeEvent = ({ data, week, uid, viewRef, setIsDragging }: T) => {
   const dispatch = useAppDispatch();
 
+  const clone = useSelector((state: RootState) => state.clone);
+
+  const [isMount, setIsMount] = useState<boolean>(true);
   const [color, setColor] = useState<string>("라벤더");
   const [openColor, setOpenColor] = useState<boolean>(false);
-  const [toggleModal, setToggleModal] = useState<boolean>(true);
+  const [animaOn, setAnimaOn] = useState<boolean>(true);
   const [size, setSize] = useState<[number, number]>([
     viewRef.current!.clientWidth,
-    viewRef.current!.clientHeight,
+    (viewRef.current!.clientHeight - 26) / week,
   ]);
 
-  const startDate: string = modal.startDate;
-  const endDate: string = modal.endDate;
+  const startDate: string = clone.startDate;
+  const endDate: string = clone.endDate;
 
   const modalRef = useRef<HTMLFormElement>(null);
   const colorRef = useRef<HTMLDivElement>(null);
 
   const titleRef = useRef<HTMLInputElement>(null);
-  const timeOneRef = useRef<HTMLInputElement>(null);
-  const timeTwoRef = useRef<HTMLInputElement>(null);
+  const timeIputOneRef = useRef<HTMLInputElement>(null);
+  const timeInputTwoRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     const widthCalculator = () => {
@@ -51,22 +55,31 @@ const MakeEvent = ({ viewRef, uid, setIsDragging, data, modal }: T) => {
 
   useEffect(() => {
     const closeHandler = (e: MouseEvent) => {
-      if (openColor) {
-        // 색상 선택 on, off
-        // 사용자가 클릭한 Node가 color가 아닌 경우 컬러창 닫게해줌.
-        if (!colorRef.current!.contains(e.target as Node)) {
-          setTimeout(() => {
-            setOpenColor(false);
-          }, 100);
-        }
+      const target = e.target as Node;
+
+      if (isMount) {
+        setIsMount(false);
+        return;
+      }
+
+      // 사용자가 클릭한 Node가 color가 아닌 경우 컬러창 닫게해줌.
+      if (openColor && !colorRef.current?.contains(target)) {
+        setTimeout(() => {
+          setOpenColor(false);
+        }, 150);
+        return;
       }
       // modal 영역 밖을 클릭할 때, state 초기화
-      if (!modalRef.current!.contains(e.target as Node)) cancelHandler();
+      if (!modalRef.current?.contains(target)) {
+        console.log("모달 영역 밖 클릭", modalRef.current, target);
+        setIsMount(true);
+        cancelHandler();
+      }
     };
 
-    document.addEventListener("mousedown", closeHandler);
+    document.addEventListener("click", closeHandler);
     return () => {
-      document.removeEventListener("mousedown", closeHandler);
+      document.removeEventListener("click", closeHandler);
     };
   });
 
@@ -76,10 +89,10 @@ const MakeEvent = ({ viewRef, uid, setIsDragging, data, modal }: T) => {
     const pattern = /^(오전|오후)\s(([0][0-9]|[1][0-2])):([0-5][0-9])$/;
 
     let startTime = (
-      timeOneRef.current!.value || timeOneRef.current!.placeholder
+      timeIputOneRef.current!.value || timeIputOneRef.current!.placeholder
     ).trim();
     let endTime = (
-      timeTwoRef.current!.value || timeOneRef.current!.placeholder
+      timeInputTwoRef.current!.value || timeInputTwoRef.current!.placeholder
     ).trim();
 
     if (!pattern.test(startTime) || !pattern.test(endTime))
@@ -89,9 +102,6 @@ const MakeEvent = ({ viewRef, uid, setIsDragging, data, modal }: T) => {
     let title = titleRef.current!.value;
     if (title.trim() === "") title = "(제목 없음)";
 
-    const dateArray = modal.dateArray;
-    const userSchedule = data.userSchedule;
-
     const parameter: MakeListParameter = {
       title,
       startDate,
@@ -99,8 +109,7 @@ const MakeEvent = ({ viewRef, uid, setIsDragging, data, modal }: T) => {
       startTime,
       endTime,
       color,
-      dateArray,
-      userSchedule,
+      userSchedule: data.userSchedule,
     };
 
     try {
@@ -117,51 +126,51 @@ const MakeEvent = ({ viewRef, uid, setIsDragging, data, modal }: T) => {
   };
 
   const cancelHandler = () => {
-    setToggleModal(false);
+    console.log("MakeEvent CancleHandler");
+    setAnimaOn(false);
+    setIsDragging(false);
     setTimeout(() => {
       dispatch(modalActions.offAdd());
       dispatch(timeActions.resetTime());
     }, 250);
-    setIsDragging(false);
   };
 
-  // 여기는 size의 크기에 따라서 modalposition에서 값을 정해보자
-  //  size > 425일때 이후의 과정 or media에서 정의한 사이즈 그대로 받아올것인지.
-
-  const marginSize: number[] = ModalPosition(modal.day, modal.week, size);
+  // 여기는 스크린 크기에 따라 modal의 위치를 지정한다.
+  const marginSize: number[] = ModalPosition(clone.day, clone.week, size);
 
   return (
     <form
-      className={`addModal ${toggleModal ? "on" : "off"}`}
-      onSubmit={(e: React.FormEvent) => makeListHandler(e)}
+      className={`addModal ${animaOn ? "on" : "off"}`}
+      onSubmit={makeListHandler}
       ref={modalRef}
       style={{
-        // 마운트시에 width 가 ''이므로 display none
-        display: `${!marginSize ? "none" : "block"}`,
-        marginLeft: `${marginSize && marginSize[0]}px`,
-        marginTop: `${marginSize && marginSize[1]}px`,
-        transition: "opacity 0.3s ease",
-        opacity: modal.addModalOpen ? 1 : 0,
+        left: `${marginSize && marginSize[0]}px`,
+        bottom: `-${marginSize && marginSize[1]}px`,
       }}
       onWheel={(e) => e.stopPropagation()}
     >
       <div className="add-modal-name">일정 추가</div>
-      <div className="inputArea">
-        <img
-          src="../images/memo.png"
-          alt="memo"
-          width="17"
-          className="input-icon"
-        />
-        <input placeholder="(제목 추가)" type="text" ref={titleRef} />
+      <div className="edit-title">
+        <div>
+          <img
+            src="../images/memo.png"
+            alt="memo"
+            width="17"
+            className="input-icon"
+          />
+        </div>
+        <div>
+          <input placeholder="(제목 추가)" type="text" ref={titleRef} />
+        </div>
       </div>
       <TimeSelector
         startDate={startDate}
         endDate={endDate}
-        timeOneRef={timeOneRef}
-        timeTwoRef={timeTwoRef}
+        timeInputOneRef={timeIputOneRef}
+        timeInputTwoRef={timeInputTwoRef}
       />
       <ColorBox
+        platform={"pc"}
         color={color}
         setColor={setColor}
         openColor={openColor}

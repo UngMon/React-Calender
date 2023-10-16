@@ -22,7 +22,6 @@ export interface DataType {
   succesSendData: boolean;
   dataChanged: boolean;
   userSchedule: UserData;
-  dateArray: string[];
 }
 
 ////// more slice //////
@@ -47,8 +46,6 @@ export interface ModalType {
   week: string;
   day: string;
   color: string;
-  newStart: string;
-  newEnd: string;
   startDate: string;
   endDate: string;
   startTime: string;
@@ -59,7 +56,6 @@ export interface ModalType {
   mouseType: string;
   click: string;
   실시간좌표: [number, number];
-  dateArray: string[];
   openEdit: boolean;
 }
 

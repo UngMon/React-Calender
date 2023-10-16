@@ -1,8 +1,8 @@
 import React, { useRef, useState, useEffect } from "react";
-import { useAppDispatch } from "../redux/store";
+import { RootState, useAppDispatch } from "../redux/store";
 import { timeActions } from "../redux/time-slice";
 import { modalActions } from "../redux/modal-slice";
-import { ListOrMore, TableRef } from "../type/RefType";
+import { ListOrMore } from "../type/RefType";
 import { DataType, ModalType, UserData } from "../type/ReduxType";
 import { sendUserData } from "../redux/fetch-action";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -15,14 +15,16 @@ import {
 import TimeSelector from "../utils/Time/TimeSelector";
 import ColorBox from "../utils/Time/ColorBox";
 import ModalPosition from "../utils/ModalPosition";
-import MakeLongArr from "../utils/MakeLongArr";
+import { makeDateArray } from "../utils/MakeLongArr";
 import { MakeList } from "../utils/MakeList";
 import { MakeListParameter } from "../type/Etc";
 import { markDate } from "../utils/markDate";
 import "./List.css";
+import { useSelector } from "react-redux";
 
 interface T {
-  weekRef: React.MutableRefObject<TableRef>;
+  week: number;
+  viewRef: React.RefObject<HTMLDivElement>;
   listRef: React.MutableRefObject<ListOrMore>;
   allListRef: React.MutableRefObject<ListOrMore>;
   clickedElement: React.MutableRefObject<HTMLDivElement | null>;
@@ -30,11 +32,12 @@ interface T {
   uid: string;
   data: DataType;
   modal: ModalType;
-  setIsDragging: React.Dispatch<React.SetStateAction<boolean>>
+  setIsDragging: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const List = ({
-  weekRef,
+  week,
+  viewRef,
   listRef,
   allListRef,
   clickedElement,
@@ -42,40 +45,36 @@ const List = ({
   uid,
   data,
   modal,
-  setIsDragging
+  setIsDragging,
 }: T) => {
   const dispatch = useAppDispatch();
+
+  const clone = useSelector((state: RootState) => state.clone);
 
   const startDate = modal.startDate;
   const endDate = modal.endDate;
 
-  const date =
-    modal.startDate === modal.endDate
-      ? modal.startDate.split("-")
-      : [...modal.startDate.split("-"), ...modal.endDate.split("-")];
+  const date = [...startDate.split("-"), ...endDate.split("-")];
 
-  const [toggle, setToggle] = useState<boolean>(true);
-  const [color, setColor] = useState<string>(modal.color);
+  const [animaOn, setAnimaOn] = useState<boolean>(true);
+  const [color, setColor] = useState<string>(modal.color || "라벤더");
   const [openColor, setOpenColor] = useState<boolean>(false);
   const [size, setSize] = useState<[number, number]>([
-    weekRef.current["1"]!.clientWidth,
-    weekRef.current["1"]!.clientHeight,
-  ]); //check
-  const [listDateArray] = useState<string[]>(
-    MakeLongArr(modal.startDate.split("-"), modal.endDate.split("-"))
-  );
+    viewRef.current!.clientWidth,
+    (viewRef.current!.clientHeight - 26) / week,
+  ]);
 
   const inputRef = useRef<HTMLInputElement>(null);
   const colorRef = useRef<HTMLDivElement>(null);
 
-  const timeOneRef = useRef<HTMLInputElement>(null);
-  const timeTwoRef = useRef<HTMLInputElement>(null);
+  const timeInputOneRef = useRef<HTMLInputElement>(null);
+  const timeInputTwoRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     const widthCalculator = () => {
       setSize([
-        weekRef.current["1"]!.clientWidth,
-        weekRef.current["1"]!.clientHeight,
+        viewRef.current!.clientWidth,
+        (viewRef.current!.clientHeight - 26) / week,
       ]);
     };
 
@@ -86,41 +85,10 @@ const List = ({
 
   useEffect(() => {
     const closeHandler = (e: MouseEvent) => {
-      const target = e.target as HTMLDivElement;
-      console.log("???");
-
-      if (!list.current?.contains(target)) {
-        // list 밖을 클릭할 경우
-
-        if (clickedElement.current?.contains(target)) {
-          // list 밖 같은 리스트를 클릭하면 리스트 창이 닫게함.
-          setTimeout(() => {
-            clickedElement.current = null;
-            dispatch(modalActions.onoffModal({ type: "list" }));
-          }, 150);
-          return;
-        }
-
-        clickedElement.current = target; // clickedElement Ref에 target저장
-
-        for (const key in listRef.current) {
-          if (listRef.current[key]?.contains(target)) return;
-        }
-
-        for (const key in allListRef.current) {
-          if (allListRef.current[key]!.contains(target)) {
-            dispatch(modalActions.offList());
-            return;
-          }
-        }
-
-        // 위 두가지가 아닌 영역을 클릭한 경우 list 모달창 닫음.
-
-        setTimeout(() => {
-          dispatch(timeActions.resetTime());
-          dispatch(modalActions.onoffModal({ type: "list" }));
-        }, 0);
-      }
+      const target = e.target as Node;
+      console.log("list CloseHandler");
+      // 타겟이 리스트를 포함하면 skip
+      if (target.contains(list.current)) return;
 
       // 리스트 영역안에서 컬러선택창이 열려있고, 컬러선택 창 밖을 클릭 한 경우
       if (openColor && !colorRef.current?.contains(target)) {
@@ -128,41 +96,67 @@ const List = ({
           setOpenColor(false);
         }, 150);
       }
+
+      // List 모달 영역 밖 클릭한 경우,
+      if (!list.current?.contains(target)) {
+        if (clickedElement.current?.contains(target)) {
+          // list 밖 같은 리스트를 클릭하면 리스트 창이 닫게함.
+          closeModalHandler();
+          return;
+        }
+
+        // clickedElement Ref에 target저장
+        clickedElement.current = e.target as HTMLDivElement;
+
+        for (const key in listRef.current) {
+          if (listRef.current[key]?.contains(target)) return;
+        }
+
+        for (const key in allListRef.current) {
+          if (allListRef.current[key]?.contains(target)) {
+            dispatch(modalActions.offList());
+            return;
+          }
+        }
+
+        // 위 영역이 아닌 다른 영역을 클릭한 경우 list 모달창 닫음.
+        console.log("list 밖을 클릭한 경우");
+        closeModalHandler();
+      }
     };
+
     document.addEventListener("click", closeHandler);
+
     return () => {
       document.removeEventListener("click", closeHandler);
     };
   });
 
   const removeListHandler = (key: string) => {
-    const dateArray = MakeLongArr(
-      modal.startDate.split("-"),
-      modal.endDate.split("-")
-    );
+    const dateArray = makeDateArray(modal.startDate, modal.endDate);
 
     const newSchedule: UserData = JSON.parse(JSON.stringify(data.userSchedule));
 
     for (const item of dateArray) {
       delete newSchedule[item][key];
     }
-    
+
     dispatch(sendUserData({ newSchedule, uid, type: "POST" }));
-    dispatch(modalActions.onoffModal({ type: "list" }));
+    dispatch(modalActions.offModal());
   };
 
   const editButtonHandler = () => {
-    setIsDragging(((prevState) => !prevState));
+    setIsDragging((prevState) => !prevState);
     dispatch(modalActions.clickedEdit());
   };
 
   const editListSubmitHandler = (event: React.FormEvent) => {
     event.preventDefault();
 
-    const pattern = /^(오전|오후)\s(([0][0-9]|[1][0-2])):([0-5][0-9])$/;
     let title: string = inputRef.current!.value;
-    const startTime: string = timeOneRef.current!.value || modal.startTime;
-    const endTime: string = timeTwoRef.current!.value || modal.endTime;
+    const pattern = /^(오전|오후)\s(([0][0-9]|[1][0-2])):([0-5][0-9])$/;
+    const startTime: string = timeInputOneRef.current!.value || clone.startTime;
+    const endTime: string = timeInputTwoRef.current!.value || clone.endTime;
 
     if (!pattern.test(startTime))
       return alert("시간을 제대로 입력해주세요! ex) 오후 02:30");
@@ -178,20 +172,19 @@ const List = ({
     if (title.length === 0) title = inputRef.current!.placeholder;
 
     const schedule = JSON.parse(JSON.stringify(data.userSchedule));
-    
+    const dateArray = makeDateArray(modal.startDate, modal.endDate);
     // 기존 항목 삭제 하고..
-    for (let date of listDateArray) {
+    for (let date of dateArray) {
       delete schedule[date][modal.key];
     }
 
     const parameter: MakeListParameter = {
       title,
-      startDate,
-      endDate,
+      startDate: clone.startDate,
+      endDate: clone.endDate,
       startTime,
       endTime,
       color,
-      dateArray: modal.dateArray,
       userSchedule: schedule,
     };
 
@@ -205,10 +198,7 @@ const List = ({
 
   const listDoneHandler = (key: string) => {
     const newSchedule = JSON.parse(JSON.stringify(data.userSchedule));
-    const dateArray = MakeLongArr(
-      modal.startDate.split("-"),
-      modal.endDate.split("-")
-    );
+    const dateArray = makeDateArray(modal.startDate, modal.endDate);
 
     for (const item of dateArray) {
       newSchedule[item][key].isDone = !newSchedule[item][key].isDone;
@@ -217,34 +207,33 @@ const List = ({
   };
 
   const closeModalHandler = () => {
-    setToggle(false);
+    console.log("close Modal");
+    setAnimaOn(false);
     setIsDragging(false);
     setTimeout(() => {
+      clickedElement.current = null;
       dispatch(modalActions.offList());
       dispatch(timeActions.resetTime());
-    }, 250);
+    }, 200);
   };
 
   const styleClass = data.userSchedule[modal.startDate]?.[modal.key]?.isDone
     ? "done"
     : false;
 
-  const marginSize =
-    size[0] !== 0 ? ModalPosition(modal.day, modal.week, size) : false;
+  const cordinate = ModalPosition(clone.day, clone.week, size);
 
   const markD = markDate(modal.startDate, modal.endDate);
 
   return (
     <div
-      className={`list-box ${modal.openEdit ? "edit" : ""} ${
-        toggle ? "on" : "off"
+      className={`list-box ${animaOn ? "on" : "off"} ${
+        modal.openEdit ? "edit" : ""
       }`}
       ref={list}
       style={{
-        // 마운트시에 width 가 ''이므로 display none
-        display: `${!marginSize ? "none" : "block"}`,
-        marginLeft: `${marginSize && marginSize[0]}px`,
-        marginTop: `${marginSize && marginSize[1]}px`,
+        left: `${cordinate[0]}px`,
+        top: `${cordinate[1]}px`,
       }}
       onWheel={(e) => e.stopPropagation()}
     >
@@ -267,22 +256,22 @@ const List = ({
           className="list-edit-form"
           onSubmit={(e: React.FormEvent) => editListSubmitHandler(e)}
         >
-          <div className="edit-list">
-            <img
-              src="../images/memo.png"
-              alt="memo"
-              width="17"
-              className="input-icon"
-            />
-            <input placeholder={modal.title} type="text" ref={inputRef} />
+          <div className="edit-title">
+            <div>
+              <img src="../images/memo.png" alt="memo" width="18" />
+            </div>
+            <div>
+              <input placeholder={modal.title} type="text" ref={inputRef} />
+            </div>
           </div>
           <TimeSelector
             startDate={startDate}
             endDate={endDate}
-            timeOneRef={timeOneRef}
-            timeTwoRef={timeTwoRef}
+            timeInputOneRef={timeInputOneRef}
+            timeInputTwoRef={timeInputTwoRef}
           />
           <ColorBox
+            platform={"pc"}
             color={color}
             setColor={setColor}
             openColor={openColor}

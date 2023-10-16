@@ -14,15 +14,17 @@ import { UserData } from "../type/ReduxType";
 import { auth } from "../Auth/firebase";
 import { sendUserData } from "../redux/fetch-action";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faArrowRight,
-  faClock,
-  faXmark,
-} from "@fortawesome/free-solid-svg-icons";
+import { faArrowRight, faXmark } from "@fortawesome/free-solid-svg-icons";
 import MobileTimePicker from "../ui/MobileTimePicker";
 import SetTime from "../utils/Time/SetTime";
 import Month from "../utils/miniCalender/Secon-Month";
 import "./MakeEvent.css";
+import {
+  faPenToSquare,
+  faTrashCan,
+  faClock,
+} from "@fortawesome/free-regular-svg-icons";
+import ColorBox from "../utils/Time/ColorBox";
 
 const time = SetTime();
 
@@ -30,15 +32,16 @@ const date = new Date().toISOString().split("T")[0];
 
 const MakeEvent = () => {
   const dispatch = useAppDispatch();
-  const loca = useLocation();
-  const pa = useParams();
-  const [params] = useSearchParams();
+  // const loca = useLocation();
+  const param = useParams();
+  // const [params] = useSearchParams();
 
-  console.log(loca, pa, params)
+  // console.log(loca, param, params.get("edit"));
 
   const data = useSelector((state: RootState) => state.data);
   const modal = useSelector((state: RootState) => state.modal);
 
+  const [dateArray] = useState<string[]>(modal.dateArray);
   const [openDateSelector, setOpenDate] = useState<[boolean, string]>([
     false,
     "",
@@ -48,12 +51,15 @@ const MakeEvent = () => {
     "",
   ]);
   const [type, setType] = useState<string>("");
+  const [color, setColor] = useState<string>(modal.color || '라벤더');
+  const [openColor, setOpenColor] = useState<boolean>(false);
 
   const dateRef = useRef<ListOrMore>({});
   const startDateRef = useRef<HTMLSpanElement>(null);
   const endDateRef = useRef<HTMLSpanElement>(null);
   const startTimeRef = useRef<HTMLSpanElement>(null);
   const endTimeRef = useRef<HTMLSpanElement>(null);
+  const colorRef = useRef<HTMLDivElement>(null);
 
   const navigate = useNavigate();
 
@@ -67,6 +73,16 @@ const MakeEvent = () => {
     window.addEventListener("resize", resizeHandler);
 
     return () => window.removeEventListener("resize", resizeHandler);
+  });
+
+  useEffect(() => {
+    const touchHandler = (e: TouchEvent) => {
+      if (!colorRef.current!.contains(e.target as Node)) setOpenColor(false);
+    };
+
+    window.addEventListener("touchend", touchHandler);
+
+    return () => window.removeEventListener("touchend", touchHandler);
   });
 
   const startTime = modal.startTime || time.currentTime;
@@ -89,26 +105,13 @@ const MakeEvent = () => {
     setType(t);
   };
 
-  const submitHandler = (e: React.FormEvent) => {
-    e.preventDefault();
-    console.log("submit");
-    if (modal.startDate > modal.endDate) {
-      alert("종료 날짜가 시작 날짜 보다 뒤에 있어야 합니다.");
-      return;
-    }
-
-    if (modal.startTime > modal.endTime) {
-      alert("종료 날짜가 시작 날짜 보다 뒤에 있어야 합니다.");
-      return;
-    }
-
+  const deleteAndCreate = (type: string) => {
+    console.log("delete");
     const schedule = JSON.parse(JSON.stringify(data.userSchedule));
 
     // 기존 항목 삭제 하고..
-    if (params.get("sex")) {
-      const listDateArray = modal.dateArray;
-
-      for (let date of listDateArray) {
+    if (param.edit === 'edit') {
+      for (let date of dateArray) {
         delete schedule[date][modal.key];
       }
     }
@@ -119,20 +122,39 @@ const MakeEvent = () => {
       endDate: modal.endDate,
       startTime,
       endTime,
-      color: "라벤더",
+      color,
       dateArray: modal.dateArray,
       userSchedule: schedule,
     };
 
     // 새롭게 설정된 기간에 일정 생성 후에
-    const newSchedule: UserData = MakeList(parameter);
+    const newSchedule: UserData =
+      type === "create" ? MakeList(parameter) : schedule;
 
     // 데이터 전송
     dispatch(
       sendUserData({ newSchedule, uid: auth.currentUser!.uid, type: "POST" })
     );
-    console.log("전송", newSchedule);
+
     navigate(-1);
+  };
+
+  const submitHandler = (e: React.FormEvent) => {
+    e.preventDefault();
+    console.log("submit");
+    if (modal.startDate > modal.endDate) {
+      alert("종료 날짜가 시작 날짜 보다 뒤에 있어야 합니다.");
+      return;
+    }
+
+    if (modal.startDate === modal.endDate) {
+      if (modal.startTime > modal.endTime) {
+        alert("종료 시간이 시작시간 보다 뒤에 있어야 합니다.");
+        return;
+      }
+    }
+
+    deleteAndCreate("create");
   };
 
   return (
@@ -159,15 +181,23 @@ const MakeEvent = () => {
             name="title"
             placeholder={modal.title || "제목 추가"}
           />
+          <ColorBox
+            platform={"mobile"}
+            color={color}
+            setColor={setColor}
+            openColor={openColor}
+            setOpenColor={setOpenColor}
+            colorRef={colorRef}
+          />
           <div className="fa-clock">
             <FontAwesomeIcon icon={faClock} className="Make-clock-icon" />
           </div>
           <div className="Make-time">
             <div className="time">
-              <div onTouchEnd={(e) => openHandler("date", "start")}>
+              <div onTouchEnd={() => openHandler("date", "start")}>
                 <span ref={startDateRef}>{modal.startDate || date}</span>
               </div>
-              <div onTouchEnd={(e) => openHandler("time", "start")}>
+              <div onTouchEnd={() => openHandler("time", "start")}>
                 <span ref={startTimeRef}>{startTime}</span>
               </div>
             </div>
@@ -175,10 +205,10 @@ const MakeEvent = () => {
               <FontAwesomeIcon icon={faArrowRight} />
             </div>
             <div className="time">
-              <div onTouchEnd={(e) => openHandler("date", "end")}>
+              <div onTouchEnd={() => openHandler("date", "end")}>
                 <span ref={endDateRef}>{modal.endDate || date}</span>
               </div>
-              <div onTouchEnd={(e) => openHandler("time", "end")}>
+              <div onTouchEnd={() => openHandler("time", "end")}>
                 <span ref={endTimeRef}>{endTime}</span>
               </div>
             </div>
@@ -199,9 +229,20 @@ const MakeEvent = () => {
               />
             )}
           </div>
-          <button className="mobile-button" type="submit">
-            생성
-          </button>
+          <div className="bottom-ui">
+            <button
+              className="mobile-button"
+              type="button"
+              onTouchEnd={() => deleteAndCreate("delete")}
+            >
+              <FontAwesomeIcon icon={faTrashCan} />
+              <span>삭제</span>
+            </button>
+            <button className="mobile-button" type="submit">
+              <FontAwesomeIcon icon={faPenToSquare} />
+              <span>생성</span>
+            </button>
+          </div>
         </form>
       )}
     </div>

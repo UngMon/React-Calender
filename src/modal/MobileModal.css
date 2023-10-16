@@ -72,7 +72,7 @@ li {
 
 .mobile-lists li div:nth-child(3) {
   font-size: 15px;
-  width: 160px;
+  width: auto;
 }
 
 .mobile-make {

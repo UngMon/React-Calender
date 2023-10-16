@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { CalenderData, DataType, ModalType } from "../type/ReduxType";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCalendarDay } from "@fortawesome/free-solid-svg-icons";
+import { makeDateArray } from "../utils/MakeLongArr";
 import "./MobileModal.css";
 
 interface T {
@@ -30,8 +31,9 @@ const MobileModal = ({ data, modal }: T) => {
   const backRef = useRef<HTMLDivElement>(null);
 
   const listClickHandler = (item: CalenderData) => {
-    navigate(`/calender/makeEvent`);
-    dispatch(modalActions.clickedListInMobile({ ...item }));
+    navigate(`/calender/event/edit`);
+    const dateArray = makeDateArray(item.startDate, item.endDate);
+    dispatch(modalActions.clickedListInMobile({ ...item, dateArray }));
   };
 
   useEffect(() => {
@@ -48,7 +50,7 @@ const MobileModal = ({ data, modal }: T) => {
 
   const addEvent = () => {
     dispatch(modalActions.addEvent({ title: inputRef.current!.value }));
-    navigate(`/calender/makeEvent`);
+    navigate(`/calender/event/make`);
   };
 
   return (
@@ -70,7 +72,7 @@ const MobileModal = ({ data, modal }: T) => {
                     <div className={`color-bar ${item.color}`}></div>
                     <div>
                       <h4>{item.title}</h4>
-                      <span>{item.startDate + item.endDate}</span>
+                      <span>{item.startDate + " ~ " + item.endDate}</span>
                     </div>
                   </li>
                 )

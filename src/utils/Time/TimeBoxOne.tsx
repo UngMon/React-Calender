@@ -4,7 +4,7 @@ import { ListOrMore } from "../../type/RefType";
 import { useAppDispatch } from "../../redux/store";
 
 interface T {
-  timeOneRef: React.RefObject<HTMLInputElement>;
+  timeInputOneRef: React.RefObject<HTMLInputElement>;
   oneRef: React.MutableRefObject<ListOrMore>;
   timeVisible: boolean;
   timeRef: React.MutableRefObject<ListOrMore>;
@@ -108,18 +108,13 @@ const timeArray = [
   "오후 11:45",
 ];
 
-const TimeBox = ({
-  timeOneRef,
-  oneRef,
-  timeVisible,
-  timeRef,
-}: T) => {
+const TimeBox = ({ timeInputOneRef, oneRef, timeVisible, timeRef }: T) => {
   const dispatch = useAppDispatch();
 
   useEffect(() => {
-    console.log(timeOneRef.current?.innerText)
     Object.keys(oneRef.current).forEach((item, index) => {
-      let value: string = timeOneRef.current!.value || timeOneRef.current!.placeholder;
+      let value: string =
+        timeInputOneRef.current!.value || timeInputOneRef.current!.placeholder;
       oneRef.current[index]!.innerText === value &&
         oneRef.current[index]!.scrollIntoView();
     });
@@ -127,23 +122,25 @@ const TimeBox = ({
 
   const clickHandler = (e: React.MouseEvent) => {
     const target = e.target as HTMLElement;
-    timeOneRef.current!.value = target.innerText;
+    timeInputOneRef.current!.value = target.innerText;
     dispatch(timeActions.selectFristTime(target.innerText));
   };
 
   return (
-    <div className={`time-select-one ${!timeVisible && "none"}`}>
-      <div id="time-selector" ref={(el) => (timeRef.current[0] = el)}>
-        {timeArray.map((item, index) => (
-          <div
-            key={index}
-            ref={(el) => (oneRef.current[index] = el)}
-            onClick={(e: React.MouseEvent) => clickHandler(e)}
-          >
-            {item}
-          </div>
-        ))}
-      </div>
+    <div
+      id="time-selector"
+      ref={(el) => (timeRef.current[0] = el)}
+      style={{ display: timeVisible ? "block" : "none" }}
+    >
+      {timeArray.map((item, index) => (
+        <div
+          key={index}
+          ref={(el) => (oneRef.current[index] = el)}
+          onClick={(e: React.MouseEvent) => clickHandler(e)}
+        >
+          {item}
+        </div>
+      ))}
     </div>
   );
 };

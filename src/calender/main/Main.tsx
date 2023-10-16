@@ -1,15 +1,15 @@
 import React, { useEffect, useState, useRef } from "react";
 import { useSelector } from "react-redux";
-import { RootState } from "../redux/store";
-import { ListOrMore, TableRef } from "../type/RefType";
-import { auth } from "../Auth/firebase";
-import MakeEvent from "../modal/MakeEvent";
-import List from "../modal/List";
-import MoreList from "../modal/MoreList";
-import MakeCalender from "./MakeCalender";
-import CloneList from "./CloneList";
-import MobileModal from "../modal/MoblieModal";
-import classes from "./MakeCalender.module.css";
+import { RootState } from "../../redux/store";
+import { ListOrMore } from "../../type/RefType";
+import { auth } from "../../Auth/firebase";
+import CalenderSlide from "./CalenderSlide";
+import MakeEvent from '../../modal/MakeEvent'
+import List from "../../modal/List";
+import MoreList from "../../modal/MoreList";
+import CloneList from "../CloneList";
+import MobileModal from "../../modal/MoblieModal";
+import style from '../Calender.module.css'
 
 interface T {
   year: string;
@@ -28,13 +28,12 @@ const Main = ({
   allListRef,
   clickedElement,
 }: T) => {
-  console.log("Main");
+  // console.log("Main");
 
   const data = useSelector((state: RootState) => state.data);
   const modal = useSelector((state: RootState) => state.modal);
 
   const viewRef = useRef<HTMLDivElement>(null);
-  const weekRef = useRef<TableRef>({});
   const [isDragging, setIsDragging] = useState<boolean>(false);
 
   const firstDay: number = new Date(+year, +month - 1, 1).getDay();
@@ -45,46 +44,30 @@ const Main = ({
     listRef.current = {};
     allListRef.current = {};
   }, [month, data, listRef, allListRef]);
-  
+
   return (
-    <main className={classes["calender-view"]}>
-      <div className={classes.calender} ref={viewRef}>
-        <table className={classes.table}>
-          <thead className={classes.weekname}>
-            <tr>
-              <th>일</th>
-              <th>월</th>
-              <th>화</th>
-              <th>수</th>
-              <th>목</th>
-              <th>금</th>
-              <th>토</th>
-            </tr>
-          </thead>
-          <MakeCalender
-            data={data}
-            modal={modal}
-            year={year}
-            month={month}
-            week={week}
-            firstDay={firstDay}
-            isDragging={isDragging}
-            setIsDragging={setIsDragging}
-            weekRef={weekRef}
-            listRef={listRef}
-            allListRef={allListRef}
-            clickedElement={clickedElement}
-            // listBoxHeightCount={listBoxHeightCount}
-          />
-        </table>
-        <div className={classes["modal-container"]}>
+    <main className={style["calender-view"]}>
+      <div className={style.calender} ref={viewRef}>
+        <CalenderSlide
+          data={data}
+          modal={modal}
+          year={year}
+          month={month}
+          week={week}
+          firstDay={firstDay}
+          setIsDragging={setIsDragging}
+          viewRef={viewRef}
+          listRef={listRef}
+          allListRef={allListRef}
+        />
+        <div className={style["modal-container"]}>
           {modal.addModalOpen && (
             <MakeEvent
-              viewRef={viewRef}
-              uid={auth.currentUser!.uid}
-              setIsDragging={setIsDragging}
               data={data}
-              modal={modal}
+              week={week}
+              uid={auth.currentUser!.uid}
+              viewRef={viewRef}
+              setIsDragging={setIsDragging}
             />
           )}
           {modal.moreModalOpen && (
@@ -98,7 +81,8 @@ const Main = ({
           )}
           {modal.listModalOpen && (
             <List
-              weekRef={weekRef}
+              week={week}
+              viewRef={viewRef}
               listRef={listRef}
               allListRef={allListRef}
               clickedElement={clickedElement}

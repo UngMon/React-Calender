@@ -1,17 +1,13 @@
 .time-container {
-  width: 93%;
-  height: 20px;
-  background-color: white;
-  margin: 50px 0 0 20px;
-  display: flex;
+  width: 90%;
+  margin: 20px 0 0 20px;
   align-items: center;
+  justify-content: center;
+  display: grid;
+  grid-template-columns: 30px 310px;
+  grid-template-rows: 72px auto;
   font-size: 14px;
   position: relative;
-}
-
-.clock-icon {
-  margin-right: 12px;
-  size: 14px;
 }
 
 .time-box {
@@ -20,15 +16,18 @@
   height: 100%;
 }
 
-.date-area {
-  height: 19px;
-  line-height: 19px;
-  text-align: center;
+.picker-one {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
-.date-area span {
-  display: inline-block;
-  font-size: 12px;
+.date-area {
+  width: 140px;
+  height: 36px;
+  line-height: 36px;
+  text-align: center;
+  font-size: 13px;
 }
 
 .date-area:hover {
@@ -36,201 +35,72 @@
   background-color: rgb(242, 239, 239);
 }
 
-.time-one {
+.time-picker {
   position: relative;
+  margin: 6px 0;
+}
+
+.time-picker input {
   box-sizing: border-box;
-  padding: 1px 0 1px 4px;
-  width: 65px;
-  height: 100%;
+  width: 80px;
+  height: 24px;
+  font-size: 13px;
   text-align: center;
 }
 
-.time-one input {
-  width: 58px;
-  height: 16px;
-  font-size: 12px;
+.time-picker input::placeholder {
+  color: black;
+  font-size: 13px;
   text-align: center;
 }
 
-.time-one input:hover {
+.time-picker:hover {
   cursor: pointer;
   background-color: rgb(242, 239, 239);
 }
 
 .time-box-span {
-  display: inline-block;
-  width: 24px;
-  height: 100%;
+  width: 30px;
+  height: 30px;
+  font-size: 20px;
+  line-height: 30px;
   text-align: center;
-  font-size: 16px;
-  line-height: 20px;
-}
-
-.time-two {
-  position: relative;
-  box-sizing: border-box;
-  padding: 1px 0 1px 4px;
-  width: 65px;
-  height: 100%;
-  text-align: center;
-}
-
-.time-two input {
-  width: 58px;
-  height: 16px;
-  font-size: 12px;
-  text-align: center;
-}
-
-.time-two input:hover {
-  cursor: pointer;
-  background-color: rgb(242, 239, 239);
-}
-
-.time-select-one {
-  z-index: 7;
-  position: absolute;
-  top: 110%;
-  width: 76px;
-  height: 82px;
-  font-size: 11px;
-  background-color: white;
-}
-
-.time-select-two {
-  z-index: 7;
-  position: absolute;
-  top: 110%;
-  width: 76px;
-  height: 82px;
-  font-size: 11px;
-  background-color: white;
 }
 
 #time-selector {
-  max-height: 100%;
+  width: 100%;
+  height: 150px;
+  text-align: center;
   overflow-y: scroll;
+  border: 1px solid rgb(159, 159, 159);
+  font-size: 14px;
+}
+
+#time-selector div {
+  height: 30px;
+  line-height: 30px;
 }
 
 #time-selector div:hover {
-  background-color: lightgray;
+  background-color: rgb(225, 224, 224);
 }
 
-.time-container input::placeholder {
-  text-align: center;
-  color: black;
-  font-size: 11px;
+.picker-two {
+  margin: 5px 0;
+  width: 340px;
+  display: flex;
+  align-items: center;
+  position: relative;
 }
 
 .second-calender {
-  position: absolute;
-  top: 110%;
-  left: 10%;
+  width: 100%;
+  z-index: 50;
 }
 
-.start_date {
-  width: 40%;
-  height: 95%;
+.date-on {
+  background-color: rgb(73, 152, 255);
+  color: white;
+  border-radius: 7px;
 }
 
-.end_date {
-  margin-left: 10%;
-  max-width: 40%;
-  height: 95%;
-}
-
-@media screen and (max-height: 450px) {
-  .second-calender {
-    z-index: 6;
-    top: -400%;
-  }
-}
-
-@media screen and (max-width: 425px) {
-  .date-area {
-    width: 46px;
-    line-height: 16px;
-  }
-
-  .date-area span {
-    font-size: 10px;
-  }
-
-  .time-area-date {
-    width: 45px;
-  }
-
-  .time-area-date span {
-    font-size: 10px;
-  }
-
-  .time-area-date .date-area {
-    left: -4%;
-  }
-
-  .time-one {
-    width: 56px;
-  }
-
-  .time-two {
-    width: 56px;
-  }
-
-  .time-one input {
-    width: 50px;
-    font-size: 8px;
-  }
-
-  .time-one input::placeholder {
-    font-size: 8px;
-  }
-
-  .time-two input {
-    width: 50px;
-    font-size: 8px;
-    line-height: 14px;
-  }
-
-  .time-two input::placeholder {
-    font-size: 8px;
-  }
-
-  .second-calender {
-    left: -4%;
-  }
-
-  .time-select-one {
-    width: 68px;
-    height: 73px;
-    font-size: 10px;
-  }
-
-  .time-select-two {
-    width: 68px;
-    height: 73px;
-    font-size: 10px;
-  }
-}
-
-@media screen and (max-width: 500px) {
-  .time-box-span {
-    display: none;
-  }
-
-  .time-box {
-    display: grid;
-    grid-template-columns: auto auto;
-    gap: 5px;
-    width: 80%;
-  }
-
-  .time-container {
-    width: 90%;
-  }
-
-  .second-calender {
-    z-index: 6;
-    top: 200%;
-    left: -9%;
-  }
-}

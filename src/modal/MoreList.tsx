@@ -191,7 +191,7 @@ const MoreList = ({
       <div className="AllList-header">
         <h2>{dayText[modal.day]}</h2>
         <button
-          onClick={() => dispatch(modalActions.onoffModal({ type: "More" }))}
+          onClick={() => dispatch(modalActions.offModal())}
         >
           <FontAwesomeIcon icon={faXmark} />
         </button>
