@@ -88,7 +88,7 @@ const Calender = ({ loading, loggedIn }: T) => {
   };
 
   const wheelHandler = (e: React.WheelEvent) => {
-    dispatch(modalActions.offModal());
+    dispatch(modalActions.clearSet());
     switch (e.deltaY > 0) {
       case true:
         movePrevMonth();

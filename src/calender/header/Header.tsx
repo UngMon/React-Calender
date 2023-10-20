@@ -43,6 +43,7 @@ const Header = ({ type, year, month, movePrevMonth, moveNextMonth }: T) => {
   };
 
   const logoClickHandler = () => {
+    console.log(year, month)  
     navigate(`/calender/date?year=${year}&month=${month}`);
   };
 

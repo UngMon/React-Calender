@@ -1,12 +1,7 @@
-import { ModalType } from "../type/ReduxType";
+import { ModalBasicType } from "../type/ReduxType";
 import { createSlice } from "@reduxjs/toolkit";
 
-const initialState: ModalType = {
-  addModalOpen: false,
-  listModalOpen: false,
-  moreModalOpen: false,
-  mobileModalOpen: false,
-  openEdit: false,
+const initialState: ModalBasicType = {
   date: "",
   week: "",
   day: "",
@@ -21,7 +16,6 @@ const initialState: ModalType = {
   index: 0, // 그 날 일정에서 몇 번째 항목인지
   mouseType: "",
   click: "",
-  실시간좌표: [0, 0],
 };
 
 const cloneSlice = createSlice({
@@ -81,12 +75,21 @@ const cloneSlice = createSlice({
       }
     },
 
+    clickedListInMobile(state, action) {
+      state.title = action.payload.title;
+      state.startDate = action.payload.startDate;
+      state.endDate = action.payload.endDate;
+      state.startTime = action.payload.startTime;
+      state.endTime = action.payload.endTime;
+      state.key = action.payload.key;
+      state.color = action.payload.color;
+    },
+
+    addEvent(state, action) {
+      state.title = action.payload.title;
+    },
+
     clear(state) {
-      state.addModalOpen = false;
-      state.listModalOpen = false;
-      state.moreModalOpen = false;
-      state.mobileModalOpen = false;
-      state.openEdit = false;
       state.date = "";
       state.week = "";
       state.day = "";
@@ -101,7 +104,6 @@ const cloneSlice = createSlice({
       state.index = 0; // 그 날 일정에서 몇 번째 항목인지
       state.mouseType = "";
       state.click = "";
-      state.실시간좌표 = [0, 0];
     },
   },
 });

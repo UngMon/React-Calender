@@ -80,7 +80,7 @@ const MoreList = ({
         
         console.log('here')
         setTimeout(() => {
-          dispatch(modalActions.toggleMore());
+          dispatch(modalActions.clearSet());
         }, 100);
       }
     };
@@ -191,7 +191,7 @@ const MoreList = ({
       <div className="AllList-header">
         <h2>{dayText[modal.day]}</h2>
         <button
-          onClick={() => dispatch(modalActions.offModal())}
+          onClick={() => dispatch(modalActions.clearSet())}
         >
           <FontAwesomeIcon icon={faXmark} />
         </button>

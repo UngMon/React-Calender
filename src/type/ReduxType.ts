@@ -36,11 +36,7 @@ export interface MoreType {
 
 ////////////// Modal Type ////////////
 
-export interface ModalType {
-  addModalOpen: boolean;
-  listModalOpen: boolean;
-  moreModalOpen: boolean;
-  mobileModalOpen: boolean;
+export interface ModalBasicType {
   isDone: boolean;
   date: string;
   week: string;
@@ -55,7 +51,14 @@ export interface ModalType {
   index: number;
   mouseType: string;
   click: string;
-  실시간좌표: [number, number];
+
+}
+
+export interface ModalType extends ModalBasicType {
+  addModalOpen: boolean,
+  listModalOpen: boolean,
+  moreModalOpen: boolean,
+  mobileModalOpen: boolean,
   openEdit: boolean;
 }
 

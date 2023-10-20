@@ -1,16 +1,16 @@
 import React, { useEffect, useRef } from "react";
-import { useAppDispatch } from "../redux/store";
+import { RootState, useAppDispatch } from "../redux/store";
+import { useSelector } from "react-redux";
+import { cloneActions } from "../redux/clone-slice";
 import { modalActions } from "../redux/modal-slice";
 import { useNavigate } from "react-router-dom";
-import { CalenderData, DataType, ModalType } from "../type/ReduxType";
+import { CalenderData, DataType } from "../type/ReduxType";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCalendarDay } from "@fortawesome/free-solid-svg-icons";
-import { makeDateArray } from "../utils/MakeLongArr";
 import "./MobileModal.css";
 
 interface T {
   data: DataType;
-  modal: ModalType;
 }
 
 const dayText: { [key: string]: string } = {
@@ -23,17 +23,18 @@ const dayText: { [key: string]: string } = {
   "7": "토",
 };
 
-const MobileModal = ({ data, modal }: T) => {
+const MobileModal = ({ data }: T) => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
+
+  const clone = useSelector((state: RootState) => state.clone);
 
   const inputRef = useRef<HTMLInputElement>(null);
   const backRef = useRef<HTMLDivElement>(null);
 
   const listClickHandler = (item: CalenderData) => {
     navigate(`/calender/event/edit`);
-    const dateArray = makeDateArray(item.startDate, item.endDate);
-    dispatch(modalActions.clickedListInMobile({ ...item, dateArray }));
+    dispatch(cloneActions.clickedListInMobile({ ...item }));
   };
 
   useEffect(() => {
@@ -41,6 +42,7 @@ const MobileModal = ({ data, modal }: T) => {
       e.preventDefault();
       if (e.target === backRef.current) {
         dispatch(modalActions.toggleMobilModal());
+        dispatch(cloneActions.clear());
       }
     };
 
@@ -49,7 +51,7 @@ const MobileModal = ({ data, modal }: T) => {
   });
 
   const addEvent = () => {
-    dispatch(modalActions.addEvent({ title: inputRef.current!.value }));
+    dispatch(cloneActions.addEvent({ title: inputRef.current!.value }));
     navigate(`/calender/event/make`);
   };
 
@@ -57,13 +59,13 @@ const MobileModal = ({ data, modal }: T) => {
     <div className="mobile-background" ref={backRef}>
       <div className="mobile">
         <header className="mobile-modal-title">
-          <span>{+modal.startDate.split("-")[2]}</span>
-          <span>{`${dayText[modal.day]}요일`}</span>
+          <span>{+clone.startDate.split("-")[2]}</span>
+          <span>{`${dayText[clone.day]}요일`}</span>
         </header>
         <main>
           <ul className="mobile-lists">
-            {data.userSchedule[modal.startDate] &&
-              Object.values(data.userSchedule[modal.startDate]).map(
+            {data.userSchedule[clone.startDate] &&
+              Object.values(data.userSchedule[clone.startDate]).map(
                 (item, index) => (
                   <li key={index} onTouchEnd={() => listClickHandler(item)}>
                     <div>

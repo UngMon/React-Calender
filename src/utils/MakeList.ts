@@ -29,7 +29,7 @@ export const MakeList = (parameter: MakeListParameter): UserData => {
     isDone: false,
     key,
   };
-
+  console.log(object)
   for (let date of dateArray) {
     if (!dateObject[date]) dateObject[date] = {};
     dateObject[date][key] = object; // O(1)
@@ -37,7 +37,7 @@ export const MakeList = (parameter: MakeListParameter): UserData => {
       Object.entries(dateObject[date]).sort((a, b) => (a < b ? -1 : 1))
     );
   }
-
+  console.log(dateObject)
   if (dateObject["dummy"]) delete dateObject["dummy"];
 
   return dateObject;

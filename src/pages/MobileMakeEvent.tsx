@@ -1,12 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
 import { RootState, useAppDispatch } from "../redux/store";
-import {
-  useLocation,
-  useNavigate,
-  useParams,
-  useSearchParams,
-} from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { ListOrMore } from "../type/RefType";
 import { MakeList } from "../utils/MakeList";
 import { MakeListParameter } from "../type/Etc";
@@ -25,6 +20,7 @@ import {
   faClock,
 } from "@fortawesome/free-regular-svg-icons";
 import ColorBox from "../utils/Time/ColorBox";
+import { makeDateArray } from "../utils/MakeLongArr";
 
 const time = SetTime();
 
@@ -32,16 +28,11 @@ const date = new Date().toISOString().split("T")[0];
 
 const MakeEvent = () => {
   const dispatch = useAppDispatch();
-  // const loca = useLocation();
   const param = useParams();
-  // const [params] = useSearchParams();
-
-  // console.log(loca, param, params.get("edit"));
 
   const data = useSelector((state: RootState) => state.data);
-  const modal = useSelector((state: RootState) => state.modal);
+  const clone = useSelector((state: RootState) => state.clone);
 
-  const [dateArray] = useState<string[]>(modal.dateArray);
   const [openDateSelector, setOpenDate] = useState<[boolean, string]>([
     false,
     "",
@@ -51,9 +42,10 @@ const MakeEvent = () => {
     "",
   ]);
   const [type, setType] = useState<string>("");
-  const [color, setColor] = useState<string>(modal.color || '라벤더');
+  const [color, setColor] = useState<string>(clone.color || "라벤더");
   const [openColor, setOpenColor] = useState<boolean>(false);
 
+  const inputRef= useRef<HTMLInputElement>(null);
   const dateRef = useRef<ListOrMore>({});
   const startDateRef = useRef<HTMLSpanElement>(null);
   const endDateRef = useRef<HTMLSpanElement>(null);
@@ -85,9 +77,9 @@ const MakeEvent = () => {
     return () => window.removeEventListener("touchend", touchHandler);
   });
 
-  const startTime = modal.startTime || time.currentTime;
-  const endTime = modal.endTime || time.lastTime;
-
+  let startTime = time.currentTime || clone.startTime ;
+  let endTime = time.lastTime || clone.endTime ;
+  console.log(startTime, endTime)
   const openHandler = (v: string, t: string) => {
     if (v === "date") {
       setOpenTime([false, ""]);
@@ -106,27 +98,25 @@ const MakeEvent = () => {
   };
 
   const deleteAndCreate = (type: string) => {
-    console.log("delete");
     const schedule = JSON.parse(JSON.stringify(data.userSchedule));
-
+    let dateArray = makeDateArray(clone.startDate, clone.endDate);
     // 기존 항목 삭제 하고..
-    if (param.edit === 'edit') {
+    if (param.edit === "edit") {
       for (let date of dateArray) {
-        delete schedule[date][modal.key];
+        delete schedule[date][clone.key];
       }
     }
 
     const parameter: MakeListParameter = {
-      title: modal.title,
-      startDate: modal.startDate,
-      endDate: modal.endDate,
+      title: inputRef.current?.value || clone.title,
+      startDate: clone.startDate,
+      endDate: clone.endDate,
       startTime,
       endTime,
       color,
-      dateArray: modal.dateArray,
       userSchedule: schedule,
     };
-
+    console.log(parameter)
     // 새롭게 설정된 기간에 일정 생성 후에
     const newSchedule: UserData =
       type === "create" ? MakeList(parameter) : schedule;
@@ -142,13 +132,13 @@ const MakeEvent = () => {
   const submitHandler = (e: React.FormEvent) => {
     e.preventDefault();
     console.log("submit");
-    if (modal.startDate > modal.endDate) {
+    if (clone.startDate > clone.endDate) {
       alert("종료 날짜가 시작 날짜 보다 뒤에 있어야 합니다.");
       return;
     }
 
-    if (modal.startDate === modal.endDate) {
-      if (modal.startTime > modal.endTime) {
+    if (clone.startDate === clone.endDate) {
+      if (clone.startTime > clone.endTime) {
         alert("종료 시간이 시작시간 보다 뒤에 있어야 합니다.");
         return;
       }
@@ -179,7 +169,8 @@ const MakeEvent = () => {
             type="text"
             id="title"
             name="title"
-            placeholder={modal.title || "제목 추가"}
+            placeholder={clone.title || "제목 추가"}
+            ref={inputRef}
           />
           <ColorBox
             platform={"mobile"}
@@ -195,7 +186,7 @@ const MakeEvent = () => {
           <div className="Make-time">
             <div className="time">
               <div onTouchEnd={() => openHandler("date", "start")}>
-                <span ref={startDateRef}>{modal.startDate || date}</span>
+                <span ref={startDateRef}>{clone.startDate || date}</span>
               </div>
               <div onTouchEnd={() => openHandler("time", "start")}>
                 <span ref={startTimeRef}>{startTime}</span>
@@ -206,7 +197,7 @@ const MakeEvent = () => {
             </div>
             <div className="time">
               <div onTouchEnd={() => openHandler("date", "end")}>
-                <span ref={endDateRef}>{modal.endDate || date}</span>
+                <span ref={endDateRef}>{clone.endDate || date}</span>
               </div>
               <div onTouchEnd={() => openHandler("time", "end")}>
                 <span ref={endTimeRef}>{endTime}</span>

@@ -130,7 +130,7 @@ const MakeEvent = ({ data, week, uid, viewRef, setIsDragging }: T) => {
     setAnimaOn(false);
     setIsDragging(false);
     setTimeout(() => {
-      dispatch(modalActions.offAdd());
+      dispatch(modalActions.clearSet());
       dispatch(timeActions.resetTime());
     }, 250);
   };

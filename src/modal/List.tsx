@@ -1,7 +1,8 @@
 import React, { useRef, useState, useEffect } from "react";
+import { useSelector } from "react-redux";
 import { RootState, useAppDispatch } from "../redux/store";
-import { timeActions } from "../redux/time-slice";
 import { modalActions } from "../redux/modal-slice";
+import { timeActions } from "../redux/time-slice";
 import { ListOrMore } from "../type/RefType";
 import { DataType, ModalType, UserData } from "../type/ReduxType";
 import { sendUserData } from "../redux/fetch-action";
@@ -20,7 +21,6 @@ import { MakeList } from "../utils/MakeList";
 import { MakeListParameter } from "../type/Etc";
 import { markDate } from "../utils/markDate";
 import "./List.css";
-import { useSelector } from "react-redux";
 
 interface T {
   week: number;
@@ -114,7 +114,7 @@ const List = ({
 
         for (const key in allListRef.current) {
           if (allListRef.current[key]?.contains(target)) {
-            dispatch(modalActions.offList());
+            dispatch(modalActions.clearSet());
             return;
           }
         }
@@ -142,7 +142,7 @@ const List = ({
     }
 
     dispatch(sendUserData({ newSchedule, uid, type: "POST" }));
-    dispatch(modalActions.offModal());
+    dispatch(modalActions.clearSet());
   };
 
   const editButtonHandler = () => {
@@ -212,7 +212,7 @@ const List = ({
     setIsDragging(false);
     setTimeout(() => {
       clickedElement.current = null;
-      dispatch(modalActions.offList());
+      dispatch(modalActions.clearSet());
       dispatch(timeActions.resetTime());
     }, 200);
   };
@@ -221,7 +221,7 @@ const List = ({
     ? "done"
     : false;
 
-  const cordinate = ModalPosition(clone.day, clone.week, size);
+  const cordinate = ModalPosition(modal.day, modal.week, size);
 
   const markD = markDate(modal.startDate, modal.endDate);
 

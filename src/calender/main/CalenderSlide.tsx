@@ -33,7 +33,7 @@ const CalenderSlide = ({
 }: T) => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-
+  
   const [calenderArray, setCalenderArray] = useState<any[][]>(
     makeSlideArray(year, month)
   ); //[..., [year, month, firstDay, week], ...]
@@ -97,7 +97,7 @@ const CalenderSlide = ({
         setMovingPoint(0);
         prevOrNext === "next"
           ? dispatch(dateActions.nextMonth())
-          : dispatch(dateActions.prevMonth());  
+          : dispatch(dateActions.prevMonth());
         navigate(`/calender/date?year=${newYear}&month=${newMonth}`);
       }, 320);
     } else {

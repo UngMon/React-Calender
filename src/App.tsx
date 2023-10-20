@@ -9,7 +9,7 @@ import Content from "./calender/Content";
 import Result from "./pages/Result";
 import Loading from "./ui/Loading";
 import LoginPage from "./pages/LoginPage";
-import MakeEvent from "./pages/MakeEvent";
+import MakeEvent from "./pages/MobileMakeEvent";
 
 function App() {
   console.log("app");
@@ -48,7 +48,7 @@ function App() {
       {loggedIn && (
         <Route
           path="*"
-          element={<Navigate to="/calender/date?year=2023&month=8" />}
+          element={<Navigate to="/calender/date?year=2023&month=10" />}
         />
       )}
       {loggedIn && <Route path=":search" element={<Result />} />}

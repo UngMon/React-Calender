@@ -26,7 +26,7 @@ interface T {
   month: string;
   week: number;
   firstDay: number;
-  isScroling: boolean;
+  isScroling: boolean; // 좌, 우 움직이는
   setIsDragging: (value: boolean) => void;
   viewRef: React.RefObject<HTMLDivElement>;
   listRef: React.MutableRefObject<ListOrMore>;
@@ -48,6 +48,7 @@ const MakeCalender = React.memo(
     allListRef,
   }: T) => {
     console.log("MakeCalender");
+
     const dispatch = useAppDispatch();
     const [listBoxHeightCount, setCount] = useState<number>(0);
     const [countDown, setCountDown] = useState<boolean>(false);
@@ -67,7 +68,6 @@ const MakeCalender = React.memo(
     useEffect(() => {
       const getListBoxSize = () => {
         let elementHeight = window.innerWidth > 500 ? 24 : 20; // 일정 막대기 높이
-
         setCount(
           Math.floor(
             ((viewRef.current!.clientHeight - 26) / week - 24) / elementHeight
@@ -77,7 +77,7 @@ const MakeCalender = React.memo(
         if (window.innerWidth <= 500) {
           // mobile영역으로 사이즈가 줄어들면 pc 모달창 지우기 및 clone 삭제
           if (modal.addModalOpen || modal.listModalOpen || modal.moreModalOpen)
-            dispatch(modalActions.offModal());
+            dispatch(modalActions.clearSet());
 
           setIsDragging(false);
         }
@@ -116,6 +116,12 @@ const MakeCalender = React.memo(
       );
     };
 
+    const mouseMove = (e: React.MouseEvent) => {
+      if (e.buttons !== 1) return;
+      setCountDown(false);
+      setIsDragging(true);
+    };
+
     const mouseUp = () => {
       console.log("mouseUp MakeClaender!!!");
       setCountDown(false);
@@ -130,7 +136,7 @@ const MakeCalender = React.memo(
       const type = "MakeList";
       const [startDate, endDate] = [date, date];
       dispatch(
-        modalActions.clickedDate({ type, startDate, endDate, day, week })
+        cloneActions.clickedDate({ type, startDate, endDate, day, week })
       );
       dispatch(modalActions.toggleMobilModal());
     };
@@ -164,7 +170,7 @@ const MakeCalender = React.memo(
             key={date}
             onMouseDown={() => mouseDown(day, week, date)}
             onMouseUp={mouseUp}
-            // onMouseMove={() => console.log('makeCalenders mouseMove')}
+            onMouseMove={(e) => mouseMove(e)}
             onTouchEnd={() => touchEndHandler(day, week, date)}
             className={classes.date_box}
           >

@@ -1,7 +1,7 @@
 import React from "react";
 import MakeCaledner from "./Secon-MakeCalender";
 import { ButtonRef } from "../../type/RefType";
-import classes from "./second.module.css";
+import style from "./second.module.css";
 
 const date = new Date();
 const fixYear = date.getFullYear();
@@ -15,7 +15,7 @@ interface T {
   firstDay: number;
   lastDate: number;
   dateRef: React.MutableRefObject<ButtonRef>;
-  dateClose?: (value: string) => void;
+  dateOpenHandler?: (value: string) => void;
 }
 
 const Calender = ({
@@ -25,14 +25,14 @@ const Calender = ({
   firstDay,
   lastDate,
   dateRef,
-  dateClose,
+  dateOpenHandler,
 }: T) => {
   const identify = fixYear + "-" + fixMonth + "-" + fixDate;
 
   return (
-    <div className={classes.calender}>
-      <table className={classes.table}>
-        <thead className={classes.weekname}>
+    <div className={style.calender}>
+      <table className={style.table}>
+        <thead className={style.weekname}>
           <tr>
             <th>일</th>
             <th>월</th>
@@ -43,7 +43,7 @@ const Calender = ({
             <th>토</th>
           </tr>
         </thead>
-        <tbody className={classes.presentation}>
+        <tbody className={style.presentation}>
           <MakeCaledner
             type={type}
             year={year}
@@ -52,7 +52,7 @@ const Calender = ({
             lastDate={lastDate}
             identify={identify}
             dateRef={dateRef}
-            dateClose={dateClose}
+            dateOpenHandler={dateOpenHandler}
           />
         </tbody>
       </table>

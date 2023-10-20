@@ -1,4 +1,4 @@
-import React, { ReactNode, useEffect, useRef, useState } from "react";
+import React, { ReactNode, useEffect, useState } from "react";
 import { useAppDispatch } from "../../redux/store";
 import { modalActions } from "../../redux/modal-slice";
 import { cloneActions } from "../../redux/clone-slice";
@@ -45,10 +45,7 @@ const Schedule = React.memo(
     const schedule = data.userSchedule;
 
     const listElementHeight = window.innerWidth > 500 ? 24 : 20;
-
-    // const countDownRef = useRef<boolean>(false);
     const [countDown, setCountDown] = useState<boolean>(false);
-    const moveRef = useRef<HTMLDivElement | null>(null);
 
     useEffect(() => {
       // 사용자가 일정이나 날짜를 1초 이상 클릭하고 있는 경우,
@@ -56,7 +53,6 @@ const Schedule = React.memo(
       if (!countDown) return;
       // 사용자가 1초 이상 클릭하고 있는 경우, cloneList 생성
       const checkDragging = () => {
-        console.log("isDragging ==> true");
         window.document.body.style.cursor = "move";
         setIsDragging(true);
       };
@@ -71,14 +67,14 @@ const Schedule = React.memo(
     };
 
     const mouseDown = (
-      e: React.MouseEvent,
+      e: React.MouseEvent<HTMLDivElement>,
       isMore: boolean,
       param: Parameter
     ) => {
       e.stopPropagation();
-      if (window.innerWidth < 500) return;
+      if (window.innerWidth < 500 || param.key === modal.key) return;
       if (modal.moreModalOpen || isMore) return;
-      console.log(" Schedule MouseDown");
+      // console.log(" Schedule MouseDown");
       setCountDown(true);
       dispatch(
         cloneActions.setListInfo({ type: "List", ...param, click: "no" })
@@ -92,24 +88,23 @@ const Schedule = React.memo(
     ) => {
       e.stopPropagation();
       if (window.innerWidth < 500) return;
-      console.log("Schedule MouseUp");
 
       if (isMore) dispatch(modalActions.clickedMore({ ...param }));
-      else {
-        setListInfoHandler(param, "no");
-        dispatch(modalActions.onList());
-      }
+
       setCountDown(false);
       setIsDragging(false);
-      moveRef.current = null;
+
+      if (!isMore && param.key !== modal.key) {
+        setListInfoHandler(param, "no");
+        !modal.addModalOpen && dispatch(modalActions.onList());
+      }
     };
 
     const mouseMove = (e: React.MouseEvent, param: Parameter) => {
       e.stopPropagation();
-      if (e.buttons !== 1 || e.target === moveRef.current) return;
-      if (modal.listModalOpen) dispatch(modalActions.offList());
-      console.log("Schedule MouseMove");
-      moveRef.current = e.target as HTMLDivElement;
+      if (e.buttons !== 1) return;
+      if (modal.listModalOpen) dispatch(modalActions.clearSet());
+      // console.log("Schedule MouseMove");
       setListInfoHandler(param, "no");
       setCountDown(false);
       setIsDragging(true);
@@ -184,7 +179,7 @@ const Schedule = React.memo(
                     ? style["list-boundary-long"]
                     : style["list-boundary-short"]
                   : style["list-more"]
-              } ${modal.key === key && "clicked"}`}
+              } `}
               style={{
                 width: isLong && !isMore ? `${barWidth}00%` : "98%",
                 top: `${listElementHeight * arrayCount}px`,
@@ -206,14 +201,12 @@ const Schedule = React.memo(
               <div
                 key={object.key}
                 className={`${style.list} ${
-                  isLong && !isMore && `${style.long} ${object.color}`
+                  isLong &&
+                  !isMore &&
+                  `${style.long} ${object.color} ${
+                    modal.key === object.key ? style.clicked : ""
+                  }`
                 }`}
-                style={{
-                  backgroundColor:
-                    modal.listModalOpen && object.key === modal.key
-                      ? "rgba(182, 182, 182, 0.6)"
-                      : "",
-                }}
               >
                 <div
                   className={`${style["type-one"]}  ${

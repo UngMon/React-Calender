@@ -4,12 +4,12 @@ import { RootState } from "../../redux/store";
 import { ListOrMore } from "../../type/RefType";
 import { auth } from "../../Auth/firebase";
 import CalenderSlide from "./CalenderSlide";
-import MakeEvent from '../../modal/MakeEvent'
+import MakeEvent from "../../modal/MakeEvent";
 import List from "../../modal/List";
 import MoreList from "../../modal/MoreList";
 import CloneList from "../CloneList";
 import MobileModal from "../../modal/MoblieModal";
-import style from '../Calender.module.css'
+import style from "../Calender.module.css";
 
 interface T {
   year: string;
@@ -28,7 +28,7 @@ const Main = ({
   allListRef,
   clickedElement,
 }: T) => {
-  // console.log("Main");
+  console.log("Main");
 
   const data = useSelector((state: RootState) => state.data);
   const modal = useSelector((state: RootState) => state.modal);
@@ -110,7 +110,7 @@ const Main = ({
         />
       )}
       {window.innerWidth <= 500 && modal.mobileModalOpen && (
-        <MobileModal data={data} modal={modal} />
+        <MobileModal data={data} />
       )}
     </main>
   );

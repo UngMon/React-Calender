@@ -99,10 +99,9 @@ const CloneList = ({
 
   const mouseUp = (e: React.MouseEvent) => {
     e.stopPropagation();
-    // console.log("CloneList MouseUp");
     clickedElement.current = null;
     if (modal.openEdit) {
-      dispatch(modalActions.offModal());
+      dispatch(modalActions.clearSet());
       setIsDragging(false);
       return;
     }
@@ -112,7 +111,7 @@ const CloneList = ({
     if (cloneRedux.mouseType === "MakeList") {
       console.log("MakeList CloneList");
       if (viewRef.current!.clientWidth <= 500) navigate("/calender/makeEvent");
-      else dispatch(modalActions.onAdd());
+      else !modal.addModalOpen && dispatch(modalActions.onAdd());
 
       if (실시간좌표[0] === 고정좌표[0] && 실시간좌표[1] === 고정좌표[1])
         return;
@@ -152,8 +151,8 @@ const CloneList = ({
       setIsDragging(false);
       console.log("List ClonList Type");
       if (실시간좌표[0] === 고정좌표[0] && 실시간좌표[1] === 고정좌표[1]) {
-        if (modal.click === "same") dispatch(modalActions.offList());
-        else dispatch(modalActions.onList());
+        dispatch(cloneActions.clear());
+        dispatch(modalActions.clearSet());
         return;
       }
 
@@ -164,10 +163,9 @@ const CloneList = ({
       );
       // 기존 항목 삭제 하고..
       for (let date of prevDateArray) {
-        console.log(schedule[date], cloneRedux.key);
         delete schedule[date][cloneRedux.key];
       }
-      console.log(schedule);
+
       const parameter: MakeListParameter = {
         title: cloneRedux.title,
         startDate,
@@ -182,6 +180,7 @@ const CloneList = ({
       // 데이터 전송
       dispatch(sendUserData({ newSchedule, uid, type: "POST" }));
       dispatch(cloneActions.clear());
+      dispatch(modalActions.clearSet());
     }
   };
 
@@ -190,7 +189,7 @@ const CloneList = ({
     if (modal.addModalOpen || isMoving || modal.openEdit) return;
     console.log("Clone List Mouse Move");
     setIsMoving(true);
-    modal.listModalOpen && dispatch(modalActions.offList());
+    modal.listModalOpen && dispatch(modalActions.clearSet());
     document.body.style.cursor = "move";
   };
 
