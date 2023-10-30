@@ -25,13 +25,15 @@ function App() {
         setLogged(true);
       } else setLogged(false);
     });
-    setLoading(false);
+    setTimeout(() => {
+      setLoading(false);
+    }, 1000);
   }, [dispatch]);
 
   return (
     <Routes>
       {!loggedIn && !loading && <Route path="/" element={<LoginPage />} />}
-      {!loggedIn && <Route path="/reset-password" element={<ResetPage />} />}
+      {!loggedIn && !loading &&<Route path="/reset-password" element={<ResetPage />} />}
       {loading && <Route path="*" element={<Loading />} />}
       {!loading && loggedIn && (
         <Route path="/calender">

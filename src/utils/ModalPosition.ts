@@ -20,15 +20,15 @@ const ModalPosition = (day: string, week: string, size: [number, number]) => {
       break;
     case "5":
       array[0] =
-        width > 760 ? (width / 7) * (+day - 1.2) - 400 : (width - 400) / 2;
+        width > 760 ? (width / 7) * (+day - 1.1) - 400 : (width - 400) / 2;
       break;
     case "6":
       array[0] =
-        width > 610 ? (width / 7) * (+day - 1.2) - 400 : (width - 400) / 2;
+        width > 610 ? (width / 7) * (+day - 1.1) - 400 : (width - 400) / 2;
       break;
     default:
       array[0] =
-        width > 550 ? (width / 7) * (+day - 1.2) - 400 : (width - 400) / 2;
+        width > 550 ? (width / 7) * (+day - 1.1) - 400 : (width - 400) / 2;
   }
 
   switch (week) {
@@ -36,19 +36,19 @@ const ModalPosition = (day: string, week: string, size: [number, number]) => {
       array[1] = 24;
       break;
     case "2":
-      array[1] = height * (+week - 1) - 72;
+      array[1] = height * (+week - 1.5);
       break;
     case "3":
-      array[1] = height * (+week - 1) - 72;
+      array[1] = height * (+week - 2.3);
       break;
     case "4":
-      array[1] = height * (+week - 1) - 72;
+      array[1] = height * +week;
       break;
     case "5":
-      array[1] = height * (+week - 2);
+      array[1] = height * +week;
       break;
     default: // day === 6
-      array[1] = height * (+week - 2);
+      array[1] = height * (+week - 1);
   }
 
   return array;

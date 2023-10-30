@@ -40,17 +40,31 @@ const modalSlice = createSlice({
       state.addModalOpen = true;
     },
 
+    onOffModal(state, action) {
+      switch (action.payload.type) {
+        case "mobile":
+          state.mobileModalOpen = !state.mobileModalOpen;
+          break;
+        case "make":
+          state.addModalOpen = !state.addModalOpen;
+          break;
+        case "list":
+          state.listModalOpen = !state.listModalOpen;
+          break;
+        default:
+          state.moreModalOpen = !state.moreModalOpen;
+      }
+    },
+
     setListInfo(state, action) {
-      state.color = action.payload?.object?.color || action.payload.color;
-      state.startDate =
-        action.payload?.object?.startDate || action.payload.startDate;
-      state.endDate = action.payload?.object?.endDate || action.payload.endDate;
-      state.startTime =
-        action.payload?.object?.startTime || action.payload.startTime;
-      state.endTime = action.payload?.object?.endTime || action.payload.endTime;
-      state.title = action.payload?.object?.title || action.payload.title;
-      state.isDone = action.payload?.object?.isDone || action.payload.isDone;
-      state.key = action.payload?.object?.key || action.payload.key;
+      state.color = action.payload.color;
+      state.startDate = action.payload.startDate;
+      state.endDate = action.payload.endDate;
+      state.startTime = action.payload.startTime;
+      state.endTime = action.payload.endTime;
+      state.title = action.payload.title;
+      state.isDone = action.payload.isDone;
+      state.key = action.payload.key;
       state.index = action.payload.index;
       state.week = action.payload.week;
       state.day = action.payload.day;
@@ -73,14 +87,10 @@ const modalSlice = createSlice({
       state.mouseType = "More";
     },
 
-    toggleMore(state) {
-      state.moreModalOpen = !state.moreModalOpen;
-      state.mouseType = "";
-    },
-
-    offMore(state) {
-      state.moreModalOpen = false;
-    },
+    // toggleMore(state) {
+    //   state.moreModalOpen = !state.moreModalOpen;
+    //   state.mouseType = "";
+    // },
 
     clearSet(state) {
       state.addModalOpen = false;

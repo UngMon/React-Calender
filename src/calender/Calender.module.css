@@ -97,6 +97,10 @@ tbody {
   color: white;
 }
 
+.startDate {
+  padding-left: 5px;
+}
+
 .list-box {
   position: absolute;
   margin-top: 24px;

@@ -50,12 +50,13 @@ const ColorBox = ({
         </div>
       )}
       <div
-        className={`${color} ${platform === "pc" ? pc.circle : mobile.circle}`}
+        className={`${color} ${platform === "pc" ? pc.circle : mobile.circle} `}
         onClick={() => setOpenColor(!openColor)}
       ></div>
       <div
-        className={`${platform === "pc" ? pc["colors"] : mobile["colors"]}`}
-        style={{ display: openColor ? "flex" : "none" }}
+        className={`${platform === "pc" ? pc["colors"] : mobile["colors"]} ${
+          !openColor && pc.off
+        }`}
       >
         {colorArray.map((item) => (
           <div

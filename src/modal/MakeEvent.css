@@ -1,18 +1,15 @@
-.addModal {
+.make-modal-box {
   position: absolute;
   z-index: 30;
-  width: 400px;
-  min-height: 300px;
-  font-size: 16px;  
-  text-align: center;
-  border-radius: 5px;
+  background-color: rgb(250, 250, 250);
   box-shadow: 7px 7px 20px rgb(121, 120, 120);
-  background-color: rgb(251, 251, 251);
-  transition: opacity 0.3s ease;
+  border-radius: 7px;
+  text-align: center;
+  overflow: hidden;
 }
 
-.add-modal-name {
-  margin: 0 auto 35px;
+.add-modal-title {
+  margin: 0 auto;
   height: 30px;
   line-height: 30px;
   font-size: 1em;
@@ -21,16 +18,25 @@
   background-color: rgb(226, 226, 229);
 }
 
+.addModal {
+  margin-top: 25px;
+  width: 400px;
+  height: auto;
+  font-size: 16px;
+  transition: opacity 0.3s ease;
+}
+
 .buttonBox {
-  width: 90%;
-  height: 30px;
-  margin: 10px auto 20px;
+  width: 100%;
+  height: 50px;
+  border-top: 1px solid rgb(220, 220, 220);
   text-align: right;
+  line-height: 50px;
 }
 
 .buttonBox button {
-  width: 30px;
-  height: 100%;
+  width: 40px;
+  height: 40px;
   margin: 0 5px;
   font-size: 0.8em;
   font-weight: bold;
@@ -38,4 +44,16 @@
 
 .buttonBox button:hover {
   background-color: rgb(227, 227, 227);
+}
+
+.scroll {
+  overflow-y: scroll;
+}
+
+.scroll::-webkit-scrollbar {
+  width: 10px;
+}
+
+.scroll::-webkit-scrollbar-thumb {
+  background: rgb(221, 221, 221);
 }

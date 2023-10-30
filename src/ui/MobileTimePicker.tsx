@@ -1,5 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { hour, minute, hourPosition, minutePosition } from "../type/Etc";
+import { useAppDispatch } from "../redux/store";
+import { timeActions } from "../redux/time-slice";
 
 interface T {
   type: string;
@@ -7,106 +9,118 @@ interface T {
   endTime: string;
 }
 
+let isFirst = true;
+
 const MobileTimePicker = ({ type, startTime, endTime }: T) => {
-
-  const hours = useRef<{ [key: string]: string }>(hour);
-  const minutes = useRef<{ [key: string]: string }>(minute);
-
-  const [startPeriod, startHour, startMinute] = startTime
-    .match(/(\S+) (\d+):(\d+)/)!
-    .slice(1);
-
-  const [endPeriod, endHour, endMinute] = endTime
-    .match(/(\S+) (\d+):(\d+)/)!
-    .slice(1);
+  const dispatch = useAppDispatch();
+  console.log("Mobile Time Picker");
 
   const dialOne = useRef<HTMLDivElement>(null);
   const dialTwo = useRef<HTMLDivElement>(null);
   const dialThree = useRef<HTMLDivElement>(null);
-  const [scrollY, setScrollY] = useState<number>(-10); // 현재 스크롤 위치
+
+  const scrollY = useRef<number>(-10);
+  // const [scrollY, setScrollY] = useState<number>(-10); // 현재 스크롤 위치
   const [isScrolling, setIsScrolling] = useState<boolean>(false); // 스크롤 중인지 여부
-  const [clickedDial, setClickedDial] = useState<string>("");
-  const [touch, setTouch] = useState<boolean>(false);
-  const [heightFix, setHeightFix] = useState<boolean>(false);
+  const [clickedDial, setClickedDial] = useState<string>(""); // 사용자가 클릭한 다이얼
+  const [isTouch, setTouch] = useState<boolean>(false); // 사용자가 터치중인지
+  const [fixedHeight, setFixedHeight] = useState<boolean>(false); // 사용자가 터치를 뗀 시점에서 다이얼의 위치가 조정중인지
   const scrollTimeout = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
-    console.log("effect");
+    if (isScrolling || isTouch) return;
+    console.log("effect one!!");
+
+    const [startPeriod, startHour, startMinute] = startTime
+      .match(/(\S+) (\d+):(\d+)/)!
+      .slice(1);
+
+    const [endPeriod, endHour, endMinute] = endTime
+      .match(/(\S+) (\d+):(\d+)/)!
+      .slice(1);
 
     if (type === "start") {
-      if (startPeriod === "오전") {
-        dialOne.current!.scrollTop = 0;
-      } else {
-        dialOne.current!.scrollTop = 40;
-      }
+      if (startPeriod === "오전") dialOne.current!.scrollTop = 0;
+      else dialOne.current!.scrollTop = 40;
+
       dialTwo.current!.scrollTop = hourPosition[startHour] * 40;
       dialThree.current!.scrollTop = minutePosition[startMinute] * 40;
     } else {
-      if (endPeriod === "오전") {
-        dialOne.current!.scrollTop = 0;
-      } else {
-        dialOne.current!.scrollTop = 40;
-      }
+      if (endPeriod === "오전") dialOne.current!.scrollTop = 0;
+      else dialOne.current!.scrollTop = 40;
+
       dialTwo.current!.scrollTop = hourPosition[endHour] * 40;
       dialThree.current!.scrollTop = minutePosition[endMinute] * 40;
     }
-  }, [
-    startPeriod,
-    endPeriod,
-    type,
-    hours,
-    minutes,
-    startHour,
-    startMinute,
-    endHour,
-    endMinute,
-  ]);
+  }, [isScrolling, isTouch, startTime, endTime, type]);
 
   useEffect(() => {
-    if (scrollY === -10) return;
-    if (isScrolling) return;
-    // console.log("effect", scrollY, isScrolling, touch);
-    const scrollTop = Math.round(scrollY / 40) * 40;
+    if (scrollY.current === -10 || isScrolling || isFirst) return;
+    console.log("effect Two");
+
+    const scrollTop = Math.round(scrollY.current / 40) * 40;
     let hegith: number;
     if (clickedDial === "one") {
-      if (scrollY === dialOne.current!.scrollTop)
+      if (scrollY.current === dialOne.current!.scrollTop)
         dialOne.current!.scrollTo({ top: scrollTop, behavior: "smooth" });
     } else if (clickedDial === "two") {
-      if (scrollY === dialTwo.current!.scrollTop) {
+      if (scrollY.current === dialTwo.current!.scrollTop) {
         dialTwo.current!.scrollTo({ top: scrollTop, behavior: "smooth" });
       }
     } else {
-      if (scrollY === dialThree.current!.scrollTop)
+      if (scrollY.current === dialThree.current!.scrollTop)
         dialThree.current!.scrollTo({ top: scrollTop, behavior: "smooth" });
     }
-    setScrollY(-10);
-    setHeightFix(true);
+    scrollY.current = -10;
+    // setScrollY(-10);
+    setFixedHeight(true);
+
     setTimeout(() => {
       if (scrollTop <= 400) hegith = 480 + scrollTop;
       else if (scrollTop >= 840) hegith = scrollTop - 480;
-      else hegith = scrollTop
+      else hegith = scrollTop;
 
       if (clickedDial === "two") dialTwo.current!.scrollTop = hegith;
       if (clickedDial === "three") dialThree.current!.scrollTop = hegith;
+      console.log(hegith / 40 + 1);
     }, 80);
     setTimeout(() => {
-      setHeightFix(false);
+      setFixedHeight(false);
     }, 150);
-  }, [scrollY, isScrolling, clickedDial, touch]);
+  }, [scrollY, isScrolling, clickedDial, isTouch]);
+
+  const heightAdjustment = (scrollTop: number) => {
+    scrollY.current = scrollTop;
+    // setScrollY(scrollTop);
+    const period = dialOne.current!.scrollTop === 0 ? "오전" : "오후";
+    const time =
+      period +
+      " " +
+      hour[`${Math.round(dialTwo.current!.scrollTop / 40) + 1}`] +
+      ":" +
+      minute[`${Math.round(dialThree.current!.scrollTop / 40) + 1}`];
+
+    if (type === "start")
+      dispatch(timeActions.selectFristTime({ firstTime: time }));
+    else dispatch(timeActions.selectLastTime({ lastTime: time }));
+  };
 
   const scrollHandler = (e: React.UIEvent<HTMLDivElement>) => {
-    if (heightFix) return;
-    if (!isScrolling) setIsScrolling(true);
-
-    setScrollY(e.currentTarget.scrollTop);
-
-    if (touch) return;
-
-    if (scrollTimeout.current) {
-      clearTimeout(scrollTimeout.current);
+    if (fixedHeight) return;
+    if (!isScrolling) {
+      setIsScrolling(true);
+      return;
     }
+    if (isFirst) isFirst = false;
+    const scrollTop = e.currentTarget.scrollTop
+    heightAdjustment(scrollTop);
+
+    if (isTouch) return;
+
+    if (scrollTimeout.current) clearTimeout(scrollTimeout.current);
+
     scrollTimeout.current = setTimeout(() => {
-      console.log("scroll touch", touch);
+      console.log("scroll touch", isTouch);
       setIsScrolling(false);
     }, 50);
   };
@@ -129,6 +143,7 @@ const MobileTimePicker = ({ type, startTime, endTime }: T) => {
   };
 
   const touchEndHandler = (type: string) => {
+    console.log(" touch End !!!!!!!!!!!!!!!!", isScrolling, isTouch);
     setTouch(false);
     setIsScrolling(false);
     setClickedDial(type);
@@ -167,7 +182,7 @@ const MobileTimePicker = ({ type, startTime, endTime }: T) => {
         onTouchEnd={() => touchEndHandler("two")}
       >
         <div className="dial-two">
-          {Object.values(hours.current).map((item, index) => (
+          {Object.values(hour).map((item, index) => (
             <div
               className="dial-item"
               key={index}
@@ -186,7 +201,7 @@ const MobileTimePicker = ({ type, startTime, endTime }: T) => {
         onTouchEnd={() => touchEndHandler("three")}
       >
         <div className="dial-two">
-          {Object.values(minutes.current).map((item, index) => (
+          {Object.values(minute).map((item, index) => (
             <div
               className="dial-item"
               key={index}

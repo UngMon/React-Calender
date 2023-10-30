@@ -10,6 +10,7 @@ import { DataType } from "../type/ReduxType";
 import ModalPosition from "../utils/ModalPosition";
 import TimeSelector from "../utils/Time/TimeSelector";
 import ColorBox from "../utils/Time/ColorBox";
+import { makeHeightObject } from "./Object";
 import "./MakeEvent.css";
 
 interface T {
@@ -33,11 +34,15 @@ const MakeEvent = ({ data, week, uid, viewRef, setIsDragging }: T) => {
     viewRef.current!.clientWidth,
     (viewRef.current!.clientHeight - 26) / week,
   ]);
+  const [dateIsVisible, setDateIsVisible] = useState<[boolean, string]>([
+    false,
+    "",
+  ]);
 
   const startDate: string = clone.startDate;
   const endDate: string = clone.endDate;
 
-  const modalRef = useRef<HTMLFormElement>(null);
+  const boxRef = useRef<HTMLDivElement>(null);
   const colorRef = useRef<HTMLDivElement>(null);
 
   const titleRef = useRef<HTMLInputElement>(null);
@@ -46,7 +51,10 @@ const MakeEvent = ({ data, week, uid, viewRef, setIsDragging }: T) => {
 
   useEffect(() => {
     const widthCalculator = () => {
-      setSize([viewRef.current!.clientWidth, viewRef.current!.clientHeight]);
+      setSize([
+        viewRef.current!.clientWidth,
+        (viewRef.current!.clientHeight - 26) / week,
+      ]);
     };
 
     window.addEventListener("resize", widthCalculator);
@@ -70,8 +78,7 @@ const MakeEvent = ({ data, week, uid, viewRef, setIsDragging }: T) => {
         return;
       }
       // modal 영역 밖을 클릭할 때, state 초기화
-      if (!modalRef.current?.contains(target)) {
-        console.log("모달 영역 밖 클릭", modalRef.current, target);
+      if (!boxRef.current?.contains(target)) {
         setIsMount(true);
         cancelHandler();
       }
@@ -111,7 +118,7 @@ const MakeEvent = ({ data, week, uid, viewRef, setIsDragging }: T) => {
       color,
       userSchedule: data.userSchedule,
     };
-
+    console.log("되는겨 ???????????");
     try {
       const newSchedule = MakeList(parameter);
       dispatch(sendUserData({ newSchedule, uid, type: "PUT" }));
@@ -139,51 +146,68 @@ const MakeEvent = ({ data, week, uid, viewRef, setIsDragging }: T) => {
   const marginSize: number[] = ModalPosition(clone.day, clone.week, size);
 
   return (
-    <form
-      className={`addModal ${animaOn ? "on" : "off"}`}
-      onSubmit={makeListHandler}
-      ref={modalRef}
+    <div
+      className={`make-modal-box  ${animaOn ? "on" : "off"}`}
       style={{
         left: `${marginSize && marginSize[0]}px`,
-        bottom: `-${marginSize && marginSize[1]}px`,
+        top: `${clone.week < "4" && marginSize[1]}px`,
+        bottom: `-${clone.week > "3" && marginSize[1]}px`,
       }}
+      ref={boxRef}
       onWheel={(e) => e.stopPropagation()}
     >
-      <div className="add-modal-name">일정 추가</div>
-      <div className="edit-title">
-        <div>
-          <img
-            src="../images/memo.png"
-            alt="memo"
-            width="17"
-            className="input-icon"
+      <div className="add-modal-title">일정 추가</div>
+      <form className={`addModal `} onSubmit={makeListHandler}>
+        <div
+          className={`addModal-menu ${
+            makeHeightObject[week] > window.innerHeight ? "scroll" : ""
+          }`}
+          style={{
+            height:
+              dateIsVisible[0] && makeHeightObject[week] > window.innerHeight
+                ? 412 - (makeHeightObject[week] - window.innerHeight)
+                : "",
+          }}
+        >
+          <div className="edit-title">
+            <div>
+              <img
+                src="../images/memo.png"
+                alt="memo"
+                width="17"
+                className="input-icon"
+              />
+            </div>
+            <div>
+              <input placeholder="(제목 추가)" type="text" ref={titleRef} />
+            </div>
+          </div>
+          <TimeSelector
+            startDate={startDate}
+            endDate={endDate}
+            timeInputOneRef={timeIputOneRef}
+            timeInputTwoRef={timeInputTwoRef}
+            dateIsVisible={dateIsVisible}
+            setDateIsVisible={setDateIsVisible}
+          />
+          <ColorBox
+            platform={"pc"}
+            color={color}
+            setColor={setColor}
+            openColor={openColor}
+            setOpenColor={setOpenColor}
+            colorRef={colorRef}
           />
         </div>
-        <div>
-          <input placeholder="(제목 추가)" type="text" ref={titleRef} />
+
+        <div className="buttonBox">
+          <button type="submit">저장</button>
+          <button type="button" onClick={cancelHandler}>
+            취소
+          </button>
         </div>
-      </div>
-      <TimeSelector
-        startDate={startDate}
-        endDate={endDate}
-        timeInputOneRef={timeIputOneRef}
-        timeInputTwoRef={timeInputTwoRef}
-      />
-      <ColorBox
-        platform={"pc"}
-        color={color}
-        setColor={setColor}
-        openColor={openColor}
-        setOpenColor={setOpenColor}
-        colorRef={colorRef}
-      />
-      <div className="buttonBox">
-        <button type="submit">저장</button>
-        <button type="button" onClick={cancelHandler}>
-          취소
-        </button>
-      </div>
-    </form>
+      </form>
+    </div>
   );
 };
 

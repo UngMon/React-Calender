@@ -1,10 +1,9 @@
 .time-container {
-  width: 90%;
-  margin: 20px 0 0 20px;
+  margin: 20px 0 0 30px;
   align-items: center;
-  justify-content: center;
+  justify-content: left;
   display: grid;
-  grid-template-columns: 30px 310px;
+  grid-template-columns: 20px 320px;
   grid-template-rows: 72px auto;
   font-size: 14px;
   position: relative;
@@ -86,16 +85,15 @@
 }
 
 .picker-two {
-  margin: 5px 0;
   width: 340px;
+  height: 0;
   display: flex;
   align-items: center;
   position: relative;
 }
 
-.second-calender {
-  width: 100%;
-  z-index: 50;
+.open {
+  height: 240px;
 }
 
 .date-on {
@@ -103,4 +101,3 @@
   color: white;
   border-radius: 7px;
 }
-

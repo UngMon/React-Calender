@@ -3,9 +3,11 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../redux/store";
 import { ButtonRef } from "../../type/RefType";
 import { cloneActions } from "../../redux/clone-slice";
-import style from "./second.module.css";
+import pc from "./pc.module.css";
+import mobile from "./mobile.module.css";
 
 interface T {
+  platform: string;
   type: string;
   year: number;
   month: number;
@@ -17,6 +19,7 @@ interface T {
 }
 
 const MakeCaledner = ({
+  platform,
   type,
   year,
   month,
@@ -73,18 +76,16 @@ const MakeCaledner = ({
         <td
           key={date}
           onClick={() => clickHandler(date, i, week)}
-          className={style.date_box}
+          className={platform === "pc" ? pc.date_box : mobile.date_box}
         >
           <div
-            className={`${style["date-h"]} ${
-              identify === date && style["Today"]
-            } ${
-              date === clone.startDate && type === "start" && style["startDate"]
-            } ${date === clone.endDate && type === "end" && style["endDate"]}`}
+            className={` ${identify === date && pc["Today"]} ${
+              date === clone.startDate && type === "start" && pc["startDate"]
+            } ${date === clone.endDate && type === "end" && pc["endDate"]}`}
           >
             <span
-              className={`${i === 1 ? style["sunday"] : ""}${
-                i === 7 ? style["saturday"] : ""
+              className={`${i === 1 ? pc["sunday"] : ""}${
+                i === 7 ? pc["saturday"] : ""
               }`}
             >
               {일}
@@ -102,7 +103,7 @@ const MakeCaledner = ({
     monthArray.push(
       <tr
         key={i}
-        className={style["week-box"]}
+        className={pc["week-box"]}
         ref={(el) => (dateRef.current![i + 3] = el)}
       >
         {makeDay(i)}

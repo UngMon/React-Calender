@@ -66,6 +66,8 @@ const cloneSlice = createSlice({
           state.startDate = action.payload.startDate;
           state.day = action.payload.day;
           state.week = action.payload.week;
+          if (state.endDate < action.payload.startDate)
+            state.endDate = action.payload.startDate;
           break;
         case "end":
           state.endDate = action.payload.endDate;

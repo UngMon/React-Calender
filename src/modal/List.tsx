@@ -63,6 +63,10 @@ const List = ({
     viewRef.current!.clientWidth,
     (viewRef.current!.clientHeight - 26) / week,
   ]);
+  const [dateIsVisible, setDateIsVisible] = useState<[boolean, string]>([
+    false,
+    "",
+  ]);
 
   const inputRef = useRef<HTMLInputElement>(null);
   const colorRef = useRef<HTMLDivElement>(null);
@@ -269,6 +273,8 @@ const List = ({
             endDate={endDate}
             timeInputOneRef={timeInputOneRef}
             timeInputTwoRef={timeInputTwoRef}
+            dateIsVisible={dateIsVisible}
+            setDateIsVisible={setDateIsVisible}
           />
           <ColorBox
             platform={"pc"}

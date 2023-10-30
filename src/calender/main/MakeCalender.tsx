@@ -5,7 +5,7 @@ import { modalActions } from "../../redux/modal-slice";
 import { cloneActions } from "../../redux/clone-slice";
 import { ListOrMore } from "../../type/RefType";
 import Schedule from "./Schedule";
-import classes from "../Calender.module.css";
+import style from "../Calender.module.css";
 
 const date: Date = new Date();
 const fixYear: number = date.getFullYear();
@@ -80,6 +80,9 @@ const MakeCalender = React.memo(
             dispatch(modalActions.clearSet());
 
           setIsDragging(false);
+        } else {
+          if (modal.mobileModalOpen)
+            dispatch(modalActions.onOffModal({ type: "mobile" }));
         }
       };
       // 창 크기 조절시에 보이는 list 개수 달리 보여주기 위함.
@@ -172,14 +175,20 @@ const MakeCalender = React.memo(
             onMouseUp={mouseUp}
             onMouseMove={(e) => mouseMove(e)}
             onTouchEnd={() => touchEndHandler(day, week, date)}
-            className={classes.date_box}
+            className={style.date_box}
           >
-            <div className={classes.date}>
-              <div className={classes["date-h"]}>
+            <div className={style.date}>
+              <div
+                className={`${style["date-h"]}  ${
+                  일 === "01" && style.startDate
+                }`}
+              >
                 <h2
-                  className={`${
-                    i === 1 ? classes.sunday : i === 7 && classes.saturday
-                  } ${identify === date && classes.Today}`}
+                  className={`${i === 1 && style.sunday} 
+                    ${i === 7 && style.saturday} ${
+                    identify === date && style.Today
+                  }
+                  `}
                 >
                   {일 === "01" ? `${+월}월 1일` : +일}
                 </h2>
@@ -225,8 +234,8 @@ const MakeCalender = React.memo(
     }
 
     return (
-      <table className={classes.table}>
-        <thead className={classes.weekname}>
+      <table className={style.table}>
+        <thead className={style.weekname}>
           <tr>
             <th>일</th>
             <th>월</th>
@@ -237,7 +246,7 @@ const MakeCalender = React.memo(
             <th>토</th>
           </tr>
         </thead>
-        <tbody className={classes.presentation}>{dateElements}</tbody>
+        <tbody className={style.presentation}>{dateElements}</tbody>
       </table>
     );
   }

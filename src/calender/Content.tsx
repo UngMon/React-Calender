@@ -20,19 +20,24 @@ const Calender = ({ loading, loggedIn }: T) => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const [param] = useSearchParams();
-  
+
   const delayRef = useRef({ delay: true });
 
   useEffect(() => {
-    if (delayRef.current.delay) return;
-
     let y = param.get("year")!;
     let m = param.get("month")!;
+    console.log(y, m);
 
     if (+y > 9999) y = "9999";
     if (+y < 1000) y = "1000";
-    if (+m > 12) m = "12";
-    if (+m < 1) m = "01";
+    if (+m > 12) {
+      y = String(+y + 1);
+      m = "01";
+    }
+    if (+m < 1) {
+      y = String(+y - 1);
+      m = "12";
+    }
 
     dispatch(dateActions.setDate({ y, m }));
     navigate(`/calender/date?year=${y}&month=${m}`);

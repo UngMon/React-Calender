@@ -7,7 +7,9 @@ import {
   faAngleRight,
   faArrowLeft,
   faSearch,
+  faBars,
 } from "@fortawesome/free-solid-svg-icons";
+import Menu from "./Menu";
 import UserInfo from "../../modal/UserInfo";
 import "./Header.css";
 
@@ -28,6 +30,7 @@ const Header = ({ type, year, month, movePrevMonth, moveNextMonth }: T) => {
 
   const [openUserInfo, setOpenUserInfo] = useState<boolean>(false);
   const [openSearch, setOpenSearch] = useState<boolean>(false);
+  const [openMenu, setOpenMenu] = useState<boolean>(false);
   const formRef = useRef<HTMLFormElement>(null);
   const backRef = useRef<HTMLButtonElement>(null);
 
@@ -43,8 +46,12 @@ const Header = ({ type, year, month, movePrevMonth, moveNextMonth }: T) => {
   };
 
   const logoClickHandler = () => {
-    console.log(year, month)  
+    console.log(year, month);
     navigate(`/calender/date?year=${year}&month=${month}`);
+  };
+
+  const menuClickHandler = () => {
+    setOpenMenu(!openMenu);
   };
 
   useEffect(() => {
@@ -71,8 +78,12 @@ const Header = ({ type, year, month, movePrevMonth, moveNextMonth }: T) => {
   return (
     <header className="header">
       <div className="header-box">
+        <Menu openMenu={openMenu} setOpenMenu={setOpenMenu} />
+        <div className="menu-icon">
+          <FontAwesomeIcon icon={faBars} onClick={menuClickHandler} />
+        </div>
         {!openSearch && type === "calender" && (
-          <div className="logo header-ttitle" onClick={logoClickHandler}>
+          <div className="logo header-title" onClick={logoClickHandler}>
             <span>Y</span>
             <span>o</span>
             <span>u</span>

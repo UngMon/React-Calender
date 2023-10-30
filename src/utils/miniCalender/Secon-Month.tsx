@@ -6,16 +6,17 @@ import { dateActions } from "../../redux/date-slice";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAngleLeft, faAngleRight } from "@fortawesome/free-solid-svg-icons";
 import { ButtonRef } from "../../type/RefType";
-import classes from "./second.module.css";
+import pc from "./pc.module.css";
+import mobile from "./mobile.module.css";
 
 interface T {
   platform: string;
   type: string;
   dateRef: React.MutableRefObject<ButtonRef>;
-  dateClose?: (value: string) => void;
+  dateOpenHandler?: (value: string) => void;
 }
 
-const Month = ({ platform, type, dateRef, dateClose }: T) => {
+const Month = ({ platform, type, dateRef, dateOpenHandler }: T) => {
   console.log("secondMonth");
 
   const dispatch = useAppDispatch();
@@ -34,43 +35,52 @@ const Month = ({ platform, type, dateRef, dateClose }: T) => {
 
   return (
     <div
-      className={`${classes["second-month-box"]} ${
-        platform === "pc" ? classes["platform-pc"] : ""
-      }`}
+      className={`${
+        platform === "pc" ? pc["container"] : mobile["container"]
+      } ${platform === "pc" && pc["platform-pc"]}`}
     >
-      <div className={classes["month-area"]}>
-        <span>
-          {date.year}년 {+date.month}월
-        </span>
-        <button
-          onClick={movePrevMonthHandler}
-          type="button"
-          ref={(el: HTMLButtonElement) => (dateRef.current[2] = el)}
-        >
-          <FontAwesomeIcon
-            icon={faAngleLeft}
-            style={{ backgroundColor: "transparent" }}
-          />
-        </button>
-        <button
-          onClick={moveNextMonthHandler}
-          type="button"
-          ref={(el: HTMLButtonElement) => (dateRef.current[3] = el)}
-        >
-          <FontAwesomeIcon
-            icon={faAngleRight}
-            style={{ backgroundColor: "transparent" }}
-          />
-        </button>
+      <div
+        className={
+          platform === "pc" ? pc["month-picker"] : mobile["month-picker"]
+        }
+      >
+        <div>
+          <span>
+            {date.year}년 {+date.month}월
+          </span>
+        </div>
+        <div>
+          <button
+            onClick={movePrevMonthHandler}
+            type="button"
+            ref={(el: HTMLButtonElement) => (dateRef.current[2] = el)}
+          >
+            <FontAwesomeIcon
+              icon={faAngleLeft}
+              style={{ backgroundColor: "transparent" }}
+            />
+          </button>
+          <button
+            onClick={moveNextMonthHandler}
+            type="button"
+            ref={(el: HTMLButtonElement) => (dateRef.current[3] = el)}
+          >
+            <FontAwesomeIcon
+              icon={faAngleRight}
+              style={{ backgroundColor: "transparent" }}
+            />
+          </button>
+        </div>
       </div>
       <Calender
+        platform={platform}
         type={type}
         year={+date.year}
         month={+date.month}
         firstDay={firstDay}
         lastDate={lastDate}
         dateRef={dateRef}
-        dateClose={dateClose}
+        dateOpenHandler={dateOpenHandler}
       />
     </div>
   );

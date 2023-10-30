@@ -109,7 +109,7 @@ const Main = ({
           viewRef={viewRef}
         />
       )}
-      {window.innerWidth <= 500 && modal.mobileModalOpen && (
+      {(window.innerWidth <= 500 && modal.mobileModalOpen) && (
         <MobileModal data={data} />
       )}
     </main>

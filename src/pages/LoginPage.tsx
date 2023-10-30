@@ -12,8 +12,8 @@ import {
 import { FacebookAuthProvider } from "firebase/auth";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { createUserWithEmailAndPassword } from "firebase/auth";
-import classes from "./LoginPage.module.css";
 import StartImages from "./StartImages";
+import style from "./LoginPage.module.css";
 
 const LoginPage = () => {
   const navigagte = useNavigate();
@@ -199,10 +199,10 @@ const LoginPage = () => {
   };
 
   return (
-    <section className={classes["login-area"]}>
+    <section className={style["login-section"]}>
       <StartImages />
-      <div className={classes["login-box"]}>
-        <div className='logo'>
+      <div className={style["login-box"]}>
+        <div className={style.logo}>
           <span>Y</span>
           <span>o</span>
           <span>u</span>
@@ -218,10 +218,10 @@ const LoginPage = () => {
           <span>r</span>
         </div>
         <form
-          className={classes["login-form"]}
+          className={style["login-form"]}
           onSubmit={(event) => loginFormHandler(event, email, password)}
         >
-          <div className={classes["login-info-area"]}>
+          <div className={style["login-info-area"]}>
             {creatingUser && <label htmlFor="name">이름</label>}
             {creatingUser && (
               <input
@@ -263,16 +263,16 @@ const LoginPage = () => {
             </p>
           </div>
           <button
-            className={classes["form-button"]}
+            className={style["form-button"]}
             type="submit"
             onClick={() => creatingUser && createAccount(email, password)}
           >
             {creatingUser ? "계정 생성" : "확인"}
           </button>
           <span>소셜 로그인</span>
-          <div className={classes["social-login-area"]}>
+          <div className={style["social-login-area"]}>
             <img
-              className={classes["social-Logo"]}
+              className={style["social-Logo"]}
               onClick={(e) => socialLoginHandler(e, "Google")}
               width="40"
               height="40"
@@ -280,7 +280,7 @@ const LoginPage = () => {
               alt="Google"
             />
             <img
-              className={classes["social-Logo"]}
+              className={style["social-Logo"]}
               onClick={(e) => socialLoginHandler(e, "Facebook")}
               width="35"
               height="35"
@@ -289,19 +289,19 @@ const LoginPage = () => {
             />
           </div>
           <div
-            className={classes.passwordChangeButton}
+            className={style.passwordChangeButton}
             onClick={() => navigagte("/reset-password")}
           >
             <span>비밀번호를 잊으셨나요?</span>
           </div>
-          <div className={classes["isLogin"]}>
+          <div className={style["isLogin"]}>
             <span>
               {creatingUser
                 ? "이미 계정이 있으신가요?"
                 : "아직 회원이 아니신가요?"}
             </span>
             <div
-              className={classes["change-button"]}
+              className={style["change-button"]}
               onClick={() => setCreatingUser((prevState) => !prevState)}
             >
               {creatingUser ? "로그인" : "회원 가입"}

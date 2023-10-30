@@ -63,6 +63,7 @@ const Schedule = React.memo(
     }, [countDown, setIsDragging]);
 
     const setListInfoHandler = (param: Parameter, click: string) => {
+      console.log(param)
       dispatch(modalActions.setListInfo({ type: "List", ...param, click }));
     };
 
@@ -96,7 +97,7 @@ const Schedule = React.memo(
 
       if (!isMore && param.key !== modal.key) {
         setListInfoHandler(param, "no");
-        !modal.addModalOpen && dispatch(modalActions.onList());
+        !modal.listModalOpen && dispatch(modalActions.onList());
       }
     };
 

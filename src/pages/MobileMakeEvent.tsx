@@ -10,19 +10,19 @@ import { auth } from "../Auth/firebase";
 import { sendUserData } from "../redux/fetch-action";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowRight, faXmark } from "@fortawesome/free-solid-svg-icons";
+import { makeDateArray } from "../utils/MakeLongArr";
 import MobileTimePicker from "../ui/MobileTimePicker";
 import SetTime from "../utils/Time/SetTime";
 import Month from "../utils/miniCalender/Secon-Month";
-import "./MakeEvent.css";
 import {
   faPenToSquare,
   faTrashCan,
   faClock,
 } from "@fortawesome/free-regular-svg-icons";
 import ColorBox from "../utils/Time/ColorBox";
-import { makeDateArray } from "../utils/MakeLongArr";
+import "./MobileMakeEvent.css";
 
-const time = SetTime();
+const nowTime = SetTime();
 
 const date = new Date().toISOString().split("T")[0];
 
@@ -32,6 +32,7 @@ const MakeEvent = () => {
 
   const data = useSelector((state: RootState) => state.data);
   const clone = useSelector((state: RootState) => state.clone);
+  const time = useSelector((state: RootState) => state.time);
 
   const [openDateSelector, setOpenDate] = useState<[boolean, string]>([
     false,
@@ -45,7 +46,7 @@ const MakeEvent = () => {
   const [color, setColor] = useState<string>(clone.color || "라벤더");
   const [openColor, setOpenColor] = useState<boolean>(false);
 
-  const inputRef= useRef<HTMLInputElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
   const dateRef = useRef<ListOrMore>({});
   const startDateRef = useRef<HTMLSpanElement>(null);
   const endDateRef = useRef<HTMLSpanElement>(null);
@@ -77,9 +78,9 @@ const MakeEvent = () => {
     return () => window.removeEventListener("touchend", touchHandler);
   });
 
-  let startTime = time.currentTime || clone.startTime ;
-  let endTime = time.lastTime || clone.endTime ;
-  console.log(startTime, endTime)
+  let startTime = time.firstTime || clone.startTime || nowTime.currentTime;
+  let endTime = time.lastTime || clone.endTime || nowTime.lastTime;
+
   const openHandler = (v: string, t: string) => {
     if (v === "date") {
       setOpenTime([false, ""]);
@@ -116,7 +117,7 @@ const MakeEvent = () => {
       color,
       userSchedule: schedule,
     };
-    console.log(parameter)
+    console.log(parameter);
     // 새롭게 설정된 기간에 일정 생성 후에
     const newSchedule: UserData =
       type === "create" ? MakeList(parameter) : schedule;
@@ -138,7 +139,7 @@ const MakeEvent = () => {
     }
 
     if (clone.startDate === clone.endDate) {
-      if (clone.startTime > clone.endTime) {
+      if (startTime > endTime) {
         alert("종료 시간이 시작시간 보다 뒤에 있어야 합니다.");
         return;
       }
@@ -185,10 +186,16 @@ const MakeEvent = () => {
           </div>
           <div className="Make-time">
             <div className="time">
-              <div onTouchEnd={() => openHandler("date", "start")}>
+              <div
+                className={openDateSelector[1] === "start" ? "clicked" : ""}
+                onTouchEnd={() => openHandler("date", "start")}
+              >
                 <span ref={startDateRef}>{clone.startDate || date}</span>
               </div>
-              <div onTouchEnd={() => openHandler("time", "start")}>
+              <div
+                className={openTimeSelector[1] === "start" ? "clicked" : ""}
+                onTouchEnd={() => openHandler("time", "start")}
+              >
                 <span ref={startTimeRef}>{startTime}</span>
               </div>
             </div>
@@ -196,10 +203,16 @@ const MakeEvent = () => {
               <FontAwesomeIcon icon={faArrowRight} />
             </div>
             <div className="time">
-              <div onTouchEnd={() => openHandler("date", "end")}>
+              <div
+                className={openDateSelector[1] === "end" ? "clicked" : ""}
+                onTouchEnd={() => openHandler("date", "end")}
+              >
                 <span ref={endDateRef}>{clone.endDate || date}</span>
               </div>
-              <div onTouchEnd={() => openHandler("time", "end")}>
+              <div
+                className={openTimeSelector[1] === "end" ? "clicked" : ""}
+                onTouchEnd={() => openHandler("time", "end")}
+              >
                 <span ref={endTimeRef}>{endTime}</span>
               </div>
             </div>

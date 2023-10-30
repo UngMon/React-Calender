@@ -17,16 +17,16 @@ const StartImages = () => {
 
   useEffect(() => {
     setTimeout(() => {
-      if (count <= 1) {
-        imageRef.current[count]!.classList.add('fade-out');
-        imageRef.current[count + 1]!.classList.remove('fade-out')
-        setCount(count + 1);
-      } else {
-        imageRef.current[2]!.classList.add('fade-out');
-        imageRef.current[0]!.classList.remove('fade-out')
-        setCount(0);
-      }
-    }, 5000);
+      const prevIndex = count === 0 ? images.length - 1 : count - 1;
+      const nextIndex = count === images.length - 1 ? 0 : count + 1;
+      imageRef.current[prevIndex]!.style.zIndex = "0";
+      imageRef.current[prevIndex]!.style.opacity = "0";
+      imageRef.current[count]!.style.zIndex = "1";
+      imageRef.current[count]!.style.opacity = "1";
+      imageRef.current[nextIndex]!.style.zIndex = "5";
+      imageRef.current[nextIndex]!.style.opacity = "1";
+      setCount(count < images.length - 1 ? count + 1 : 0);
+    }, 4000);
   }, [count]);
 
   return (
@@ -36,6 +36,10 @@ const StartImages = () => {
           key={index}
           className="image"
           ref={(el) => (imageRef.current![index] = el)}
+          style={{
+            zIndex: index === 0 ? "1" : index === 1 ? "5" : "0",
+            opacity: index === 0 ? "1" : index === 1 ? "1" : 0,
+          }}
         >
           <img src={item.url} alt={item.description} />
         </div>

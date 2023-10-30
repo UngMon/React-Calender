@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect } from "react";
+import React, { useRef, useEffect } from "react";
 import { RootState, useAppDispatch } from "../../redux/store";
 import { useSelector } from "react-redux";
 import { timeActions } from "../../redux/time-slice";
@@ -14,6 +14,8 @@ interface T {
   endDate: string;
   timeInputOneRef: React.RefObject<HTMLInputElement>;
   timeInputTwoRef: React.RefObject<HTMLInputElement>;
+  dateIsVisible: [boolean, string];
+  setDateIsVisible: React.Dispatch<React.SetStateAction<[boolean, string]>>;
 }
 
 const setTime = SetTime();
@@ -25,17 +27,14 @@ const TimeSelector = ({
   endDate,
   timeInputOneRef,
   timeInputTwoRef,
+  dateIsVisible,
+  setDateIsVisible
 }: T) => {
   const dispatch = useAppDispatch();
   const timeState = useSelector((state: RootState) => state.time);
 
   const 시작날 = startDate.split("-");
   const 마지막날 = endDate.split("-");
-
-  const [dateIsVisible, setDateIsVisible] = useState<[boolean, string]>([
-    false,
-    "",
-  ]);
 
   const dateRef = useRef<ListOrMore>({});
   const timeRef = useRef<ListOrMore>({});
@@ -148,25 +147,20 @@ const TimeSelector = ({
         </div>
       </div>
       <div
-        className="picker-two"
-        style={{
-          height:
-            dateIsVisible[0] ||
+        className={`picker-two ${
+          (dateIsVisible[0] ||
             timeState.firstIsVisible ||
-            timeState.lastIsVisible
-              ? "220px"
-              : "0",
-        }}
+            timeState.lastIsVisible) &&
+          "open"
+        }`}
       >
         {dateIsVisible[0] && (
-          <div className="second-calender">
-            <SecondCaleder
-              platform="pc"
-              type={dateIsVisible[1]}
-              dateRef={dateRef}
-              dateOpenHandler={dateOpenHandler}
-            />
-          </div>
+          <SecondCaleder
+            platform="pc"
+            type={dateIsVisible[1]}
+            dateRef={dateRef}
+            dateOpenHandler={dateOpenHandler}
+          />
         )}
         <TimeBoxOne
           timeInputOneRef={timeInputOneRef}
