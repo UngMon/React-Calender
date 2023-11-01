@@ -16,7 +16,6 @@ interface T {
 }
 
 const Calender = ({ loading, loggedIn }: T) => {
-  console.log("Calender");
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const [param] = useSearchParams();
@@ -26,7 +25,6 @@ const Calender = ({ loading, loggedIn }: T) => {
   useEffect(() => {
     let y = param.get("year")!;
     let m = param.get("month")!;
-    console.log(y, m);
 
     if (+y > 9999) y = "9999";
     if (+y < 1000) y = "1000";

@@ -15,5 +15,5 @@ export interface ButtonRef {
 }
 
 export interface TableRef {
-  [key: string]: HTMLDivElement | HTMLTableRowElement | null;
+  [key: string]: HTMLTableRowElement | null;
 }

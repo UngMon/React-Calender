@@ -31,6 +31,7 @@ interface T {
   viewRef: React.RefObject<HTMLDivElement>;
   listRef: React.MutableRefObject<ListOrMore>;
   allListRef: React.MutableRefObject<ListOrMore>;
+  clicekdMoreRef: React.MutableRefObject<HTMLDivElement | null>;
 }
 
 const MakeCalender = React.memo(
@@ -46,9 +47,8 @@ const MakeCalender = React.memo(
     viewRef,
     listRef,
     allListRef,
+    clicekdMoreRef,
   }: T) => {
-    console.log("MakeCalender");
-
     const dispatch = useAppDispatch();
     const [listBoxHeightCount, setCount] = useState<number>(0);
     const [countDown, setCountDown] = useState<boolean>(false);
@@ -120,18 +120,19 @@ const MakeCalender = React.memo(
     };
 
     const mouseMove = (e: React.MouseEvent) => {
-      if (e.buttons !== 1) return;
+      e.stopPropagation();
+      if (clicekdMoreRef.current || e.buttons !== 1) return;
       setCountDown(false);
       setIsDragging(true);
     };
 
     const mouseUp = () => {
-      console.log("mouseUp MakeClaender!!!");
       setCountDown(false);
+      if (clicekdMoreRef.current) return;
       if (modal.addModalOpen || modal.listModalOpen || modal.moreModalOpen)
         return;
       setIsDragging(true);
-      dispatch(modalActions.onAdd());
+      dispatch(modalActions.onOffModal({ type: "make" }));
     };
 
     const touchEndHandler = (day: string, week: string, date: string) => {
@@ -206,6 +207,7 @@ const MakeCalender = React.memo(
                 allListRef={allListRef}
                 listBoxHeightCount={listBoxHeightCount}
                 setIsDragging={setIsDragging}
+                clicekdMoreRef={clicekdMoreRef}
               />
             )}
           </td>

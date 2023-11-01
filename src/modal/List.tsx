@@ -2,6 +2,7 @@ import React, { useRef, useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import { RootState, useAppDispatch } from "../redux/store";
 import { modalActions } from "../redux/modal-slice";
+import { cloneActions } from "../redux/clone-slice";
 import { timeActions } from "../redux/time-slice";
 import { ListOrMore } from "../type/RefType";
 import { DataType, ModalType, UserData } from "../type/ReduxType";
@@ -25,6 +26,7 @@ import "./List.css";
 interface T {
   week: number;
   viewRef: React.RefObject<HTMLDivElement>;
+  moreModalRef: React.MutableRefObject<HTMLDivElement | null>;
   listRef: React.MutableRefObject<ListOrMore>;
   allListRef: React.MutableRefObject<ListOrMore>;
   clickedElement: React.MutableRefObject<HTMLDivElement | null>;
@@ -38,6 +40,7 @@ interface T {
 const List = ({
   week,
   viewRef,
+  moreModalRef,
   listRef,
   allListRef,
   clickedElement,
@@ -48,7 +51,6 @@ const List = ({
   setIsDragging,
 }: T) => {
   const dispatch = useAppDispatch();
-
   const clone = useSelector((state: RootState) => state.clone);
 
   const startDate = modal.startDate;
@@ -90,7 +92,6 @@ const List = ({
   useEffect(() => {
     const closeHandler = (e: MouseEvent) => {
       const target = e.target as Node;
-      console.log("list CloseHandler");
       // 타겟이 리스트를 포함하면 skip
       if (target.contains(list.current)) return;
 
@@ -105,8 +106,7 @@ const List = ({
       if (!list.current?.contains(target)) {
         if (clickedElement.current?.contains(target)) {
           // list 밖 같은 리스트를 클릭하면 리스트 창이 닫게함.
-          closeModalHandler();
-          return;
+          return !modal.moreModalOpen && closeModalHandler();
         }
 
         // clickedElement Ref에 target저장
@@ -118,14 +118,14 @@ const List = ({
 
         for (const key in allListRef.current) {
           if (allListRef.current[key]?.contains(target)) {
-            dispatch(modalActions.clearSet());
-            return;
+            return dispatch(modalActions.clearSet());
           }
         }
 
+        if (moreModalRef.current?.contains(target)) return;
+
         // 위 영역이 아닌 다른 영역을 클릭한 경우 list 모달창 닫음.
-        console.log("list 밖을 클릭한 경우");
-        closeModalHandler();
+        !modal.moreModalOpen && closeModalHandler();
       }
     };
 
@@ -211,12 +211,13 @@ const List = ({
   };
 
   const closeModalHandler = () => {
-    console.log("close Modal");
     setAnimaOn(false);
     setIsDragging(false);
     setTimeout(() => {
+      console.log("close Modal Handler");
       clickedElement.current = null;
       dispatch(modalActions.clearSet());
+      dispatch(cloneActions.clearSet());
       dispatch(timeActions.resetTime());
     }, 200);
   };

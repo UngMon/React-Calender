@@ -1,7 +1,8 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { RootState, useAppDispatch } from "../redux/store";
 import { modalActions } from "../redux/modal-slice";
+import { cloneActions } from "../redux/clone-slice";
 import { ListOrMore } from "../type/RefType";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
@@ -10,10 +11,11 @@ import ModalPositionTwo from "../utils/ModalPositionTwo";
 import "./MoreList.css";
 
 interface T {
+  viewRef: React.RefObject<HTMLDivElement>;
+  moreModalRef: React.MutableRefObject<HTMLDivElement | null>;
   listRef: React.MutableRefObject<ListOrMore>;
   allListRef: React.MutableRefObject<ListOrMore>;
   clickedElement: React.MutableRefObject<HTMLDivElement | null>;
-  viewRef: React.RefObject<HTMLDivElement>;
   list: React.RefObject<HTMLDivElement>;
 }
 
@@ -43,13 +45,11 @@ const dayText: { [key: string]: string } = {
 
 const MoreList = ({
   viewRef,
+  moreModalRef,
   listRef,
   allListRef,
   clickedElement,
-  list,
 }: T) => {
-  console.log("allList");
-
   const dispatch = useAppDispatch();
 
   const schedule = useSelector((state: RootState) => state.data.userSchedule);
@@ -61,33 +61,27 @@ const MoreList = ({
     viewRef.current!.clientWidth,
     viewRef.current!.clientHeight,
   ]);
-  const modalRef = useRef<HTMLDivElement>(null);
-  const listInMoreRef = useRef<ListOrMore>({});
 
   useEffect(() => {
     const modalCloseHandler = (e: MouseEvent) => {
       const target = e.target as HTMLDivElement;
-      console.log('down')
 
       clickedElement.current = target;
-      // 더 보기창 밖의 영역을 클릭한 경우
-      if (!modalRef.current!.contains(target)) {
-        console.log('why')
+
+      if (!moreModalRef.current!.contains(target)) {
         // 밖의 영역중에서 더보기를 클릭한 경우
         for (const key in allListRef.current) {
-          if(allListRef.current[key]!.contains(target)) return;
+          if (allListRef.current[key]?.contains(target)) return;
         }
-        
-        console.log('here')
-        setTimeout(() => {
-          dispatch(modalActions.clearSet());
-        }, 100);
+
+        dispatch(modalActions.onOffModal({ type: "more" }));
+        clickedElement.current = null;
       }
     };
 
-    document.addEventListener("mouseup", modalCloseHandler);
+    document.addEventListener("click", modalCloseHandler);
     return () => {
-      document.removeEventListener("mouseup", modalCloseHandler);
+      document.removeEventListener("click", modalCloseHandler);
     };
   });
 
@@ -102,44 +96,50 @@ const MoreList = ({
   const listClickHandler = (
     e: React.MouseEvent,
     object: CalenderData,
-    date: string,
     index: number
   ) => {
-    // clickedElement.current = e.target as HTMLDivElement;
-    // const type = "ListInMore";
-    // listInMoreRef.current = object.key;
-    // const { day, week } = modal;
-    // dispatch(
-    //   modalActions.clickedList({ type, object, date, day, week, index })
-    // );
+    if (clickedElement.current === (e.target as HTMLDivElement)) {
+      return dispatch(modalActions.onOffModal({ type: "list" }));
+    }
+
+    const giveDate = new Date(object.startDate);
+    const day = String(giveDate.getDay() + 1);
+    const week = String(Math.ceil((giveDate.getDate() + +day - 1) / 7));
+    dispatch(
+      cloneActions.setListInfo({ type: "List", ...object, day, week, index })
+    );
+    dispatch(modalActions.setListInfo({ type: "More", ...object, index }));
+    dispatch(modalActions.onList());
   };
 
   const makeListHandler = () => {
     const result = [];
 
-    if (!schedule[date])
+    if (!schedule[date]) {
       // 해당 날짜에 일정이 없을 때,
       return <div className="AllList-nothing">등록된 일정이 없습니다.</div>;
+    }
 
-    let index: number = 0;
+    let count: number = 0;
 
     for (const key in schedule[date]) {
       const object = schedule[date][key];
-      let category = "";
+      const index = count;
+      let shape = "";
 
       switch (true) {
         case object.startDate === object.endDate:
-          category = "short";
+          shape = "short";
           break;
         case object.startDate < date:
         case date < object.endDate:
-          category = "middle";
+          shape = "middle";
           break;
         case date === object.endDate:
-          category = "end";
+          shape = "end";
           break;
         case date === object.startDate:
-          category = "start";
+          shape = "start";
           break;
         default:
       }
@@ -148,9 +148,7 @@ const MoreList = ({
         <div
           key={index}
           className="AllList-item"
-          // eslint-disable-next-line no-loop-func
-          onClick={(e) => listClickHandler(e, object, date, index)}
-          ref={(el: HTMLDivElement) => (listInMoreRef.current[`${key}`] = el)}
+          onClick={(e) => listClickHandler(e, object, index)}
         >
           {object.startDate < modal.date && (
             <div className={`end-date border-left-${object.color}`}></div>
@@ -158,8 +156,8 @@ const MoreList = ({
           <div
             className={`title ${object.color}`}
             style={{
-              width: `${widthObj[category]}`,
-              marginLeft: `${marginLeft[category]}`,
+              width: `${widthObj[shape]}`,
+              marginLeft: `${marginLeft[shape]}`,
               textDecoration: `${object.isDone && "line-through"}`,
             }}
           >
@@ -170,7 +168,7 @@ const MoreList = ({
           )}
         </div>
       );
-      index += 1;
+      count += 1;
     }
 
     return result;
@@ -181,7 +179,7 @@ const MoreList = ({
   return (
     <div
       className={`AllList on`}
-      ref={modalRef}
+      ref={moreModalRef}
       style={{
         display: `${size[0] === 0 ? "none" : "block"}`,
         marginLeft: `${size[0] !== 0 && margin![0]}px`,
@@ -190,9 +188,7 @@ const MoreList = ({
     >
       <div className="AllList-header">
         <h2>{dayText[modal.day]}</h2>
-        <button
-          onClick={() => dispatch(modalActions.clearSet())}
-        >
+        <button onClick={() => dispatch(modalActions.clearSet())}>
           <FontAwesomeIcon icon={faXmark} />
         </button>
       </div>

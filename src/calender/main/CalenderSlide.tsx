@@ -19,6 +19,7 @@ interface T {
   viewRef: React.RefObject<HTMLDivElement>;
   listRef: React.MutableRefObject<ListOrMore>;
   allListRef: React.MutableRefObject<ListOrMore>;
+  clicekdMoreRef: React.MutableRefObject<HTMLDivElement | null>;
 }
 
 const CalenderSlide = ({
@@ -30,6 +31,7 @@ const CalenderSlide = ({
   viewRef,
   listRef,
   allListRef,
+  clicekdMoreRef
 }: T) => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
@@ -136,6 +138,7 @@ const CalenderSlide = ({
           viewRef={viewRef}
           listRef={listRef}
           allListRef={allListRef}
+          clicekdMoreRef={clicekdMoreRef}
         />
       ))}
     </div>

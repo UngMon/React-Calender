@@ -28,12 +28,12 @@ const Main = ({
   allListRef,
   clickedElement,
 }: T) => {
-  console.log("Main");
-
   const data = useSelector((state: RootState) => state.data);
   const modal = useSelector((state: RootState) => state.modal);
 
   const viewRef = useRef<HTMLDivElement>(null);
+  const moreModalRef = useRef<HTMLDivElement | null>(null);
+  const clicekdMoreRef = useRef<HTMLDivElement | null>(null);
   const [isDragging, setIsDragging] = useState<boolean>(false);
 
   const firstDay: number = new Date(+year, +month - 1, 1).getDay();
@@ -59,6 +59,7 @@ const Main = ({
           viewRef={viewRef}
           listRef={listRef}
           allListRef={allListRef}
+          clicekdMoreRef={clicekdMoreRef}
         />
         <div className={style["modal-container"]}>
           {modal.addModalOpen && (
@@ -73,6 +74,7 @@ const Main = ({
           {modal.moreModalOpen && (
             <MoreList
               viewRef={viewRef}
+              moreModalRef={moreModalRef}
               listRef={listRef}
               allListRef={allListRef}
               clickedElement={clickedElement}
@@ -83,6 +85,7 @@ const Main = ({
             <List
               week={week}
               viewRef={viewRef}
+              moreModalRef={moreModalRef}
               listRef={listRef}
               allListRef={allListRef}
               clickedElement={clickedElement}

@@ -26,6 +26,7 @@ interface T {
   allListRef: React.MutableRefObject<ListOrMore>;
   listBoxHeightCount: number;
   setIsDragging: (value: boolean) => void;
+  clicekdMoreRef: React.MutableRefObject<HTMLDivElement | null>;
 }
 
 const Schedule = React.memo(
@@ -40,6 +41,7 @@ const Schedule = React.memo(
     allListRef,
     listBoxHeightCount,
     setIsDragging,
+    clicekdMoreRef,
   }: T): JSX.Element => {
     const dispatch = useAppDispatch();
     const schedule = data.userSchedule;
@@ -52,6 +54,7 @@ const Schedule = React.memo(
       // 드래깅 기능을 활성화 시킬지 안 할지 결정한다.
       if (!countDown) return;
       // 사용자가 1초 이상 클릭하고 있는 경우, cloneList 생성
+      console.log("effect");
       const checkDragging = () => {
         window.document.body.style.cursor = "move";
         setIsDragging(true);
@@ -62,9 +65,8 @@ const Schedule = React.memo(
       return () => clearTimeout(timeout);
     }, [countDown, setIsDragging]);
 
-    const setListInfoHandler = (param: Parameter, click: string) => {
-      console.log(param)
-      dispatch(modalActions.setListInfo({ type: "List", ...param, click }));
+    const setListInfoHandler = (param: Parameter) => {
+      dispatch(modalActions.setListInfo({ type: "List", ...param }));
     };
 
     const mouseDown = (
@@ -74,12 +76,10 @@ const Schedule = React.memo(
     ) => {
       e.stopPropagation();
       if (window.innerWidth < 500 || param.key === modal.key) return;
-      if (modal.moreModalOpen || isMore) return;
-      // console.log(" Schedule MouseDown");
+      if (modal.moreModalOpen) return;
+      if (isMore) return (clicekdMoreRef.current = e.target as HTMLDivElement);
       setCountDown(true);
-      dispatch(
-        cloneActions.setListInfo({ type: "List", ...param, click: "no" })
-      );
+      dispatch(cloneActions.setListInfo({ type: "List", ...param }));
     };
 
     const mouseUp = (
@@ -89,24 +89,28 @@ const Schedule = React.memo(
     ) => {
       e.stopPropagation();
       if (window.innerWidth < 500) return;
-
-      if (isMore) dispatch(modalActions.clickedMore({ ...param }));
-
+      if (isMore) {
+        clicekdMoreRef.current = null;
+        dispatch(modalActions.clickedMore({ ...param }));
+      }
       setCountDown(false);
       setIsDragging(false);
 
       if (!isMore && param.key !== modal.key) {
-        setListInfoHandler(param, "no");
+        setListInfoHandler(param);
         !modal.listModalOpen && dispatch(modalActions.onList());
       }
     };
 
-    const mouseMove = (e: React.MouseEvent, param: Parameter) => {
+    const mouseMove = (
+      e: React.MouseEvent,
+      isMore: boolean,
+      param: Parameter
+    ) => {
       e.stopPropagation();
-      if (e.buttons !== 1) return;
+      if (e.buttons !== 1 || isMore) return;
       if (modal.listModalOpen) dispatch(modalActions.clearSet());
-      // console.log("Schedule MouseMove");
-      setListInfoHandler(param, "no");
+      setListInfoHandler(param);
       setCountDown(false);
       setIsDragging(true);
     };
@@ -188,7 +192,7 @@ const Schedule = React.memo(
               }}
               onMouseDown={(e) => mouseDown(e, isMore, parameter)}
               onMouseUp={(e) => mouseUp(e, isMore, parameter)}
-              onMouseMove={(e) => mouseMove(e, parameter)}
+              onMouseMove={(e) => mouseMove(e, isMore, parameter)}
               ref={(el: HTMLDivElement) => {
                 if (i !== +day && !isMore) return;
                 isMore

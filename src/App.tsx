@@ -12,7 +12,6 @@ import LoginPage from "./pages/LoginPage";
 import MakeEvent from "./pages/MobileMakeEvent";
 
 function App() {
-  console.log("app");
   const dispatch = useAppDispatch();
 
   const [loading, setLoading] = useState<boolean>(true);
@@ -23,17 +22,24 @@ function App() {
       if (user) {
         dispatch(getUserData(user.uid));
         setLogged(true);
-      } else setLogged(false);
+        setTimeout(() => {
+          setLoading(false);
+        }, 500);
+      } else {
+        setLogged(false);
+        setTimeout(() => {
+          setLoading(false);
+        }, 500);
+      }
     });
-    setTimeout(() => {
-      setLoading(false);
-    }, 1000);
   }, [dispatch]);
 
   return (
     <Routes>
       {!loggedIn && !loading && <Route path="/" element={<LoginPage />} />}
-      {!loggedIn && !loading &&<Route path="/reset-password" element={<ResetPage />} />}
+      {!loggedIn && !loading && (
+        <Route path="/reset-password" element={<ResetPage />} />
+      )}
       {loading && <Route path="*" element={<Loading />} />}
       {!loading && loggedIn && (
         <Route path="/calender">

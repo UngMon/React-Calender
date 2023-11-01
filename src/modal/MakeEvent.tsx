@@ -118,12 +118,10 @@ const MakeEvent = ({ data, week, uid, viewRef, setIsDragging }: T) => {
       color,
       userSchedule: data.userSchedule,
     };
-    console.log("되는겨 ???????????");
     try {
       const newSchedule = MakeList(parameter);
       dispatch(sendUserData({ newSchedule, uid, type: "PUT" }));
     } catch (error) {
-      console.log(error);
       alert("데이터 전송 실패...");
     }
 
@@ -133,7 +131,6 @@ const MakeEvent = ({ data, week, uid, viewRef, setIsDragging }: T) => {
   };
 
   const cancelHandler = () => {
-    console.log("MakeEvent CancleHandler");
     setAnimaOn(false);
     setIsDragging(false);
     setTimeout(() => {

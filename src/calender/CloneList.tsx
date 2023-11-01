@@ -39,7 +39,7 @@ const CloneList = ({
 }: T) => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  // console.log("cloneList");
+
   const cloneRedux = useSelector((state: RootState) => state.clone);
   const [고정좌표, 고정좌표설정] = useState<[number, number]>([0, 0]);
   const [실시간좌표, 실시간좌표설정] = useState<[number, number]>([0, 0]);
@@ -109,9 +109,10 @@ const CloneList = ({
     document.body.style.cursor = "auto";
 
     if (cloneRedux.mouseType === "MakeList") {
-      console.log("MakeList CloneList");
       if (viewRef.current!.clientWidth <= 500) navigate("/calender/makeEvent");
-      else !modal.addModalOpen && dispatch(modalActions.onAdd());
+      else
+        !modal.addModalOpen &&
+          dispatch(modalActions.onOffModal({ type: "make" }));
 
       if (실시간좌표[0] === 고정좌표[0] && 실시간좌표[1] === 고정좌표[1])
         return;
@@ -149,9 +150,8 @@ const CloneList = ({
     if (cloneRedux.mouseType === "List") {
       setIsMoving(false);
       setIsDragging(false);
-      console.log("List ClonList Type");
       if (실시간좌표[0] === 고정좌표[0] && 실시간좌표[1] === 고정좌표[1]) {
-        dispatch(cloneActions.clear());
+        dispatch(cloneActions.clearSet());
         dispatch(modalActions.clearSet());
         return;
       }
@@ -179,7 +179,7 @@ const CloneList = ({
       const newSchedule: UserData = MakeList(parameter);
       // 데이터 전송
       dispatch(sendUserData({ newSchedule, uid, type: "POST" }));
-      dispatch(cloneActions.clear());
+      dispatch(cloneActions.clearSet());
       dispatch(modalActions.clearSet());
     }
   };
@@ -187,7 +187,6 @@ const CloneList = ({
   const mouseMove = () => {
     // 모달창이 열려있으면 마우스 커서 icon을 기본으로, move이벤트 발생 x
     if (modal.addModalOpen || isMoving || modal.openEdit) return;
-    console.log("Clone List Mouse Move");
     setIsMoving(true);
     modal.listModalOpen && dispatch(modalActions.clearSet());
     document.body.style.cursor = "move";

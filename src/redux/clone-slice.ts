@@ -15,7 +15,6 @@ const initialState: ModalBasicType = {
   key: "",
   index: 0, // 그 날 일정에서 몇 번째 항목인지
   mouseType: "",
-  click: "",
 };
 
 const cloneSlice = createSlice({
@@ -35,7 +34,6 @@ const cloneSlice = createSlice({
       state.week = action.payload.week;
       state.day = action.payload.day;
       state.mouseType = action.payload.type;
-      state.click = action.payload.click;
     },
 
     setDate(state, action) {
@@ -91,7 +89,7 @@ const cloneSlice = createSlice({
       state.title = action.payload.title;
     },
 
-    clear(state) {
+    clearSet(state) {
       state.date = "";
       state.week = "";
       state.day = "";
@@ -105,7 +103,6 @@ const cloneSlice = createSlice({
       state.key = "";
       state.index = 0; // 그 날 일정에서 몇 번째 항목인지
       state.mouseType = "";
-      state.click = "";
     },
   },
 });
