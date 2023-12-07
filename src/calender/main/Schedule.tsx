@@ -54,7 +54,6 @@ const Schedule = React.memo(
       // 드래깅 기능을 활성화 시킬지 안 할지 결정한다.
       if (!countDown) return;
       // 사용자가 1초 이상 클릭하고 있는 경우, cloneList 생성
-      console.log("effect");
       const checkDragging = () => {
         window.document.body.style.cursor = "move";
         setIsDragging(true);

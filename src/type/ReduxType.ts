@@ -1,3 +1,11 @@
+export interface HoliDay {
+  [key: string]: { isHoliday: string; dateName: string };
+}
+
+export interface UserData {
+  [key: string]: { [key: string]: CalenderData };
+}
+
 export interface CalenderData {
   title: string;
   color: string;
@@ -9,10 +17,6 @@ export interface CalenderData {
   key: string;
 }
 
-export interface UserData {
-  [key: string]: { [key: string]: CalenderData };
-}
-
 export interface DataType {
   isLogin: boolean;
   isLoading: boolean;
@@ -22,6 +26,7 @@ export interface DataType {
   succesSendData: boolean;
   dataChanged: boolean;
   userSchedule: UserData;
+  holiday: { [key: string]: HoliDay };
 }
 
 ////// more slice //////
@@ -50,15 +55,13 @@ export interface ModalBasicType {
   key: string;
   index: number;
   mouseType: string;
-  click: string;
-
 }
 
 export interface ModalType extends ModalBasicType {
-  addModalOpen: boolean,
-  listModalOpen: boolean,
-  moreModalOpen: boolean,
-  mobileModalOpen: boolean,
+  addModalOpen: boolean;
+  listModalOpen: boolean;
+  moreModalOpen: boolean;
+  mobileModalOpen: boolean;
   openEdit: boolean;
 }
 

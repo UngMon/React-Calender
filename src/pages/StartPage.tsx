@@ -1,11 +1,11 @@
 import React, { Link } from "react-router-dom";
-import classes from "./StartPage.module.css";
+import style from "./StartPage.module.css";
+
 const StartPage = () => {
   return (
-    <div className={classes.section}>
-      <div className={classes["animation-area"]}>
-        <h1 className={classes.h1}>
-          <span>Y</span>
+    <div className={style.section}>
+      <div className={style["animation-area"]}>
+        <h1 className={style.h1}>
           <span>o</span>
           <span>u</span>
           <span>r</span>
@@ -20,7 +20,7 @@ const StartPage = () => {
         </h1>
       </div>
       <div>
-        <Link className={classes["start-button"]} to="/login">
+        <Link className={style["start-button"]} to="/login">
           시작하기
         </Link>
       </div>

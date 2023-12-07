@@ -51,7 +51,7 @@ tbody {
   box-sizing: border-box;
 }
 
-.date_box {
+td {
   position: relative;
   width: calc(100% / 7);
   box-sizing: border-box;
@@ -61,24 +61,28 @@ tbody {
   border-right: 0;
 }
 
-.date {
+.date-box {
   position: absolute;
   box-sizing: border-box;
   width: 100%;
   height: 24px;
   text-align: left;
   display: flex;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-.date-h h2 {
-  box-sizing: border-box;
-  padding: 0 0px;
+.date-box span {
   min-width: 24px;
   height: 100%;
   font-size: 1em;
   font-weight: 540;
   line-height: 25px;
   text-align: center;
+
+  &:nth-child(1) {
+    margin-right: 5px;
+  }
 }
 
 .sunday {
@@ -99,6 +103,16 @@ tbody {
 
 .startDate {
   padding-left: 5px;
+}
+
+.holiday {
+  background-color: rgb(2, 152, 2);
+  color: white;
+  border-radius: 5px;
+}
+
+.national {
+  color: rgb(2, 152, 2);
 }
 
 .list-box {

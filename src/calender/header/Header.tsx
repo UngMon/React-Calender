@@ -82,20 +82,8 @@ const Header = ({ type, year, month, movePrevMonth, moveNextMonth }: T) => {
           <FontAwesomeIcon icon={faBars} onClick={menuClickHandler} />
         </div>
         {!openSearch && type === "calender" && (
-          <div className="logo header-title" onClick={logoClickHandler}>
-            <span>Y</span>
-            <span>o</span>
-            <span>u</span>
-            <span>r</span>
-            <span> </span>
-            <span>C</span>
-            <span>a</span>
-            <span>l</span>
-            <span>e</span>
-            <span>n</span>
-            <span>d</span>
-            <span>e</span>
-            <span>r</span>
+          <div className="header-title" onClick={logoClickHandler}>
+            <span>Your Calender</span>
           </div>
         )}
         {openSearch && (

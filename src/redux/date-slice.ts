@@ -4,6 +4,8 @@ const today = new Date();
 const todayYear = String(today.getFullYear());
 const todayMonth = String(today.getMonth() + 1).padStart(2, "0");
 
+console.log(todayYear, todayMonth)
+
 const dateSlice = createSlice({
   name: "month",
   initialState: {

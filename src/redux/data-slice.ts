@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { DataType } from "../type/ReduxType";
-import { getUserData, sendUserData } from "./fetch-action";
+import { DataType, HoliDay } from "../type/ReduxType";
+import { getNationalDay, getUserData, sendUserData } from "./fetch-action";
 
 const initialState: DataType = {
   isLogin: false,
@@ -11,6 +11,7 @@ const initialState: DataType = {
   succesSendData: false,
   dataChanged: false,
   userSchedule: {},
+  holiday: {},
 };
 
 const dataSlice = createSlice({
@@ -35,23 +36,7 @@ const dataSlice = createSlice({
       state.isLoading = false;
       state.isCreated = true;
       state.dataChanged = true;
-
       state.userSchedule = {};
-
-      // if (state.dummyData[state.uid]) {
-      //   state.userSchedule = { ...state.dummyData[state.uid] };
-      // } else {
-      //   // 신규 가입자일 때, 유저 data를 생성하고 이후 app.js에서 sendScheduleData()에서
-      //   // data 생성 요청을 수행함.
-      //   state.dataChanged = true;
-      //   state.userSchedule = {
-      //     email: action.payload.email,
-      //     name: action.payload.name,
-      //     schedule: { dummy: 1 },
-      //   };
-      //   state.isCreated = true;
-      // }
-      // state.dummyData = {};
     },
 
     toggleChanged(state) {
@@ -69,19 +54,66 @@ const dataSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
+    // get National Day
+    builder.addCase(getNationalDay.pending, (state, action) => {});
+    builder.addCase(getNationalDay.fulfilled, (state, action) => {
+      // 첫 마운트, 세션스토리지에 데이터가 있다면 저장하기
+      const result: { [key: string]: HoliDay } = {};
+      const year = action.payload.year;
+      const data = action.payload.data;
+
+      // data.legnth === 0은 불러온 데이터가 없음 => 이건 세션스토리지에 데이터가 존재하는 경우
+      if (data.length === 0) {
+        const arr = [String(+year - 1), year, String(+year + 1)];
+        arr.forEach(
+          (index) =>
+            (result[index] = JSON.parse(sessionStorage.getItem(index)!))
+        );
+        state.holiday = result;
+        return;
+      }
+
+      const yearArray: string[] = action.payload.yearArray;
+
+      for (let y = 0; y < yearArray.length; y++) {
+        result[yearArray[y]] = {};
+        // if (data[y].response.body.items.item.legth === 0) {
+        //   // 한국천문연구원 특일정보에 없는 데이터임.. 2023년 기준 2026년 데이터가 없다.
+        //   // 너가 직접 만든 데이터로 해결해야함 '_';;
+        // }
+
+        for (let obj of data[y].response.body.items.item) {
+          result[yearArray[y]][obj.locdate] = {
+            isHoliday: obj.isHoliday,
+            dateName: obj.dateName,
+          };
+        }
+        state.holiday = { ...state.holiday, ...result };
+        sessionStorage.setItem(
+          yearArray[y],
+          JSON.stringify(result[yearArray[y]])
+        );
+      }
+    });
+    builder.addCase(getNationalDay.rejected, (state, action) => {
+      console.log(action.error);
+    });
+
+    // get USer Data
     builder.addCase(getUserData.pending, (state, action) => {
       state.isLoading = true;
     });
     builder.addCase(getUserData.fulfilled, (state, action) => {
       state.isLoading = false;
+      console.log(action.payload);
       state.userSchedule = action.payload.schedule;
     });
     builder.addCase(getUserData.rejected, (state, action) => {
       state.isLoading = false;
-      console.log(action.error);
     });
     // sending (POST)
     builder.addCase(sendUserData.pending, (state, action) => {
+      console.log("sending");
       state.isSending = true;
       state.succesSendData = false;
     });

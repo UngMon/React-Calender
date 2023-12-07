@@ -31,11 +31,12 @@ const CalenderSlide = ({
   viewRef,
   listRef,
   allListRef,
-  clicekdMoreRef
+  clicekdMoreRef,
 }: T) => {
+  console.log('CLanederSlide => MakeCalender')
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  
+
   const [calenderArray, setCalenderArray] = useState<any[][]>(
     makeSlideArray(year, month)
   ); //[..., [year, month, firstDay, week], ...]

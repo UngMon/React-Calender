@@ -11,6 +11,10 @@ import Loading from "./ui/Loading";
 import LoginPage from "./pages/LoginPage";
 import MakeEvent from "./pages/MobileMakeEvent";
 
+const newDate = new Date();
+const year = newDate.getFullYear();
+const month = newDate.getMonth() + 1;
+
 function App() {
   const dispatch = useAppDispatch();
 
@@ -22,14 +26,10 @@ function App() {
       if (user) {
         dispatch(getUserData(user.uid));
         setLogged(true);
-        setTimeout(() => {
-          setLoading(false);
-        }, 500);
+        setLoading(false);
       } else {
         setLogged(false);
-        setTimeout(() => {
-          setLoading(false);
-        }, 500);
+        setLoading(false);
       }
     });
   }, [dispatch]);
@@ -48,15 +48,14 @@ function App() {
             element={<Content loading={loading} loggedIn={loggedIn} />}
           />
           <Route path="event">
-            <Route path=":edit" element={<MakeEvent />} />
-            <Route path=":make" element={<MakeEvent />} />
+            <Route path=":(edit | make)" element={<MakeEvent />} />
           </Route>
         </Route>
       )}
       {loggedIn && (
         <Route
           path="*"
-          element={<Navigate to="/calender/date?year=2023&month=10" />}
+          element={<Navigate to={`/calender/date?year=${year}&month=${month}`} />}
         />
       )}
       {loggedIn && <Route path=":search" element={<Result />} />}

@@ -28,7 +28,8 @@
   width: 100%;
 }
 
-.header-title {
+.header-title span {
+  font-family: 'Pacifico', 'Tourney', sans-serif;
   font-size: 18px;
 }
 
@@ -198,3 +199,4 @@
     display: none;
   }
 }
+

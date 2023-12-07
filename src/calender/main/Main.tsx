@@ -20,6 +20,8 @@ interface T {
   clickedElement: React.MutableRefObject<HTMLDivElement | null>;
 }
 
+let isMount = true;
+
 const Main = ({
   year,
   month,
@@ -28,6 +30,7 @@ const Main = ({
   allListRef,
   clickedElement,
 }: T) => {
+  console.log("Main => CalenderSlide");
   const data = useSelector((state: RootState) => state.data);
   const modal = useSelector((state: RootState) => state.modal);
 
@@ -41,6 +44,11 @@ const Main = ({
   const week: number = Math.ceil((firstDay + lastDate) / 7); // 해당 month가 4주 ~ 5주인지?
 
   useEffect(() => {
+    if (isMount) {
+      isMount = false;
+      return;
+    }
+    console.log("Main Component Effect");
     listRef.current = {};
     allListRef.current = {};
   }, [month, data, listRef, allListRef]);
@@ -112,7 +120,7 @@ const Main = ({
           viewRef={viewRef}
         />
       )}
-      {(window.innerWidth <= 500 && modal.mobileModalOpen) && (
+      {window.innerWidth <= 500 && modal.mobileModalOpen && (
         <MobileModal data={data} />
       )}
     </main>

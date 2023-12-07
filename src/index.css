@@ -53,14 +53,6 @@ input:focus {
   outline: none;
 }
 
-.logo span{
-  font-family: "Pacifico", cursive;
-}
-
-.logo:hover {
-  cursor: pointer;
-}
-
 /* 모달 애니메이션 */
 @keyframes On {
   0% {
@@ -136,3 +128,5 @@ input:focus {
 .흑연 {
   background-color: rgb(97, 97, 97);
 }
+
+@import url('https://fonts.googleapis.com/css2?family=Pacifico&family=Tourney:ital,wght@1,300&display=swap');

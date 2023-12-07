@@ -6,6 +6,7 @@ import { cloneActions } from "../../redux/clone-slice";
 import { ListOrMore } from "../../type/RefType";
 import Schedule from "./Schedule";
 import style from "../Calender.module.css";
+import { basicHolidayObject } from "../../utils/holiday";
 
 const date: Date = new Date();
 const fixYear: number = date.getFullYear();
@@ -54,7 +55,7 @@ const MakeCalender = React.memo(
     const [countDown, setCountDown] = useState<boolean>(false);
 
     let dateElements: React.ReactNode[] = [];
-
+    console.log('MakeCalender')
     useEffect(() => {
       // 마운트 이후, state에 값을 저장후 랜더링
       let elementHeight = window.innerWidth > 500 ? 24 : 20; // 일정 막대기 높이
@@ -164,8 +165,9 @@ const MakeCalender = React.memo(
           .toISOString()
           .split("T")[0];
 
-        const [_, 월, 일] = date.split("-");
-
+        const [년, 월, 일] = date.split("-");
+        const isHoliday =
+          basicHolidayObject[월 + 일] || data.holiday[년]?.[년 + 월 + 일];
         const day = String(i);
         const week = String(주);
 
@@ -176,24 +178,23 @@ const MakeCalender = React.memo(
             onMouseUp={mouseUp}
             onMouseMove={(e) => mouseMove(e)}
             onTouchEnd={() => touchEndHandler(day, week, date)}
-            className={style.date_box}
           >
-            <div className={style.date}>
-              <div
-                className={`${style["date-h"]}  ${
-                  일 === "01" && style.startDate
-                }`}
-              >
-                <h2
-                  className={`${i === 1 && style.sunday} 
+            <div
+              className={`${style[`date-box`]} ${i === 1 && style.startDate}`}
+            >
+              <span
+                className={`${i === 1 && style.sunday} 
                     ${i === 7 && style.saturday} ${
-                    identify === date && style.Today
-                  }
+                  identify === date && style.Today
+                }
+                  ${isHoliday && style.holiday}
                   `}
-                >
-                  {일 === "01" ? `${+월}월 1일` : +일}
-                </h2>
-              </div>
+              >
+                {일 === "01" ? `${+월}월 1일` : +일}
+              </span>
+              {isHoliday && (
+                <span className={style.national}>{isHoliday.dateName}</span>
+              )}
             </div>
             {data.userSchedule[date] && (
               <Schedule

@@ -4,6 +4,7 @@ import { useSelector } from "react-redux";
 import { RootState, useAppDispatch } from "../redux/store";
 import { dateActions } from "../redux/date-slice";
 import { modalActions } from "../redux/modal-slice";
+import { getNationalDay } from "../redux/fetch-action";
 import { ListOrMore } from "../type/RefType";
 import Main from "./main/Main";
 import Header from "./header/Header";
@@ -15,6 +16,8 @@ interface T {
   loggedIn: boolean;
 }
 
+let isMount = true;
+
 const Calender = ({ loading, loggedIn }: T) => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
@@ -22,23 +25,28 @@ const Calender = ({ loading, loggedIn }: T) => {
 
   const delayRef = useRef({ delay: true });
 
+  console.log("Content");
   useEffect(() => {
     let y = param.get("year")!;
     let m = param.get("month")!;
 
-    if (+y > 9999) y = "9999";
-    if (+y < 1000) y = "1000";
-    if (+m > 12) {
-      y = String(+y + 1);
-      m = "01";
-    }
-    if (+m < 1) {
-      y = String(+y - 1);
-      m = "12";
+    if (!isMount) { 
+      if (+y > 9999) y = "9999";
+      if (+y < 1000) y = "1000";
+      if (+m > 12) {
+        y = String(+y + 1);
+        m = "01";
+      }
+      if (+m < 1) {
+        y = String(+y - 1);
+        m = "12";
+      }
+      navigate(`/calender/date?year=${y}&month=${m}`);
+      isMount = false;
     }
 
+    dispatch(getNationalDay(y));
     dispatch(dateActions.setDate({ y, m }));
-    navigate(`/calender/date?year=${y}&month=${m}`);
   }, [dispatch, param, navigate]);
 
   const date = useSelector((state: RootState) => state.date);
