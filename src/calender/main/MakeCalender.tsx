@@ -55,7 +55,7 @@ const MakeCalender = React.memo(
     const [countDown, setCountDown] = useState<boolean>(false);
 
     let dateElements: React.ReactNode[] = [];
-    console.log('MakeCalender')
+    console.log("MakeCalender");
     useEffect(() => {
       // 마운트 이후, state에 값을 저장후 랜더링
       let elementHeight = window.innerWidth > 500 ? 24 : 20; // 일정 막대기 높이
@@ -187,13 +187,13 @@ const MakeCalender = React.memo(
                     ${i === 7 && style.saturday} ${
                   identify === date && style.Today
                 }
-                  ${isHoliday && style.holiday}
+                  ${isHoliday && style.sunday}
                   `}
               >
                 {일 === "01" ? `${+월}월 1일` : +일}
               </span>
               {isHoliday && (
-                <span className={style.national}>{isHoliday.dateName}</span>
+                <span className={style.sunday}>{isHoliday.dateName}</span>
               )}
             </div>
             {data.userSchedule[date] && (

@@ -77,10 +77,10 @@ const dataSlice = createSlice({
 
       for (let y = 0; y < yearArray.length; y++) {
         result[yearArray[y]] = {};
-        // if (data[y].response.body.items.item.legth === 0) {
-        //   // 한국천문연구원 특일정보에 없는 데이터임.. 2023년 기준 2026년 데이터가 없다.
-        //   // 너가 직접 만든 데이터로 해결해야함 '_';;
-        // }
+        if (data[y].response.body.items === '') {
+          // 한국천문연구원 특일정보에 없는 데이터임.. 2023년 기준 2026년 데이터가 없다.
+          return;
+        }
 
         for (let obj of data[y].response.body.items.item) {
           result[yearArray[y]][obj.locdate] = {

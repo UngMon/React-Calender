@@ -30,7 +30,17 @@ const Calender = ({ loading, loggedIn }: T) => {
     let y = param.get("year")!;
     let m = param.get("month")!;
 
-    if (!isMount) { 
+    // 숫자를 제외한 모든 문자
+    const pattern = /[^0-9]/g;
+
+    // 사용자가 의도적으로 수를 제외한 문자열을 입력할 경우 수정
+    if (isMount) {
+      if (y.match(pattern)) y = y.replace(/\D/g, "");
+      if (m.match(pattern)) m = m.replace(/\D/g, "");
+      navigate(`/calender/date?year=${y}&month=${m}`);
+    }
+
+    if (!isMount) {
       if (+y > 9999) y = "9999";
       if (+y < 1000) y = "1000";
       if (+m > 12) {
@@ -60,8 +70,8 @@ const Calender = ({ loading, loggedIn }: T) => {
     let year = date.year;
     let mon = date.month;
 
-    switch (date.month) {
-      case "1":
+    switch (+date.month) {
+      case 1:
         mon = "12";
         year = String(+date.year - 1);
         break;
