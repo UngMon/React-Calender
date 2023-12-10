@@ -1,17 +1,17 @@
 import React, { useEffect, useRef } from "react";
-import { RootState, useAppDispatch } from "../redux/store";
-import { useSelector } from "react-redux";
+import { useAppDispatch } from "../redux/store";
 import { cloneActions } from "../redux/clone-slice";
 import { modalActions } from "../redux/modal-slice";
 import { useNavigate } from "react-router-dom";
-import { CalenderData, DataType } from "../type/ReduxType";
+import {
+  CalenderData,
+  DataType,
+  ModalBasicType,
+  ModalType,
+} from "../type/ReduxType";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCalendarDay } from "@fortawesome/free-solid-svg-icons";
 import "./MobileModal.css";
-
-interface T {
-  data: DataType;
-}
 
 const dayText: { [key: string]: string } = {
   "1": "일",
@@ -23,11 +23,16 @@ const dayText: { [key: string]: string } = {
   "7": "토",
 };
 
-const MobileModal = ({ data }: T) => {
+interface T {
+  data: DataType;
+  modal: ModalType;
+  clone: ModalBasicType;
+}
+
+const MobileModal = ({ data, modal, clone }: T) => {
+  console.log("mobilcModal");
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-
-  const clone = useSelector((state: RootState) => state.clone);
 
   const inputRef = useRef<HTMLInputElement>(null);
   const backRef = useRef<HTMLDivElement>(null);
@@ -42,7 +47,7 @@ const MobileModal = ({ data }: T) => {
       e.preventDefault();
       if (e.target === backRef.current) {
         dispatch(modalActions.toggleMobilModal());
-        dispatch(cloneActions.clear());
+        dispatch(cloneActions.clearSet());
       }
     };
 

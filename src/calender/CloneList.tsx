@@ -1,11 +1,12 @@
 import React, { useCallback, useEffect, useState } from "react";
+import { auth } from "../Auth/firebase";
 import { useSelector } from "react-redux";
 import { RootState, useAppDispatch } from "../redux/store";
 import { cloneActions } from "../redux/clone-slice";
 import { modalActions } from "../redux/modal-slice";
 import { sendUserData } from "../redux/fetch-action";
 import { useNavigate } from "react-router-dom";
-import { ModalType, DataType, UserData } from "../type/ReduxType";
+import { UserData } from "../type/ReduxType";
 import { MakeListParameter } from "../type/Etc";
 import { MakeList } from "../utils/MakeList";
 import { calculateWidth } from "../utils/CalculateWidth";
@@ -15,11 +16,8 @@ import style from "./Calender.module.css";
 interface T {
   year: string;
   month: string;
-  data: DataType;
-  modal: ModalType;
   firstDay: number;
   lastWeek: number;
-  uid: string;
   setIsDragging: (value: boolean) => void;
   clickedElement: React.MutableRefObject<HTMLDivElement | null>;
   viewRef: React.RefObject<HTMLDivElement>;
@@ -28,11 +26,8 @@ interface T {
 const CloneList = ({
   year,
   month,
-  data,
-  modal,
   firstDay,
   lastWeek,
-  uid,
   setIsDragging,
   clickedElement,
   viewRef,
@@ -40,6 +35,10 @@ const CloneList = ({
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
+  const data = useSelector((state: RootState) => state.data);
+  const modal = useSelector((state: RootState) => state.modal);
+
+  const uid = auth.currentUser!.uid;
   const cloneRedux = useSelector((state: RootState) => state.clone);
   const [고정좌표, 고정좌표설정] = useState<[number, number]>([0, 0]);
   const [실시간좌표, 실시간좌표설정] = useState<[number, number]>([0, 0]);

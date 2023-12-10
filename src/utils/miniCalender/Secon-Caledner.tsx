@@ -7,17 +7,15 @@ import mobile from "./mobile.module.css";
 const date = new Date();
 const fixYear = date.getFullYear();
 const fixMonth = String(date.getMonth() + 1).padStart(2, "0");
-const fixDate = date.getDate();
+const fixDate = String(date.getDate()).padStart(2, "0");
 
 interface T {
   platform: string;
   type: string;
   year: number;
   month: number;
-  firstDay: number;
-  lastDate: number;
   dateRef: React.MutableRefObject<ButtonRef>;
-  dateOpenHandler?: (value: string) => void;
+  // dateOpenHandler?: (value: string) => void;
 }
 
 const Calender = ({
@@ -25,10 +23,8 @@ const Calender = ({
   type,
   year,
   month,
-  firstDay,
-  lastDate,
   dateRef,
-  dateOpenHandler,
+  // dateOpenHandler,
 }: T) => {
   const identify = fixYear + "-" + fixMonth + "-" + fixDate;
 
@@ -52,11 +48,9 @@ const Calender = ({
             type={type}
             year={year}
             month={month}
-            firstDay={firstDay}
-            lastDate={lastDate}
             identify={identify}
             dateRef={dateRef}
-            dateOpenHandler={dateOpenHandler}
+            // dateOpenHandler={dateOpenHandler}
           />
         </tbody>
       </table>

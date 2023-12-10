@@ -26,7 +26,7 @@ const Menu = ({ openMenu, setOpenMenu }: T) => {
   };
 
   return (
-    <div className={`menu ${openMenu ? "open" : "offf"}`}>
+    <div className={`menu ${openMenu ? "menuopen" : "menuoff"}`}>
       <div className="xmark" onClick={() => setOpenMenu(false)}>
         <FontAwesomeIcon icon={faXmark} />
       </div>

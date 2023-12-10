@@ -177,11 +177,11 @@ const Schedule = React.memo(
           array[i][arrayCount] = (
             <div
               key={object.key}
-              className={`${
+              className={`${style["list-boundary"]} ${
                 !isMore
                   ? object.endDate > object.startDate
-                    ? style["list-boundary-long"]
-                    : style["list-boundary-short"]
+                    ? style["bound-long"]
+                    : style["short"]
                   : style["list-more"]
               } `}
               style={{

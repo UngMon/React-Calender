@@ -1,11 +1,9 @@
 import React from "react";
-import Calender from "./Secon-Caledner";
-import { RootState, useAppDispatch } from "../../redux/store";
-import { useSelector } from "react-redux";
-import { dateActions } from "../../redux/date-slice";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAngleLeft, faAngleRight } from "@fortawesome/free-solid-svg-icons";
 import { ButtonRef } from "../../type/RefType";
+import Calender from "./Secon-Caledner";
 import pc from "./pc.module.css";
 import mobile from "./mobile.module.css";
 
@@ -13,24 +11,40 @@ interface T {
   platform: string;
   type: string;
   dateRef: React.MutableRefObject<ButtonRef>;
-  dateOpenHandler?: (value: string) => void;
+  // dateOpenHandler?: (value: string) => void;
 }
 
-const Month = ({ platform, type, dateRef, dateOpenHandler }: T) => {
+const Month = ({ platform, type, dateRef }: T) => {
   console.log("secondMonth");
 
-  const dispatch = useAppDispatch();
-  const date = useSelector((state: RootState) => state.date);
+  const navigate = useNavigate();
 
-  const firstDay = new Date(+date.year, +date.month - 1, 1).getDay();
-  const lastDate = new Date(+date.year, +date.month, 0).getDate();
+  const [param] = useSearchParams();
+  let year = param.get("year")!;
+  let month = param.get("month")!;
 
   const movePrevMonthHandler = () => {
-    dispatch(dateActions.prevMonth());
+    switch (+month) {
+      case 1:
+        month = "12";
+        year = String(+year - 1);
+        break;
+      default:
+        month = String(+month - 1).padStart(2, "0");
+    }
+    navigate(`/calender/date?year=${year}&month=${month}`);
   };
 
   const moveNextMonthHandler = () => {
-    dispatch(dateActions.nextMonth());
+    switch (month) {
+      case "12":
+        month = "01";
+        year = String(+year + 1);
+        break;
+      default:
+        month = String(+month + 1).padStart(2, "0");
+    }
+    navigate(`/calender/date?year=${year}&month=${month}`);
   };
 
   return (
@@ -46,7 +60,7 @@ const Month = ({ platform, type, dateRef, dateOpenHandler }: T) => {
       >
         <div>
           <span>
-            {date.year}년 {+date.month}월
+            {year}년 {+month}월
           </span>
         </div>
         <div>
@@ -75,12 +89,10 @@ const Month = ({ platform, type, dateRef, dateOpenHandler }: T) => {
       <Calender
         platform={platform}
         type={type}
-        year={+date.year}
-        month={+date.month}
-        firstDay={firstDay}
-        lastDate={lastDate}
+        year={+year}
+        month={+month}
         dateRef={dateRef}
-        dateOpenHandler={dateOpenHandler}
+        // dateOpenHandler={dateOpenHandler}
       />
     </div>
   );

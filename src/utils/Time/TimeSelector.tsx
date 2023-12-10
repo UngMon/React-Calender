@@ -28,7 +28,7 @@ const TimeSelector = ({
   timeInputOneRef,
   timeInputTwoRef,
   dateIsVisible,
-  setDateIsVisible
+  setDateIsVisible,
 }: T) => {
   const dispatch = useAppDispatch();
   const timeState = useSelector((state: RootState) => state.time);
@@ -146,20 +146,13 @@ const TimeSelector = ({
           </div>
         </div>
       </div>
-      <div
-        className={`picker-two ${
-          (dateIsVisible[0] ||
-            timeState.firstIsVisible ||
-            timeState.lastIsVisible) &&
-          "open"
-        }`}
-      >
+      <div className="picker-two">
         {dateIsVisible[0] && (
           <SecondCaleder
             platform="pc"
             type={dateIsVisible[1]}
             dateRef={dateRef}
-            dateOpenHandler={dateOpenHandler}
+            // dateOpenHandler={dateOpenHandler}
           />
         )}
         <TimeBoxOne

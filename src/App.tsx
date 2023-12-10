@@ -43,19 +43,18 @@ function App() {
       {loading && <Route path="*" element={<Loading />} />}
       {!loading && loggedIn && (
         <Route path="/calender">
-          <Route
-            path=":date"
-            element={<Content loading={loading} loggedIn={loggedIn} />}
-          />
+          <Route path=":date" element={<Content />} />
           <Route path="event">
             <Route path=":(edit | make)" element={<MakeEvent />} />
           </Route>
         </Route>
       )}
-      {loggedIn && (
+      {!loading && loggedIn && (
         <Route
           path="*"
-          element={<Navigate to={`/calender/date?year=${year}&month=${month}`} />}
+          element={
+            <Navigate to={`/calender/date?year=${year}&month=${month}`} />
+          }
         />
       )}
       {loggedIn && <Route path=":search" element={<Result />} />}

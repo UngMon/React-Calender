@@ -1,5 +1,4 @@
 import React, { useEffect, useRef, useState } from "react";
-import { DataType, ModalType } from "../../type/ReduxType";
 import { ListOrMore } from "../../type/RefType";
 import { useAppDispatch } from "../../redux/store";
 import { useNavigate } from "react-router-dom";
@@ -9,8 +8,6 @@ import MakeCalender from "./MakeCalender";
 import style from "../Calender.module.css";
 
 interface T {
-  data: DataType;
-  modal: ModalType;
   year: string;
   month: string;
   week: number;
@@ -23,8 +20,6 @@ interface T {
 }
 
 const CalenderSlide = ({
-  data,
-  modal,
   year,
   month,
   setIsDragging,
@@ -36,7 +31,7 @@ const CalenderSlide = ({
   console.log('CLanederSlide => MakeCalender')
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-
+  
   const [calenderArray, setCalenderArray] = useState<any[][]>(
     makeSlideArray(year, month)
   ); //[..., [year, month, firstDay, week], ...]
@@ -128,8 +123,6 @@ const CalenderSlide = ({
       {calenderArray.map((item, index) => (
         <MakeCalender
           key={index}
-          data={data}
-          modal={modal}
           year={item[0]}
           month={item[1]}
           firstDay={item[2]}

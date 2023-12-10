@@ -1,4 +1,4 @@
-@keyframes open {
+@keyframes menuopen {
   from {
     left: -120%;
   }
@@ -7,7 +7,7 @@
   }
 }
 
-@keyframes off {
+@keyframes menuoff {
   from {
     left: 0;
   }
@@ -31,13 +31,13 @@
   box-shadow: 1px 1px 10px rgba(0, 0, 0, 0.8);
 }
 
-.open {
+.menuopen {
   display: block;
-  animation: open 0.3s ease forwards;
+  animation: menuopen 0.3s ease forwards;
 }
 
-.offf {
-  animation: off 0.3s ease forwards;
+.menuoff {
+  animation: menuoff 0.3s ease forwards;
 }
 
 .xmark {

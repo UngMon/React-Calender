@@ -1,17 +1,19 @@
 import React, { ReactNode, useEffect, useState } from "react";
-import { DataType, ModalType } from "../../type/ReduxType";
-import { useAppDispatch } from "../../redux/store";
+import { useSelector } from "react-redux";
+import { RootState, useAppDispatch } from "../../redux/store";
 import { modalActions } from "../../redux/modal-slice";
 import { cloneActions } from "../../redux/clone-slice";
 import { ListOrMore } from "../../type/RefType";
+import { basicHolidayObject } from "../../utils/holiday";
 import Schedule from "./Schedule";
 import style from "../Calender.module.css";
-import { basicHolidayObject } from "../../utils/holiday";
 
 const date: Date = new Date();
 const fixYear: number = date.getFullYear();
 const fixMonth: number = date.getMonth() + 1;
 const fixDate: number = date.getDate();
+
+let isMount = true;
 
 const identify: string =
   fixYear +
@@ -21,8 +23,6 @@ const identify: string =
   fixDate.toString().padStart(2, "0");
 
 interface T {
-  data: DataType;
-  modal: ModalType;
   year: string;
   month: string;
   week: number;
@@ -37,8 +37,6 @@ interface T {
 
 const MakeCalender = React.memo(
   ({
-    data,
-    modal,
     year,
     month,
     week,
@@ -51,11 +49,15 @@ const MakeCalender = React.memo(
     clicekdMoreRef,
   }: T) => {
     const dispatch = useAppDispatch();
+    const data = useSelector((state: RootState) => state.data);
+    const modal = useSelector((state: RootState) => state.modal);
+
     const [listBoxHeightCount, setCount] = useState<number>(0);
     const [countDown, setCountDown] = useState<boolean>(false);
 
-    let dateElements: React.ReactNode[] = [];
     console.log("MakeCalender");
+    let dateElements: React.ReactNode[] = [];
+    
     useEffect(() => {
       // 마운트 이후, state에 값을 저장후 랜더링
       let elementHeight = window.innerWidth > 500 ? 24 : 20; // 일정 막대기 높이
@@ -93,8 +95,7 @@ const MakeCalender = React.memo(
     });
 
     useEffect(() => {
-      // 사용자가 일정이나 날짜를 1초 이상 클릭하고 있는 경우,
-      // 드래깅 기능을 활성화 시킬지 안 할지 결정한다.
+      // 사용자가 일정이나 날짜를 1초 이상 클릭하고 있는 경우, 드래깅 기능을 활성화
 
       if (modal.addModalOpen) setCountDown(false);
       if (!countDown) return;
@@ -107,7 +108,25 @@ const MakeCalender = React.memo(
       return () => clearTimeout(timeout);
     }, [modal.addModalOpen, countDown, setIsDragging]);
 
-    const mouseDown = (day: string, week: string, date: string) => {
+    useEffect(() => {
+      if (isMount) {
+        isMount = false;
+        return;
+      }
+      console.log("Main Component Effect");
+      listRef.current = {};
+      allListRef.current = {};
+    }, [month, data.userSchedule, listRef, allListRef]);
+
+    const mouseDown = (
+      e: React.MouseEvent,
+      day: string,
+      week: string,
+      date: string
+    ) => {
+      e.stopPropagation();
+
+      console.log("MakeCAlenders Mouse Down");
       if (window.innerWidth < 500) return;
       if (modal.addModalOpen || modal.listModalOpen || modal.moreModalOpen)
         return;
@@ -128,6 +147,7 @@ const MakeCalender = React.memo(
     };
 
     const mouseUp = () => {
+      console.log("MakeCAlenders Mouse up");
       setCountDown(false);
       if (clicekdMoreRef.current) return;
       if (modal.addModalOpen || modal.listModalOpen || modal.moreModalOpen)
@@ -174,8 +194,8 @@ const MakeCalender = React.memo(
         thisWeekArray.push(
           <td
             key={date}
-            onMouseDown={() => mouseDown(day, week, date)}
-            onMouseUp={mouseUp}
+            onMouseDown={(e) => mouseDown(e, day, week, date)}
+            onMouseUp={() => mouseUp()}
             onMouseMove={(e) => mouseMove(e)}
             onTouchEnd={() => touchEndHandler(day, week, date)}
           >

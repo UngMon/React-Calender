@@ -93,7 +93,6 @@ const List = ({
     const closeHandler = (e: MouseEvent) => {
       const target = e.target as Node;
       // 타겟이 리스트를 포함하면 skip
-      if (target.contains(list.current)) return;
 
       // 리스트 영역안에서 컬러선택창이 열려있고, 컬러선택 창 밖을 클릭 한 경우
       if (openColor && !colorRef.current?.contains(target)) {
@@ -219,7 +218,7 @@ const List = ({
       dispatch(modalActions.clearSet());
       dispatch(cloneActions.clearSet());
       dispatch(timeActions.resetTime());
-    }, 200);
+    }, 100);
   };
 
   const styleClass = data.userSchedule[modal.startDate]?.[modal.key]?.isDone

@@ -105,7 +105,6 @@ const dataSlice = createSlice({
     });
     builder.addCase(getUserData.fulfilled, (state, action) => {
       state.isLoading = false;
-      console.log(action.payload);
       state.userSchedule = action.payload.schedule;
     });
     builder.addCase(getUserData.rejected, (state, action) => {
@@ -113,7 +112,6 @@ const dataSlice = createSlice({
     });
     // sending (POST)
     builder.addCase(sendUserData.pending, (state, action) => {
-      console.log("sending");
       state.isSending = true;
       state.succesSendData = false;
     });

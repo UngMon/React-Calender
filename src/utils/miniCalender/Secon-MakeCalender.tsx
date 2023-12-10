@@ -11,11 +11,9 @@ interface T {
   type: string;
   year: number;
   month: number;
-  firstDay: number;
-  lastDate: number;
   identify: string;
   dateRef: React.MutableRefObject<ButtonRef>;
-  dateOpenHandler?: (value: string) => void;
+  // dateOpenHandler?: (value: string) => void;
 }
 
 const MakeCaledner = ({
@@ -23,16 +21,17 @@ const MakeCaledner = ({
   type,
   year,
   month,
-  firstDay,
-  lastDate,
   identify,
   dateRef,
-  dateOpenHandler,
+  // dateOpenHandler,
 }: T) => {
   console.log("second");
 
   const dispatch = useDispatch();
   const clone = useSelector((state: RootState) => state.clone);
+
+  const firstDay = new Date(+year, +month - 1, 1).getDay();
+  const lastDate = new Date(+year, +month, 0).getDate();
 
   const clickHandler = (date: string, day: number, week: number) => {
     let startDate: string = type === "start" ? date : clone.startDate;
@@ -79,17 +78,17 @@ const MakeCaledner = ({
           className={platform === "pc" ? pc.date_box : mobile.date_box}
         >
           <div
-            className={` ${identify === date && pc["Today"]} ${
+            className={`${
               date === clone.startDate && type === "start" && pc["startDate"]
             } ${date === clone.endDate && type === "end" && pc["endDate"]}`}
           >
-            <span
-              className={`${i === 1 ? pc["sunday"] : ""}${
-                i === 7 ? pc["saturday"] : ""
-              }`}
+            <p
+              className={`${i === 1 && pc["sunday"]} ${
+                i === 7 && pc["saturday"]
+              } ${identify === date && pc["Today"]}`}
             >
               {일}
-            </span>
+            </p>
           </div>
         </td>
       );

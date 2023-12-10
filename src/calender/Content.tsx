@@ -1,35 +1,28 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { useSelector } from "react-redux";
-import { RootState, useAppDispatch } from "../redux/store";
-import { dateActions } from "../redux/date-slice";
+import { useAppDispatch } from "../redux/store";
 import { modalActions } from "../redux/modal-slice";
 import { getNationalDay } from "../redux/fetch-action";
-import { ListOrMore } from "../type/RefType";
 import Main from "./main/Main";
 import Header from "./header/Header";
-import NotLogin from "../error/NotLogin";
-import Loading from "../ui/Loading";
-
-interface T {
-  loading: boolean;
-  loggedIn: boolean;
-}
 
 let isMount = true;
+let delay = false;
 
-const Calender = ({ loading, loggedIn }: T) => {
+const Calender = () => {
+  console.log("Content");
+
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
+
   const [param] = useSearchParams();
+  let year = param.get("year")!;
+  let month = param.get("month")!;
 
-  const delayRef = useRef({ delay: true });
-
-  console.log("Content");
   useEffect(() => {
-    let y = param.get("year")!;
-    let m = param.get("month")!;
-
+    let y = year;
+    let m = month;
+    console.log('?????')
     // 숫자를 제외한 모든 문자
     const pattern = /[^0-9]/g;
 
@@ -37,12 +30,19 @@ const Calender = ({ loading, loggedIn }: T) => {
     if (isMount) {
       if (y.match(pattern)) y = y.replace(/\D/g, "");
       if (m.match(pattern)) m = m.replace(/\D/g, "");
-      navigate(`/calender/date?year=${y}&month=${m}`);
+      isMount = false;
     }
 
     if (!isMount) {
-      if (+y > 9999) y = "9999";
-      if (+y < 1000) y = "1000";
+      if (+y > 2026) {
+        alert("지원하지 않는 연도입니다.");
+        y = "2025";
+      }
+      if (+y < 2004) {
+        alert("지원하지 않는 연도입니다.");
+        y = "2004";
+      }
+
       if (+m > 12) {
         y = String(+y + 1);
         m = "01";
@@ -56,59 +56,45 @@ const Calender = ({ loading, loggedIn }: T) => {
     }
 
     dispatch(getNationalDay(y));
-    dispatch(dateActions.setDate({ y, m }));
-  }, [dispatch, param, navigate]);
-
-  const date = useSelector((state: RootState) => state.date);
-
-  const listRef = useRef<ListOrMore>({}); // makeCalender에서 list ref
-  const allListRef = useRef<ListOrMore>({}); // makeCalender에서 all ref
-  const clickedElement = useRef<HTMLDivElement | null>(null);
-  const list = useRef<HTMLDivElement>(null); // list모달창 ref
+  }, [dispatch, navigate, month, year]);
 
   const movePrevMonth = () => {
-    let year = date.year;
-    let mon = date.month;
-
-    switch (+date.month) {
+    switch (+month) {
       case 1:
-        mon = "12";
-        year = String(+date.year - 1);
+        month = "12";
+        year = String(+year - 1);
         break;
       default:
-        mon = String(+date.month - 1).padStart(2, "0");
+        month = String(+month - 1).padStart(2, "0");
     }
 
-    dispatch(dateActions.prevMonth());
-    navigate(`/calender/date?year=${year}&month=${mon}`);
-    delayRef.current.delay = false;
+    navigate(`/calender/date?year=${year}&month=${month}`);
+    delay = true;
     setTimeout(() => {
-      delayRef.current.delay = true;
+      delay = false;
     }, 350);
   };
 
   const moveNextMonth = () => {
-    let year = date.year;
-    let mon = date.month;
-
-    switch (date.month) {
+    switch (month) {
       case "12":
-        mon = "01";
-        year = String(+date.year + 1);
+        month = "01";
+        year = String(+year + 1);
         break;
       default:
-        mon = String(+date.month + 1).padStart(2, "0");
+        month = String(+month + 1).padStart(2, "0");
     }
 
-    dispatch(dateActions.nextMonth());
-    navigate(`/calender/date?year=${year}&month=${mon}`);
-    delayRef.current.delay = false;
+    navigate(`/calender/date?year=${year}&month=${month}`);
+    delay = true;
     setTimeout(() => {
-      delayRef.current.delay = true;
+      delay = false;
     }, 350);
   };
 
   const wheelHandler = (e: React.WheelEvent) => {
+    if (delay) return;
+
     dispatch(modalActions.clearSet());
     switch (e.deltaY > 0) {
       case true:
@@ -120,31 +106,15 @@ const Calender = ({ loading, loggedIn }: T) => {
   };
 
   return (
-    <div
-      onWheel={(e) => delayRef.current.delay && wheelHandler(e)}
-      style={{ width: "100%" }}
-    >
-      {loading && <Loading />}
-      {!loading && !loggedIn && <NotLogin />}
-      {!loading && loggedIn && (
-        <>
-          <Header
-            type="calender"
-            year={date.year}
-            month={date.month}
-            movePrevMonth={movePrevMonth}
-            moveNextMonth={moveNextMonth}
-          />
-          <Main
-            year={date.year}
-            month={date.month}
-            list={list}
-            listRef={listRef}
-            allListRef={allListRef}
-            clickedElement={clickedElement}
-          />
-        </>
-      )}
+    <div onWheel={(e) => wheelHandler(e)} style={{ width: "100%" }}>
+      <Header
+        type="calender"
+        year={year}
+        month={month}
+        movePrevMonth={movePrevMonth}
+        moveNextMonth={moveNextMonth}
+      />
+      <Main year={year} month={month} />
     </div>
   );
 };
