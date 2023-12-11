@@ -152,7 +152,6 @@ const TimeSelector = ({
             platform="pc"
             type={dateIsVisible[1]}
             dateRef={dateRef}
-            // dateOpenHandler={dateOpenHandler}
           />
         )}
         <TimeBoxOne
@@ -162,7 +161,7 @@ const TimeSelector = ({
           timeRef={timeRef}
         />
         <TimeBoxTwo
-          timeInputOneRef={timeInputTwoRef}
+          timeInputTwoRef={timeInputTwoRef}
           twoRef={twoRef}
           timeVisible={timeState.lastIsVisible}
           timeRef={timeRef}

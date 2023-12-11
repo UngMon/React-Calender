@@ -92,7 +92,6 @@ const List = ({
   useEffect(() => {
     const closeHandler = (e: MouseEvent) => {
       const target = e.target as Node;
-      // 타겟이 리스트를 포함하면 skip
 
       // 리스트 영역안에서 컬러선택창이 열려있고, 컬러선택 창 밖을 클릭 한 경우
       if (openColor && !colorRef.current?.contains(target)) {
@@ -105,6 +104,7 @@ const List = ({
       if (!list.current?.contains(target)) {
         if (clickedElement.current?.contains(target)) {
           // list 밖 같은 리스트를 클릭하면 리스트 창이 닫게함.
+          console.log("가ㅌ은 리스트 클릭");
           return !modal.moreModalOpen && closeModalHandler();
         }
 
@@ -112,11 +112,15 @@ const List = ({
         clickedElement.current = e.target as HTMLDivElement;
 
         for (const key in listRef.current) {
-          if (listRef.current[key]?.contains(target)) return;
+          if (listRef.current[key]?.contains(target)) {
+            console.log('또다른 리스트를 클릭! 클릭')
+            return;
+          }
         }
 
         for (const key in allListRef.current) {
           if (allListRef.current[key]?.contains(target)) {
+            console.log('더보기를 클릭했어!')
             return dispatch(modalActions.clearSet());
           }
         }

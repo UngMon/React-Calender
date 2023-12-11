@@ -1,6 +1,6 @@
 .make-modal-box {
   position: absolute;
-  z-index: 30;
+  z-index: 50;
   background-color: rgb(250, 250, 250);
   box-shadow: 7px 7px 20px rgb(121, 120, 120);
   border-radius: 7px;

@@ -124,12 +124,10 @@ const MakeCalender = React.memo(
       week: string,
       date: string
     ) => {
-      e.stopPropagation();
+      // e.stopPropagation();
 
       console.log("MakeCAlenders Mouse Down");
       if (window.innerWidth < 500) return;
-      if (modal.addModalOpen || modal.listModalOpen || modal.moreModalOpen)
-        return;
 
       const type = "MakeList";
       const [startDate, endDate] = [date, date];
@@ -150,8 +148,7 @@ const MakeCalender = React.memo(
       console.log("MakeCAlenders Mouse up");
       setCountDown(false);
       if (clicekdMoreRef.current) return;
-      if (modal.addModalOpen || modal.listModalOpen || modal.moreModalOpen)
-        return;
+
       setIsDragging(true);
       dispatch(modalActions.onOffModal({ type: "make" }));
     };

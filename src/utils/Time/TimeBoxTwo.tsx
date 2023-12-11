@@ -4,7 +4,7 @@ import { ListOrMore } from "../../type/RefType";
 import { useAppDispatch } from "../../redux/store";
 
 interface T {
-  timeInputOneRef: React.RefObject<HTMLInputElement>;
+  timeInputTwoRef: React.RefObject<HTMLInputElement>;
   twoRef: React.MutableRefObject<ListOrMore>;
   timeVisible: boolean;
   timeRef: React.MutableRefObject<ListOrMore>;
@@ -65,39 +65,41 @@ const timeArray = [
   "오후 11:45",
 ];
 
-const TimeBoxTwo = ({ timeInputOneRef, twoRef, timeVisible, timeRef }: T) => {
+const TimeBoxTwo = ({ timeInputTwoRef, twoRef, timeVisible, timeRef }: T) => {
   const dispatch = useAppDispatch();
 
   useEffect(() => {
-    Object.keys(twoRef.current).forEach(
-      (item, index) =>
-        twoRef.current[index]!.innerText ===
-          timeInputOneRef.current!.placeholder &&
-        twoRef.current[index]!.scrollIntoView()
-    );
+    Object.keys(twoRef.current).forEach((item, index) => {
+      let value: string =
+        timeInputTwoRef.current!.value || timeInputTwoRef.current!.placeholder;
+      twoRef.current[index]!.innerText === value &&
+        twoRef.current[index]!.scrollIntoView();
+    });
   });
 
   const clickHandler = (e: React.MouseEvent) => {
     const target = e.target as HTMLElement;
-    timeInputOneRef.current!.value = target.innerText;
+    timeInputTwoRef.current!.value = target.innerText;
     dispatch(timeActions.selectLastTime(target.innerText));
   };
 
   return (
-    <div
-      id="time-selector"
-      ref={(el) => (timeRef.current[1] = el)}
-      style={{ display: timeVisible ? "block" : "none" }}
-    >
-      {timeArray.map((item, index) => (
-        <div
-          key={index}
-          ref={(el) => (twoRef.current[index] = el)}
-          onClick={(e: React.MouseEvent) => clickHandler(e)}
-        >
-          {item}
-        </div>
-      ))}
+    <div className={`time-selec-container ${timeVisible && "t-open"}`}>
+      <div
+        id="time-selector"
+        ref={(el) => (timeRef.current[1] = el)}
+        style={{ display: timeVisible ? "block" : "none" }}
+      >
+        {timeArray.map((item, index) => (
+          <div
+            key={index}
+            ref={(el) => (twoRef.current[index] = el)}
+            onClick={(e: React.MouseEvent) => clickHandler(e)}
+          >
+            {item}
+          </div>
+        ))}
+      </div>
     </div>
   );
 };

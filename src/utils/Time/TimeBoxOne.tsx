@@ -127,20 +127,22 @@ const TimeBox = ({ timeInputOneRef, oneRef, timeVisible, timeRef }: T) => {
   };
 
   return (
-    <div
-      id="time-selector"
-      ref={(el) => (timeRef.current[0] = el)}
-      style={{ display: timeVisible ? "block" : "none" }}
-    >
-      {timeArray.map((item, index) => (
-        <div
-          key={index}
-          ref={(el) => (oneRef.current[index] = el)}
-          onClick={(e: React.MouseEvent) => clickHandler(e)}
-        >
-          {item}
-        </div>
-      ))}
+    <div className={`time-selec-container ${timeVisible && 't-open'}`}>
+      <div
+        id="time-selector"
+        ref={(el) => (timeRef.current[0] = el)}
+        style={{ display: timeVisible ? "block" : "none" }}
+      >
+        {timeArray.map((item, index) => (
+          <div
+            key={index}
+            ref={(el) => (oneRef.current[index] = el)}
+            onClick={(e: React.MouseEvent) => clickHandler(e)}
+          >
+            {item}
+          </div>
+        ))}
+      </div>
     </div>
   );
 };

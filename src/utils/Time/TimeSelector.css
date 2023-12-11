@@ -86,16 +86,29 @@
   width: 340px;
   height: auto;
   position: relative;
-  overflow-y: scroll;
-}
-
-.picker-open {
-  height: 150px;
-  border: 1px solid rgb(159, 159, 159);
 }
 
 .date-on {
   background-color: rgb(73, 152, 255);
   color: white;
   border-radius: 7px;
+}
+
+.time-selec-container {
+  box-sizing: border-box;
+  overflow-y: scroll;
+
+  &::-webkit-scrollbar {
+    width: 10px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: lightgray;
+    border-radius: 3px;
+  }
+}
+
+.t-open {
+  height: 150px;
+  border: 1px solid rgb(159, 159, 159);
 }
