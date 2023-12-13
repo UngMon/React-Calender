@@ -28,17 +28,16 @@ const CalenderSlide = ({
   allListRef,
   clicekdMoreRef,
 }: T) => {
-  console.log('CLanederSlide => MakeCalender')
+  console.log("CLanederSlide => MakeCalender");
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  
+
   const [calenderArray, setCalenderArray] = useState<any[][]>(
     makeSlideArray(year, month)
   ); //[..., [year, month, firstDay, week], ...]
   const [startPoint, setStartPoint] = useState<number>(0);
   const [movingPoint, setMovingPoint] = useState<number>(0);
   const [isScroling, setIsScroll] = useState<boolean>(false);
-  const [width, setWidth] = useState<number>(window.innerWidth);
 
   const slideRef = useRef<HTMLDivElement>(null);
 
@@ -47,26 +46,30 @@ const CalenderSlide = ({
   }, [year, month]);
 
   useEffect(() => {
-    const resizeHandler = () => {
+    const resizeHandler = () => {;
       slideRef.current!.style.transition = "none";
-      if (window.innerWidth > 500 && width > 500) return;
-      if (window.innerWidth < 320) return;
+      if (window.innerWidth > 500 && calenderArray.length === 1) return;
+      if (window.innerWidth <= 500 && calenderArray.length === 3) return;
       setCalenderArray(makeSlideArray(year, month));
-      setWidth(window.innerWidth); // 불 필요한 렌더링 줄이기
     };
 
     window.addEventListener("resize", resizeHandler);
     return () => window.removeEventListener("resize", resizeHandler);
   });
 
-  const touchStart = (e: React.TouchEvent) => setStartPoint(e.touches[0].pageX);
+  const touchStart = (e: React.TouchEvent) => {
+    if (window.innerWidth > 500) return;
+    setStartPoint(e.touches[0].pageX);
+  };
 
   const touchMove = (e: React.TouchEvent) => {
+    if (window.innerWidth > 500) return;
     setMovingPoint(e.touches[0].pageX - startPoint);
     setIsScroll(true);
   };
 
   const touchEnd = () => {
+    if (window.innerWidth > 500) return;
     const 스크린절반 = viewRef.current!.clientWidth / 2;
 
     if (Math.abs(movingPoint) > 스크린절반) {
@@ -133,6 +136,7 @@ const CalenderSlide = ({
           listRef={listRef}
           allListRef={allListRef}
           clicekdMoreRef={clicekdMoreRef}
+          calenderArray={calenderArray}
         />
       ))}
     </div>

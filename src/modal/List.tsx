@@ -24,6 +24,9 @@ import { markDate } from "../utils/markDate";
 import "./List.css";
 
 interface T {
+  data: DataType;
+  modal: ModalType;
+  uid: string;
   week: number;
   viewRef: React.RefObject<HTMLDivElement>;
   moreModalRef: React.MutableRefObject<HTMLDivElement | null>;
@@ -31,13 +34,13 @@ interface T {
   allListRef: React.MutableRefObject<ListOrMore>;
   clickedElement: React.MutableRefObject<HTMLDivElement | null>;
   list: React.RefObject<HTMLDivElement>;
-  uid: string;
-  data: DataType;
-  modal: ModalType;
   setIsDragging: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const List = ({
+  data,
+  modal,
+  uid,
   week,
   viewRef,
   moreModalRef,
@@ -45,9 +48,6 @@ const List = ({
   allListRef,
   clickedElement,
   list,
-  uid,
-  data,
-  modal,
   setIsDragging,
 }: T) => {
   const dispatch = useAppDispatch();
@@ -91,7 +91,7 @@ const List = ({
 
   useEffect(() => {
     const closeHandler = (e: MouseEvent) => {
-      const target = e.target as Node;
+      const target = e.target as HTMLDivElement;
 
       // 리스트 영역안에서 컬러선택창이 열려있고, 컬러선택 창 밖을 클릭 한 경우
       if (openColor && !colorRef.current?.contains(target)) {
@@ -113,20 +113,20 @@ const List = ({
 
         for (const key in listRef.current) {
           if (listRef.current[key]?.contains(target)) {
-            console.log('또다른 리스트를 클릭! 클릭')
+            console.log("또다른 리스트를 클릭! 클릭");
             return;
           }
         }
 
         for (const key in allListRef.current) {
           if (allListRef.current[key]?.contains(target)) {
-            console.log('더보기를 클릭했어!')
+            console.log("더보기를 클릭했어!");
             return dispatch(modalActions.clearSet());
           }
         }
 
         if (moreModalRef.current?.contains(target)) return;
-
+        console.log("?????", clickedElement);
         // 위 영역이 아닌 다른 영역을 클릭한 경우 list 모달창 닫음.
         !modal.moreModalOpen && closeModalHandler();
       }

@@ -64,6 +64,7 @@ const dataSlice = createSlice({
 
       // data.legnth === 0은 불러온 데이터가 없음 => 이건 세션스토리지에 데이터가 존재하는 경우
       if (data.length === 0) {
+        console.log('천문데이터 get')
         const arr = [String(+year - 1), year, String(+year + 1)];
         arr.forEach(
           (index) =>
@@ -94,6 +95,7 @@ const dataSlice = createSlice({
           JSON.stringify(result[yearArray[y]])
         );
       }
+
     });
     builder.addCase(getNationalDay.rejected, (state, action) => {
       console.log(action.error);
@@ -106,6 +108,7 @@ const dataSlice = createSlice({
     builder.addCase(getUserData.fulfilled, (state, action) => {
       state.isLoading = false;
       state.userSchedule = action.payload.schedule;
+      console.log('useschedule get')
     });
     builder.addCase(getUserData.rejected, (state, action) => {
       state.isLoading = false;

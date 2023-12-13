@@ -6,8 +6,8 @@ import { auth } from "../Auth/firebase";
 import MakeEvent from "./MakeEvent";
 import List from "./List";
 import MoreList from "./MoreList";
-import "./Modal.css";
 import MobileModal from "./MoblieModal";
+import "./Modal.css";
 
 interface T {
   week: number;

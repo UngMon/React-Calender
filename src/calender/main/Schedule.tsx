@@ -1,11 +1,12 @@
 import React, { ReactNode, useEffect, useState } from "react";
-import { useAppDispatch } from "../../redux/store";
+import { useAppDispatch, RootState } from "../../redux/store";
 import { modalActions } from "../../redux/modal-slice";
 import { cloneActions } from "../../redux/clone-slice";
-import { ModalType, DataType } from "../../type/ReduxType";
+import { DataType } from "../../type/ReduxType";
 import { ListOrMore } from "../../type/RefType";
 import { CalenderData } from "../../type/ReduxType";
 import { calculateWidth } from "../../utils/CalculateWidth";
+import { useSelector } from "react-redux";
 import style from "../Calender.module.css";
 
 interface Parameter extends CalenderData {
@@ -17,7 +18,6 @@ interface Parameter extends CalenderData {
 
 interface T {
   data: DataType;
-  modal: ModalType;
   date: string;
   day: string;
   week: string;
@@ -32,7 +32,6 @@ interface T {
 const Schedule = React.memo(
   ({
     data,
-    modal,
     date,
     day,
     week,
@@ -44,6 +43,8 @@ const Schedule = React.memo(
     clicekdMoreRef,
   }: T): JSX.Element => {
     const dispatch = useAppDispatch();
+
+    const modal = useSelector((state: RootState) => state.modal);
     const schedule = data.userSchedule;
 
     const listElementHeight = window.innerWidth > 500 ? 24 : 20;
@@ -64,10 +65,6 @@ const Schedule = React.memo(
       return () => clearTimeout(timeout);
     }, [countDown, setIsDragging]);
 
-    const setListInfoHandler = (param: Parameter) => {
-      dispatch(modalActions.setListInfo({ type: "List", ...param }));
-    };
-
     const mouseDown = (
       e: React.MouseEvent<HTMLDivElement>,
       isMore: boolean,
@@ -75,7 +72,6 @@ const Schedule = React.memo(
     ) => {
       e.stopPropagation();
       if (window.innerWidth < 500 || param.key === modal.key) return;
-      if (modal.moreModalOpen) return;
       if (isMore) return (clicekdMoreRef.current = e.target as HTMLDivElement);
       setCountDown(true);
       dispatch(cloneActions.setListInfo({ type: "List", ...param }));
@@ -96,7 +92,7 @@ const Schedule = React.memo(
       setIsDragging(false);
 
       if (!isMore && param.key !== modal.key) {
-        setListInfoHandler(param);
+        dispatch(modalActions.setListInfo({ type: "List", ...param }));
         !modal.listModalOpen && dispatch(modalActions.onList());
       }
     };
@@ -109,7 +105,7 @@ const Schedule = React.memo(
       e.stopPropagation();
       if (e.buttons !== 1 || isMore) return;
       if (modal.listModalOpen) dispatch(modalActions.clearSet());
-      setListInfoHandler(param);
+      dispatch(modalActions.setListInfo({ type: "List", ...param }));
       setCountDown(false);
       setIsDragging(true);
     };

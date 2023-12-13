@@ -13,8 +13,6 @@ const fixYear: number = date.getFullYear();
 const fixMonth: number = date.getMonth() + 1;
 const fixDate: number = date.getDate();
 
-let isMount = true;
-
 const identify: string =
   fixYear +
   "-" +
@@ -28,11 +26,12 @@ interface T {
   week: number;
   firstDay: number;
   isScroling: boolean; // 좌, 우 움직이는
-  setIsDragging: (value: boolean) => void;
+  setIsDragging: (value: boolean) => void; // 드래고 일정 생성할지 안 할지
   viewRef: React.RefObject<HTMLDivElement>;
   listRef: React.MutableRefObject<ListOrMore>;
   allListRef: React.MutableRefObject<ListOrMore>;
   clicekdMoreRef: React.MutableRefObject<HTMLDivElement | null>;
+  calenderArray: any[][];
 }
 
 const MakeCalender = React.memo(
@@ -47,17 +46,17 @@ const MakeCalender = React.memo(
     listRef,
     allListRef,
     clicekdMoreRef,
+    calenderArray,
   }: T) => {
     const dispatch = useAppDispatch();
     const data = useSelector((state: RootState) => state.data);
-    const modal = useSelector((state: RootState) => state.modal);
 
     const [listBoxHeightCount, setCount] = useState<number>(0);
     const [countDown, setCountDown] = useState<boolean>(false);
 
     console.log("MakeCalender");
     let dateElements: React.ReactNode[] = [];
-    
+
     useEffect(() => {
       // 마운트 이후, state에 값을 저장후 랜더링
       let elementHeight = window.innerWidth > 500 ? 24 : 20; // 일정 막대기 높이
@@ -77,15 +76,19 @@ const MakeCalender = React.memo(
           )
         );
 
-        if (window.innerWidth <= 500) {
+        if (window.innerWidth <= 500 && calenderArray.length === 1) {
           // mobile영역으로 사이즈가 줄어들면 pc 모달창 지우기 및 clone 삭제
-          if (modal.addModalOpen || modal.listModalOpen || modal.moreModalOpen)
-            dispatch(modalActions.clearSet());
+
+          // if (modal.addModalOpen || modal.listModalOpen || modal.moreModalOpen)
+          dispatch(modalActions.clearSet());
 
           setIsDragging(false);
-        } else {
-          if (modal.mobileModalOpen)
-            dispatch(modalActions.onOffModal({ type: "mobile" }));
+        }
+
+        if (window.innerWidth > 500 && calenderArray.length === 3) {
+          console.log("?????????");
+          //   if (modal.mobileModalOpen)
+          dispatch(modalActions.onOffModal({ type: "mobile" }));
         }
       };
       // 창 크기 조절시에 보이는 list 개수 달리 보여주기 위함.
@@ -96,39 +99,17 @@ const MakeCalender = React.memo(
 
     useEffect(() => {
       // 사용자가 일정이나 날짜를 1초 이상 클릭하고 있는 경우, 드래깅 기능을 활성화
-
-      if (modal.addModalOpen) setCountDown(false);
       if (!countDown) return;
-
       // 사용자가 1초 이상 클릭하고 있는 경우, cloneList 생성
       const checkDragging = () => setIsDragging(true);
 
       const timeout = setTimeout(checkDragging, 1000);
 
       return () => clearTimeout(timeout);
-    }, [modal.addModalOpen, countDown, setIsDragging]);
+    }, [countDown, setIsDragging]);
 
-    useEffect(() => {
-      if (isMount) {
-        isMount = false;
-        return;
-      }
-      console.log("Main Component Effect");
-      listRef.current = {};
-      allListRef.current = {};
-    }, [month, data.userSchedule, listRef, allListRef]);
-
-    const mouseDown = (
-      e: React.MouseEvent,
-      day: string,
-      week: string,
-      date: string
-    ) => {
-      // e.stopPropagation();
-
-      console.log("MakeCAlenders Mouse Down");
+    const mouseDown = (day: string, week: string, date: string) => {
       if (window.innerWidth < 500) return;
-
       const type = "MakeList";
       const [startDate, endDate] = [date, date];
       setCountDown(true);
@@ -145,11 +126,9 @@ const MakeCalender = React.memo(
     };
 
     const mouseUp = () => {
-      console.log("MakeCAlenders Mouse up");
-      setCountDown(false);
+      setCountDown(false); // 카운트다운 취소
       if (clicekdMoreRef.current) return;
-
-      setIsDragging(true);
+      setIsDragging(true); // 마우스 up후에 clone List가 보이게 true로 설정
       dispatch(modalActions.onOffModal({ type: "make" }));
     };
 
@@ -191,7 +170,7 @@ const MakeCalender = React.memo(
         thisWeekArray.push(
           <td
             key={date}
-            onMouseDown={(e) => mouseDown(e, day, week, date)}
+            onMouseDown={() => mouseDown(day, week, date)}
             onMouseUp={() => mouseUp()}
             onMouseMove={(e) => mouseMove(e)}
             onTouchEnd={() => touchEndHandler(day, week, date)}
@@ -220,7 +199,6 @@ const MakeCalender = React.memo(
                 week={week}
                 array={array}
                 data={data}
-                modal={modal}
                 listRef={listRef}
                 allListRef={allListRef}
                 listBoxHeightCount={listBoxHeightCount}

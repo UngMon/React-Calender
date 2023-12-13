@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { ListOrMore } from "../../type/RefType";
 import CalenderSlide from "./CalenderSlide";
 import ModalContainer from "../../modal/ModalContainer";
@@ -9,6 +9,8 @@ interface T {
   year: string;
   month: string;
 }
+
+let isMount = true;
 
 const Main = ({ year, month }: T) => {
   console.log("Main => CalenderSlide");
@@ -26,6 +28,15 @@ const Main = ({ year, month }: T) => {
   const firstDay: number = new Date(+year, +month - 1, 1).getDay();
   const lastDate: number = new Date(+year, +month, 0).getDate();
   const week: number = Math.ceil((firstDay + lastDate) / 7); // 해당 month가 4주 ~ 5주인지?
+
+  useEffect(() => {
+    if (isMount) {
+      isMount = false;
+      return;
+    }
+    listRef.current = {};
+    allListRef.current = {};
+  }, [month, listRef, allListRef]);
 
   return (
     <main className={style["calender-view"]}>

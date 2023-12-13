@@ -12,6 +12,7 @@ import TimeSelector from "../utils/Time/TimeSelector";
 import ColorBox from "../utils/Time/ColorBox";
 import { makeHeightObject } from "./Object";
 import "./MakeEvent.css";
+import { cloneActions } from "../redux/clone-slice";
 
 interface T {
   data: DataType;
@@ -136,6 +137,7 @@ const MakeEvent = ({ data, week, uid, viewRef, setIsDragging }: T) => {
     setTimeout(() => {
       dispatch(modalActions.clearSet());
       dispatch(timeActions.resetTime());
+      dispatch(cloneActions.clearSet());
     }, 250);
   };
 
