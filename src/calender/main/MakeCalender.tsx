@@ -27,11 +27,10 @@ interface T {
   firstDay: number;
   isScroling: boolean; // 좌, 우 움직이는
   setIsDragging: (value: boolean) => void; // 드래고 일정 생성할지 안 할지
-  viewRef: React.RefObject<HTMLDivElement>;
   listRef: React.MutableRefObject<ListOrMore>;
   allListRef: React.MutableRefObject<ListOrMore>;
   clicekdMoreRef: React.MutableRefObject<HTMLDivElement | null>;
-  calenderArray: any[][];
+  listViewCount: number;
 }
 
 const MakeCalender = React.memo(
@@ -42,60 +41,18 @@ const MakeCalender = React.memo(
     firstDay,
     isScroling,
     setIsDragging,
-    viewRef,
     listRef,
     allListRef,
     clicekdMoreRef,
-    calenderArray,
+    listViewCount
   }: T) => {
     const dispatch = useAppDispatch();
     const data = useSelector((state: RootState) => state.data);
 
-    const [listBoxHeightCount, setCount] = useState<number>(0);
     const [countDown, setCountDown] = useState<boolean>(false);
 
-    console.log("MakeCalender");
     let dateElements: React.ReactNode[] = [];
 
-    useEffect(() => {
-      // 마운트 이후, state에 값을 저장후 랜더링
-      let elementHeight = window.innerWidth > 500 ? 24 : 20; // 일정 막대기 높이
-      setCount(
-        Math.floor(
-          ((viewRef.current!.clientHeight - 26) / week - 24) / elementHeight
-        )
-      );
-    }, [viewRef, week]);
-
-    useEffect(() => {
-      const getListBoxSize = () => {
-        let elementHeight = window.innerWidth > 500 ? 24 : 20; // 일정 막대기 높이
-        setCount(
-          Math.floor(
-            ((viewRef.current!.clientHeight - 26) / week - 24) / elementHeight
-          )
-        );
-
-        if (window.innerWidth <= 500 && calenderArray.length === 1) {
-          // mobile영역으로 사이즈가 줄어들면 pc 모달창 지우기 및 clone 삭제
-
-          // if (modal.addModalOpen || modal.listModalOpen || modal.moreModalOpen)
-          dispatch(modalActions.clearSet());
-
-          setIsDragging(false);
-        }
-
-        if (window.innerWidth > 500 && calenderArray.length === 3) {
-          console.log("?????????");
-          //   if (modal.mobileModalOpen)
-          dispatch(modalActions.onOffModal({ type: "mobile" }));
-        }
-      };
-      // 창 크기 조절시에 보이는 list 개수 달리 보여주기 위함.
-      window.addEventListener("resize", getListBoxSize);
-
-      return () => window.removeEventListener("resize", getListBoxSize);
-    });
 
     useEffect(() => {
       // 사용자가 일정이나 날짜를 1초 이상 클릭하고 있는 경우, 드래깅 기능을 활성화
@@ -201,7 +158,7 @@ const MakeCalender = React.memo(
                 data={data}
                 listRef={listRef}
                 allListRef={allListRef}
-                listBoxHeightCount={listBoxHeightCount}
+                listViewCount={listViewCount}
                 setIsDragging={setIsDragging}
                 clicekdMoreRef={clicekdMoreRef}
               />

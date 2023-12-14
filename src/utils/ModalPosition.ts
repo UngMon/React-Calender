@@ -42,13 +42,13 @@ const ModalPosition = (day: string, week: string, size: [number, number]) => {
       array[1] = height * (+week - 2.3);
       break;
     case "4":
-      array[1] = height * +week;
+      array[1] = height * (+week - 1);
       break;
     case "5":
-      array[1] = height * +week;
+      array[1] = height * (+week - 3);
       break;
     default: // day === 6
-      array[1] = height * (+week - 1);
+      array[1] = height * (+week - 5);
   }
 
   return array;

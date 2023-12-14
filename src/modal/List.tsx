@@ -241,7 +241,8 @@ const List = ({
       ref={list}
       style={{
         left: `${cordinate[0]}px`,
-        top: `${cordinate[1]}px`,
+        top: `${clone.week < "4" && cordinate[1]}px`,
+        bottom: `${clone.week > "3" && cordinate[1]}px`,
       }}
       onWheel={(e) => e.stopPropagation()}
     >

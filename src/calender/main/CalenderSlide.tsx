@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { ListOrMore } from "../../type/RefType";
 import { useAppDispatch } from "../../redux/store";
+import { modalActions } from "../../redux/modal-slice";
 import { useNavigate } from "react-router-dom";
 import { dateActions } from "../../redux/date-slice";
 import { makeSlideArray } from "../../utils/MakeSlideArray";
@@ -28,7 +29,7 @@ const CalenderSlide = ({
   allListRef,
   clicekdMoreRef,
 }: T) => {
-  console.log("CLanederSlide => MakeCalender");
+  console.log("CLanederSlide Render");
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
@@ -38,6 +39,12 @@ const CalenderSlide = ({
   const [startPoint, setStartPoint] = useState<number>(0);
   const [movingPoint, setMovingPoint] = useState<number>(0);
   const [isScroling, setIsScroll] = useState<boolean>(false);
+  const [listBarHegiht, setListBarHeight] = useState<number>(
+    window.innerWidth > 500 ? 24 : 20
+  );
+  const [viewHeight, setViewHeight] = useState<number>(
+    window.innerHeight - 80 - 26
+  );
 
   const slideRef = useRef<HTMLDivElement>(null);
 
@@ -46,10 +53,25 @@ const CalenderSlide = ({
   }, [year, month]);
 
   useEffect(() => {
-    const resizeHandler = () => {;
-      slideRef.current!.style.transition = "none";
+    const resizeHandler = () => {
+
+      setViewHeight(window.innerHeight - 80 - 26);
       if (window.innerWidth > 500 && calenderArray.length === 1) return;
       if (window.innerWidth <= 500 && calenderArray.length === 3) return;
+
+      slideRef.current!.style.transition = "none";
+
+      if (window.innerWidth <= 500 && calenderArray.length === 1) {
+        // view Size가 pc => mobile로 축소
+        dispatch(modalActions.clearSet());
+        setIsDragging(false);
+      }
+
+      if (window.innerWidth > 500 && calenderArray.length === 3) {
+        // view Size가 mobile => pc로 확대
+        dispatch(modalActions.clearSet());
+      }
+      setListBarHeight(window.innerWidth > 500 ? 24 : 20);
       setCalenderArray(makeSlideArray(year, month));
     };
 
@@ -132,11 +154,12 @@ const CalenderSlide = ({
           week={item[3]}
           isScroling={isScroling}
           setIsDragging={setIsDragging}
-          viewRef={viewRef}
           listRef={listRef}
           allListRef={allListRef}
           clicekdMoreRef={clicekdMoreRef}
-          calenderArray={calenderArray}
+          listViewCount={Math.floor(
+            (viewHeight / item[3] - 24) / listBarHegiht
+          )}
         />
       ))}
     </div>

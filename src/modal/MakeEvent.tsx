@@ -150,7 +150,7 @@ const MakeEvent = ({ data, week, uid, viewRef, setIsDragging }: T) => {
       style={{
         left: `${marginSize && marginSize[0]}px`,
         top: `${clone.week < "4" && marginSize[1]}px`,
-        bottom: `-${clone.week > "3" && marginSize[1]}px`,
+        bottom: `${clone.week > "3" && marginSize[1]}px`,
       }}
       ref={boxRef}
       onWheel={(e) => e.stopPropagation()}

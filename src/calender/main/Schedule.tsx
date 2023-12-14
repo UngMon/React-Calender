@@ -24,7 +24,7 @@ interface T {
   array: ReactNode[][];
   listRef: React.MutableRefObject<ListOrMore>;
   allListRef: React.MutableRefObject<ListOrMore>;
-  listBoxHeightCount: number;
+  listViewCount: number;
   setIsDragging: (value: boolean) => void;
   clicekdMoreRef: React.MutableRefObject<HTMLDivElement | null>;
 }
@@ -38,7 +38,7 @@ const Schedule = React.memo(
     array,
     listRef,
     allListRef,
-    listBoxHeightCount,
+    listViewCount,
     setIsDragging,
     clicekdMoreRef,
   }: T): JSX.Element => {
@@ -131,7 +131,7 @@ const Schedule = React.memo(
       for (let item of array[+day]) {
         // 리스트 개수가 화면에 보이는 날짜 칸을 넘어가면 break;
 
-        if (arrayCount >= listBoxHeightCount) break;
+        if (arrayCount >= listViewCount) break;
 
         if (item) {
           if ((item as React.ReactElement).key === key)
@@ -145,7 +145,7 @@ const Schedule = React.memo(
         }
 
         // arraCount가 list.. -1 이 되면 '더 보기'란 생성
-        let isMore = arrayCount < listBoxHeightCount - 1 ? false : true;
+        let isMore = arrayCount < listViewCount - 1 ? false : true;
 
         for (let i = +day; i <= 7; i++) {
           if (i === 8) break;
@@ -195,7 +195,7 @@ const Schedule = React.memo(
                   : (listRef.current[`${object.key + i + week}`] = el);
               }}
             >
-              {!isLong && arrayCount < listBoxHeightCount - 1 && (
+              {!isLong && arrayCount < listViewCount - 1 && (
                 <div className={`${object.color} ${style["color-bar"]}`}></div>
               )}
               <div
@@ -215,9 +215,7 @@ const Schedule = React.memo(
                 >
                   {isMore
                     ? `${
-                        Object.keys(schedule[date]).length -
-                        listBoxHeightCount +
-                        1
+                        Object.keys(schedule[date]).length - listViewCount + 1
                       }개 더보기`
                     : object.startDate === object.endDate
                     ? object.startTime + " " + object.title
@@ -230,9 +228,7 @@ const Schedule = React.memo(
                 >
                   {isMore
                     ? `+${
-                        Object.keys(schedule[date]).length -
-                        listBoxHeightCount +
-                        1
+                        Object.keys(schedule[date]).length - listViewCount + 1
                       }`
                     : object.title}
                 </div>
