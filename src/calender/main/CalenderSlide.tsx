@@ -45,6 +45,7 @@ const CalenderSlide = ({
   const [viewHeight, setViewHeight] = useState<number>(
     window.innerHeight - 80 - 26
   );
+  const [viewWidth, setViewWidth] = useState<number>(window.innerWidth);
 
   const slideRef = useRef<HTMLDivElement>(null);
 
@@ -54,8 +55,11 @@ const CalenderSlide = ({
 
   useEffect(() => {
     const resizeHandler = () => {
-
+      if (window.innerWidth <= 500 && window.innerWidth >= 320) {
+        setViewWidth(window.innerWidth);
+      }
       setViewHeight(window.innerHeight - 80 - 26);
+
       if (window.innerWidth > 500 && calenderArray.length === 1) return;
       if (window.innerWidth <= 500 && calenderArray.length === 3) return;
 
@@ -136,7 +140,7 @@ const CalenderSlide = ({
       style={{
         transform:
           window.innerWidth <= 500
-            ? `translate(-${window.innerWidth - movingPoint}px)`
+            ? `translate(-${viewWidth - movingPoint}px)`
             : "none",
         transition: !isScroling ? "all 0.3s linear" : "none",
       }}
