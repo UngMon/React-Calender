@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
 import { RootState, useAppDispatch } from "../redux/store";
+import { dateActions } from "../redux/date-slice";
 import { useNavigate, useParams } from "react-router-dom";
 import { ListOrMore } from "../type/RefType";
 import { MakeList } from "../utils/MakeList";
@@ -81,13 +82,21 @@ const MakeEvent = () => {
   let startTime = time.firstTime || clone.startTime || nowTime.currentTime;
   let endTime = time.lastTime || clone.endTime || nowTime.lastTime;
 
-  const openHandler = (v: string, t: string) => {
-    if (v === "date") {
+  const openHandler = (category: string, t: string) => {
+    // cateogry => date or time
+    // t => start or end
+    if (category === "date") {
       setOpenTime([false, ""]);
       setOpenDate([
         openDateSelector[1] === t ? false : true,
         openDateSelector[1] === t ? "" : t,
       ]);
+      const [startYear, startMonth] =
+        clone.startDate.split("-") ?? date.split("-");
+      const [endYear, endMonth] = clone.endDate.split("-") ?? date.split("-");
+      const year = t === "start" ? startYear : endYear;
+      const month = t === "end" ? startMonth : endMonth;
+      dispatch(dateActions.setDate({ year, month }));
     } else {
       setOpenTime([
         openTimeSelector[1] === t ? false : true,
@@ -117,7 +126,7 @@ const MakeEvent = () => {
       color,
       userSchedule: schedule,
     };
-    console.log(parameter);
+
     // 새롭게 설정된 기간에 일정 생성 후에
     const newSchedule: UserData =
       type === "create" ? MakeList(parameter) : schedule;
@@ -132,7 +141,7 @@ const MakeEvent = () => {
 
   const submitHandler = (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("submit");
+
     if (clone.startDate > clone.endDate) {
       alert("종료 날짜가 시작 날짜 보다 뒤에 있어야 합니다.");
       return;

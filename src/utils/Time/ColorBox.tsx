@@ -36,7 +36,7 @@ const ColorBox = ({
     setColor(color);
     setOpenColor(false);
   };
-
+  console.log(openColor);
   return (
     <div
       className={`${
@@ -53,20 +53,22 @@ const ColorBox = ({
         className={`${color} ${platform === "pc" ? pc.circle : mobile.circle} `}
         onClick={() => setOpenColor(!openColor)}
       ></div>
-      <div
-        className={`${platform === "pc" ? pc["colors"] : mobile["colors"]} ${
-          !openColor && pc.off
-        }`}
-      >
-        {colorArray.map((item) => (
-          <div
-            key={item}
-            onClick={() => platform === "pc" && selectedColor(item)}
-            onTouchEnd={() => platform === "mobile" && selectedColor(item)}
-            className={`${item} ${color === item && "picked"}`}
-          ></div>
-        ))}
-      </div>
+      {openColor && (
+        <div
+          className={`${platform === "pc" ? pc["colors"] : mobile["colors"]} ${
+            !openColor && pc.off
+          }`}
+        >
+          {colorArray.map((item) => (
+            <div
+              key={item}
+              onClick={() => platform === "pc" && selectedColor(item)}
+              onTouchEnd={() => platform === "mobile" && selectedColor(item)}
+              className={`${item} ${color === item && "picked"}`}
+            ></div>
+          ))}
+        </div>
+      )}
     </div>
   );
 };

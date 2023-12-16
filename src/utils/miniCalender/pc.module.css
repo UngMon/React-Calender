@@ -67,20 +67,9 @@
   margin: auto;
   width: 27px;
   height: 27px;
-  border-radius: 50%;
   font-size: 0.95em;
   font-weight: bold;
   cursor: pointer;
-}
-
-.startDate {
-  background-color: #2c83f5;
-  color: white;
-}
-
-.endDate {
-  background-color: #4998ff;
-  color: white;
 }
 
 .sunday {
@@ -95,4 +84,14 @@
   background-color: #1a73e8;
   color: white;
   border-radius: 50%;
+}
+
+.startDate {
+  background-color: #2c83f5;
+  color: white;
+}
+
+.endDate {
+  background-color: #4998ff;
+  color: white;
 }

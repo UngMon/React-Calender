@@ -103,9 +103,8 @@ td {
 }
 
 .holiday {
-  background-color: rgb(2, 152, 2);
-  color: white;
-  border-radius: 5px;
+  color: red;
+  border-left: 0;
 }
 
 .national {

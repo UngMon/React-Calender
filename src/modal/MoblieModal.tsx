@@ -37,7 +37,7 @@ const MobileModal = ({ data, modal, clone }: T) => {
   const inputRef = useRef<HTMLInputElement>(null);
   const backRef = useRef<HTMLDivElement>(null);
 
-  const listClickHandler = (item: CalenderData) => {
+  const listTouchHandler = (item: CalenderData) => {
     navigate(`/calender/event/edit`);
     dispatch(cloneActions.clickedListInMobile({ ...item }));
   };
@@ -72,7 +72,7 @@ const MobileModal = ({ data, modal, clone }: T) => {
             {data.userSchedule[clone.startDate] &&
               Object.values(data.userSchedule[clone.startDate]).map(
                 (item, index) => (
-                  <li key={index} onTouchEnd={() => listClickHandler(item)}>
+                  <li key={index} onTouchEnd={() => listTouchHandler(item)}>
                     <div>
                       <FontAwesomeIcon icon={faCalendarDay} />
                     </div>

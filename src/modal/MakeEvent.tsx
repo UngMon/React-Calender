@@ -24,7 +24,7 @@ interface T {
 
 const MakeEvent = ({ data, week, uid, viewRef, setIsDragging }: T) => {
   const dispatch = useAppDispatch();
-
+  console.log('MakeEvent Render')
   const clone = useSelector((state: RootState) => state.clone);
 
   const [isMount, setIsMount] = useState<boolean>(true);

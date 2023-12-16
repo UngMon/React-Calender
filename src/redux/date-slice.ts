@@ -34,8 +34,8 @@ const dateSlice = createSlice({
     },
 
     setDate(state, action) {
-      state.year = action.payload.y;
-      state.month = action.payload.m;
+      state.year = action.payload.year;
+      state.month = action.payload.month;
     },
 
     setMonth(state, action) {

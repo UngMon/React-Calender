@@ -13,7 +13,6 @@ interface T {
   month: number;
   identify: string;
   dateRef: React.MutableRefObject<ButtonRef>;
-  // dateOpenHandler?: (value: string) => void;
 }
 
 const MakeCaledner = ({
@@ -23,8 +22,8 @@ const MakeCaledner = ({
   month,
   identify,
   dateRef,
-  // dateOpenHandler,
-}: T) => {
+}: // dateOpenHandler,
+T) => {
   console.log("second");
 
   const dispatch = useDispatch();
@@ -77,15 +76,13 @@ const MakeCaledner = ({
           onClick={() => clickHandler(date, i, week)}
           className={platform === "pc" ? pc.date_box : mobile.date_box}
         >
-          <div
-            className={`${
-              date === clone.startDate && type === "start" && pc["startDate"]
-            } ${date === clone.endDate && type === "end" && pc["endDate"]}`}
-          >
+          <div>
             <p
               className={`${i === 1 && pc["sunday"]} ${
                 i === 7 && pc["saturday"]
-              } ${identify === date && pc["Today"]}`}
+              } ${identify === date && pc["Today"]} ${
+                date === clone.startDate && type === "start" && pc["startDate"]
+              } ${date === clone.endDate && type === "end" && pc["endDate"]}`}
             >
               {일}
             </p>

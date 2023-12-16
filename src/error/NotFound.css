@@ -1,0 +1,44 @@
+.NF-Container {
+  min-width: 320px;
+  width: 100%;
+  min-height: 320px;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.NF-Container ul li {
+  text-align: center;
+  margin: 5px 0;
+
+  &:nth-child(1) {
+    font-size: 60px;
+  }
+
+  &:nth-child(2) {
+    font-size: 30px;
+  }
+
+  &:nth-child(3) {
+    margin-top: 20px;
+    width: 120px;
+    height: 40px;
+    margin: 0 auto;
+
+    button {
+      width: 100%;
+      height: 40px;
+      font-size: 25px;
+      border-radius: 0;
+      line-height: 40px;
+    }
+
+    button:hover {
+      cursor: pointer;
+      background-color: rgb(84, 92, 249);
+      color: white;
+      border-radius: 8px;
+    }
+  }
+}

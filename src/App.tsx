@@ -10,10 +10,12 @@ import Result from "./pages/Result";
 import Loading from "./ui/Loading";
 import LoginPage from "./pages/LoginPage";
 import MakeEvent from "./pages/MobileMakeEvent";
+import NotFound from "./error/NotFound";
 
-const newDate = new Date();
-const year = newDate.getFullYear();
-const month = newDate.getMonth() + 1;
+// const newDate = new Date();
+// const year = newDate.getFullYear();
+// const month = newDate.getMonth() + 1;
+// let isMount = true;
 
 function App() {
   const dispatch = useAppDispatch();
@@ -36,6 +38,7 @@ function App() {
 
   return (
     <Routes>
+      <Route path="*" element={<NotFound />} />
       {!loggedIn && !loading && <Route path="/" element={<LoginPage />} />}
       {!loggedIn && !loading && (
         <Route path="/reset-password" element={<ResetPage />} />
@@ -45,19 +48,16 @@ function App() {
         <Route path="/calender">
           <Route path=":date" element={<Content />} />
           <Route path="event">
-            <Route path=":(edit | make)" element={<MakeEvent />} />
+            <Route path="edit" element={<MakeEvent />} />
+            <Route path="make" element={<MakeEvent />} />
           </Route>
         </Route>
       )}
-      {!loading && loggedIn && (
-        <Route
-          path="*"
-          element={
-            <Navigate to={`/calender/date?year=${year}&month=${month}`} />
-          }
-        />
+      {loggedIn && (
+        <Route path="/search">
+          <Route path=":search" element={<Result />} />
+        </Route>
       )}
-      {loggedIn && <Route path=":search" element={<Result />} />}
     </Routes>
   );
 }

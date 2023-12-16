@@ -15,17 +15,9 @@ interface T {
   year: number;
   month: number;
   dateRef: React.MutableRefObject<ButtonRef>;
-  // dateOpenHandler?: (value: string) => void;
 }
 
-const Calender = ({
-  platform,
-  type,
-  year,
-  month,
-  dateRef,
-  // dateOpenHandler,
-}: T) => {
+const Calender = ({ platform, type, year, month, dateRef }: T) => {
   const identify = fixYear + "-" + fixMonth + "-" + fixDate;
 
   return (
@@ -50,7 +42,6 @@ const Calender = ({
             month={month}
             identify={identify}
             dateRef={dateRef}
-            // dateOpenHandler={dateOpenHandler}
           />
         </tbody>
       </table>

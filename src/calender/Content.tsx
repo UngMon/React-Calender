@@ -6,66 +6,47 @@ import { getNationalDay } from "../redux/fetch-action";
 import Main from "./main/Main";
 import Header from "./header/Header";
 
-let isMount = true;
 let delay = false;
 
+const newDate = new Date();
+const ye = String(newDate.getFullYear());
+const mon = String(newDate.getMonth() + 1);
+
 const Calender = () => {
-  console.log("Content");
+  console.log("Content Render");
 
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
   const [param] = useSearchParams();
-  let year = param.get("year")!;
-  let month = param.get("month")!;
+  let year = param.get("year");
+  let month = param.get("month");
 
   useEffect(() => {
-    let y = year;
-    let m = month;
-    console.log('?????')
-    // 숫자를 제외한 모든 문자
-    const pattern = /[^0-9]/g;
-
+    // 아래 조건식으로 불 필요한 렌더링 방지
+    if (year && month && year < "2026" && month < "13" && month > "00") return;
     // 사용자가 의도적으로 수를 제외한 문자열을 입력할 경우 수정
-    if (isMount) {
-      if (y.match(pattern)) y = y.replace(/\D/g, "");
-      if (m.match(pattern)) m = m.replace(/\D/g, "");
-      isMount = false;
-    }
+    let y = year!.replace(/\D/g, "");
+    let m = month!.replace(/\D/g, "");
 
-    if (!isMount) {
-      if (+y > 2026) {
-        alert("지원하지 않는 연도입니다.");
-        y = "2025";
-      }
-      if (+y < 2004) {
-        alert("지원하지 않는 연도입니다.");
-        y = "2004";
-      }
+    y = String(Math.max(2004, Math.min(2025, +y)));
+    m = String(Math.max(1, Math.min(12, +m))).padStart(2, "0");
 
-      if (+m > 12) {
-        y = String(+y + 1);
-        m = "01";
-      }
-      if (+m < 1) {
-        y = String(+y - 1);
-        m = "12";
-      }
-      navigate(`/calender/date?year=${y}&month=${m}`);
-      isMount = false;
-    }
+    if (+y > 2026 || +y < 2004) alert("지원하지 않는 연도입니다.");
+
+    navigate(`/calender/date?year=${y}&month=${m}`);
 
     dispatch(getNationalDay(y));
   }, [dispatch, navigate, month, year]);
 
   const movePrevMonth = () => {
-    switch (+month) {
+    switch (+month!) {
       case 1:
         month = "12";
-        year = String(+year - 1);
+        year = String(+year! - 1);
         break;
       default:
-        month = String(+month - 1).padStart(2, "0");
+        month = String(+month! - 1).padStart(2, "0");
     }
 
     navigate(`/calender/date?year=${year}&month=${month}`);
@@ -79,10 +60,10 @@ const Calender = () => {
     switch (month) {
       case "12":
         month = "01";
-        year = String(+year + 1);
+        year = String(+year! + 1);
         break;
       default:
-        month = String(+month + 1).padStart(2, "0");
+        month = String(+month! + 1).padStart(2, "0");
     }
 
     navigate(`/calender/date?year=${year}&month=${month}`);
@@ -109,12 +90,12 @@ const Calender = () => {
     <div onWheel={(e) => wheelHandler(e)} style={{ width: "100%" }}>
       <Header
         type="calender"
-        year={year}
-        month={month}
+        year={year!}
+        month={month!}
         movePrevMonth={movePrevMonth}
         moveNextMonth={moveNextMonth}
       />
-      <Main year={year} month={month} />
+      <Main year={year!} month={month!} />
     </div>
   );
 };

@@ -44,7 +44,7 @@ const MakeCalender = React.memo(
     listRef,
     allListRef,
     clicekdMoreRef,
-    listViewCount
+    listViewCount,
   }: T) => {
     const dispatch = useAppDispatch();
     const data = useSelector((state: RootState) => state.data);
@@ -52,7 +52,6 @@ const MakeCalender = React.memo(
     const [countDown, setCountDown] = useState<boolean>(false);
 
     let dateElements: React.ReactNode[] = [];
-
 
     useEffect(() => {
       // 사용자가 일정이나 날짜를 1초 이상 클릭하고 있는 경우, 드래깅 기능을 활성화
@@ -140,13 +139,19 @@ const MakeCalender = React.memo(
                     ${i === 7 && style.saturday} ${
                   identify === date && style.Today
                 }
-                  ${isHoliday && style.sunday}
+                  ${isHoliday?.isHoliday === "Y" && style.holiday}
                   `}
               >
                 {일 === "01" ? `${+월}월 1일` : +일}
               </span>
               {isHoliday && (
-                <span className={style.sunday}>{isHoliday.dateName}</span>
+                <span
+                  className={
+                    isHoliday.isHoliday === "Y" ? style.sunday : style.national
+                  }
+                >
+                  {isHoliday.dateName}
+                </span>
               )}
             </div>
             {data.userSchedule[date] && (
