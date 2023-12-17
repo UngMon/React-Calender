@@ -19,20 +19,23 @@ const Calender = () => {
   const navigate = useNavigate();
 
   const [param] = useSearchParams();
-  let year = param.get("year");
-  let month = param.get("month");
+  // 사용자가 의도적으로 수를 제외한 문자열을 입력할 경우 수를 제외한 모든 문자 공백
+  let year = param.get("year")?.replace(/\D/g, "");
+  let month = param.get("month")?.replace(/\D/g, "");
 
   useEffect(() => {
     // 아래 조건식으로 불 필요한 렌더링 방지
-    if (year && month && year < "2026" && month < "13" && month > "00") return;
-    // 사용자가 의도적으로 수를 제외한 문자열을 입력할 경우 수정
-    let y = year!.replace(/\D/g, "");
-    let m = month!.replace(/\D/g, "");
+    if (!year || !month)
+      return navigate(`/calender/date?year=${ye}&month=${mon}`);
 
-    y = String(Math.max(2004, Math.min(2025, +y)));
+    if (year > "2003" && year < String(+ye + 2) && month < "13" && month > "00")
+      return;
+
+    let y = year === "" ? ye : year;
+    let m = month === "" ? mon : month;
+
+    y = String(Math.max(2004, Math.min(+ye + 2, +y)));
     m = String(Math.max(1, Math.min(12, +m))).padStart(2, "0");
-
-    if (+y > 2026 || +y < 2004) alert("지원하지 않는 연도입니다.");
 
     navigate(`/calender/date?year=${y}&month=${m}`);
 

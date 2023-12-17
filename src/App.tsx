@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useAppDispatch } from "./redux/store";
-import { Route, Navigate, Routes } from "react-router-dom";
+import { Route, Routes } from "react-router-dom";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "./Auth/firebase";
 import { getUserData } from "./redux/fetch-action";
@@ -11,11 +11,6 @@ import Loading from "./ui/Loading";
 import LoginPage from "./pages/LoginPage";
 import MakeEvent from "./pages/MobileMakeEvent";
 import NotFound from "./error/NotFound";
-
-// const newDate = new Date();
-// const year = newDate.getFullYear();
-// const month = newDate.getMonth() + 1;
-// let isMount = true;
 
 function App() {
   const dispatch = useAppDispatch();
@@ -38,19 +33,19 @@ function App() {
 
   return (
     <Routes>
-      <Route path="*" element={<NotFound />} />
       {!loggedIn && !loading && <Route path="/" element={<LoginPage />} />}
       {!loggedIn && !loading && (
         <Route path="/reset-password" element={<ResetPage />} />
       )}
       {loading && <Route path="*" element={<Loading />} />}
       {!loading && loggedIn && (
-        <Route path="/calender">
-          <Route path=":date" element={<Content />} />
+        <Route path="/calender/*">
+          <Route path="date" element={<Content />} />
           <Route path="event">
             <Route path="edit" element={<MakeEvent />} />
             <Route path="make" element={<MakeEvent />} />
           </Route>
+          <Route path="*" element={<NotFound />} />
         </Route>
       )}
       {loggedIn && (
@@ -58,6 +53,7 @@ function App() {
           <Route path=":search" element={<Result />} />
         </Route>
       )}
+      <Route path="*" element={<NotFound />} />
     </Routes>
   );
 }

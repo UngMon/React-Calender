@@ -12,6 +12,11 @@
   text-align: center;
   margin: 5px 0;
 
+  span {
+    padding-bottom: 10px;
+    font-family: "Noto Sans KR", sans-serif;
+  }
+
   &:nth-child(1) {
     font-size: 60px;
   }
@@ -36,7 +41,7 @@
 
     button:hover {
       cursor: pointer;
-      background-color: rgb(84, 92, 249);
+      background-color: rgb(66, 75, 252);
       color: white;
       border-radius: 8px;
     }
