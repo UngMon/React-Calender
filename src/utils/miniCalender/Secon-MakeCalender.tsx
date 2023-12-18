@@ -22,8 +22,7 @@ const MakeCaledner = ({
   month,
   identify,
   dateRef,
-}: // dateOpenHandler,
-T) => {
+}: T) => {
   console.log("second");
 
   const dispatch = useDispatch();

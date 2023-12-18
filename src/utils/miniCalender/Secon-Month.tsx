@@ -1,10 +1,11 @@
 import React from "react";
+import { useSelector } from "react-redux";
+import { dateActions } from "../../redux/date-slice";
+import { RootState, useAppDispatch } from "../../redux/store";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAngleLeft, faAngleRight } from "@fortawesome/free-solid-svg-icons";
 import { ButtonRef } from "../../type/RefType";
-import { useSelector } from "react-redux";
-import { RootState } from "../../redux/store";
 import Calender from "./Secon-Caledner";
 import pc from "./pc.module.css";
 import mobile from "./mobile.module.css";
@@ -17,38 +18,36 @@ interface T {
 
 const Month = ({ platform, type, dateRef }: T) => {
   console.log("secondMonth");
-
+  const dispatch = useAppDispatch();
   const date = useSelector((state: RootState) => state.date);
   const navigate = useNavigate();
 
   //pc => /calender/date?year=''&month=''
   const [param] = useSearchParams();
-  let year = param.get("year") || date.year;
-  let month = param.get("month") || date.month;
+  let year = param.get("year") ?? date.year;
+  let month = param.get("month") ?? date.month;
 
-  const movePrevMonthHandler = () => {
-    switch (+month) {
-      case 1:
+  const moveMonthHandler = (type: string) => {
+    if (type === "prev") {
+      if (+month === 1) {
         month = "12";
         year = String(+year - 1);
-        break;
-      default:
+      } else {
         month = String(+month - 1).padStart(2, "0");
-    }
-    if (!year || !month) return;
-    navigate(`/calender/date?year=${year}&month=${month}`);
-  };
-
-  const moveNextMonthHandler = () => {
-    switch (month) {
-      case "12":
+      }
+    } else {
+      if (month === "12") {
         month = "01";
         year = String(+year + 1);
-        break;
-      default:
+      } else {
         month = String(+month + 1).padStart(2, "0");
+      }
     }
-    if (!year || !month) return;
+
+    if (platform === "mobile") {
+      return dispatch(dateActions.setDate({ year, month }));
+    }
+
     navigate(`/calender/date?year=${year}&month=${month}`);
   };
 
@@ -70,7 +69,7 @@ const Month = ({ platform, type, dateRef }: T) => {
         </div>
         <div>
           <button
-            onClick={movePrevMonthHandler}
+            onClick={() => moveMonthHandler("prev")}
             type="button"
             ref={(el: HTMLButtonElement) => (dateRef.current[2] = el)}
           >
@@ -80,7 +79,7 @@ const Month = ({ platform, type, dateRef }: T) => {
             />
           </button>
           <button
-            onClick={moveNextMonthHandler}
+            onClick={() => moveMonthHandler("next")}
             type="button"
             ref={(el: HTMLButtonElement) => (dateRef.current[3] = el)}
           >
@@ -97,7 +96,6 @@ const Month = ({ platform, type, dateRef }: T) => {
         year={+year}
         month={+month}
         dateRef={dateRef}
-        // dateOpenHandler={dateOpenHandler}
       />
     </div>
   );

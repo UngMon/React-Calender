@@ -71,8 +71,6 @@ const List = ({
   ]);
 
   const inputRef = useRef<HTMLInputElement>(null);
-  const colorRef = useRef<HTMLDivElement>(null);
-
   const timeInputOneRef = useRef<HTMLInputElement>(null);
   const timeInputTwoRef = useRef<HTMLInputElement>(null);
 
@@ -93,18 +91,10 @@ const List = ({
     const closeHandler = (e: MouseEvent) => {
       const target = e.target as HTMLDivElement;
 
-      // 리스트 영역안에서 컬러선택창이 열려있고, 컬러선택 창 밖을 클릭 한 경우
-      if (openColor && !colorRef.current?.contains(target)) {
-        setTimeout(() => {
-          setOpenColor(false);
-        }, 150);
-      }
-
       // List 모달 영역 밖 클릭한 경우,
       if (!list.current?.contains(target)) {
         if (clickedElement.current?.contains(target)) {
           // list 밖 같은 리스트를 클릭하면 리스트 창이 닫게함.
-          console.log("가ㅌ은 리스트 클릭");
           return !modal.moreModalOpen && closeModalHandler();
         }
 
@@ -113,20 +103,17 @@ const List = ({
 
         for (const key in listRef.current) {
           if (listRef.current[key]?.contains(target)) {
-            console.log("또다른 리스트를 클릭! 클릭");
             return;
           }
         }
 
         for (const key in allListRef.current) {
           if (allListRef.current[key]?.contains(target)) {
-            console.log("더보기를 클릭했어!");
             return dispatch(modalActions.clearSet());
           }
         }
 
         if (moreModalRef.current?.contains(target)) return;
-        console.log("?????", clickedElement);
         // 위 영역이 아닌 다른 영역을 클릭한 경우 list 모달창 닫음.
         !modal.moreModalOpen && closeModalHandler();
       }
@@ -287,7 +274,6 @@ const List = ({
             setColor={setColor}
             openColor={openColor}
             setOpenColor={setOpenColor}
-            colorRef={colorRef}
           />
           <div className="edit-button-box">
             <button type="submit">저장</button>

@@ -38,7 +38,7 @@ const MobileModal = ({ data, modal, clone }: T) => {
   const backRef = useRef<HTMLDivElement>(null);
 
   const listTouchHandler = (item: CalenderData) => {
-    navigate(`/calender/event/edit`);
+    navigate(`/calender/event/edit?key=${item.key}`);
     dispatch(cloneActions.clickedListInMobile({ ...item }));
   };
 

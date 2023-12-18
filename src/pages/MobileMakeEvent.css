@@ -205,7 +205,7 @@
   line-height: 40px;
 }
 
-.bottom-ui {
+.button-container {
   position: fixed;
   left: 0;
   bottom: 0;
@@ -214,28 +214,25 @@
   display: flex;
   align-items: center;
   border-top: 1px solid lightgray;
-  background-color: rgb(251, 251, 251);
-}
 
-.mobile-button {
-  height: 40px;
-  width: 50%;
-  height: 100%;
-  border-radius: 0;
-  color: black;
-  font-size: 17px; 
-  font-weight: 600;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: space-evenly;
-}
+  button {
+    height: 40px;
+    height: 100%;
+    border-radius: 0;
+    color: black;
+    font-size: 17px;
+    font-weight: 600;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-evenly;
 
-.mobile-button span {
-  font-size: 14px;
-}
+    span {
+      font-size: 14px;
+    }
 
-
-.mobile-button:active {
-  background-color: lightgray;
+    &:active {
+      background-color: lightgray;
+    }
+  }
 }

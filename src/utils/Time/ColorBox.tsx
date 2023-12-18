@@ -1,5 +1,5 @@
-import React from "react";
-import pc from "./PcColorBox.module.css";
+import React, { useEffect, useRef } from "react";
+import style from "./ColorBox.module.css";
 import mobile from "./MobileColorBox.module.css";
 
 interface T {
@@ -8,7 +8,6 @@ interface T {
   setColor: (value: string) => void;
   openColor: boolean;
   setOpenColor: (value: boolean) => void;
-  colorRef: React.RefObject<HTMLDivElement>;
 }
 
 const colorArray = [
@@ -30,45 +29,55 @@ const ColorBox = ({
   setColor,
   openColor,
   setOpenColor,
-  colorRef,
 }: T) => {
+  const colorRef = useRef<HTMLDivElement>(null);
+
   const selectedColor = (color: string) => {
     setColor(color);
     setOpenColor(false);
   };
+
+  useEffect(() => {
+    const clickHandler = (e: MouseEvent) => {
+      if (!colorRef.current!.contains(e.target as Node)) {
+        setOpenColor(false);
+        console.log("?????????");
+      }
+    };
+
+    window.addEventListener("click", clickHandler);
+    return () => window.removeEventListener("click", clickHandler);
+  });
+
   console.log(openColor);
   return (
     <div
-      className={`${
-        platform === "pc" ? pc["color-container"] : mobile["color-container"]
-      } ${platform === "mobile" ? color : "none"}`}
+      className={`${style["color-container"]} ${
+        platform === "mobile" ? color : "none"
+      }`}
       ref={colorRef}
     >
       {platform === "pc" && (
-        <div className={pc["color-icon"]}>
+        <div className={style["color-icon"]}>
           <img src="../images/palette.png" alt="palette" width="20" />
         </div>
       )}
       <div
-        className={`${color} ${platform === "pc" ? pc.circle : mobile.circle} `}
+        className={`${color} ${style.circle} `}
         onClick={() => setOpenColor(!openColor)}
       ></div>
-      {openColor && (
-        <div
-          className={`${platform === "pc" ? pc["colors"] : mobile["colors"]} ${
-            !openColor && pc.off
-          }`}
-        >
-          {colorArray.map((item) => (
-            <div
-              key={item}
-              onClick={() => platform === "pc" && selectedColor(item)}
-              onTouchEnd={() => platform === "mobile" && selectedColor(item)}
-              className={`${item} ${color === item && "picked"}`}
-            ></div>
-          ))}
-        </div>
-      )}
+      <div
+        className={`${style.colors} ${!openColor ? style.off : ""}`}
+      >
+        {colorArray.map((item) => (
+          <div
+            key={item}
+            onClick={() => platform === "pc" && selectedColor(item)}
+            onTouchEnd={() => platform === "mobile" && selectedColor(item)}
+            className={`${item} ${color === item && "picked"}`}
+          ></div>
+        ))}
+      </div>
     </div>
   );
 };

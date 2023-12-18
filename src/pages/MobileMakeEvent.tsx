@@ -2,48 +2,51 @@ import React, { useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
 import { RootState, useAppDispatch } from "../redux/store";
 import { dateActions } from "../redux/date-slice";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { ListOrMore } from "../type/RefType";
 import { MakeList } from "../utils/MakeList";
 import { MakeListParameter } from "../type/Etc";
 import { UserData } from "../type/ReduxType";
 import { auth } from "../Auth/firebase";
 import { sendUserData } from "../redux/fetch-action";
+import { cloneActions } from "../redux/clone-slice";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowRight, faXmark } from "@fortawesome/free-solid-svg-icons";
 import { makeDateArray } from "../utils/MakeLongArr";
-import MobileTimePicker from "../ui/MobileTimePicker";
-import SetTime from "../utils/Time/SetTime";
-import Month from "../utils/miniCalender/Secon-Month";
 import {
   faPenToSquare,
   faTrashCan,
   faClock,
 } from "@fortawesome/free-regular-svg-icons";
+import MobileTimePicker from "../ui/MobileTimePicker";
+import SetTime from "../utils/Time/SetTime";
+import SeconMonth from "../utils/miniCalender/Secon-Month";
 import ColorBox from "../utils/Time/ColorBox";
 import "./MobileMakeEvent.css";
+// import { newMonth, newYear } from "../utils/nowDate";
 
 const nowTime = SetTime();
 
 const date = new Date().toISOString().split("T")[0];
 
 const MakeEvent = () => {
-  const dispatch = useAppDispatch();
   const param = useParams();
+  const [parameter] = useSearchParams();
+  const pickScheduleKey = parameter.get("key") ?? "";
+  // key를 가지고 slice를 해서 date 찾아내야함..
+  // 그리고 data.useschedule[date] = {startDate, endDate ... } 받아옴
+  // 그 다음 데이터가 존재하지 않으면 404 페이지로 그리고, 존재하면 이벤트 컴포넌트 보이게하기 ㅇㅋ?
+  const startDate = pickScheduleKey?.slice(0, 10) ?? "";
 
+  const navigate = useNavigate();
+  const dispatch = useAppDispatch();
   const data = useSelector((state: RootState) => state.data);
   const clone = useSelector((state: RootState) => state.clone);
   const time = useSelector((state: RootState) => state.time);
+  console.log("MakeEvent Mobile Render");
 
-  const [openDateSelector, setOpenDate] = useState<[boolean, string]>([
-    false,
-    "",
-  ]);
-  const [openTimeSelector, setOpenTime] = useState<[boolean, string]>([
-    false,
-    "",
-  ]);
-  const [type, setType] = useState<string>("");
+  const [openDate, setOpenDate] = useState<[boolean, string]>([false, ""]);
+  const [openTime, setOpenTime] = useState<[boolean, string]>([false, ""]);
   const [color, setColor] = useState<string>(clone.color || "라벤더");
   const [openColor, setOpenColor] = useState<boolean>(false);
 
@@ -53,9 +56,22 @@ const MakeEvent = () => {
   const endDateRef = useRef<HTMLSpanElement>(null);
   const startTimeRef = useRef<HTMLSpanElement>(null);
   const endTimeRef = useRef<HTMLSpanElement>(null);
-  const colorRef = useRef<HTMLDivElement>(null);
 
-  const navigate = useNavigate();
+  useEffect(() => {
+    if (data.isLoading || param["*"] === "event/make") return;
+
+    const scheduleData = data.userSchedule?.[startDate]?.[pickScheduleKey];
+
+    if (!scheduleData) {
+      navigate(-1);
+    } else {
+      dispatch(
+        cloneActions.setListInfo({
+          ...data.userSchedule[startDate][pickScheduleKey],
+        })
+      );
+    }
+  }, [dispatch, navigate, data, startDate, pickScheduleKey, param]);
 
   useEffect(() => {
     const resizeHandler = () => {
@@ -69,52 +85,43 @@ const MakeEvent = () => {
     return () => window.removeEventListener("resize", resizeHandler);
   });
 
-  useEffect(() => {
-    const touchHandler = (e: TouchEvent) => {
-      if (!colorRef.current!.contains(e.target as Node)) setOpenColor(false);
-    };
-
-    window.addEventListener("touchend", touchHandler);
-
-    return () => window.removeEventListener("touchend", touchHandler);
-  });
-
   let startTime = time.firstTime || clone.startTime || nowTime.currentTime;
   let endTime = time.lastTime || clone.endTime || nowTime.lastTime;
 
-  const openHandler = (category: string, t: string) => {
-    // cateogry => date or time
-    // t => start or end
+  const openHandler = (category: string, order: string) => {
+    // cateogry => date or time && order => start or end
+
     if (category === "date") {
       setOpenTime([false, ""]);
       setOpenDate([
-        openDateSelector[1] === t ? false : true,
-        openDateSelector[1] === t ? "" : t,
+        openDate[1] === order ? false : true,
+        openDate[1] === order ? "" : order,
       ]);
-      const [startYear, startMonth] =
-        clone.startDate.split("-") ?? date.split("-");
-      const [endYear, endMonth] = clone.endDate.split("-") ?? date.split("-");
-      const year = t === "start" ? startYear : endYear;
-      const month = t === "end" ? startMonth : endMonth;
-      dispatch(dateActions.setDate({ year, month }));
+      const [startYear, startMonth] = clone.startDate.split("-");
+      const [endYear, endMonth] = clone.endDate.split("-");
+      console.log(startYear, startMonth, endYear, endMonth);
+      dispatch(
+        dateActions.setDate({
+          year: order === "start" ? startYear : endYear,
+          month: order === "start" ? startMonth : endMonth,
+        })
+      );
     } else {
-      setOpenTime([
-        openTimeSelector[1] === t ? false : true,
-        openTimeSelector[1] === t ? "" : t,
-      ]);
       setOpenDate([false, ""]);
+      setOpenTime([
+        openTime[1] === order ? false : true,
+        openTime[1] === order ? "" : order,
+      ]);
     }
-    setType(t);
   };
 
   const deleteAndCreate = (type: string) => {
     const schedule = JSON.parse(JSON.stringify(data.userSchedule));
     let dateArray = makeDateArray(clone.startDate, clone.endDate);
     // 기존 항목 삭제 하고..
-    if (param.edit === "edit") {
-      for (let date of dateArray) {
-        delete schedule[date][clone.key];
-      }
+
+    for (let date of dateArray) {
+      delete schedule[date][clone.key];
     }
 
     const parameter: MakeListParameter = {
@@ -135,7 +142,7 @@ const MakeEvent = () => {
     dispatch(
       sendUserData({ newSchedule, uid: auth.currentUser!.uid, type: "POST" })
     );
-
+    console.log("delete And Create");
     navigate(-1);
   };
 
@@ -188,7 +195,6 @@ const MakeEvent = () => {
             setColor={setColor}
             openColor={openColor}
             setOpenColor={setOpenColor}
-            colorRef={colorRef}
           />
           <div className="fa-clock">
             <FontAwesomeIcon icon={faClock} className="Make-clock-icon" />
@@ -196,13 +202,13 @@ const MakeEvent = () => {
           <div className="Make-time">
             <div className="time">
               <div
-                className={openDateSelector[1] === "start" ? "clicked" : ""}
+                className={openDate[1] === "start" ? "clicked" : ""}
                 onTouchEnd={() => openHandler("date", "start")}
               >
                 <span ref={startDateRef}>{clone.startDate || date}</span>
               </div>
               <div
-                className={openTimeSelector[1] === "start" ? "clicked" : ""}
+                className={openTime[1] === "start" ? "clicked" : ""}
                 onTouchEnd={() => openHandler("time", "start")}
               >
                 <span ref={startTimeRef}>{startTime}</span>
@@ -213,13 +219,13 @@ const MakeEvent = () => {
             </div>
             <div className="time">
               <div
-                className={openDateSelector[1] === "end" ? "clicked" : ""}
+                className={openDate[1] === "end" ? "clicked" : ""}
                 onTouchEnd={() => openHandler("date", "end")}
               >
                 <span ref={endDateRef}>{clone.endDate || date}</span>
               </div>
               <div
-                className={openTimeSelector[1] === "end" ? "clicked" : ""}
+                className={openTime[1] === "end" ? "clicked" : ""}
                 onTouchEnd={() => openHandler("time", "end")}
               >
                 <span ref={endTimeRef}>{endTime}</span>
@@ -227,31 +233,38 @@ const MakeEvent = () => {
             </div>
           </div>
           <div className="picker-box">
-            {openDateSelector[0] && (
-              <Month
+            {openDate[0] && (
+              <SeconMonth
                 platform="mobile"
-                type={openDateSelector[1]}
+                type={openDate[1]}
                 dateRef={dateRef}
               />
             )}
-            {openTimeSelector[0] && (
+            {openTime[0] && (
               <MobileTimePicker
-                type={type}
+                type={openTime[1]}
                 startTime={startTime}
                 endTime={endTime}
               />
             )}
           </div>
-          <div className="bottom-ui">
+          <div className="button-container">
+            {param["*"] === "event/edit" && (
+              <button
+                className="mobile-button"
+                type="button"
+                onTouchEnd={() => deleteAndCreate("delete")}
+                style={{ width: param["*"] === "event/edit" ? "50%" : "0" }}
+              >
+                <FontAwesomeIcon icon={faTrashCan} />
+                <span>삭제</span>
+              </button>
+            )}
             <button
               className="mobile-button"
-              type="button"
-              onTouchEnd={() => deleteAndCreate("delete")}
+              type="submit"
+              style={{ width: param["*"] === "event/make" ? "100%" : "50%" }}
             >
-              <FontAwesomeIcon icon={faTrashCan} />
-              <span>삭제</span>
-            </button>
-            <button className="mobile-button" type="submit">
               <FontAwesomeIcon icon={faPenToSquare} />
               <span>생성</span>
             </button>

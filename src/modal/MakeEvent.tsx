@@ -44,8 +44,6 @@ const MakeEvent = ({ data, week, uid, viewRef, setIsDragging }: T) => {
   const endDate: string = clone.endDate;
 
   const boxRef = useRef<HTMLDivElement>(null);
-  const colorRef = useRef<HTMLDivElement>(null);
-
   const titleRef = useRef<HTMLInputElement>(null);
   const timeIputOneRef = useRef<HTMLInputElement>(null);
   const timeInputTwoRef = useRef<HTMLInputElement>(null);
@@ -71,13 +69,6 @@ const MakeEvent = ({ data, week, uid, viewRef, setIsDragging }: T) => {
         return;
       }
 
-      // 사용자가 클릭한 Node가 color가 아닌 경우 컬러창 닫게해줌.
-      if (openColor && !colorRef.current?.contains(target)) {
-        setTimeout(() => {
-          setOpenColor(false);
-        }, 150);
-        return;
-      }
       // modal 영역 밖을 클릭할 때, state 초기화
       if (!boxRef.current?.contains(target)) {
         setIsMount(true);
@@ -132,6 +123,7 @@ const MakeEvent = ({ data, week, uid, viewRef, setIsDragging }: T) => {
   };
 
   const cancelHandler = () => {
+    console.log('??????????')
     setAnimaOn(false);
     setIsDragging(false);
     setTimeout(() => {
@@ -195,7 +187,6 @@ const MakeEvent = ({ data, week, uid, viewRef, setIsDragging }: T) => {
             setColor={setColor}
             openColor={openColor}
             setOpenColor={setOpenColor}
-            colorRef={colorRef}
           />
         </div>
 
