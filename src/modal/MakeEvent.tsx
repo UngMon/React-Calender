@@ -2,29 +2,29 @@ import React, { useState, useEffect, useRef } from "react";
 import { useSelector } from "react-redux";
 import { RootState, useAppDispatch } from "../redux/store";
 import { modalActions } from "../redux/modal-slice";
+import { cloneActions } from "../redux/clone-slice";
 import { timeActions } from "../redux/time-slice";
 import { MakeList } from "../utils/MakeList";
 import { MakeListParameter } from "../type/Etc";
 import { sendUserData } from "../redux/fetch-action";
 import { DataType } from "../type/ReduxType";
-import ModalPosition from "../utils/ModalPosition";
-import TimeSelector from "../utils/Time/TimeSelector";
-import ColorBox from "../utils/Time/ColorBox";
 import { makeHeightObject } from "./Object";
+import ModalPosition from "../utils/ModalPosition";
+import PickerBox from "../utils/Time/PickerBox";
+import ColorBox from "../utils/Time/ColorBox";
 import "./MakeEvent.css";
-import { cloneActions } from "../redux/clone-slice";
 
 interface T {
   data: DataType;
-  week: number;
+  lastweek: number;
   uid: string;
   viewRef: React.RefObject<HTMLDivElement>;
   setIsDragging: (value: boolean) => void;
 }
 
-const MakeEvent = ({ data, week, uid, viewRef, setIsDragging }: T) => {
+const MakeEvent = ({ data, lastweek, uid, viewRef, setIsDragging }: T) => {
+  console.log("MakeEvent Render", lastweek);
   const dispatch = useAppDispatch();
-  console.log('MakeEvent Render')
   const clone = useSelector((state: RootState) => state.clone);
 
   const [isMount, setIsMount] = useState<boolean>(true);
@@ -33,12 +33,9 @@ const MakeEvent = ({ data, week, uid, viewRef, setIsDragging }: T) => {
   const [animaOn, setAnimaOn] = useState<boolean>(true);
   const [size, setSize] = useState<[number, number]>([
     viewRef.current!.clientWidth,
-    (viewRef.current!.clientHeight - 26) / week,
+    (viewRef.current!.clientHeight - 26) / lastweek,
   ]);
-  const [dateIsVisible, setDateIsVisible] = useState<[boolean, string]>([
-    false,
-    "",
-  ]);
+  const [openDate, setOpenDate] = useState<[boolean, string]>([false, ""]);
 
   const startDate: string = clone.startDate;
   const endDate: string = clone.endDate;
@@ -52,7 +49,7 @@ const MakeEvent = ({ data, week, uid, viewRef, setIsDragging }: T) => {
     const widthCalculator = () => {
       setSize([
         viewRef.current!.clientWidth,
-        (viewRef.current!.clientHeight - 26) / week,
+        (viewRef.current!.clientHeight - 26) / lastweek,
       ]);
     };
 
@@ -123,7 +120,6 @@ const MakeEvent = ({ data, week, uid, viewRef, setIsDragging }: T) => {
   };
 
   const cancelHandler = () => {
-    console.log('??????????')
     setAnimaOn(false);
     setIsDragging(false);
     setTimeout(() => {
@@ -134,15 +130,15 @@ const MakeEvent = ({ data, week, uid, viewRef, setIsDragging }: T) => {
   };
 
   // 여기는 스크린 크기에 따라 modal의 위치를 지정한다.
-  const marginSize: number[] = ModalPosition(clone.day, clone.week, size);
+  const modalPosition: number[] = ModalPosition(clone.day, clone.week, size, lastweek);
 
   return (
     <div
       className={`make-modal-box  ${animaOn ? "on" : "off"}`}
       style={{
-        left: `${marginSize && marginSize[0]}px`,
-        top: `${clone.week < "4" && marginSize[1]}px`,
-        bottom: `${clone.week > "3" && marginSize[1]}px`,
+        left: `${modalPosition && modalPosition[0]}px`,
+        top: `${clone.week < "4" && modalPosition[1]}px`,
+        bottom: `${clone.week > "3" && modalPosition[1]}px`,
       }}
       ref={boxRef}
       onWheel={(e) => e.stopPropagation()}
@@ -151,12 +147,12 @@ const MakeEvent = ({ data, week, uid, viewRef, setIsDragging }: T) => {
       <form className={`addModal `} onSubmit={makeListHandler}>
         <div
           className={`addModal-menu ${
-            makeHeightObject[week] > window.innerHeight ? "scroll" : ""
+            makeHeightObject[lastweek] > window.innerHeight ? "scroll" : ""
           }`}
           style={{
             height:
-              dateIsVisible[0] && makeHeightObject[week] > window.innerHeight
-                ? 412 - (makeHeightObject[week] - window.innerHeight)
+              openDate[0] && makeHeightObject[lastweek] > window.innerHeight
+                ? 412 - (makeHeightObject[lastweek] - window.innerHeight)
                 : "",
           }}
         >
@@ -173,13 +169,11 @@ const MakeEvent = ({ data, week, uid, viewRef, setIsDragging }: T) => {
               <input placeholder="(제목 추가)" type="text" ref={titleRef} />
             </div>
           </div>
-          <TimeSelector
+          <PickerBox
             startDate={startDate}
             endDate={endDate}
             timeInputOneRef={timeIputOneRef}
             timeInputTwoRef={timeInputTwoRef}
-            dateIsVisible={dateIsVisible}
-            setDateIsVisible={setDateIsVisible}
           />
           <ColorBox
             platform={"pc"}
@@ -189,7 +183,6 @@ const MakeEvent = ({ data, week, uid, viewRef, setIsDragging }: T) => {
             setOpenColor={setOpenColor}
           />
         </div>
-
         <div className="buttonBox">
           <button type="submit">저장</button>
           <button type="button" onClick={cancelHandler}>

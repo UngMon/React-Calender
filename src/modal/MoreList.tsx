@@ -1,19 +1,20 @@
 import React, { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
-import { RootState, useAppDispatch } from "../redux/store";
+import { CalenderData, DataType, ModalType } from "../type/ReduxType";
+import { useAppDispatch } from "../redux/store";
 import { modalActions } from "../redux/modal-slice";
 import { cloneActions } from "../redux/clone-slice";
 import { ListOrMore } from "../type/RefType";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
-import { CalenderData } from "../type/ReduxType";
 import ModalPositionTwo from "../utils/ModalPositionTwo";
 import "./MoreList.css";
 
 interface T {
+  data: DataType;
+  modal: ModalType;
+  lastweek: number;
   viewRef: React.RefObject<HTMLDivElement>;
   moreModalRef: React.MutableRefObject<HTMLDivElement | null>;
-  listRef: React.MutableRefObject<ListOrMore>;
   allListRef: React.MutableRefObject<ListOrMore>;
   clickedElement: React.MutableRefObject<HTMLDivElement | null>;
   list: React.RefObject<HTMLDivElement>;
@@ -44,18 +45,18 @@ const dayText: { [key: string]: string } = {
 };
 
 const MoreList = ({
+  data,
+  modal,
+  lastweek,
   viewRef,
   moreModalRef,
-  listRef,
   allListRef,
   clickedElement,
 }: T) => {
   const dispatch = useAppDispatch();
 
-  const schedule = useSelector((state: RootState) => state.data.userSchedule);
-  const modal = useSelector((state: RootState) => state.modal);
-
-  const date: string = modal.date;
+  const schedule = data.userSchedule;
+  const clickDate: string = modal.date;
 
   const [size, setSize] = useState<[number, number]>([
     viewRef.current!.clientWidth,
@@ -115,15 +116,15 @@ const MoreList = ({
   const makeListHandler = () => {
     const result = [];
 
-    if (!schedule[date]) {
+    if (!schedule[clickDate]) {
       // 해당 날짜에 일정이 없을 때,
       return <div className="AllList-nothing">등록된 일정이 없습니다.</div>;
     }
 
     let count: number = 0;
 
-    for (const key in schedule[date]) {
-      const object = schedule[date][key];
+    for (const key in schedule[clickDate]) {
+      const object = schedule[clickDate][key];
       const index = count;
       let shape = "";
 
@@ -131,14 +132,14 @@ const MoreList = ({
         case object.startDate === object.endDate:
           shape = "short";
           break;
-        case object.startDate < date:
-        case date < object.endDate:
+        case object.startDate < clickDate:
+        case clickDate < object.endDate:
           shape = "middle";
           break;
-        case date === object.endDate:
+        case clickDate === object.endDate:
           shape = "end";
           break;
-        case date === object.startDate:
+        case clickDate === object.startDate:
           shape = "start";
           break;
         default:
@@ -174,16 +175,17 @@ const MoreList = ({
     return result;
   };
 
-  const margin = ModalPositionTwo(modal.day, modal.week, size);
-
+  const margin = ModalPositionTwo(modal.day, modal.week, size, lastweek);
+  console.log('More Modal Render')
   return (
     <div
       className={`AllList on`}
       ref={moreModalRef}
       style={{
-        display: `${size[0] === 0 ? "none" : "block"}`,
-        marginLeft: `${size[0] !== 0 && margin![0]}px`,
-        marginTop: `${size[0] !== 0 && margin![1]}px`,
+        ...(modal.day < "4" ? { left: margin![0] } : {}),
+        ...(modal.day > "3" ? { right: -margin![0] } : {}),
+        ...(modal.week < "4" ? { top: margin![1] } : {}),
+        ...(modal.week > "3" ? { bottom: margin![1] } : {}),
       }}
     >
       <div className="AllList-header">
@@ -199,3 +201,13 @@ const MoreList = ({
 };
 
 export default MoreList;
+
+// ...(modal.day < "4" ? { left: margin![0] } : {}),
+// ...(modal.day > "3" ? { right: -margin![0] } : {}),
+// ...(modal.week < "4" ? { top: margin![1] } : {}),
+// ...(modal.week > "3" ? { bottom: margin![1] } : {}),
+
+// left: modal.day < "4" ? margin![0] : "none",
+// right: modal.day > "3" ? -margin![0] : "none",
+// top: `${modal.week < "4" && margin![1]}px`,
+// bottom: `${modal.week > "3" && margin![1]}px`,

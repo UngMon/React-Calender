@@ -18,12 +18,13 @@ import {
   faTrashCan,
   faClock,
 } from "@fortawesome/free-regular-svg-icons";
+import { newMonth, newYear } from "../utils/nowDate";
 import MobileTimePicker from "../ui/MobileTimePicker";
 import SetTime from "../utils/Time/SetTime";
 import SeconMonth from "../utils/miniCalender/Secon-Month";
 import ColorBox from "../utils/Time/ColorBox";
+import NotFound from "../error/NotFound";
 import "./MobileMakeEvent.css";
-// import { newMonth, newYear } from "../utils/nowDate";
 
 const nowTime = SetTime();
 
@@ -36,7 +37,7 @@ const MakeEvent = () => {
   // key를 가지고 slice를 해서 date 찾아내야함..
   // 그리고 data.useschedule[date] = {startDate, endDate ... } 받아옴
   // 그 다음 데이터가 존재하지 않으면 404 페이지로 그리고, 존재하면 이벤트 컴포넌트 보이게하기 ㅇㅋ?
-  const startDate = pickScheduleKey?.slice(0, 10) ?? "";
+  const startDate = pickScheduleKey.slice(0, 10);
 
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
@@ -49,29 +50,52 @@ const MakeEvent = () => {
   const [openTime, setOpenTime] = useState<[boolean, string]>([false, ""]);
   const [color, setColor] = useState<string>(clone.color || "라벤더");
   const [openColor, setOpenColor] = useState<boolean>(false);
+  const [existKey, setExistKey] = useState<boolean>(true);
 
-  const inputRef = useRef<HTMLInputElement>(null);
   const dateRef = useRef<ListOrMore>({});
+  const inputRef = useRef<HTMLInputElement>(null);
   const startDateRef = useRef<HTMLSpanElement>(null);
   const endDateRef = useRef<HTMLSpanElement>(null);
   const startTimeRef = useRef<HTMLSpanElement>(null);
   const endTimeRef = useRef<HTMLSpanElement>(null);
 
   useEffect(() => {
-    if (data.isLoading || param["*"] === "event/make") return;
+    // 사용자 일정 정보를 받아오고 있거나, 일정 생성의 경우에 콜백 함수 실행 x
+    if (data.isLoading) return;
 
+    if (param["*"] === "event/make") {
+      if (window.history.length === 0) {
+        // 사용자가 만약 /caledner/event/make 경로로 페이지에 접근하는 경우
+        navigate(`/caledner/date?year=${newYear}&month=${newMonth}`);
+      } else {
+        // history.legnth가 0이 아니면서 사용자가 make페이지에서 새로고침을 한 경우
+        if (clone.startDate === "") navigate(-1);
+      }
+      return;
+    }
+    //...... 이후로 /event/edit 경로 ...........
     const scheduleData = data.userSchedule?.[startDate]?.[pickScheduleKey];
 
     if (!scheduleData) {
-      navigate(-1);
-    } else {
+      // 해당 키의 데이터가 없는 경우, NotFound 페이지 표시
+      setExistKey(false);
+    }
+
+    if (scheduleData && clone.startDate === "") {
+      const [year, month] = startDate.split("-");
+      const firstDay: number = new Date(+year, +month - 1, 1).getDay();
+      const lastDate: number = new Date(+year, +month, 0).getDate();
+      const week: number = Math.ceil((firstDay + lastDate) / 7); // 해당 month가 4주 ~ 5주인지?
+
       dispatch(
         cloneActions.setListInfo({
           ...data.userSchedule[startDate][pickScheduleKey],
+          week,
+          day: firstDay,
         })
       );
     }
-  }, [dispatch, navigate, data, startDate, pickScheduleKey, param]);
+  }, [dispatch, navigate, data, startDate, pickScheduleKey, param, clone]);
 
   useEffect(() => {
     const resizeHandler = () => {
@@ -85,8 +109,8 @@ const MakeEvent = () => {
     return () => window.removeEventListener("resize", resizeHandler);
   });
 
-  let startTime = time.firstTime || clone.startTime || nowTime.currentTime;
-  let endTime = time.lastTime || clone.endTime || nowTime.lastTime;
+  let startTime = time.startTime || clone.startTime || nowTime.currentTime;
+  let endTime = time.endTime || clone.endTime || nowTime.lastTime;
 
   const openHandler = (category: string, order: string) => {
     // cateogry => date or time && order => start or end
@@ -99,7 +123,7 @@ const MakeEvent = () => {
       ]);
       const [startYear, startMonth] = clone.startDate.split("-");
       const [endYear, endMonth] = clone.endDate.split("-");
-      console.log(startYear, startMonth, endYear, endMonth);
+
       dispatch(
         dateActions.setDate({
           year: order === "start" ? startYear : endYear,
@@ -120,12 +144,15 @@ const MakeEvent = () => {
     let dateArray = makeDateArray(clone.startDate, clone.endDate);
     // 기존 항목 삭제 하고..
 
-    for (let date of dateArray) {
-      delete schedule[date][clone.key];
+    if (param["*"] === "event/edit") {
+      for (let date of dateArray) {
+        delete schedule[date][clone.key];
+      }
     }
 
     const parameter: MakeListParameter = {
-      title: inputRef.current?.value || clone.title,
+      title:
+        inputRef.current?.value || clone.title || inputRef.current!.placeholder,
       startDate: clone.startDate,
       endDate: clone.endDate,
       startTime,
@@ -166,6 +193,7 @@ const MakeEvent = () => {
 
   return (
     <div className="MakeEvent">
+      {!existKey && <NotFound />}
       {window.innerWidth > 500 && (
         <div className="MakeEvent-announce">
           <div>
@@ -174,7 +202,7 @@ const MakeEvent = () => {
           </div>
         </div>
       )}
-      {window.innerWidth <= 500 && (
+      {data.succesGetScheduleData && existKey && window.innerWidth <= 500 && (
         <form className="Make-Form" onSubmit={submitHandler}>
           <div className="X-mark">
             <div onClick={() => navigate(-1)}>
@@ -186,7 +214,7 @@ const MakeEvent = () => {
             type="text"
             id="title"
             name="title"
-            placeholder={clone.title || "제목 추가"}
+            placeholder={clone.title || "제목 없음"}
             ref={inputRef}
           />
           <ColorBox
@@ -199,39 +227,41 @@ const MakeEvent = () => {
           <div className="fa-clock">
             <FontAwesomeIcon icon={faClock} className="Make-clock-icon" />
           </div>
-          <div className="Make-time">
-            <div className="time">
-              <div
-                className={openDate[1] === "start" ? "clicked" : ""}
-                onTouchEnd={() => openHandler("date", "start")}
-              >
-                <span ref={startDateRef}>{clone.startDate || date}</span>
+          {data.succesGetScheduleData && (
+            <div className="Make-time">
+              <div className="time">
+                <div
+                  className={openDate[1] === "start" ? "clicked" : ""}
+                  onTouchEnd={() => openHandler("date", "start")}
+                >
+                  <span ref={startDateRef}>{clone.startDate || date}</span>
+                </div>
+                <div
+                  className={openTime[1] === "start" ? "clicked" : ""}
+                  onTouchEnd={() => openHandler("time", "start")}
+                >
+                  <span ref={startTimeRef}>{startTime}</span>
+                </div>
               </div>
-              <div
-                className={openTime[1] === "start" ? "clicked" : ""}
-                onTouchEnd={() => openHandler("time", "start")}
-              >
-                <span ref={startTimeRef}>{startTime}</span>
+              <div className="arrow">
+                <FontAwesomeIcon icon={faArrowRight} />
+              </div>
+              <div className="time">
+                <div
+                  className={openDate[1] === "end" ? "clicked" : ""}
+                  onTouchEnd={() => openHandler("date", "end")}
+                >
+                  <span ref={endDateRef}>{clone.endDate || date}</span>
+                </div>
+                <div
+                  className={openTime[1] === "end" ? "clicked" : ""}
+                  onTouchEnd={() => openHandler("time", "end")}
+                >
+                  <span ref={endTimeRef}>{endTime}</span>
+                </div>
               </div>
             </div>
-            <div className="arrow">
-              <FontAwesomeIcon icon={faArrowRight} />
-            </div>
-            <div className="time">
-              <div
-                className={openDate[1] === "end" ? "clicked" : ""}
-                onTouchEnd={() => openHandler("date", "end")}
-              >
-                <span ref={endDateRef}>{clone.endDate || date}</span>
-              </div>
-              <div
-                className={openTime[1] === "end" ? "clicked" : ""}
-                onTouchEnd={() => openHandler("time", "end")}
-              >
-                <span ref={endTimeRef}>{endTime}</span>
-              </div>
-            </div>
-          </div>
+          )}
           <div className="picker-box">
             {openDate[0] && (
               <SeconMonth

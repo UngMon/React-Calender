@@ -4,10 +4,10 @@ import { ListOrMore } from "../../type/RefType";
 import { useAppDispatch } from "../../redux/store";
 
 interface T {
-  timeInputOneRef: React.RefObject<HTMLInputElement>;
   oneRef: React.MutableRefObject<ListOrMore>;
-  timeVisible: boolean;
   timeRef: React.MutableRefObject<ListOrMore>;
+  timeInputOneRef: React.RefObject<HTMLInputElement>;
+  timeVisible: boolean;
 }
 
 const timeArray = [
@@ -127,7 +127,7 @@ const TimeBox = ({ timeInputOneRef, oneRef, timeVisible, timeRef }: T) => {
   };
 
   return (
-    <div className={`time-selec-container ${timeVisible && 't-open'}`}>
+    <div className={`time-selec-container ${timeVisible && "t-open"}`}>
       <div
         id="time-selector"
         ref={(el) => (timeRef.current[0] = el)}

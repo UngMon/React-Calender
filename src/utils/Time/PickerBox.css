@@ -1,15 +1,18 @@
-.time-container {
-  margin: 20px 0 0 30px;
-  align-items: center;
-  justify-content: left;
+.pick-container {
+  position: relative;
+  margin: 20px 30px 0;
+  width: 340px;
   display: grid;
   grid-template-columns: 20px 320px;
   grid-template-rows: 72px auto;
+  align-items: center;
+  justify-content: left;
   font-size: 14px;
-  position: relative;
 }
 
-.time-box {
+.picker-box {
+  box-sizing: border-box;
+  padding-left: 10px;
   display: flex;
   align-items: center;
 }
@@ -20,7 +23,7 @@
   align-items: center;
 }
 
-.date-area {
+.date-picker {
   width: 140px;
   height: 36px;
   line-height: 36px;
@@ -28,7 +31,7 @@
   font-size: 13px;
 }
 
-.date-area:hover {
+.date-picker:hover {
   cursor: pointer;
   background-color: rgb(242, 239, 239);
 }
@@ -57,7 +60,7 @@
   background-color: rgb(242, 239, 239);
 }
 
-.time-box-span {
+.span-wave {
   width: 30px;
   height: 30px;
   font-size: 20px;

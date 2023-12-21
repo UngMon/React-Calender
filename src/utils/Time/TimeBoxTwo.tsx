@@ -4,10 +4,10 @@ import { ListOrMore } from "../../type/RefType";
 import { useAppDispatch } from "../../redux/store";
 
 interface T {
-  timeInputTwoRef: React.RefObject<HTMLInputElement>;
   twoRef: React.MutableRefObject<ListOrMore>;
-  timeVisible: boolean;
   timeRef: React.MutableRefObject<ListOrMore>;
+  timeInputTwoRef: React.RefObject<HTMLInputElement>;
+  timeVisible: boolean;
 }
 
 const timeArray = [

@@ -7,8 +7,9 @@ const initialState: DataType = {
   isLoading: false,
   isCreated: false,
   isSending: false,
-  succesGetData: false,
-  succesSendData: false,
+  succesGetNationalDayData: false,
+  succesGetScheduleData: false,
+  succesSendScheduleData: false,
   dataChanged: false,
   userSchedule: {},
   holiday: {},
@@ -107,26 +108,27 @@ const dataSlice = createSlice({
     });
     builder.addCase(getUserData.fulfilled, (state, action) => {
       state.isLoading = false;
+      state.succesGetScheduleData = true;
       state.userSchedule = action.payload.schedule;
       console.log('useschedule get')
     });
     builder.addCase(getUserData.rejected, (state, action) => {
       state.isLoading = false;
+      state.succesGetScheduleData = false;
     });
     // sending (POST)
     builder.addCase(sendUserData.pending, (state, action) => {
       state.isSending = true;
-      state.succesSendData = false;
     });
     builder.addCase(sendUserData.fulfilled, (state, action) => {
       state.isSending = false;
-      state.succesSendData = true;
+      state.succesSendScheduleData = true;
       state.userSchedule = action.payload.newSchedule;
     });
     builder.addCase(sendUserData.rejected, (state, action) => {
       console.log(action.error);
       state.isSending = false;
-      state.succesSendData = false;
+      state.succesSendScheduleData = false;
     });
   },
 });

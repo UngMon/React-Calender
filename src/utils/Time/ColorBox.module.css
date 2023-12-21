@@ -37,10 +37,14 @@
   height: 18px;
   border-radius: 50%;
   margin: 0 4px;
+
+  &:hover {
+    cursor: pointer;
+  }
 }
 
 .off {
-  opacity: 0;
+  display: none;
 }
 
 .circle:hover {

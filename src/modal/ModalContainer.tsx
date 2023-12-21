@@ -10,7 +10,7 @@ import MobileModal from "./MoblieModal";
 import "./Modal.css";
 
 interface T {
-  week: number;
+  lastweek: number;
   viewRef: React.RefObject<HTMLDivElement>;
   listRef: React.MutableRefObject<ListOrMore>;
   allListRef: React.MutableRefObject<ListOrMore>;
@@ -21,7 +21,7 @@ interface T {
 }
 
 const ModalContainer = ({
-  week,
+  lastweek,
   viewRef,
   listRef,
   allListRef,
@@ -44,7 +44,7 @@ const ModalContainer = ({
       {modal.addModalOpen && (
         <MakeEvent
           data={data}
-          week={week}
+          lastweek={lastweek}
           uid={auth.currentUser!.uid}
           viewRef={viewRef}
           setIsDragging={setIsDragging}
@@ -52,9 +52,11 @@ const ModalContainer = ({
       )}
       {modal.moreModalOpen && (
         <MoreList
+          data={data}
+          modal={modal}
+          lastweek={lastweek}
           viewRef={viewRef}
           moreModalRef={moreModalRef}
-          listRef={listRef}
           allListRef={allListRef}
           clickedElement={clickedElement}
           list={list}
@@ -62,7 +64,7 @@ const ModalContainer = ({
       )}
       {modal.listModalOpen && (
         <List
-          week={week}
+          lastweek={lastweek}
           viewRef={viewRef}
           moreModalRef={moreModalRef}
           listRef={listRef}

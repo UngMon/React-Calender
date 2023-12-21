@@ -14,7 +14,7 @@ import {
   faCheck,
   faEdit,
 } from "@fortawesome/free-solid-svg-icons";
-import TimeSelector from "../utils/Time/TimeSelector";
+import PickerBox from "../utils/Time/PickerBox";
 import ColorBox from "../utils/Time/ColorBox";
 import ModalPosition from "../utils/ModalPosition";
 import { makeDateArray } from "../utils/MakeLongArr";
@@ -27,7 +27,7 @@ interface T {
   data: DataType;
   modal: ModalType;
   uid: string;
-  week: number;
+  lastweek: number;
   viewRef: React.RefObject<HTMLDivElement>;
   moreModalRef: React.MutableRefObject<HTMLDivElement | null>;
   listRef: React.MutableRefObject<ListOrMore>;
@@ -41,7 +41,7 @@ const List = ({
   data,
   modal,
   uid,
-  week,
+  lastweek,
   viewRef,
   moreModalRef,
   listRef,
@@ -63,11 +63,7 @@ const List = ({
   const [openColor, setOpenColor] = useState<boolean>(false);
   const [size, setSize] = useState<[number, number]>([
     viewRef.current!.clientWidth,
-    (viewRef.current!.clientHeight - 26) / week,
-  ]);
-  const [dateIsVisible, setDateIsVisible] = useState<[boolean, string]>([
-    false,
-    "",
+    (viewRef.current!.clientHeight - 26) / lastweek,
   ]);
 
   const inputRef = useRef<HTMLInputElement>(null);
@@ -78,7 +74,7 @@ const List = ({
     const widthCalculator = () => {
       setSize([
         viewRef.current!.clientWidth,
-        (viewRef.current!.clientHeight - 26) / week,
+        (viewRef.current!.clientHeight - 26) / lastweek,
       ]);
     };
 
@@ -102,20 +98,11 @@ const List = ({
         clickedElement.current = e.target as HTMLDivElement;
 
         for (const key in listRef.current) {
-          if (listRef.current[key]?.contains(target)) {
-            return;
-          }
+          if (listRef.current[key]?.contains(target)) return;
         }
-
-        for (const key in allListRef.current) {
-          if (allListRef.current[key]?.contains(target)) {
-            return dispatch(modalActions.clearSet());
-          }
-        }
-
-        if (moreModalRef.current?.contains(target)) return;
         // 위 영역이 아닌 다른 영역을 클릭한 경우 list 모달창 닫음.
-        !modal.moreModalOpen && closeModalHandler();
+        console.log('List out Click')
+        closeModalHandler();
       }
     };
 
@@ -142,6 +129,12 @@ const List = ({
   const editButtonHandler = () => {
     setIsDragging((prevState) => !prevState);
     dispatch(modalActions.clickedEdit());
+    dispatch(
+      timeActions.setEditTime({
+        startTime: modal.startTime,
+        endTime: modal.endTime,
+      })
+    );
   };
 
   const editListSubmitHandler = (event: React.FormEvent) => {
@@ -216,8 +209,7 @@ const List = ({
     ? "done"
     : false;
 
-  const cordinate = ModalPosition(modal.day, modal.week, size);
-
+  const cordinate = ModalPosition(modal.day, modal.week, size, lastweek);
   const markD = markDate(modal.startDate, modal.endDate);
 
   return (
@@ -260,13 +252,11 @@ const List = ({
               <input placeholder={modal.title} type="text" ref={inputRef} />
             </div>
           </div>
-          <TimeSelector
+          <PickerBox
             startDate={startDate}
             endDate={endDate}
             timeInputOneRef={timeInputOneRef}
             timeInputTwoRef={timeInputTwoRef}
-            dateIsVisible={dateIsVisible}
-            setDateIsVisible={setDateIsVisible}
           />
           <ColorBox
             platform={"pc"}
@@ -305,3 +295,14 @@ const List = ({
 };
 
 export default List;
+
+
+
+        // for (const key in allListRef.current) {
+        //   if (allListRef.current[key]?.contains(target)) {
+        //     return dispatch(modalActions.clearSet());
+        //   }
+        // }
+
+        // if (moreModalRef.current?.contains(target)) return;
+        // !modal.moreModalOpen && closeModalHandler();

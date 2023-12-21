@@ -54,7 +54,7 @@ const Main = ({ year, month }: T) => {
         />
       </div>
       <ModalContainer
-        week={week}
+        lastweek={week}
         viewRef={viewRef}
         listRef={listRef}
         allListRef={allListRef}

@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import { RootState, useAppDispatch } from "../../redux/store";
 import { useSelector } from "react-redux";
 import { timeActions } from "../../redux/time-slice";
@@ -7,85 +7,69 @@ import SetTime from "./SetTime";
 import SecondCaleder from "../miniCalender/Secon-Month";
 import TimeBoxOne from "./TimeBoxOne";
 import TimeBoxTwo from "./TimeBoxTwo";
-import "./TimeSelector.css";
+import "./PickerBox.css";
 
 interface T {
   startDate: string;
   endDate: string;
   timeInputOneRef: React.RefObject<HTMLInputElement>;
   timeInputTwoRef: React.RefObject<HTMLInputElement>;
-  dateIsVisible: [boolean, string];
-  setDateIsVisible: React.Dispatch<React.SetStateAction<[boolean, string]>>;
 }
 
 const setTime = SetTime();
 const firstTime = setTime.currentTime;
 const lastTime = setTime.lastTime;
 
-const TimeSelector = ({
+const PickerBox = ({
   startDate,
   endDate,
   timeInputOneRef,
   timeInputTwoRef,
-  dateIsVisible,
-  setDateIsVisible,
 }: T) => {
   const dispatch = useAppDispatch();
   const timeState = useSelector((state: RootState) => state.time);
-
-  const 시작날 = startDate.split("-");
-  const 마지막날 = endDate.split("-");
 
   const dateRef = useRef<ListOrMore>({});
   const timeRef = useRef<ListOrMore>({});
   const oneRef = useRef<ListOrMore>({});
   const twoRef = useRef<ListOrMore>({});
 
-  const dateOpenHandler = (type: string) => {
-    if (dateIsVisible[1] === type) {
-      setDateIsVisible([false, ""]);
-    }
+  const [openDate, setOpenDate] = useState<[boolean, string]>([false, ""]);
 
-    if (dateIsVisible[1] !== type) {
-      setDateIsVisible([true, type]);
-    }
+  const openDateHandler = (type: string) => {
+    if (openDate[1] === type) setOpenDate([false, ""]);
+    if (openDate[1] !== type) setOpenDate([true, type]);
+    dispatch(timeActions.timeToggle());
+    console.log("Date Open Handler");
+  };
 
-    if (timeState.firstIsVisible || timeState.lastIsVisible)
-      dispatch(timeActions.timeToggle());
+  const openTimeHandler = (type: string) => {
+    if (type === "start") dispatch(timeActions.openStartTime());
+    else dispatch(timeActions.openEndTime());
+    setOpenDate([false, ""]);
   };
 
   useEffect(() => {
+    if (!openDate[0] && !timeState.firstIsVisible && !timeState.lastIsVisible)
+      return;
+
     const timePickerHandler = (e: MouseEvent) => {
       const target = e.target as Node;
-      console.log("time click");
 
       for (let i in dateRef.current) {
         if (dateRef.current[i]?.contains(target)) return;
       }
 
-      if (timeInputOneRef.current?.contains(target)) {
-        if (dateIsVisible[0]) setDateIsVisible([false, ""]);
-        dispatch(timeActions.selectFristTime({ firstTime, lastTime }));
-        return;
-      }
-
-      if (timeInputTwoRef.current?.contains(target)) {
-        if (dateIsVisible[0]) setDateIsVisible([false, ""]);
-        dispatch(timeActions.selectLastTime({ firstTime, lastTime }));
-        return;
-      }
-
       for (let i in timeRef.current) {
-        if (!timeRef.current[i]) continue;
         if (timeRef.current[i]?.contains(target)) return;
       }
 
-      console.log("reset");
-      setTimeout(() => {
-        setDateIsVisible([false, ""]);
-        (timeState.firstTime !== "" || timeState.lastTime !== "") &&
-          dispatch(timeActions.resetTime());
-      }, 150);
+      if (timeInputOneRef.current?.contains(target)) return;
+
+      if (timeInputTwoRef.current?.contains(target)) return;
+
+      setOpenDate([false, ""]);
+      dispatch(timeActions.timeToggle());
     };
 
     window.addEventListener("click", timePickerHandler);
@@ -94,81 +78,75 @@ const TimeSelector = ({
   });
 
   return (
-    <div className="time-container">
+    <div className="pick-container">
       <img
         src="../images/clock.png"
         alt="clock"
         width="20"
         className="clock-icon"
       />
-      <div className="time-box">
+      <div className="picker-box">
         <div className="picker-one">
-          <div className="date-area">
+          <div className="date-picker">
             <div
-              className={dateIsVisible[1] === "start" ? "date-on" : ""}
+              className={openDate[1] === "start" ? "date-on" : ""}
               ref={(el: HTMLDivElement) => (dateRef.current[0] = el)}
-              onClick={() => dateOpenHandler("start")}
+              onClick={() => openDateHandler("start")}
             >
-              <span>
-                {시작날[0] + "년 " + 시작날[1] + "월 " + 시작날[2] + "일"}
-              </span>
+              <span>{startDate}</span>
             </div>
           </div>
           <div className="time-picker">
             <input
               type="text"
-              placeholder={timeState.firstTime || firstTime}
+              placeholder={timeState.startTime || firstTime}
               ref={timeInputOneRef}
+              onClick={() => openTimeHandler("start")}
             />
           </div>
         </div>
-        <div className="time-box-span">
+        <div className="span-wave">
           <span>~</span>
         </div>
         <div className="picker-one">
-          <div className="date-area">
+          <div className="date-picker">
             <div
-              className={dateIsVisible[1] === "end" ? "date-on" : ""}
+              className={openDate[1] === "end" ? "date-on" : ""}
               ref={(el: HTMLDivElement) => (dateRef.current[1] = el)}
-              onClick={() => dateOpenHandler("end")}
+              onClick={() => openDateHandler("end")}
             >
-              <span>
-                {마지막날[0] + "년 " + 마지막날[1] + "월 " + 마지막날[2] + "일"}
-              </span>
+              <span>{endDate}</span>
             </div>
           </div>
           <div className="time-picker">
             <input
               type="text"
-              placeholder={timeState.lastTime || lastTime}
+              placeholder={timeState.endTime || lastTime}
               ref={timeInputTwoRef}
+              onClick={() => openTimeHandler("end")}
             />
           </div>
         </div>
       </div>
       <div className="picker-two">
-        {dateIsVisible[0] && (
-          <SecondCaleder
-            platform="pc"
-            type={dateIsVisible[1]}
-            dateRef={dateRef}
-          />
+        {openDate[0] && (
+          <SecondCaleder platform="pc" type={openDate[1]} dateRef={dateRef} />
         )}
         <TimeBoxOne
-          timeInputOneRef={timeInputOneRef}
           oneRef={oneRef}
-          timeVisible={timeState.firstIsVisible}
           timeRef={timeRef}
+          timeInputOneRef={timeInputOneRef}
+          timeVisible={timeState.firstIsVisible}
         />
         <TimeBoxTwo
-          timeInputTwoRef={timeInputTwoRef}
           twoRef={twoRef}
-          timeVisible={timeState.lastIsVisible}
           timeRef={timeRef}
+          timeInputTwoRef={timeInputTwoRef}
+          timeVisible={timeState.lastIsVisible}
         />
       </div>
     </div>
   );
 };
 
-export default TimeSelector;
+export default PickerBox;

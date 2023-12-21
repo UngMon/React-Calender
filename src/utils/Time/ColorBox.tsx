@@ -1,6 +1,5 @@
 import React, { useEffect, useRef } from "react";
 import style from "./ColorBox.module.css";
-import mobile from "./MobileColorBox.module.css";
 
 interface T {
   platform: string;
@@ -38,18 +37,16 @@ const ColorBox = ({
   };
 
   useEffect(() => {
+    if (!openColor) return;
+
     const clickHandler = (e: MouseEvent) => {
-      if (!colorRef.current!.contains(e.target as Node)) {
-        setOpenColor(false);
-        console.log("?????????");
-      }
+      if (!colorRef.current!.contains(e.target as Node)) setOpenColor(false);
     };
 
     window.addEventListener("click", clickHandler);
     return () => window.removeEventListener("click", clickHandler);
   });
 
-  console.log(openColor);
   return (
     <div
       className={`${style["color-container"]} ${
@@ -66,9 +63,7 @@ const ColorBox = ({
         className={`${color} ${style.circle} `}
         onClick={() => setOpenColor(!openColor)}
       ></div>
-      <div
-        className={`${style.colors} ${!openColor ? style.off : ""}`}
-      >
+      <div className={`${style.colors} ${!openColor ? style.off : ""}`}>
         {colorArray.map((item) => (
           <div
             key={item}

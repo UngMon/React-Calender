@@ -22,8 +22,9 @@ export interface DataType {
   isLoading: boolean;
   isCreated: boolean;
   isSending: boolean;
-  succesGetData: boolean;
-  succesSendData: boolean;
+  succesGetNationalDayData: boolean;
+  succesGetScheduleData: boolean;
+  succesSendScheduleData: boolean;
   dataChanged: boolean;
   userSchedule: UserData;
   holiday: { [key: string]: HoliDay };
@@ -69,8 +70,8 @@ export interface ModalType extends ModalBasicType {
 export interface Time {
   firstIsVisible: boolean;
   lastIsVisible: boolean;
-  firstTime: string;
-  lastTime: string;
+  startTime: string;
+  endTime: string;
 }
 
 //// fetch ////

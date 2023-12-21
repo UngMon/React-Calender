@@ -70,6 +70,7 @@ const Schedule = React.memo(
       isMore: boolean,
       param: Parameter
     ) => {
+      console.log('Schedule MouseDown')
       e.stopPropagation();
       if (window.innerWidth < 500 || param.key === modal.key) return;
       if (isMore) return (clicekdMoreRef.current = e.target as HTMLDivElement);
@@ -82,6 +83,7 @@ const Schedule = React.memo(
       isMore: boolean,
       param: Parameter
     ) => {
+      console.log('Schedule MouseUp')
       e.stopPropagation();
       if (window.innerWidth < 500) return;
       if (isMore) {

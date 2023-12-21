@@ -1,4 +1,9 @@
-const ModalPosition = (day: string, week: string, size: [number, number]) => {
+const ModalPosition = (
+  day: string,
+  week: string,
+  size: [number, number],
+  lastweek: number
+) => {
   let array = [0, 0];
 
   let width = size[0];
@@ -42,13 +47,13 @@ const ModalPosition = (day: string, week: string, size: [number, number]) => {
       array[1] = height * (+week - 2.3);
       break;
     case "4":
-      array[1] = height * (+week - 2);
+      array[1] = lastweek > 5 ? height * 3 : height * 2;
       break;
     case "5":
-      array[1] = height * (+week - 4);
+      array[1] = lastweek > 5 ? height * 2 : height * 1;
       break;
     default: // day === 6
-      array[1] = height * (+week - 5);
+      array[1] = height;
   }
 
   return array;

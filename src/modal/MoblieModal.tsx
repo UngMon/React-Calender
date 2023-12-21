@@ -55,7 +55,7 @@ const MobileModal = ({ data, modal, clone }: T) => {
     return () => window.removeEventListener("touchend", clickHandler);
   });
 
-  const addEvent = () => {
+  const addSchedule = () => {
     dispatch(cloneActions.addEvent({ title: inputRef.current!.value }));
     navigate(`/calender/event/make`);
   };
@@ -86,7 +86,7 @@ const MobileModal = ({ data, modal, clone }: T) => {
               )}
           </ul>
         </main>
-        <form className="mobile-make" onSubmit={() => addEvent()}>
+        <form className="mobile-make">
           <label htmlFor="title" />
           <input
             id="title"
@@ -95,7 +95,7 @@ const MobileModal = ({ data, modal, clone }: T) => {
             onTouchEnd={() => inputRef.current!.focus()}
             ref={inputRef}
           />
-          <button type="submit" onTouchEnd={() => addEvent()}>
+          <button type="submit" onTouchEnd={() => addSchedule()}>
             <span>+</span>
           </button>
         </form>
