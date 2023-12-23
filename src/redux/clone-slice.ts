@@ -85,6 +85,10 @@ const cloneSlice = createSlice({
       state.color = action.payload.color;
     },
 
+    changeColor(state, action) {
+      state.color = action.payload.color;
+    },
+
     addEvent(state, action) {
       state.title = action.payload.title;
     },

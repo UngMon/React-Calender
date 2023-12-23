@@ -48,6 +48,9 @@ const MakeCalender = React.memo(
   }: T) => {
     const dispatch = useAppDispatch();
     const data = useSelector((state: RootState) => state.data);
+    const modal = useSelector((state: RootState) => state.modal);
+
+    console.log('MakeCalender Redner')
 
     const [countDown, setCountDown] = useState<boolean>(false);
 
@@ -157,6 +160,7 @@ const MakeCalender = React.memo(
             {data.userSchedule[date] && (
               <Schedule
                 date={date}
+                modal={modal}
                 day={day}
                 week={week}
                 array={array}

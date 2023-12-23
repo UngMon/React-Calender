@@ -87,6 +87,15 @@ const MoreList = ({
   });
 
   useEffect(() => {
+    const keyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape")
+        dispatch(modalActions.clearSet());
+    };
+    document.addEventListener("keydown", keyDown);
+    return () => document.removeEventListener("keydown", keyDown);
+  });
+
+  useEffect(() => {
     const widthCalculator = () => {
       setSize([viewRef.current!.clientWidth, viewRef.current!.clientHeight]);
     };
@@ -176,7 +185,7 @@ const MoreList = ({
   };
 
   const margin = ModalPositionTwo(modal.day, modal.week, size, lastweek);
-  console.log('More Modal Render')
+  console.log("More Modal Render");
   return (
     <div
       className={`AllList on`}

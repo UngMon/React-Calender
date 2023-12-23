@@ -7,7 +7,7 @@ import { timeActions } from "../redux/time-slice";
 import { MakeList } from "../utils/MakeList";
 import { MakeListParameter } from "../type/Etc";
 import { sendUserData } from "../redux/fetch-action";
-import { DataType } from "../type/ReduxType";
+import { DataType, ModalType } from "../type/ReduxType";
 import { makeHeightObject } from "./Object";
 import ModalPosition from "../utils/ModalPosition";
 import PickerBox from "../utils/Time/PickerBox";
@@ -35,7 +35,6 @@ const MakeEvent = ({ data, lastweek, uid, viewRef, setIsDragging }: T) => {
     viewRef.current!.clientWidth,
     (viewRef.current!.clientHeight - 26) / lastweek,
   ]);
-  const [openDate, setOpenDate] = useState<[boolean, string]>([false, ""]);
 
   const startDate: string = clone.startDate;
   const endDate: string = clone.endDate;
@@ -55,6 +54,14 @@ const MakeEvent = ({ data, lastweek, uid, viewRef, setIsDragging }: T) => {
 
     window.addEventListener("resize", widthCalculator);
     return () => window.removeEventListener("resize", widthCalculator);
+  });
+
+  useEffect(() => {
+    const keyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") cancelHandler();
+    };
+    document.addEventListener("keydown", keyDown);
+    return () => document.removeEventListener("keydown", keyDown);
   });
 
   useEffect(() => {
@@ -130,7 +137,12 @@ const MakeEvent = ({ data, lastweek, uid, viewRef, setIsDragging }: T) => {
   };
 
   // 여기는 스크린 크기에 따라 modal의 위치를 지정한다.
-  const modalPosition: number[] = ModalPosition(clone.day, clone.week, size, lastweek);
+  const modalPosition: number[] = ModalPosition(
+    clone.day,
+    clone.week,
+    size,
+    lastweek
+  );
 
   return (
     <div
@@ -151,7 +163,7 @@ const MakeEvent = ({ data, lastweek, uid, viewRef, setIsDragging }: T) => {
           }`}
           style={{
             height:
-              openDate[0] && makeHeightObject[lastweek] > window.innerHeight
+              makeHeightObject[lastweek] > window.innerHeight
                 ? 412 - (makeHeightObject[lastweek] - window.innerHeight)
                 : "",
           }}

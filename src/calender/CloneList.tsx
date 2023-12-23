@@ -37,16 +37,16 @@ const CloneList = ({
 
   const data = useSelector((state: RootState) => state.data);
   const modal = useSelector((state: RootState) => state.modal);
+  const clone = useSelector((state: RootState) => state.clone);
 
   const uid = auth.currentUser!.uid;
-  const cloneRedux = useSelector((state: RootState) => state.clone);
   const [고정좌표, 고정좌표설정] = useState<[number, number]>([0, 0]);
   const [실시간좌표, 실시간좌표설정] = useState<[number, number]>([0, 0]);
 
   const [mouseEnter, setMouseEnter] = useState<boolean>(false);
   const [isMoving, setIsMoving] = useState<boolean>(false);
-  const [startDate, setStartDate] = useState<string>(cloneRedux.startDate);
-  const [endDate, setEndDate] = useState<string>(cloneRedux.endDate);
+  const [startDate, setStartDate] = useState<string>(clone.startDate);
+  const [endDate, setEndDate] = useState<string>(clone.endDate);
 
   const moveDate = useCallback((date: string, move: number) => {
     const currentDate = new Date(date);
@@ -64,30 +64,30 @@ const CloneList = ({
   }, []);
 
   useEffect(() => {
-    if (!cloneRedux.startDate || !cloneRedux.endDate) return;
-    if (!mouseEnter && cloneRedux.mouseType === "MakeList") return;
+    if (!clone.startDate || !clone.endDate) return;
+    if (!mouseEnter && clone.mouseType === "MakeList") return;
 
     const move: number =
       (실시간좌표[1] - 고정좌표[1]) * 7 + (실시간좌표[0] - 고정좌표[0]);
     let start: string;
     let end: string;
 
-    if (cloneRedux.mouseType === "MakeList") {
+    if (clone.mouseType === "MakeList") {
       start =
-        move >= 0 ? cloneRedux.startDate : moveDate(cloneRedux.startDate, move);
-      end = move >= 0 ? moveDate(cloneRedux.endDate, move) : cloneRedux.endDate;
-    } else if (cloneRedux.mouseType === "List") {
-      start = moveDate(cloneRedux.startDate, move);
-      end = moveDate(cloneRedux.endDate, move);
+        move >= 0 ? clone.startDate : moveDate(clone.startDate, move);
+      end = move >= 0 ? moveDate(clone.endDate, move) : clone.endDate;
+    } else if (clone.mouseType === "List") {
+      start = moveDate(clone.startDate, move);
+      end = moveDate(clone.endDate, move);
     } else {
-      start = cloneRedux.startDate;
-      end = cloneRedux.endDate;
+      start = clone.startDate;
+      end = clone.endDate;
     }
 
     setStartDate(start);
     setEndDate(end);
     setMouseEnter(false);
-  }, [moveDate, cloneRedux, 고정좌표, 실시간좌표, mouseEnter]);
+  }, [moveDate, clone, 고정좌표, 실시간좌표, mouseEnter]);
 
   const mouseEnterHandler = (day: number, week: number) => {
     if (modal.addModalOpen || modal.openEdit) return;
@@ -107,7 +107,7 @@ const CloneList = ({
 
     document.body.style.cursor = "auto";
 
-    if (cloneRedux.mouseType === "MakeList") {
+    if (clone.mouseType === "MakeList") {
       if (viewRef.current!.clientWidth <= 500) navigate("/calender/makeEvent");
       else
         !modal.addModalOpen &&
@@ -146,7 +146,7 @@ const CloneList = ({
       return;
     }
 
-    if (cloneRedux.mouseType === "List") {
+    if (clone.mouseType === "List") {
       setIsMoving(false);
       setIsDragging(false);
       if (실시간좌표[0] === 고정좌표[0] && 실시간좌표[1] === 고정좌표[1]) {
@@ -157,21 +157,21 @@ const CloneList = ({
 
       const schedule = JSON.parse(JSON.stringify(data.userSchedule));
       const prevDateArray = makeDateArray(
-        cloneRedux.startDate,
-        cloneRedux.endDate
+        clone.startDate,
+        clone.endDate
       );
       // 기존 항목 삭제 하고..
       for (let date of prevDateArray) {
-        delete schedule[date][cloneRedux.key];
+        delete schedule[date][clone.key];
       }
 
       const parameter: MakeListParameter = {
-        title: cloneRedux.title,
+        title: clone.title,
         startDate,
         endDate,
-        startTime: cloneRedux.startTime,
-        endTime: cloneRedux.endTime,
-        color: cloneRedux.color,
+        startTime: clone.startTime,
+        endTime: clone.endTime,
+        color: clone.color,
         userSchedule: schedule,
       };
       // 새롭게 설정된 기간에 일정 생성 후에
@@ -219,7 +219,7 @@ const CloneList = ({
       >
         <div
           className={`${style.list}
-          ${style.long} ${modal.color || "라벤더"}`}
+          ${style.long} ${clone.color || modal.color || '라벤더'}`}
         >
           <div className={`${style["type-one"]} ${modal.isDone && style.done}`}>
             {title}

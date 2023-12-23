@@ -85,7 +85,7 @@ const PickerBox = ({
         width="20"
         className="clock-icon"
       />
-      <div className="picker-box">
+      <div className="pc-picker-box">
         <div className="picker-one">
           <div className="date-picker">
             <div

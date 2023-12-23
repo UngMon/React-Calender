@@ -4,13 +4,13 @@
   width: 340px;
   display: grid;
   grid-template-columns: 20px 320px;
-  grid-template-rows: 72px auto;
+  grid-template-rows: 80px auto;
   align-items: center;
   justify-content: left;
   font-size: 14px;
 }
 
-.picker-box {
+.pc-picker-box {
   box-sizing: border-box;
   padding-left: 10px;
   display: flex;

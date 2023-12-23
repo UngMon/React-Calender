@@ -1,5 +1,7 @@
 import React, { useEffect, useRef } from "react";
 import style from "./ColorBox.module.css";
+import { useAppDispatch } from "../../redux/store";
+import { cloneActions } from "../../redux/clone-slice";
 
 interface T {
   platform: string;
@@ -29,11 +31,13 @@ const ColorBox = ({
   openColor,
   setOpenColor,
 }: T) => {
+  const dispatch = useAppDispatch();
   const colorRef = useRef<HTMLDivElement>(null);
 
   const selectedColor = (color: string) => {
     setColor(color);
     setOpenColor(false);
+    dispatch(cloneActions.changeColor({ color }));
   };
 
   useEffect(() => {

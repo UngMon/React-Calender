@@ -1,12 +1,11 @@
 import React, { ReactNode, useEffect, useState } from "react";
-import { useAppDispatch, RootState } from "../../redux/store";
+import { useAppDispatch } from "../../redux/store";
 import { modalActions } from "../../redux/modal-slice";
 import { cloneActions } from "../../redux/clone-slice";
-import { DataType } from "../../type/ReduxType";
+import { DataType, ModalType } from "../../type/ReduxType";
 import { ListOrMore } from "../../type/RefType";
 import { CalenderData } from "../../type/ReduxType";
 import { calculateWidth } from "../../utils/CalculateWidth";
-import { useSelector } from "react-redux";
 import style from "../Calender.module.css";
 
 interface Parameter extends CalenderData {
@@ -18,6 +17,7 @@ interface Parameter extends CalenderData {
 
 interface T {
   data: DataType;
+  modal: ModalType;
   date: string;
   day: string;
   week: string;
@@ -32,6 +32,7 @@ interface T {
 const Schedule = React.memo(
   ({
     data,
+    modal,
     date,
     day,
     week,
@@ -44,7 +45,6 @@ const Schedule = React.memo(
   }: T): JSX.Element => {
     const dispatch = useAppDispatch();
 
-    const modal = useSelector((state: RootState) => state.modal);
     const schedule = data.userSchedule;
 
     const listElementHeight = window.innerWidth > 500 ? 24 : 20;
@@ -70,7 +70,6 @@ const Schedule = React.memo(
       isMore: boolean,
       param: Parameter
     ) => {
-      console.log('Schedule MouseDown')
       e.stopPropagation();
       if (window.innerWidth < 500 || param.key === modal.key) return;
       if (isMore) return (clicekdMoreRef.current = e.target as HTMLDivElement);
@@ -83,7 +82,7 @@ const Schedule = React.memo(
       isMore: boolean,
       param: Parameter
     ) => {
-      console.log('Schedule MouseUp')
+      console.log("Schedule MouseUp");
       e.stopPropagation();
       if (window.innerWidth < 500) return;
       if (isMore) {
@@ -92,7 +91,6 @@ const Schedule = React.memo(
       }
       setCountDown(false);
       setIsDragging(false);
-
       if (!isMore && param.key !== modal.key) {
         dispatch(modalActions.setListInfo({ type: "List", ...param }));
         !modal.listModalOpen && dispatch(modalActions.onList());

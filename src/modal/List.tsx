@@ -1,11 +1,15 @@
 import React, { useRef, useState, useEffect } from "react";
-import { useSelector } from "react-redux";
-import { RootState, useAppDispatch } from "../redux/store";
+import { useAppDispatch } from "../redux/store";
 import { modalActions } from "../redux/modal-slice";
 import { cloneActions } from "../redux/clone-slice";
 import { timeActions } from "../redux/time-slice";
 import { ListOrMore } from "../type/RefType";
-import { DataType, ModalType, UserData } from "../type/ReduxType";
+import {
+  DataType,
+  ModalBasicType,
+  ModalType,
+  UserData,
+} from "../type/ReduxType";
 import { sendUserData } from "../redux/fetch-action";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -25,36 +29,35 @@ import "./List.css";
 
 interface T {
   data: DataType;
+  clone: ModalBasicType;
   modal: ModalType;
   uid: string;
   lastweek: number;
   viewRef: React.RefObject<HTMLDivElement>;
-  moreModalRef: React.MutableRefObject<HTMLDivElement | null>;
   listRef: React.MutableRefObject<ListOrMore>;
-  allListRef: React.MutableRefObject<ListOrMore>;
   clickedElement: React.MutableRefObject<HTMLDivElement | null>;
   list: React.RefObject<HTMLDivElement>;
   setIsDragging: React.Dispatch<React.SetStateAction<boolean>>;
+  // moreModalRef: React.MutableRefObject<HTMLDivElement | null>;
+  // allListRef: React.MutableRefObject<ListOrMore>;
 }
 
 const List = ({
   data,
+  clone,
   modal,
   uid,
   lastweek,
   viewRef,
-  moreModalRef,
   listRef,
-  allListRef,
   clickedElement,
   list,
   setIsDragging,
 }: T) => {
   const dispatch = useAppDispatch();
-  const clone = useSelector((state: RootState) => state.clone);
 
-  const startDate = modal.startDate;
-  const endDate = modal.endDate;
+  const startDate = clone.startDate || modal.startDate;
+  const endDate = clone.endDate || modal.endDate;
 
   const date = [...startDate.split("-"), ...endDate.split("-")];
 
@@ -84,6 +87,14 @@ const List = ({
   });
 
   useEffect(() => {
+    const keyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") closeModalHandler();
+    };
+    document.addEventListener("keydown", keyDown);
+    return () => document.removeEventListener("keydown", keyDown);
+  });
+
+  useEffect(() => {
     const closeHandler = (e: MouseEvent) => {
       const target = e.target as HTMLDivElement;
 
@@ -101,7 +112,6 @@ const List = ({
           if (listRef.current[key]?.contains(target)) return;
         }
         // 위 영역이 아닌 다른 영역을 클릭한 경우 list 모달창 닫음.
-        console.log('List out Click')
         closeModalHandler();
       }
     };
@@ -151,10 +161,10 @@ const List = ({
     if (!pattern.test(endTime))
       return alert("시간을 제대로 입력해주세요! ex) 오후 01:30");
 
-    if (startTime > endTime)
-      return alert("시작시간이 끝나는 시간보다 큽니다!!");
-
     if (startDate > endDate) return alert("마지막 날이 시작날 보다 작습니다!!");
+
+    if (startTime > endTime && startDate === endDate)
+      return alert("시작시간이 끝나는 시간보다 큽니다!!");
 
     if (title.length === 0) title = inputRef.current!.placeholder;
 
@@ -209,7 +219,7 @@ const List = ({
     ? "done"
     : false;
 
-  const cordinate = ModalPosition(modal.day, modal.week, size, lastweek);
+  const cordinate = ModalPosition(clone.day, clone.week, size, lastweek);
   const markD = markDate(modal.startDate, modal.endDate);
 
   return (
@@ -221,7 +231,7 @@ const List = ({
       style={{
         left: `${cordinate[0]}px`,
         top: `${clone.week < "4" && cordinate[1]}px`,
-        bottom: `${clone.week > "3" && cordinate[1]}px`,
+        bottom: `${!modal.openEdit && clone.week > "3" && cordinate[1]}px`,
       }}
       onWheel={(e) => e.stopPropagation()}
     >
@@ -296,13 +306,11 @@ const List = ({
 
 export default List;
 
+// for (const key in allListRef.current) {
+//   if (allListRef.current[key]?.contains(target)) {
+//     return dispatch(modalActions.clearSet());
+//   }
+// }
 
-
-        // for (const key in allListRef.current) {
-        //   if (allListRef.current[key]?.contains(target)) {
-        //     return dispatch(modalActions.clearSet());
-        //   }
-        // }
-
-        // if (moreModalRef.current?.contains(target)) return;
-        // !modal.moreModalOpen && closeModalHandler();
+// if (moreModalRef.current?.contains(target)) return;
+// !modal.moreModalOpen && closeModalHandler();

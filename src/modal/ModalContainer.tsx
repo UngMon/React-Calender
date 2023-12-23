@@ -64,17 +64,18 @@ const ModalContainer = ({
       )}
       {modal.listModalOpen && (
         <List
+          data={data}
+          modal={modal}
+          clone={clone}
           lastweek={lastweek}
           viewRef={viewRef}
-          moreModalRef={moreModalRef}
           listRef={listRef}
-          allListRef={allListRef}
           clickedElement={clickedElement}
           list={list}
           uid={auth.currentUser!.uid}
-          data={data}
-          modal={modal}
           setIsDragging={setIsDragging}
+          // moreModalRef={moreModalRef}
+          // allListRef={allListRef}
         />
       )}
       {modal.mobileModalOpen && window.innerWidth <= 500 && (

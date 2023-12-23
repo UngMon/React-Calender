@@ -28,8 +28,10 @@ const Calender = () => {
     if (!year || !month)
       return navigate(`/calender/date?year=${ye}&month=${mon}`);
 
-    if (year > "2003" && year < String(+ye + 2) && month < "13" && month > "00")
+    if (year > "2003" && year < String(+ye + 2) && month < "13" && month > "00") {
+      dispatch(getNationalDay(year));
       return;
+    }
 
     let y = year === "" ? ye : year;
     let m = month === "" ? mon : month;
@@ -38,7 +40,7 @@ const Calender = () => {
     m = String(Math.max(1, Math.min(12, +m))).padStart(2, "0");
 
     navigate(`/calender/date?year=${y}&month=${m}`);
-
+    console.log("???????");
     dispatch(getNationalDay(y));
   }, [dispatch, navigate, month, year]);
 
