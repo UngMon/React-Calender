@@ -63,15 +63,18 @@ const dataSlice = createSlice({
       const year = action.payload.year;
       const data = action.payload.data;
 
-      // data.legnth === 0은 불러온 데이터가 없음 => 이건 세션스토리지에 데이터가 존재하는 경우
+      // data.legnth === 0 => 세션스토리지에 데이터가 존재하는 경우
       if (data.length === 0) {
-        console.log('천문데이터 get')
-        const arr = [String(+year - 1), year, String(+year + 1)];
-        arr.forEach(
-          (index) =>
-            (result[index] = JSON.parse(sessionStorage.getItem(index)!))
-        );
-        state.holiday = result;
+   
+        if (!state.holiday[year]) {
+          console.log("천문데이터 get");
+          const arr = [String(+year - 1), year, String(+year + 1)];
+          arr.forEach(
+            (index) =>
+              (result[index] = JSON.parse(sessionStorage.getItem(index)!))
+          );
+          state.holiday = result;
+        }
         return;
       }
 
@@ -79,7 +82,7 @@ const dataSlice = createSlice({
 
       for (let y = 0; y < yearArray.length; y++) {
         result[yearArray[y]] = {};
-        if (data[y].response.body.items === '') {
+        if (data[y].response.body.items === "") {
           // 한국천문연구원 특일정보에 없는 데이터임.. 2023년 기준 2026년 데이터가 없다.
           return;
         }
@@ -96,7 +99,6 @@ const dataSlice = createSlice({
           JSON.stringify(result[yearArray[y]])
         );
       }
-
     });
     builder.addCase(getNationalDay.rejected, (state, action) => {
       console.log(action.error);
@@ -110,7 +112,7 @@ const dataSlice = createSlice({
       state.isLoading = false;
       state.succesGetScheduleData = true;
       state.userSchedule = action.payload.schedule;
-      console.log('useschedule get')
+      console.log("useschedule get");
     });
     builder.addCase(getUserData.rejected, (state, action) => {
       state.isLoading = false;

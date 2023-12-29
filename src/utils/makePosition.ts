@@ -1,18 +1,18 @@
-const ModalPosition = (
+export const makePosition = (
   day: string,
   week: string,
   size: [number, number],
-  lastweek: number
+  openEdit: boolean,
+  index: number
 ) => {
   let array = [0, 0];
-
   let width = size[0];
   let height = size[1];
-
+  console.log(index);
   // 캘린더 너비에 따른 모달창 위치 조절
   switch (day) {
     case "1":
-      array[0] = width > 500 ? (width / 7) * +day : (width - 400) / 2;
+      array[0] = (width / 7) * +day;
       break;
     case "2":
       array[0] = width > 590 ? (width / 7) * +day : (width - 400) / 2;
@@ -38,19 +38,19 @@ const ModalPosition = (
 
   switch (week) {
     case "1":
-      array[1] = 24;
+      array[1] = 24 * index;
       break;
     case "2":
-      array[1] = height * (+week - 1.5);
+      array[1] = height - height / 2;
       break;
     case "3":
-      array[1] = height * (+week - 2.3);
+      array[1] = height - height / 2.5;
       break;
     case "4":
-      array[1] = lastweek > 5 ? height * 3 : height * 2;
+      array[1] = height * 1.5;
       break;
     case "5":
-      array[1] = lastweek > 5 ? height * 2 : height * 1;
+      array[1] = height;
       break;
     default: // day === 6
       array[1] = height;
@@ -58,5 +58,3 @@ const ModalPosition = (
 
   return array;
 };
-
-export default ModalPosition;

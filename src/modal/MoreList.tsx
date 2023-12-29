@@ -6,7 +6,7 @@ import { cloneActions } from "../redux/clone-slice";
 import { ListOrMore } from "../type/RefType";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
-import ModalPositionTwo from "../utils/ModalPositionTwo";
+import { morePosition } from "../utils/morePosition";
 import "./MoreList.css";
 
 interface T {
@@ -22,7 +22,7 @@ interface T {
 
 const widthObj: { [key: string]: string } = {
   short: "194px",
-  middle: "182px",
+  middle: "170.1px",
   start: "170.2px",
   end: "170.2px",
 };
@@ -52,6 +52,7 @@ const MoreList = ({
   moreModalRef,
   allListRef,
   clickedElement,
+  list,
 }: T) => {
   const dispatch = useAppDispatch();
 
@@ -75,7 +76,9 @@ const MoreList = ({
           if (allListRef.current[key]?.contains(target)) return;
         }
 
-        dispatch(modalActions.onOffModal({ type: "more" }));
+        if (list.current?.contains(target)) return;
+
+        dispatch(modalActions.clearSet({ type: "all" }));
         clickedElement.current = null;
       }
     };
@@ -88,8 +91,7 @@ const MoreList = ({
 
   useEffect(() => {
     const keyDown = (e: KeyboardEvent) => {
-      if (e.key === "Escape")
-        dispatch(modalActions.clearSet());
+      if (e.key === "Escape") dispatch(modalActions.clearSet({ type: "all" }));
     };
     document.addEventListener("keydown", keyDown);
     return () => document.removeEventListener("keydown", keyDown);
@@ -101,6 +103,7 @@ const MoreList = ({
     };
 
     window.addEventListener("resize", widthCalculator);
+    return () => window.removeEventListener("resize", widthCalculator);
   });
 
   const listClickHandler = (
@@ -115,10 +118,23 @@ const MoreList = ({
     const giveDate = new Date(object.startDate);
     const day = String(giveDate.getDay() + 1);
     const week = String(Math.ceil((giveDate.getDate() + +day - 1) / 7));
+
     dispatch(
-      cloneActions.setListInfo({ type: "List", ...object, day, week, index })
+      cloneActions.setListInfo({
+        type: "List",
+        ...object,
+        day,
+        week,
+        index: index > 3 ? 3 : index,
+      })
     );
-    dispatch(modalActions.setListInfo({ type: "More", ...object, index }));
+    dispatch(
+      modalActions.setListInfo({
+        type: "More",
+        ...object,
+        index: index > 3 ? 3 : index,
+      })
+    );
     dispatch(modalActions.onList());
   };
 
@@ -173,7 +189,7 @@ const MoreList = ({
           >
             {object.title}
           </div>
-          {object.endDate >= modal.date && (
+          {object.endDate > modal.date && (
             <div className={`start-date border-right-${object.color}`}></div>
           )}
         </div>
@@ -184,39 +200,32 @@ const MoreList = ({
     return result;
   };
 
-  const margin = ModalPositionTwo(modal.day, modal.week, size, lastweek);
-  console.log("More Modal Render");
+  const 좌표 = morePosition(modal.day, modal.week, size, lastweek);
+
   return (
     <div
       className={`AllList on`}
       ref={moreModalRef}
       style={{
-        ...(modal.day < "4" ? { left: margin![0] } : {}),
-        ...(modal.day > "3" ? { right: -margin![0] } : {}),
-        ...(modal.week < "4" ? { top: margin![1] } : {}),
-        ...(modal.week > "3" ? { bottom: margin![1] } : {}),
+        left: 좌표![0],
+        top: 좌표![1],
       }}
+      onWheel={(e) => e.stopPropagation()}
     >
       <div className="AllList-header">
         <h2>{dayText[modal.day]}</h2>
-        <button onClick={() => dispatch(modalActions.clearSet())}>
+        <button
+          onClick={() => dispatch(modalActions.clearSet({ type: "all" }))}
+        >
           <FontAwesomeIcon icon={faXmark} />
         </button>
       </div>
       <h3 className="AllList-date">{modal.date}</h3>
-      <div className="AllList-box">{makeListHandler()}</div>
+      <div className="AllList-container">
+        <div className="AllList-box">{makeListHandler()}</div>
+      </div>
     </div>
   );
 };
 
 export default MoreList;
-
-// ...(modal.day < "4" ? { left: margin![0] } : {}),
-// ...(modal.day > "3" ? { right: -margin![0] } : {}),
-// ...(modal.week < "4" ? { top: margin![1] } : {}),
-// ...(modal.week > "3" ? { bottom: margin![1] } : {}),
-
-// left: modal.day < "4" ? margin![0] : "none",
-// right: modal.day > "3" ? -margin![0] : "none",
-// top: `${modal.week < "4" && margin![1]}px`,
-// bottom: `${modal.week > "3" && margin![1]}px`,

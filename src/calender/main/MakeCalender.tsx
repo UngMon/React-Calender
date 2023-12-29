@@ -50,7 +50,7 @@ const MakeCalender = React.memo(
     const data = useSelector((state: RootState) => state.data);
     const modal = useSelector((state: RootState) => state.modal);
 
-    console.log('MakeCalender Redner')
+    console.log("MakeCalender Redner");
 
     const [countDown, setCountDown] = useState<boolean>(false);
 
@@ -85,6 +85,7 @@ const MakeCalender = React.memo(
     };
 
     const mouseUp = () => {
+      console.log("MakeCalender MouseUp");
       setCountDown(false); // 카운트다운 취소
       if (clicekdMoreRef.current) return;
       setIsDragging(true); // 마우스 up후에 clone List가 보이게 true로 설정
@@ -139,11 +140,9 @@ const MakeCalender = React.memo(
             >
               <span
                 className={`${i === 1 && style.sunday} 
-                    ${i === 7 && style.saturday} ${
-                  identify === date && style.Today
-                }
+                    ${i === 7 && style.saturday} 
                   ${isHoliday?.isHoliday === "Y" && style.holiday}
-                  `}
+                  ${identify === date && style.Today}`}
               >
                 {일 === "01" ? `${+월}월 1일` : +일}
               </span>

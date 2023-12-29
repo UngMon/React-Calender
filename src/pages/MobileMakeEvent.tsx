@@ -19,14 +19,14 @@ import {
   faClock,
 } from "@fortawesome/free-regular-svg-icons";
 import { newMonth, newYear } from "../utils/nowDate";
+import { setTime } from "../utils/Time/SetTime";
 import MobileTimePicker from "../ui/MobileTimePicker";
-import SetTime from "../utils/Time/SetTime";
 import SeconMonth from "../utils/miniCalender/Secon-Month";
 import ColorBox from "../utils/Time/ColorBox";
 import NotFound from "../error/NotFound";
 import "./MobileMakeEvent.css";
 
-const nowTime = SetTime();
+const nowTime = setTime();
 
 const date = new Date().toISOString().split("T")[0];
 

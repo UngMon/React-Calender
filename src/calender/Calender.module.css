@@ -92,12 +92,6 @@ td {
   border-right: 0;
 }
 
-.Today {
-  background-color: #1a73e8;
-  border-radius: 100%;
-  color: white;
-}
-
 .startDate {
   padding-left: 5px;
 }
@@ -109,6 +103,12 @@ td {
 
 .national {
   color: rgb(2, 152, 2);
+}
+
+.Today {
+  background-color: #1a73e8;
+  border-radius: 100%;
+  color: white;
 }
 
 .list-box {

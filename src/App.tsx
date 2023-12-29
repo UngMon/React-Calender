@@ -48,11 +48,7 @@ function App() {
           <Route path="*" element={<NotFound />} />
         </Route>
       )}
-      {loggedIn && (
-        <Route path="/search">
-          <Route path=":search" element={<Result />} />
-        </Route>
-      )}
+      {loggedIn && <Route path="/search" element={<Result />} />}
       <Route path="*" element={<NotFound />} />
     </Routes>
   );

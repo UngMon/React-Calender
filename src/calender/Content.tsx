@@ -25,22 +25,27 @@ const Calender = () => {
 
   useEffect(() => {
     // 아래 조건식으로 불 필요한 렌더링 방지
-    if (!year || !month)
+    if (!year || !month) {
+      // 사용자가 year or month를 입력하지 않은 경우
       return navigate(`/calender/date?year=${ye}&month=${mon}`);
-
-    if (year > "2003" && year < String(+ye + 2) && month < "13" && month > "00") {
-      dispatch(getNationalDay(year));
-      return;
     }
 
     let y = year === "" ? ye : year;
     let m = month === "" ? mon : month;
 
+    if (
+      y > "2003" &&
+      y < String(+y + 3) &&
+      m < "12" &&
+      m > "01" &&
+      sessionStorage.getItem(y)
+    )
+      return;
+
     y = String(Math.max(2004, Math.min(+ye + 2, +y)));
     m = String(Math.max(1, Math.min(12, +m))).padStart(2, "0");
 
     navigate(`/calender/date?year=${y}&month=${m}`);
-    console.log("???????");
     dispatch(getNationalDay(y));
   }, [dispatch, navigate, month, year]);
 
@@ -81,7 +86,7 @@ const Calender = () => {
   const wheelHandler = (e: React.WheelEvent) => {
     if (delay) return;
 
-    dispatch(modalActions.clearSet());
+    dispatch(modalActions.clearSet({ type: "all" }));
     switch (e.deltaY > 0) {
       case true:
         movePrevMonth();

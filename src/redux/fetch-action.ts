@@ -36,7 +36,7 @@ export const getNationalDay = createAsyncThunk(
 
     // redux extraReducers에 전달한 data배열 만들기
     let data: any[] = [];
-    console.log('????????')
+    console.log("????????");
     try {
       // 앞서 requests(해당 년도의 국경일이 세션스토리지에 없는 fetch(url))을 병렬처리
       const responses = await Promise.all(requests);

@@ -3,7 +3,7 @@ import { RootState, useAppDispatch } from "../../redux/store";
 import { useSelector } from "react-redux";
 import { timeActions } from "../../redux/time-slice";
 import { ListOrMore } from "../../type/RefType";
-import SetTime from "./SetTime";
+import { setTime } from "./SetTime";
 import SecondCaleder from "../miniCalender/Secon-Month";
 import TimeBoxOne from "./TimeBoxOne";
 import TimeBoxTwo from "./TimeBoxTwo";
@@ -16,9 +16,9 @@ interface T {
   timeInputTwoRef: React.RefObject<HTMLInputElement>;
 }
 
-const setTime = SetTime();
-const firstTime = setTime.currentTime;
-const lastTime = setTime.lastTime;
+const st = setTime();
+const firstTime = st.currentTime;
+const lastTime = st.lastTime;
 
 const PickerBox = ({
   startDate,

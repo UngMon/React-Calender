@@ -57,9 +57,9 @@ const ModalContainer = ({
           lastweek={lastweek}
           viewRef={viewRef}
           moreModalRef={moreModalRef}
+          list={list}
           allListRef={allListRef}
           clickedElement={clickedElement}
-          list={list}
         />
       )}
       {modal.listModalOpen && (
@@ -74,8 +74,6 @@ const ModalContainer = ({
           list={list}
           uid={auth.currentUser!.uid}
           setIsDragging={setIsDragging}
-          // moreModalRef={moreModalRef}
-          // allListRef={allListRef}
         />
       )}
       {modal.mobileModalOpen && window.innerWidth <= 500 && (

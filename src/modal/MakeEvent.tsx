@@ -7,9 +7,9 @@ import { timeActions } from "../redux/time-slice";
 import { MakeList } from "../utils/MakeList";
 import { MakeListParameter } from "../type/Etc";
 import { sendUserData } from "../redux/fetch-action";
-import { DataType, ModalType } from "../type/ReduxType";
+import { DataType } from "../type/ReduxType";
 import { makeHeightObject } from "./Object";
-import ModalPosition from "../utils/ModalPosition";
+import { makePosition } from "../utils/makePosition";
 import PickerBox from "../utils/Time/PickerBox";
 import ColorBox from "../utils/Time/ColorBox";
 import "./MakeEvent.css";
@@ -130,27 +130,22 @@ const MakeEvent = ({ data, lastweek, uid, viewRef, setIsDragging }: T) => {
     setAnimaOn(false);
     setIsDragging(false);
     setTimeout(() => {
-      dispatch(modalActions.clearSet());
+      dispatch(modalActions.clearSet({ type: "all" }));
       dispatch(timeActions.resetTime());
       dispatch(cloneActions.clearSet());
     }, 250);
   };
 
   // 여기는 스크린 크기에 따라 modal의 위치를 지정한다.
-  const modalPosition: number[] = ModalPosition(
-    clone.day,
-    clone.week,
-    size,
-    lastweek
-  );
+  const 좌표: number[] = makePosition(clone.day, clone.week, size, false, 0);
 
   return (
     <div
       className={`make-modal-box  ${animaOn ? "on" : "off"}`}
       style={{
-        left: `${modalPosition && modalPosition[0]}px`,
-        top: `${clone.week < "4" && modalPosition[1]}px`,
-        bottom: `${clone.week > "3" && modalPosition[1]}px`,
+        left: 좌표[0],
+        top: `${clone.week < "4" && 좌표[1]}px`,
+        bottom: `${clone.week > "3" && 좌표[1]}px`,
       }}
       ref={boxRef}
       onWheel={(e) => e.stopPropagation()}

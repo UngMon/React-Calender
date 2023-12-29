@@ -78,12 +78,18 @@ const modalSlice = createSlice({
       state.key = "";
     },
 
-    clearSet(state) {
-      state.addModalOpen = false;
-      state.listModalOpen = false;
-      state.moreModalOpen = false;
-      state.mobileModalOpen = false;
-      state.openEdit = false;
+    clearSet(state, action) {
+      if (action.payload.type === "list") {
+        state.listModalOpen = false;
+        return;
+      } else {
+        state.addModalOpen = false;
+        state.listModalOpen = false;
+        state.moreModalOpen = false;
+        state.mobileModalOpen = false;
+        state.openEdit = false;
+      }
+
       state.date = "";
       state.week = "";
       state.day = "";

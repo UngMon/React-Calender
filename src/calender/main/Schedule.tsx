@@ -49,6 +49,8 @@ const Schedule = React.memo(
 
     const listElementHeight = window.innerWidth > 500 ? 24 : 20;
     const [countDown, setCountDown] = useState<boolean>(false);
+    const [x, setX] = useState<number>(0);
+    const [y, setY] = useState<number>(0);
 
     useEffect(() => {
       // 사용자가 일정이나 날짜를 1초 이상 클릭하고 있는 경우,
@@ -58,6 +60,7 @@ const Schedule = React.memo(
       const checkDragging = () => {
         window.document.body.style.cursor = "move";
         setIsDragging(true);
+        setCountDown(false);
       };
 
       const timeout = setTimeout(checkDragging, 800);
@@ -74,6 +77,8 @@ const Schedule = React.memo(
       if (window.innerWidth < 500 || param.key === modal.key) return;
       if (isMore) return (clicekdMoreRef.current = e.target as HTMLDivElement);
       setCountDown(true);
+      setX(e.pageX);
+      setY(e.pageY);
       dispatch(cloneActions.setListInfo({ type: "List", ...param }));
     };
 
@@ -82,7 +87,6 @@ const Schedule = React.memo(
       isMore: boolean,
       param: Parameter
     ) => {
-      console.log("Schedule MouseUp");
       e.stopPropagation();
       if (window.innerWidth < 500) return;
       if (isMore) {
@@ -104,10 +108,12 @@ const Schedule = React.memo(
     ) => {
       e.stopPropagation();
       if (e.buttons !== 1 || isMore) return;
-      if (modal.listModalOpen) dispatch(modalActions.clearSet());
-      dispatch(modalActions.setListInfo({ type: "List", ...param }));
-      setCountDown(false);
-      setIsDragging(true);
+      if (Math.abs(e.pageX - x) > 25 || Math.abs(e.pageY - y) > 15) {
+        if (modal.listModalOpen) dispatch(modalActions.clearSet());
+        dispatch(modalActions.setListInfo({ type: "List", ...param }));
+        setCountDown(false);
+        setIsDragging(true);
+      }
     };
 
     // array 배열 만들기

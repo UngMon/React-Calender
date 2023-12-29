@@ -7,7 +7,6 @@
   background-color: rgb(251, 251, 251);
   box-shadow: 7px 7px 20px rgb(121, 120, 120);
   transition: all 0.2s ease-in-out;
-  animation: ModalAnimation 0.2s forwards linear;
   overflow: hidden;
 }
 

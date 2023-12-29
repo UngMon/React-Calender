@@ -9,6 +9,7 @@ import Header from "../calender/header/Header";
 import "./Result.css";
 
 const Result = () => {
+  console.log('Result Render')
   const [param] = useSearchParams();
   const schedule = useSelector((state: RootState) => state.data.userSchedule);
   const keyword = param.get("result");

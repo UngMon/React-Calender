@@ -20,10 +20,10 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import PickerBox from "../utils/Time/PickerBox";
 import ColorBox from "../utils/Time/ColorBox";
-import ModalPosition from "../utils/ModalPosition";
 import { makeDateArray } from "../utils/MakeLongArr";
 import { MakeList } from "../utils/MakeList";
 import { MakeListParameter } from "../type/Etc";
+import { listPosition } from "../utils/listPosition";
 import { markDate } from "../utils/markDate";
 import "./List.css";
 
@@ -38,8 +38,6 @@ interface T {
   clickedElement: React.MutableRefObject<HTMLDivElement | null>;
   list: React.RefObject<HTMLDivElement>;
   setIsDragging: React.Dispatch<React.SetStateAction<boolean>>;
-  // moreModalRef: React.MutableRefObject<HTMLDivElement | null>;
-  // allListRef: React.MutableRefObject<ListOrMore>;
 }
 
 const List = ({
@@ -133,7 +131,7 @@ const List = ({
     }
 
     dispatch(sendUserData({ newSchedule, uid, type: "POST" }));
-    dispatch(modalActions.clearSet());
+    dispatch(modalActions.clearSet({ type: "all" }));
   };
 
   const editButtonHandler = () => {
@@ -209,7 +207,11 @@ const List = ({
     setTimeout(() => {
       console.log("close Modal Handler");
       clickedElement.current = null;
-      dispatch(modalActions.clearSet());
+      dispatch(
+        modalActions.clearSet({
+          type: modal.moreModalOpen ? "list" : "all",
+        })
+      );
       dispatch(cloneActions.clearSet());
       dispatch(timeActions.resetTime());
     }, 100);
@@ -219,7 +221,9 @@ const List = ({
     ? "done"
     : false;
 
-  const cordinate = ModalPosition(clone.day, clone.week, size, lastweek);
+  const corDay = modal.openEdit ? clone.day : modal.day;
+  const corWeek = modal.openEdit ? clone.week : modal.week;
+  const 좌표 = listPosition(corDay, corWeek, size, modal.openEdit, modal.index);
   const markD = markDate(modal.startDate, modal.endDate);
 
   return (
@@ -229,9 +233,9 @@ const List = ({
       }`}
       ref={list}
       style={{
-        left: `${cordinate[0]}px`,
-        top: `${clone.week < "4" && cordinate[1]}px`,
-        bottom: `${!modal.openEdit && clone.week > "3" && cordinate[1]}px`,
+        left: 좌표[0],
+        ...(modal.openEdit && modal.week > "3" ? {} : { top: 좌표[1] }),
+        ...(modal.openEdit && modal.week > "3" ? { bottom: 좌표[1] } : {}),
       }}
       onWheel={(e) => e.stopPropagation()}
     >
@@ -305,12 +309,3 @@ const List = ({
 };
 
 export default List;
-
-// for (const key in allListRef.current) {
-//   if (allListRef.current[key]?.contains(target)) {
-//     return dispatch(modalActions.clearSet());
-//   }
-// }
-
-// if (moreModalRef.current?.contains(target)) return;
-// !modal.moreModalOpen && closeModalHandler();
