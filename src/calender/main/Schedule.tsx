@@ -108,8 +108,11 @@ const Schedule = React.memo(
     ) => {
       e.stopPropagation();
       if (e.buttons !== 1 || isMore) return;
-      if (Math.abs(e.pageX - x) > 25 || Math.abs(e.pageY - y) > 15) {
-        if (modal.listModalOpen) dispatch(modalActions.clearSet());
+      if (Math.abs(e.pageX - x) > 35 || Math.abs(e.pageY - y) > 35) {
+        if (modal.listModalOpen) {
+          console.log('????????? Schedule MouseMove')
+          dispatch(modalActions.clearSet({ type: "list" }));
+        }
         dispatch(modalActions.setListInfo({ type: "List", ...param }));
         setCountDown(false);
         setIsDragging(true);

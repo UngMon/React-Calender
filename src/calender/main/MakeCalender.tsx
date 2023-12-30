@@ -49,12 +49,13 @@ const MakeCalender = React.memo(
     const dispatch = useAppDispatch();
     const data = useSelector((state: RootState) => state.data);
     const modal = useSelector((state: RootState) => state.modal);
+    const holiday = JSON.parse(sessionStorage.getItem(year)!);
+    // UTC기준 해당 달의 1일이 되는 시간
+    const dayOneTime = new Date(year + "-" + month + "-01").getTime();
 
     console.log("MakeCalender Redner");
 
     const [countDown, setCountDown] = useState<boolean>(false);
-
-    let dateElements: React.ReactNode[] = [];
 
     useEffect(() => {
       // 사용자가 일정이나 날짜를 1초 이상 클릭하고 있는 경우, 드래깅 기능을 활성화
@@ -85,7 +86,6 @@ const MakeCalender = React.memo(
     };
 
     const mouseUp = () => {
-      console.log("MakeCalender MouseUp");
       setCountDown(false); // 카운트다운 취소
       if (clicekdMoreRef.current) return;
       setIsDragging(true); // 마우스 up후에 clone List가 보이게 true로 설정
@@ -102,100 +102,6 @@ const MakeCalender = React.memo(
       dispatch(modalActions.toggleMobilModal());
     };
 
-    /* 날짜 생성하기 */
-    const makeDay = (주: number, array: ReactNode[][]) => {
-      const thisWeekArray = [];
-
-      let move: number;
-
-      if (주 === 1) move = -24 * 60 * 60 * 1000 * firstDay;
-      else move = 24 * 60 * 60 * 1000 * ((주 - 2) * 7 + (7 - firstDay));
-
-      const thisDate = new Date(new Date(+year, +month - 1, 1).getTime() + move)
-        .toISOString()
-        .split("T")[0];
-
-      for (let i = 1; i <= 7; i++) {
-        let next: number = i * 24 * 60 * 60 * 1000;
-        const date = new Date(new Date(thisDate).getTime() + next)
-          .toISOString()
-          .split("T")[0];
-
-        const [년, 월, 일] = date.split("-");
-        const isHoliday =
-          basicHolidayObject[월 + 일] || data.holiday[년]?.[년 + 월 + 일];
-        const day = String(i);
-        const week = String(주);
-
-        thisWeekArray.push(
-          <td
-            key={date}
-            onMouseDown={() => mouseDown(day, week, date)}
-            onMouseUp={() => mouseUp()}
-            onMouseMove={(e) => mouseMove(e)}
-            onTouchEnd={() => touchEndHandler(day, week, date)}
-          >
-            <div
-              className={`${style[`date-box`]} ${i === 1 && style.startDate}`}
-            >
-              <span
-                className={`${i === 1 && style.sunday} 
-                    ${i === 7 && style.saturday} 
-                  ${isHoliday?.isHoliday === "Y" && style.holiday}
-                  ${identify === date && style.Today}`}
-              >
-                {일 === "01" ? `${+월}월 1일` : +일}
-              </span>
-              {isHoliday && (
-                <span
-                  className={
-                    isHoliday.isHoliday === "Y" ? style.sunday : style.national
-                  }
-                >
-                  {isHoliday.dateName}
-                </span>
-              )}
-            </div>
-            {data.userSchedule[date] && (
-              <Schedule
-                date={date}
-                modal={modal}
-                day={day}
-                week={week}
-                array={array}
-                data={data}
-                listRef={listRef}
-                allListRef={allListRef}
-                listViewCount={listViewCount}
-                setIsDragging={setIsDragging}
-                clicekdMoreRef={clicekdMoreRef}
-              />
-            )}
-          </td>
-        );
-      }
-      return thisWeekArray;
-    };
-
-    for (let i = 1; i <= week; i++) {
-      const array: ReactNode[][] = [
-        [],
-        new Array(25),
-        new Array(25),
-        new Array(25),
-        new Array(25),
-        new Array(25),
-        new Array(25),
-        new Array(25),
-      ];
-
-      dateElements.push(
-        <tr key={i} className={`week ${i}`}>
-          {makeDay(i, array)}
-        </tr>
-      );
-    }
-
     return (
       <table className={style.table}>
         <thead className={style.weekname}>
@@ -209,7 +115,98 @@ const MakeCalender = React.memo(
             <th>토</th>
           </tr>
         </thead>
-        <tbody className={style.presentation}>{dateElements}</tbody>
+        <tbody className={style.presentation}>
+          {Array.from({ length: week }, (_, index) => index + 1).map((주) => {
+            const array: ReactNode[][] = [
+              [],
+              new Array(25),
+              new Array(25),
+              new Array(25),
+              new Array(25),
+              new Array(25),
+              new Array(25),
+              new Array(25),
+            ];
+
+            let move: number;
+            // 밀리 세컨드 * 1000 해줘야 한다.
+            if (주 === 1) move = -24 * 60 * 60 * 1000 * (firstDay + 1);
+            else move = 24 * 60 * 60 * 1000 * ((주 - 2) * 7 + (6 - firstDay));
+
+            return (
+              <tr key={주} className={`week ${주}`}>
+                {[1, 2, 3, 4, 5, 6, 7].map((d) => {
+                  const date = new Date(
+                    dayOneTime + move + d * 24 * 60 * 60 * 1000
+                  )
+                    .toISOString()
+                    .split("T")[0];
+
+                  const [년, 월, 일] = date.split("-");
+                  const isHoliday =
+                    basicHolidayObject[월 + 일] || holiday?.[년 + 월 + 일];
+
+                  const day = String(d);
+                  const week = String(주);
+
+                  return (
+                    <td
+                      key={date}
+                      onMouseDown={() => mouseDown(day, week, date)}
+                      onMouseUp={() => mouseUp()}
+                      onMouseMove={(e) => mouseMove(e)}
+                      onTouchEnd={() => touchEndHandler(day, week, date)}
+                    >
+                      <div
+                        className={`${style[`date-box`]} ${
+                          d === 1 && style.startDate
+                        }`}
+                      >
+                        <span
+                          className={`${d === 1 && style.sunday} 
+                                    ${d === 7 && style.saturday} 
+                                  ${
+                                    isHoliday?.isHoliday === "Y" &&
+                                    style.holiday
+                                  }
+                                  ${identify === date && style.Today}`}
+                        >
+                          {일 === "01" ? `${+월}월 1일` : +일}
+                        </span>
+                        {isHoliday && (
+                          <span
+                            className={
+                              isHoliday.isHoliday === "Y"
+                                ? style.sunday
+                                : style.national
+                            }
+                          >
+                            {isHoliday.dateName}
+                          </span>
+                        )}
+                      </div>
+                      {data.userSchedule[date] && (
+                        <Schedule
+                          date={date}
+                          modal={modal}
+                          day={day}
+                          week={week}
+                          array={array}
+                          data={data}
+                          listRef={listRef}
+                          allListRef={allListRef}
+                          listViewCount={listViewCount}
+                          setIsDragging={setIsDragging}
+                          clicekdMoreRef={clicekdMoreRef}
+                        />
+                      )}
+                    </td>
+                  );
+                })}
+              </tr>
+            );
+          })}
+        </tbody>
       </table>
     );
   }

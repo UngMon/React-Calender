@@ -67,13 +67,13 @@ const CalenderSlide = ({
 
       if (window.innerWidth <= 500 && calenderArray.length === 1) {
         // view Size가 pc => mobile로 축소
-        dispatch(modalActions.clearSet());
+        dispatch(modalActions.clearSet({ type: "all" }));
         setIsDragging(false);
       }
 
       if (window.innerWidth > 500 && calenderArray.length === 3) {
         // view Size가 mobile => pc로 확대
-        dispatch(modalActions.clearSet());
+        dispatch(modalActions.clearSet({ type: "all" }));
       }
       setListBarHeight(window.innerWidth > 500 ? 24 : 20);
       setCalenderArray(makeSlideArray(year, month));

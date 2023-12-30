@@ -73,8 +73,7 @@ const CloneList = ({
     let end: string;
 
     if (clone.mouseType === "MakeList") {
-      start =
-        move >= 0 ? clone.startDate : moveDate(clone.startDate, move);
+      start = move >= 0 ? clone.startDate : moveDate(clone.startDate, move);
       end = move >= 0 ? moveDate(clone.endDate, move) : clone.endDate;
     } else if (clone.mouseType === "List") {
       start = moveDate(clone.startDate, move);
@@ -100,7 +99,7 @@ const CloneList = ({
     e.stopPropagation();
     clickedElement.current = null;
     if (modal.openEdit) {
-      dispatch(modalActions.clearSet());
+      dispatch(modalActions.clearSet({ type: "all" }));
       setIsDragging(false);
       return;
     }
@@ -151,15 +150,12 @@ const CloneList = ({
       setIsDragging(false);
       if (실시간좌표[0] === 고정좌표[0] && 실시간좌표[1] === 고정좌표[1]) {
         dispatch(cloneActions.clearSet());
-        dispatch(modalActions.clearSet());
+        dispatch(modalActions.clearSet({ type: "all" }));
         return;
       }
 
       const schedule = JSON.parse(JSON.stringify(data.userSchedule));
-      const prevDateArray = makeDateArray(
-        clone.startDate,
-        clone.endDate
-      );
+      const prevDateArray = makeDateArray(clone.startDate, clone.endDate);
       // 기존 항목 삭제 하고..
       for (let date of prevDateArray) {
         delete schedule[date][clone.key];
@@ -179,7 +175,7 @@ const CloneList = ({
       // 데이터 전송
       dispatch(sendUserData({ newSchedule, uid, type: "POST" }));
       dispatch(cloneActions.clearSet());
-      dispatch(modalActions.clearSet());
+      dispatch(modalActions.clearSet({ type: "all" }));
     }
   };
 
@@ -187,7 +183,7 @@ const CloneList = ({
     // 모달창이 열려있으면 마우스 커서 icon을 기본으로, move이벤트 발생 x
     if (modal.addModalOpen || isMoving || modal.openEdit) return;
     setIsMoving(true);
-    modal.listModalOpen && dispatch(modalActions.clearSet());
+    modal.listModalOpen && dispatch(modalActions.clearSet({ type: "all" }));
     document.body.style.cursor = "move";
   };
 
@@ -219,7 +215,7 @@ const CloneList = ({
       >
         <div
           className={`${style.list}
-          ${style.long} ${clone.color || modal.color || '라벤더'}`}
+          ${style.long} ${clone.color || modal.color || "라벤더"}`}
         >
           <div className={`${style["type-one"]} ${modal.isDone && style.done}`}>
             {title}

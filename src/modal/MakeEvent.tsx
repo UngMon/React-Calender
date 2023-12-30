@@ -151,11 +151,14 @@ const MakeEvent = ({ data, lastweek, uid, viewRef, setIsDragging }: T) => {
       onWheel={(e) => e.stopPropagation()}
     >
       <div className="add-modal-title">일정 추가</div>
-      <form className={`addModal `} onSubmit={makeListHandler}>
+      <form
+        className={`addModal ${
+          makeHeightObject[lastweek] > window.innerHeight ? "scroll" : ""
+        }`}
+        onSubmit={makeListHandler}
+      >
         <div
-          className={`addModal-menu ${
-            makeHeightObject[lastweek] > window.innerHeight ? "scroll" : ""
-          }`}
+          className="addModal-menu"
           style={{
             height:
               makeHeightObject[lastweek] > window.innerHeight
@@ -190,13 +193,13 @@ const MakeEvent = ({ data, lastweek, uid, viewRef, setIsDragging }: T) => {
             setOpenColor={setOpenColor}
           />
         </div>
-        <div className="buttonBox">
-          <button type="submit">저장</button>
-          <button type="button" onClick={cancelHandler}>
-            취소
-          </button>
-        </div>
       </form>
+      <div className="buttonBox">
+        <button type="submit" onClick={makeListHandler}>저장</button>
+        <button type="button" onClick={cancelHandler}>
+          취소
+        </button>
+      </div>
     </div>
   );
 };

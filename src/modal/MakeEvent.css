@@ -24,6 +24,7 @@
   height: auto;
   font-size: 16px;
   transition: opacity 0.3s ease;
+  overflow-x: hidden;
 }
 
 .buttonBox {
