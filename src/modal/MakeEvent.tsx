@@ -3,13 +3,13 @@ import { useSelector } from "react-redux";
 import { RootState, useAppDispatch } from "../redux/store";
 import { modalActions } from "../redux/modal-slice";
 import { cloneActions } from "../redux/clone-slice";
-import { timeActions } from "../redux/time-slice";
 import { MakeList } from "../utils/MakeList";
 import { MakeListParameter } from "../type/Etc";
 import { sendUserData } from "../redux/fetch-action";
 import { DataType } from "../type/ReduxType";
 import { makeHeightObject } from "./Object";
 import { makePosition } from "../utils/makePosition";
+import { setTime } from "../utils/Time/SetTime";
 import PickerBox from "../utils/Time/PickerBox";
 import ColorBox from "../utils/Time/ColorBox";
 import "./MakeEvent.css";
@@ -21,6 +21,10 @@ interface T {
   viewRef: React.RefObject<HTMLDivElement>;
   setIsDragging: (value: boolean) => void;
 }
+
+const setT = setTime();
+const startTime = setT.currentTime;
+const endTime = setT.lastTime;
 
 const MakeEvent = ({ data, lastweek, uid, viewRef, setIsDragging }: T) => {
   console.log("MakeEvent Render", lastweek);
@@ -35,6 +39,8 @@ const MakeEvent = ({ data, lastweek, uid, viewRef, setIsDragging }: T) => {
     viewRef.current!.clientWidth,
     (viewRef.current!.clientHeight - 26) / lastweek,
   ]);
+  const [openDate, setOpenDate] = useState<[boolean, string]>([false, ""]);
+  const [openTime, setOpenTime] = useState<[boolean, string]>([false, ""]);
 
   const startDate: string = clone.startDate;
   const endDate: string = clone.endDate;
@@ -67,7 +73,7 @@ const MakeEvent = ({ data, lastweek, uid, viewRef, setIsDragging }: T) => {
   useEffect(() => {
     const closeHandler = (e: MouseEvent) => {
       const target = e.target as Node;
-
+   
       if (isMount) {
         setIsMount(false);
         return;
@@ -75,9 +81,11 @@ const MakeEvent = ({ data, lastweek, uid, viewRef, setIsDragging }: T) => {
 
       // modal 영역 밖을 클릭할 때, state 초기화
       if (!boxRef.current?.contains(target)) {
+        console.log(boxRef.current)
         setIsMount(true);
         cancelHandler();
       }
+
     };
 
     document.addEventListener("click", closeHandler);
@@ -131,13 +139,12 @@ const MakeEvent = ({ data, lastweek, uid, viewRef, setIsDragging }: T) => {
     setIsDragging(false);
     setTimeout(() => {
       dispatch(modalActions.clearSet({ type: "all" }));
-      dispatch(timeActions.resetTime());
       dispatch(cloneActions.clearSet());
     }, 250);
   };
 
   // 여기는 스크린 크기에 따라 modal의 위치를 지정한다.
-  const 좌표: number[] = makePosition(clone.day, clone.week, size, false, 0);
+  const 좌표: number[] = makePosition(clone.day, clone.week, size, 0);
 
   return (
     <div
@@ -151,18 +158,15 @@ const MakeEvent = ({ data, lastweek, uid, viewRef, setIsDragging }: T) => {
       onWheel={(e) => e.stopPropagation()}
     >
       <div className="add-modal-title">일정 추가</div>
-      <form
-        className={`addModal ${
-          makeHeightObject[lastweek] > window.innerHeight ? "scroll" : ""
-        }`}
-        onSubmit={makeListHandler}
-      >
+      <form className="addModal" onSubmit={makeListHandler}>
         <div
-          className="addModal-menu"
+          className={`addModal-menu ${
+            makeHeightObject[lastweek] > window.innerHeight ? "scroll" : ""
+          }`}
           style={{
             height:
-              makeHeightObject[lastweek] > window.innerHeight
-                ? 412 - (makeHeightObject[lastweek] - window.innerHeight)
+              openDate[0] && makeHeightObject[lastweek] > window.innerHeight
+                ? 440 - (makeHeightObject[lastweek] - window.innerHeight)
                 : "",
           }}
         >
@@ -182,6 +186,11 @@ const MakeEvent = ({ data, lastweek, uid, viewRef, setIsDragging }: T) => {
           <PickerBox
             startDate={startDate}
             endDate={endDate}
+            openDate={openDate}
+            setOpenDate={setOpenDate}
+            time={[startTime, endTime]}
+            openTime={openTime}
+            setOpenTime={setOpenTime}
             timeInputOneRef={timeIputOneRef}
             timeInputTwoRef={timeInputTwoRef}
           />
@@ -193,13 +202,15 @@ const MakeEvent = ({ data, lastweek, uid, viewRef, setIsDragging }: T) => {
             setOpenColor={setOpenColor}
           />
         </div>
+        <div className="buttonBox">
+          <button type="submit" onClick={makeListHandler}>
+            저장
+          </button>
+          <button type="button" onClick={cancelHandler}>
+            취소
+          </button>
+        </div>
       </form>
-      <div className="buttonBox">
-        <button type="submit" onClick={makeListHandler}>저장</button>
-        <button type="button" onClick={cancelHandler}>
-          취소
-        </button>
-      </div>
     </div>
   );
 };

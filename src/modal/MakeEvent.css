@@ -24,6 +24,9 @@
   height: auto;
   font-size: 16px;
   transition: opacity 0.3s ease;
+}
+
+.addModal-menu {
   overflow-x: hidden;
 }
 

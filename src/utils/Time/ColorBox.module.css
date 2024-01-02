@@ -43,7 +43,11 @@
   }
 }
 
-.off {
+.c-on {
+  display: flex;
+}
+
+.c-off {
   display: none;
 }
 
@@ -87,5 +91,13 @@
     width: 20px;
     height: 20px;
     border-radius: 50%;
+  }
+
+  .c-on {
+    display: grid;
+  }
+  
+  .c-off {
+    display: none;
   }
 }

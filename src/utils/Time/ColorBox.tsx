@@ -42,9 +42,14 @@ const ColorBox = ({
 
   useEffect(() => {
     if (!openColor) return;
-
     const clickHandler = (e: MouseEvent) => {
-      if (!colorRef.current!.contains(e.target as Node)) setOpenColor(false);
+      e.preventDefault();
+      e.stopPropagation();
+      console.log(colorRef.current!.contains(e.target as Node));
+      if (!colorRef.current!.contains(e.target as Node)) {
+        console.log("??????????");
+        setOpenColor(false);
+      }
     };
 
     window.addEventListener("click", clickHandler);
@@ -67,7 +72,7 @@ const ColorBox = ({
         className={`${color} ${style.circle} `}
         onClick={() => setOpenColor(!openColor)}
       ></div>
-      <div className={`${style.colors} ${!openColor ? style.off : ""}`}>
+      <div className={`${style.colors} ${openColor ? style['c-on'] : style['c-off']}`}>
         {colorArray.map((item) => (
           <div
             key={item}

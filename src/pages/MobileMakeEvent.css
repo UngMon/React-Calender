@@ -2,10 +2,11 @@
   width: 100%;
   max-width: 600px;
   height: 100%;
-  min-height: 700px;
+  min-height: 600px;
 }
 
 .MakeEvent-announce {
+  /* mobild 페이지 알림 */
   width: 100vw;
   height: 100%;
   display: flex;
@@ -62,20 +63,20 @@
   background-color: lightgray;
 }
 
-.Make-Form input {
+.mobile-input-title {
   box-sizing: border-box;
   display: block;
   margin: 20px 0;
   padding: 0 45px 0 5px;
   width: 100%;
   height: 40px;
+  font-size: 20px;
   border: 0;
   border-bottom: 2px solid lightgray;
-  font-size: 20px;
   background-color: transparent;
 }
 
-.Make-Form input::placeholder {
+.mobile-input-title::placeholder {
   /* font-family: ; */
 }
 
@@ -96,9 +97,9 @@
   border-radius: 50%;
 }
 
-.fa-clock {
-  padding: 10px 0;
-  font-size: 20px;
+.faclock {
+  padding: 10px 0 0;
+  font-size: 24px;
 }
 
 .Make-time {
@@ -107,7 +108,7 @@
   align-items: center;
 }
 
-.time {
+/* .time {
   width: calc(50% - 20px);
   height: 80px;
   text-align: center;
@@ -122,20 +123,14 @@
   height: 40px;
   line-height: 40px;
   border-radius: 5px;
-}
+} */
 
 .arrow {
   width: 40px;
   text-align: center;
 }
 
-.picker-box {
-  width: 100%;
-  height: auto;
-  margin: 30px auto 0;
-}
-
-.time-selector {
+/* .time-selector {
   margin-top: 30px;
   position: relative;
   height: 120px;
@@ -203,7 +198,7 @@
 .dial-item {
   height: 40px;
   line-height: 40px;
-}
+} */
 
 .button-container {
   position: fixed;

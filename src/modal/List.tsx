@@ -2,7 +2,6 @@ import React, { useRef, useState, useEffect } from "react";
 import { useAppDispatch } from "../redux/store";
 import { modalActions } from "../redux/modal-slice";
 import { cloneActions } from "../redux/clone-slice";
-import { timeActions } from "../redux/time-slice";
 import { ListOrMore } from "../type/RefType";
 import {
   DataType,
@@ -66,6 +65,8 @@ const List = ({
     viewRef.current!.clientWidth,
     (viewRef.current!.clientHeight - 26) / lastweek,
   ]);
+  const [openDate, setOpenDate] = useState<[boolean, string]>([false, ""]);
+  const [openTime, setOpenTime] = useState<[boolean, string]>([false, ""]);
 
   const inputRef = useRef<HTMLInputElement>(null);
   const timeInputOneRef = useRef<HTMLInputElement>(null);
@@ -137,12 +138,6 @@ const List = ({
   const editButtonHandler = () => {
     setIsDragging((prevState) => !prevState);
     dispatch(modalActions.clickedEdit());
-    dispatch(
-      timeActions.setEditTime({
-        startTime: modal.startTime,
-        endTime: modal.endTime,
-      })
-    );
   };
 
   const editListSubmitHandler = (event: React.FormEvent) => {
@@ -213,7 +208,6 @@ const List = ({
         })
       );
       dispatch(cloneActions.clearSet());
-      dispatch(timeActions.resetTime());
     }, 100);
   };
 
@@ -269,6 +263,11 @@ const List = ({
           <PickerBox
             startDate={startDate}
             endDate={endDate}
+            openDate={openDate}
+            setOpenDate={setOpenDate}
+            time={[clone.startTime, clone.endTime]}
+            openTime={openTime}
+            setOpenTime={setOpenTime}
             timeInputOneRef={timeInputOneRef}
             timeInputTwoRef={timeInputTwoRef}
           />

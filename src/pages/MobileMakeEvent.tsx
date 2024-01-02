@@ -20,11 +20,12 @@ import {
 } from "@fortawesome/free-regular-svg-icons";
 import { newMonth, newYear } from "../utils/nowDate";
 import { setTime } from "../utils/Time/SetTime";
-import MobileTimePicker from "../ui/MobileTimePicker";
-import SeconMonth from "../utils/miniCalender/Secon-Month";
+// import MobileTimePicker from "../ui/MobileTimePicker";
+// import SeconMonth from "../utils/miniCalender/Secon-Month";
 import ColorBox from "../utils/Time/ColorBox";
 import NotFound from "../error/NotFound";
 import "./MobileMakeEvent.css";
+import PickerBox from "../utils/Time/PickerBox";
 
 const nowTime = setTime();
 
@@ -37,13 +38,12 @@ const MakeEvent = () => {
   // key를 가지고 slice를 해서 date 찾아내야함..
   // 그리고 data.useschedule[date] = {startDate, endDate ... } 받아옴
   // 그 다음 데이터가 존재하지 않으면 404 페이지로 그리고, 존재하면 이벤트 컴포넌트 보이게하기 ㅇㅋ?
-  const startDate = pickScheduleKey.slice(0, 10);
+  const startDate = pickScheduleKey?.slice(0, 10) || date;
 
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const data = useSelector((state: RootState) => state.data);
   const clone = useSelector((state: RootState) => state.clone);
-  const time = useSelector((state: RootState) => state.time);
   console.log("MakeEvent Mobile Render");
 
   const [openDate, setOpenDate] = useState<[boolean, string]>([false, ""]);
@@ -52,12 +52,15 @@ const MakeEvent = () => {
   const [openColor, setOpenColor] = useState<boolean>(false);
   const [existKey, setExistKey] = useState<boolean>(true);
 
-  const dateRef = useRef<ListOrMore>({});
   const inputRef = useRef<HTMLInputElement>(null);
+  const dateRef = useRef<ListOrMore>({});
   const startDateRef = useRef<HTMLSpanElement>(null);
   const endDateRef = useRef<HTMLSpanElement>(null);
   const startTimeRef = useRef<HTMLSpanElement>(null);
   const endTimeRef = useRef<HTMLSpanElement>(null);
+
+  const timeIputOneRef = useRef<HTMLInputElement>(null);
+  const timeInputTwoRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     // 사용자 일정 정보를 받아오고 있거나, 일정 생성의 경우에 콜백 함수 실행 x
@@ -109,8 +112,8 @@ const MakeEvent = () => {
     return () => window.removeEventListener("resize", resizeHandler);
   });
 
-  let startTime = time.startTime || clone.startTime || nowTime.currentTime;
-  let endTime = time.endTime || clone.endTime || nowTime.lastTime;
+  let startTime = clone.startTime || nowTime.currentTime;
+  let endTime = clone.endTime || nowTime.lastTime;
 
   const openHandler = (category: string, order: string) => {
     // cateogry => date or time && order => start or end
@@ -211,6 +214,7 @@ const MakeEvent = () => {
           </div>
           <label htmlFor="title"></label>
           <input
+            className="mobile-input-title"
             type="text"
             id="title"
             name="title"
@@ -224,10 +228,50 @@ const MakeEvent = () => {
             openColor={openColor}
             setOpenColor={setOpenColor}
           />
-          <div className="fa-clock">
+          <div className="faclock">
             <FontAwesomeIcon icon={faClock} className="Make-clock-icon" />
           </div>
-          {data.succesGetScheduleData && (
+          <PickerBox
+            startDate={startDate}
+            endDate={startDate}
+            openDate={openDate}
+            setOpenDate={setOpenDate}
+            time={[startTime, endTime]}
+            openTime={openTime}
+            setOpenTime={setOpenTime}
+            timeInputOneRef={timeIputOneRef}
+            timeInputTwoRef={timeInputTwoRef}
+          />
+          <div className="button-container">
+            {param["*"] === "event/edit" && (
+              <button
+                className="mobile-button"
+                type="button"
+                onTouchEnd={() => deleteAndCreate("delete")}
+                style={{ width: param["*"] === "event/edit" ? "50%" : "0" }}
+              >
+                <FontAwesomeIcon icon={faTrashCan} />
+                <span>삭제</span>
+              </button>
+            )}
+            <button
+              className="mobile-button"
+              type="submit"
+              style={{ width: param["*"] === "event/make" ? "100%" : "50%" }}
+            >
+              <FontAwesomeIcon icon={faPenToSquare} />
+              <span>생성</span>
+            </button>
+          </div>
+        </form>
+      )}
+    </div>
+  );
+};
+
+export default MakeEvent;
+
+/* {data.succesGetScheduleData && (
             <div className="Make-time">
               <div className="time">
                 <div
@@ -277,32 +321,4 @@ const MakeEvent = () => {
                 endTime={endTime}
               />
             )}
-          </div>
-          <div className="button-container">
-            {param["*"] === "event/edit" && (
-              <button
-                className="mobile-button"
-                type="button"
-                onTouchEnd={() => deleteAndCreate("delete")}
-                style={{ width: param["*"] === "event/edit" ? "50%" : "0" }}
-              >
-                <FontAwesomeIcon icon={faTrashCan} />
-                <span>삭제</span>
-              </button>
-            )}
-            <button
-              className="mobile-button"
-              type="submit"
-              style={{ width: param["*"] === "event/make" ? "100%" : "50%" }}
-            >
-              <FontAwesomeIcon icon={faPenToSquare} />
-              <span>생성</span>
-            </button>
-          </div>
-        </form>
-      )}
-    </div>
-  );
-};
-
-export default MakeEvent;
+          </div> */

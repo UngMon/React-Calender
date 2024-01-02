@@ -1,13 +1,11 @@
 import React, { useEffect } from "react";
-import { timeActions } from "../../redux/time-slice";
 import { ListOrMore } from "../../type/RefType";
-import { useAppDispatch } from "../../redux/store";
 
 interface T {
   twoRef: React.MutableRefObject<ListOrMore>;
   timeRef: React.MutableRefObject<ListOrMore>;
   timeInputTwoRef: React.RefObject<HTMLInputElement>;
-  timeVisible: boolean;
+  openTime: string;
 }
 
 const timeArray = [
@@ -65,8 +63,7 @@ const timeArray = [
   "오후 11:45",
 ];
 
-const TimeBoxTwo = ({ timeInputTwoRef, twoRef, timeVisible, timeRef }: T) => {
-  const dispatch = useAppDispatch();
+const TimeBoxTwo = ({ timeInputTwoRef, twoRef, openTime, timeRef }: T) => {
 
   useEffect(() => {
     Object.keys(twoRef.current).forEach((item, index) => {
@@ -80,15 +77,14 @@ const TimeBoxTwo = ({ timeInputTwoRef, twoRef, timeVisible, timeRef }: T) => {
   const clickHandler = (e: React.MouseEvent) => {
     const target = e.target as HTMLElement;
     timeInputTwoRef.current!.value = target.innerText;
-    dispatch(timeActions.selectLastTime(target.innerText));
   };
 
   return (
-    <div className={`time-selec-container ${timeVisible && "t-open"}`}>
+    <div className={`time-selec-container ${openTime === "end" && "t-open"}`}>
       <div
         id="time-selector"
         ref={(el) => (timeRef.current[1] = el)}
-        style={{ display: timeVisible ? "block" : "none" }}
+        style={{ display: openTime === "end" ? "block" : "none" }}
       >
         {timeArray.map((item, index) => (
           <div

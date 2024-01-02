@@ -1,7 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { hour, minute, hourPosition, minutePosition } from "../type/Etc";
 import { useAppDispatch } from "../redux/store";
-import { timeActions } from "../redux/time-slice";
 
 interface T {
   type: string;
@@ -91,7 +90,6 @@ const MobileTimePicker = ({ type, startTime, endTime }: T) => {
 
   const heightAdjustment = (scrollTop: number) => {
     scrollY.current = scrollTop;
-    // setScrollY(scrollTop);
     const period = dialOne.current!.scrollTop === 0 ? "오전" : "오후";
     const time =
       period +
@@ -100,9 +98,9 @@ const MobileTimePicker = ({ type, startTime, endTime }: T) => {
       ":" +
       minute[`${Math.round(dialThree.current!.scrollTop / 40) + 1}`];
 
-    if (type === "start")
-      dispatch(timeActions.selectFristTime({ firstTime: time }));
-    else dispatch(timeActions.selectLastTime({ lastTime: time }));
+    // if (type === "start")
+    //   dispatch(timeActions.selectFristTime({ firstTime: time }));
+    // else dispatch(timeActions.selectLastTime({ lastTime: time }));
   };
 
   const scrollHandler = (e: React.UIEvent<HTMLDivElement>) => {

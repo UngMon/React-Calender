@@ -1,9 +1,7 @@
-import React, { useRef, useState, useEffect } from "react";
-import { RootState, useAppDispatch } from "../../redux/store";
-import { useSelector } from "react-redux";
-import { timeActions } from "../../redux/time-slice";
+import React, { useRef, useEffect } from "react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { ListOrMore } from "../../type/RefType";
-import { setTime } from "./SetTime";
+import { faClock } from "@fortawesome/free-regular-svg-icons";
 import SecondCaleder from "../miniCalender/Secon-Month";
 import TimeBoxOne from "./TimeBoxOne";
 import TimeBoxTwo from "./TimeBoxTwo";
@@ -12,46 +10,49 @@ import "./PickerBox.css";
 interface T {
   startDate: string;
   endDate: string;
+  openDate: [boolean, string];
+  setOpenDate: React.Dispatch<React.SetStateAction<[boolean, string]>>;
+  time: [string, string];
+  openTime: [boolean, string];
+  setOpenTime: React.Dispatch<React.SetStateAction<[boolean, string]>>;
   timeInputOneRef: React.RefObject<HTMLInputElement>;
   timeInputTwoRef: React.RefObject<HTMLInputElement>;
 }
 
-const st = setTime();
-const firstTime = st.currentTime;
-const lastTime = st.lastTime;
-
 const PickerBox = ({
   startDate,
   endDate,
+  openDate,
+  setOpenDate,
+  time,
+  openTime,
+  setOpenTime,
   timeInputOneRef,
   timeInputTwoRef,
 }: T) => {
-  const dispatch = useAppDispatch();
-  const timeState = useSelector((state: RootState) => state.time);
-
   const dateRef = useRef<ListOrMore>({});
   const timeRef = useRef<ListOrMore>({});
   const oneRef = useRef<ListOrMore>({});
   const twoRef = useRef<ListOrMore>({});
-
-  const [openDate, setOpenDate] = useState<[boolean, string]>([false, ""]);
+  // console.log(startDate)
+  // console.log(endDate)
+  // console.log(time)
+  // console.log(openDate, openTime)
 
   const openDateHandler = (type: string) => {
     if (openDate[1] === type) setOpenDate([false, ""]);
     if (openDate[1] !== type) setOpenDate([true, type]);
-    dispatch(timeActions.timeToggle());
-    console.log("Date Open Handler");
+    setOpenTime([false, ""]);
   };
 
   const openTimeHandler = (type: string) => {
-    if (type === "start") dispatch(timeActions.openStartTime());
-    else dispatch(timeActions.openEndTime());
+    if (openTime[1] === type) setOpenTime([false, ""]);
+    if (openTime[1] !== type) setOpenTime([true, type]);
     setOpenDate([false, ""]);
   };
 
   useEffect(() => {
-    if (!openDate[0] && !timeState.firstIsVisible && !timeState.lastIsVisible)
-      return;
+    if (!openDate[0] && !openTime[0]) return;
 
     const timePickerHandler = (e: MouseEvent) => {
       const target = e.target as Node;
@@ -61,7 +62,10 @@ const PickerBox = ({
       }
 
       for (let i in timeRef.current) {
-        if (timeRef.current[i]?.contains(target)) return;
+        if (timeRef.current[i]?.contains(target)) {
+          setOpenTime([false, ""]);
+          return;
+        }
       }
 
       if (timeInputOneRef.current?.contains(target)) return;
@@ -69,7 +73,7 @@ const PickerBox = ({
       if (timeInputTwoRef.current?.contains(target)) return;
 
       setOpenDate([false, ""]);
-      dispatch(timeActions.timeToggle());
+      setOpenTime([false, ""]);
     };
 
     window.addEventListener("click", timePickerHandler);
@@ -79,13 +83,12 @@ const PickerBox = ({
 
   return (
     <div className="pick-container">
-      <img
-        src="../images/clock.png"
-        alt="clock"
+      <FontAwesomeIcon
+        icon={faClock}
         width="20"
-        className="clock-icon"
+        style={{ display: window.innerWidth > 500 ? "block" : "none" }}
       />
-      <div className="pc-picker-box">
+      <div className="picker-box">
         <div className="picker-one">
           <div className="date-picker">
             <div
@@ -99,7 +102,7 @@ const PickerBox = ({
           <div className="time-picker">
             <input
               type="text"
-              placeholder={timeState.startTime || firstTime}
+              placeholder={time[0]}
               ref={timeInputOneRef}
               onClick={() => openTimeHandler("start")}
             />
@@ -121,7 +124,7 @@ const PickerBox = ({
           <div className="time-picker">
             <input
               type="text"
-              placeholder={timeState.endTime || lastTime}
+              placeholder={time[1]}
               ref={timeInputTwoRef}
               onClick={() => openTimeHandler("end")}
             />
@@ -136,13 +139,13 @@ const PickerBox = ({
           oneRef={oneRef}
           timeRef={timeRef}
           timeInputOneRef={timeInputOneRef}
-          timeVisible={timeState.firstIsVisible}
+          openTime={openTime[1]}
         />
         <TimeBoxTwo
           twoRef={twoRef}
           timeRef={timeRef}
           timeInputTwoRef={timeInputTwoRef}
-          timeVisible={timeState.lastIsVisible}
+          openTime={openTime[1]}
         />
       </div>
     </div>

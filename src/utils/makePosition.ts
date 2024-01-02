@@ -2,13 +2,12 @@ export const makePosition = (
   day: string,
   week: string,
   size: [number, number],
-  openEdit: boolean,
   index: number
 ) => {
   let array = [0, 0];
   let width = size[0];
   let height = size[1];
-  console.log(index);
+
   // 캘린더 너비에 따른 모달창 위치 조절
   switch (day) {
     case "1":
