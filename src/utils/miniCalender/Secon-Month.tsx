@@ -6,9 +6,8 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAngleLeft, faAngleRight } from "@fortawesome/free-solid-svg-icons";
 import { ButtonRef } from "../../type/RefType";
-import Calender from "./Secon-Caledner";
-import pc from "./pc.module.css";
-import mobile from "./mobile.module.css";
+import MakeCaledner from "./Secon-MakeCalender";
+import style from "./miniCal.module.css";
 
 interface T {
   platform: string;
@@ -16,16 +15,23 @@ interface T {
   dateRef: React.MutableRefObject<ButtonRef>;
 }
 
+const date = new Date();
+const fixYear = date.getFullYear();
+const fixMonth = String(date.getMonth() + 1).padStart(2, "0");
+const fixDate = String(date.getDate()).padStart(2, "0");
+
 const Month = ({ platform, type, dateRef }: T) => {
   console.log("secondMonth");
-  const dispatch = useAppDispatch();
   const date = useSelector((state: RootState) => state.date);
+  const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
   //pc => /calender/date?year=''&month=''
   const [param] = useSearchParams();
   let year = param.get("year") ?? date.year;
   let month = param.get("month") ?? date.month;
+
+  const identify = fixYear + "-" + fixMonth + "-" + fixDate;
 
   const moveMonthHandler = (type: string) => {
     if (type === "prev") {
@@ -52,19 +58,11 @@ const Month = ({ platform, type, dateRef }: T) => {
   };
 
   return (
-    <div
-      className={`${
-        platform === "pc" ? pc["container"] : mobile["container"]
-      } ${platform === "pc" && pc["platform-pc"]}`}
-    >
-      <div
-        className={
-          platform === "pc" ? pc["month-picker"] : mobile["month-picker"]
-        }
-      >
+    <div className={`${style["container"]} ${style["platform-pc"]}`}>
+      <div className={style["month-picker"]}>
         <div>
           <span>
-            {year}년 {+month}월
+            {year}년&nbsp;&nbsp;{+month}월
           </span>
         </div>
         <div>
@@ -90,13 +88,30 @@ const Month = ({ platform, type, dateRef }: T) => {
           </button>
         </div>
       </div>
-      <Calender
-        platform={platform}
-        type={type}
-        year={+year}
-        month={+month}
-        dateRef={dateRef}
-      />
+      <div className={style.calender}>
+        <table className={style.table}>
+          <thead className={style.weekname}>
+            <tr>
+              <th>일</th>
+              <th>월</th>
+              <th>화</th>
+              <th>수</th>
+              <th>목</th>
+              <th>금</th>
+              <th>토</th>
+            </tr>
+          </thead>
+          <tbody className={style.tbody}>
+            <MakeCaledner
+              type={type}
+              year={year}
+              month={month}
+              identify={identify}
+              dateRef={dateRef}
+            />
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 };

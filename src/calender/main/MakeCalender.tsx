@@ -52,16 +52,18 @@ const MakeCalender = React.memo(
     const holiday = JSON.parse(sessionStorage.getItem(year)!);
     // UTC기준 해당 달의 1일이 되는 시간
     const dayOneTime = new Date(year + "-" + month + "-01").getTime();
-
-    console.log("MakeCalender Redner");
-
+    
     const [countDown, setCountDown] = useState<boolean>(false);
-
+    
+    console.log("MakeCalender Redner");
     useEffect(() => {
       // 사용자가 일정이나 날짜를 1초 이상 클릭하고 있는 경우, 드래깅 기능을 활성화
       if (!countDown) return;
       // 사용자가 1초 이상 클릭하고 있는 경우, cloneList 생성
-      const checkDragging = () => setIsDragging(true);
+      const checkDragging = () => {
+        setIsDragging(true);
+        setCountDown(false);
+      };
 
       const timeout = setTimeout(checkDragging, 1000);
 
@@ -70,6 +72,7 @@ const MakeCalender = React.memo(
 
     const mouseDown = (day: string, week: string, date: string) => {
       if (window.innerWidth < 500) return;
+
       const type = "MakeList";
       const [startDate, endDate] = [date, date];
       setCountDown(true);
@@ -184,6 +187,9 @@ const MakeCalender = React.memo(
                             {isHoliday.dateName}
                           </span>
                         )}
+                      </div>
+                      <div className={style["list-box"]}>
+                        <div className={style["list-area"]}>{array[+day]}</div>
                       </div>
                       {data.userSchedule[date] && (
                         <Schedule

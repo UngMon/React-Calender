@@ -3,38 +3,29 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../redux/store";
 import { ButtonRef } from "../../type/RefType";
 import { cloneActions } from "../../redux/clone-slice";
-import pc from "./pc.module.css";
-import mobile from "./mobile.module.css";
+import style from "./miniCal.module.css";
 
 interface T {
-  platform: string;
   type: string;
-  year: number;
-  month: number;
+  year: string;
+  month: string;
   identify: string;
   dateRef: React.MutableRefObject<ButtonRef>;
 }
 
-const MakeCaledner = ({
-  platform,
-  type,
-  year,
-  month,
-  identify,
-  dateRef,
-}: T) => {
+const MakeCaledner = ({ type, year, month, identify, dateRef }: T) => {
   console.log("second");
-
   const dispatch = useDispatch();
   const clone = useSelector((state: RootState) => state.clone);
-
   const firstDay = new Date(+year, +month - 1, 1).getDay();
   const lastDate = new Date(+year, +month, 0).getDate();
+  // UTC기준 해당 달의 1일이 되는 시간
+  const dayOneTime = new Date(year + "-" + month + "-01").getTime();
 
   const clickHandler = (date: string, day: number, week: number) => {
     let startDate: string = type === "start" ? date : clone.startDate;
     let endDate: string = type === "end" ? date : clone.endDate;
-
+    console.log(week)
     dispatch(
       cloneActions.clickedDate({
         type,
@@ -46,67 +37,61 @@ const MakeCaledner = ({
     );
   };
 
-  const monthArray = [];
-
-  /* 날짜 생성하기 */
-  const makeDay = (week: number) => {
-    const thisMonthArray: React.ReactNode[] = [];
-
-    let move: number;
-
-    if (week === 1) move = -24 * 60 * 60 * 1000 * firstDay;
-    else move = 24 * 60 * 60 * 1000 * ((week - 2) * 7 + (7 - firstDay));
-
-    const thisDate = new Date(new Date(+year, +month - 1, 1).getTime() + move)
-      .toISOString()
-      .split("T")[0];
-
-    for (let i = 1; i <= 7; i++) {
-      let next: number = i * 24 * 60 * 60 * 1000;
-      const date = new Date(new Date(thisDate).getTime() + next)
-        .toISOString()
-        .split("T")[0];
-
-      const 일 = date.split("-")[2];
-
-      thisMonthArray.push(
-        <td
-          key={date}
-          onClick={() => clickHandler(date, i, week)}
-          className={platform === "pc" ? pc.date_box : mobile.date_box}
-        >
-          <div>
-            <p
-              className={`${i === 1 && pc["sunday"]} ${
-                i === 7 && pc["saturday"]
-              } ${identify === date && pc["Today"]} ${
-                date === clone.startDate && type === "start" && pc["startDate"]
-              } ${date === clone.endDate && type === "end" && pc["endDate"]}`}
-            >
-              {일}
-            </p>
-          </div>
-        </td>
-      );
-    }
-    return thisMonthArray;
-  };
-
   /* 주 만들기, 달 마다 5주 6주 다르므로...*/
   const week = Math.ceil((firstDay + lastDate) / 7);
-  for (let i = 1; i <= week; i++) {
-    monthArray.push(
-      <tr
-        key={i}
-        className={pc["week-box"]}
-        ref={(el) => (dateRef.current![i + 3] = el)}
-      >
-        {makeDay(i)}
-      </tr>
-    );
-  }
 
-  return <>{monthArray}</>;
+  return (
+    <>
+      {Array.from({ length: week }, (_, index) => index + 1).map((주) => {
+        let move: number;
+        if (주 === 1) move = -24 * 60 * 60 * 1000 * (firstDay + 1);
+        else move = 24 * 60 * 60 * 1000 * ((주 - 2) * 7 + (6 - firstDay));
+
+        return (
+          <tr
+            key={주}
+            className={style["week-box"]}
+            ref={(el) => (dateRef.current![주 + 3] = el)}
+          >
+            {[1, 2, 3, 4, 5, 6, 7].map((d) => {
+              let next: number = d * 24 * 60 * 60 * 1000;
+              const date = new Date(dayOneTime + move + next)
+                .toISOString()
+                .split("T")[0];
+
+              const 일 = date.split("-")[2];
+
+              return (
+                <td
+                  key={date}
+                  onClick={() => clickHandler(date, d, 주)}
+                  className={style.date_box}
+                >
+                  <div>
+                    <p
+                      className={`${d === 1 && style["sunday"]} ${
+                        d === 7 && style["saturday"]
+                      } ${identify === date && style["Today"]} ${
+                        date === clone.startDate &&
+                        type === "start" &&
+                        style["startDate"]
+                      } ${
+                        date === clone.endDate &&
+                        type === "end" &&
+                        style["endDate"]
+                      }`}
+                    >
+                      {일}
+                    </p>
+                  </div>
+                </td>
+              );
+            })}
+          </tr>
+        );
+      })}
+    </>
+  );
 };
 
 export default MakeCaledner;

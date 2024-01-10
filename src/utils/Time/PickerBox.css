@@ -8,6 +8,10 @@
   align-items: center;
   justify-content: left;
   font-size: 14px;
+
+  svg {
+    height: 18px;
+  }
 }
 
 .picker-box {
@@ -112,8 +116,6 @@
   border: 1px solid rgb(159, 159, 159);
 }
 
-
-
 @media (max-width: 500px) {
   .pick-container {
     display: block;
@@ -132,6 +134,7 @@
     .date-picker {
       width: 100%;
       height: 50px;
+      margin-bottom: 10px;
 
       div {
         font-size: 0.9em;
@@ -150,11 +153,11 @@
         display: block;
         padding: 0;
         margin: auto;
-        width: 90%;
+        width: 100%;
         height: 50px;
         line-height: 50px;
         border: 2px solid lightgray;
-        font-size: 16px;
+        font-size: 15px;
       }
     }
   }

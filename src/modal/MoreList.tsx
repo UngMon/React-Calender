@@ -23,8 +23,8 @@ interface T {
 const widthObj: { [key: string]: string } = {
   short: "194px",
   middle: "170.1px",
-  start: "170.2px",
-  end: "170.2px",
+  start: "181px",
+  end: "180px",
 };
 
 const marginLeft: { [key: string]: string } = {
@@ -138,68 +138,6 @@ const MoreList = ({
     dispatch(modalActions.onList());
   };
 
-  const makeListHandler = () => {
-    const result = [];
-
-    if (!schedule[clickDate]) {
-      // 해당 날짜에 일정이 없을 때,
-      return <div className="AllList-nothing">등록된 일정이 없습니다.</div>;
-    }
-
-    let count: number = 0;
-
-    for (const key in schedule[clickDate]) {
-      const object = schedule[clickDate][key];
-      const index = count;
-      let shape = "";
-
-      switch (true) {
-        case object.startDate === object.endDate:
-          shape = "short";
-          break;
-        case object.startDate < clickDate:
-        case clickDate < object.endDate:
-          shape = "middle";
-          break;
-        case clickDate === object.endDate:
-          shape = "end";
-          break;
-        case clickDate === object.startDate:
-          shape = "start";
-          break;
-        default:
-      }
-
-      result.push(
-        <div
-          key={index}
-          className="AllList-item"
-          onClick={(e) => listClickHandler(e, object, index)}
-        >
-          {object.startDate < modal.date && (
-            <div className={`end-date border-left-${object.color}`}></div>
-          )}
-          <div
-            className={`title ${object.color}`}
-            style={{
-              width: `${widthObj[shape]}`,
-              marginLeft: `${marginLeft[shape]}`,
-              textDecoration: `${object.isDone && "line-through"}`,
-            }}
-          >
-            {object.title}
-          </div>
-          {object.endDate > modal.date && (
-            <div className={`start-date border-right-${object.color}`}></div>
-          )}
-        </div>
-      );
-      count += 1;
-    }
-
-    return result;
-  };
-
   const 좌표 = morePosition(modal.day, modal.week, size, lastweek);
 
   return (
@@ -222,7 +160,55 @@ const MoreList = ({
       </div>
       <h3 className="AllList-date">{modal.date}</h3>
       <div className="AllList-container">
-        <div className="AllList-box">{makeListHandler()}</div>
+        <div className="AllList-box">
+          {!schedule[clickDate] ? (
+            <div className="AllList-nothing">등록된 일정이 없습니다.</div>
+          ) : (
+            Object.keys(schedule[clickDate]).map((key, index) => {
+              const object = schedule[clickDate][key];
+              let shape: string = "";
+
+              if (object.startDate === object.endDate) shape = "short";
+
+              if (object.startDate < object.endDate) {
+                if (object.startDate === clickDate) shape = "start";
+                if (object.startDate < clickDate) {
+                  if (clickDate < object.endDate) shape = "middle";
+                  if (clickDate === object.endDate) shape = "end";
+                }
+              }
+
+              return (
+                <div
+                  key={index}
+                  className="AllList-item"
+                  onClick={(e) => listClickHandler(e, object, index)}
+                >
+                  {object.startDate < modal.date && (
+                    <div
+                      className={`end-date border-left-${object.color}`}
+                    ></div>
+                  )}
+                  <div
+                    className={`title ${object.color}`}
+                    style={{
+                      width: `${widthObj[shape]}`,
+                      marginLeft: `${marginLeft[shape]}`,
+                      textDecoration: `${object.isDone && "line-through"}`,
+                    }}
+                  >
+                    {object.title}
+                  </div>
+                  {object.endDate > modal.date && (
+                    <div
+                      className={`start-date border-right-${object.color}`}
+                    ></div>
+                  )}
+                </div>
+              );
+            })
+          )}
+        </div>
       </div>
     </div>
   );

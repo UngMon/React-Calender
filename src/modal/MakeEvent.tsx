@@ -27,7 +27,7 @@ const startTime = setT.currentTime;
 const endTime = setT.lastTime;
 
 const MakeEvent = ({ data, lastweek, uid, viewRef, setIsDragging }: T) => {
-  console.log("MakeEvent Render", lastweek);
+  console.log("MakeEvent Render");
   const dispatch = useAppDispatch();
   const clone = useSelector((state: RootState) => state.clone);
 
@@ -73,7 +73,7 @@ const MakeEvent = ({ data, lastweek, uid, viewRef, setIsDragging }: T) => {
   useEffect(() => {
     const closeHandler = (e: MouseEvent) => {
       const target = e.target as Node;
-   
+
       if (isMount) {
         setIsMount(false);
         return;
@@ -81,11 +81,9 @@ const MakeEvent = ({ data, lastweek, uid, viewRef, setIsDragging }: T) => {
 
       // modal 영역 밖을 클릭할 때, state 초기화
       if (!boxRef.current?.contains(target)) {
-        console.log(boxRef.current)
         setIsMount(true);
         cancelHandler();
       }
-
     };
 
     document.addEventListener("click", closeHandler);
@@ -108,10 +106,17 @@ const MakeEvent = ({ data, lastweek, uid, viewRef, setIsDragging }: T) => {
 
     if (!pattern.test(startTime) || !pattern.test(endTime))
       return alert("시간을 제대로 입력해주세요! ex) 오후 01:30");
-    if (startDate > endDate) return alert("시작 날이 마지막 날 보다 큽니다!!");
 
-    let title = titleRef.current!.value;
-    if (title.trim() === "") title = "(제목 없음)";
+    if (startDate > endDate) return alert("시작 날이 마지막 날 보다 큽니다!!");
+    else {
+      if (startTime > endTime)
+        return alert("시작 시간이 종료 시간 보다 늦어요!!");
+    }
+
+    let title =
+      titleRef.current!.value.trim() === ""
+        ? "(제목 없음)"
+        : titleRef.current!.value;
 
     const parameter: MakeListParameter = {
       title,
@@ -151,8 +156,8 @@ const MakeEvent = ({ data, lastweek, uid, viewRef, setIsDragging }: T) => {
       className={`make-modal-box  ${animaOn ? "on" : "off"}`}
       style={{
         left: 좌표[0],
-        top: `${clone.week < "4" && 좌표[1]}px`,
-        bottom: `${clone.week > "3" && 좌표[1]}px`,
+        ...(clone.week < "4" ? { top: 좌표[1] } : {}),
+        ...(clone.week > "3" ? { bottom: 좌표[1] } : {}),
       }}
       ref={boxRef}
       onWheel={(e) => e.stopPropagation()}
@@ -184,6 +189,7 @@ const MakeEvent = ({ data, lastweek, uid, viewRef, setIsDragging }: T) => {
             </div>
           </div>
           <PickerBox
+            platform="pc"
             startDate={startDate}
             endDate={endDate}
             openDate={openDate}

@@ -54,7 +54,7 @@ const Schedule = React.memo(
 
     useEffect(() => {
       // 사용자가 일정이나 날짜를 1초 이상 클릭하고 있는 경우,
-      // 드래깅 기능을 활성화 시킬지 안 할지 결정한다.
+      // 드래깅 기능을 활성화
       if (!countDown) return;
       // 사용자가 1초 이상 클릭하고 있는 경우, cloneList 생성
       const checkDragging = () => {
@@ -63,60 +63,53 @@ const Schedule = React.memo(
         setCountDown(false);
       };
 
-      const timeout = setTimeout(checkDragging, 800);
+      const timeout = setTimeout(checkDragging, 5000);
 
       return () => clearTimeout(timeout);
     }, [countDown, setIsDragging]);
 
-    const mouseDown = (
-      e: React.MouseEvent<HTMLDivElement>,
-      isMore: boolean,
-      param: Parameter
-    ) => {
+    const mouseDown = (e: React.MouseEvent, param: Parameter) => {
       e.stopPropagation();
-      if (window.innerWidth < 500 || param.key === modal.key) return;
-      if (isMore) return (clicekdMoreRef.current = e.target as HTMLDivElement);
-      setCountDown(true);
+      if (window.innerWidth < 500 || param!.key === modal.key) return;
       setX(e.pageX);
       setY(e.pageY);
+      setCountDown(true);
       dispatch(cloneActions.setListInfo({ type: "List", ...param }));
     };
 
-    const mouseUp = (
-      e: React.MouseEvent,
-      isMore: boolean,
-      param: Parameter
-    ) => {
+    const mouseUp = (e: React.MouseEvent, param: Parameter) => {
       e.stopPropagation();
       if (window.innerWidth < 500) return;
-      if (isMore) {
-        clicekdMoreRef.current = null;
-        dispatch(modalActions.clickedMore({ ...param }));
-      }
       setCountDown(false);
       setIsDragging(false);
-      if (!isMore && param.key !== modal.key) {
+      if (param!.key !== modal.key) {
         dispatch(modalActions.setListInfo({ type: "List", ...param }));
         !modal.listModalOpen && dispatch(modalActions.onList());
       }
     };
 
-    const mouseMove = (
-      e: React.MouseEvent,
-      isMore: boolean,
-      param: Parameter
-    ) => {
+    const mouseMove = (e: React.MouseEvent, param: Parameter) => {
       e.stopPropagation();
-      if (e.buttons !== 1 || isMore) return;
+      if (e.buttons !== 1) return;
       if (Math.abs(e.pageX - x) > 35 || Math.abs(e.pageY - y) > 35) {
         if (modal.listModalOpen) {
-          console.log('????????? Schedule MouseMove')
           dispatch(modalActions.clearSet({ type: "list" }));
         }
         dispatch(modalActions.setListInfo({ type: "List", ...param }));
         setCountDown(false);
         setIsDragging(true);
       }
+    };
+
+    const mouseDownMore = (e: React.MouseEvent) => {
+      e.stopPropagation();
+      clicekdMoreRef.current = e.target as HTMLDivElement;
+    };
+
+    const mouseUpMore = (e: React.MouseEvent) => {
+      e.stopPropagation();
+      clicekdMoreRef.current = null;
+      dispatch(modalActions.clickedMore({ date, day, week }));
     };
 
     // array 배열 만들기
@@ -129,45 +122,29 @@ const Schedule = React.memo(
       const isLong: boolean = object.startDate < object.endDate ? true : false;
       // 화면에 보일 list 개수 저장
       let arrayCount: number = 0;
-      // 긴 일정의 경우 화면에 보일 너비(기간)
-      let barWidth: number =
-        object.startDate !== object.endDate
-          ? calculateWidth(date, +day, object.endDate)
-          : 0;
-
-      // modal-slice에 전달할 객체
 
       for (let item of array[+day]) {
         // 리스트 개수가 화면에 보이는 날짜 칸을 넘어가면 break;
-
-        if (arrayCount >= listViewCount) break;
+        if (arrayCount >= listViewCount - 1) break;
 
         if (item) {
-          if ((item as React.ReactElement).key === key)
+          if ((item as React.ReactElement).key === key) {
             return (
               <div className={style["list-box"]}>
                 <div className={style["list-area"]}>{array[+day]}</div>
               </div>
             );
+          }
           arrayCount += 1;
           continue;
         }
 
-        // arraCount가 list.. -1 이 되면 '더 보기'란 생성
-        let isMore = arrayCount < listViewCount - 1 ? false : true;
-
         for (let i = +day; i <= 7; i++) {
-          if (i === 8) break;
-
-          let next: string;
-
-          const currentDate = new Date(date);
-
-          const previousDate = new Date(
-            currentDate.getTime() + 24 * 60 * 60 * 1000 * (i - +day)
-          );
-
-          next = previousDate.toISOString().split("T")[0];
+          const next: string = new Date(
+            new Date(date).getTime() + 24 * 60 * 60 * 1000 * (i - +day)
+          )
+            .toISOString()
+            .split("T")[0];
 
           if (next > object.endDate) break;
 
@@ -183,25 +160,23 @@ const Schedule = React.memo(
             <div
               key={object.key}
               className={`${style["list-boundary"]} ${
-                !isMore
-                  ? object.endDate > object.startDate
-                    ? style["bound-long"]
-                    : style["short"]
-                  : style["list-more"]
+                object.endDate > object.startDate
+                  ? style["bound-long"]
+                  : style["short"]
               } `}
               style={{
-                width: isLong && !isMore ? `${barWidth}00%` : "98%",
+                width: isLong
+                  ? `${calculateWidth(date, +day, object.endDate)}00%`
+                  : "98%",
                 top: `${listElementHeight * arrayCount}px`,
-                display: i === +day || isMore ? "flex" : "none",
+                display: i === +day ? "flex" : "none",
               }}
-              onMouseDown={(e) => mouseDown(e, isMore, parameter)}
-              onMouseUp={(e) => mouseUp(e, isMore, parameter)}
-              onMouseMove={(e) => mouseMove(e, isMore, parameter)}
+              onMouseDown={(e) => mouseDown(e, parameter)}
+              onMouseUp={(e) => mouseUp(e, parameter)}
+              onMouseMove={(e) => mouseMove(e, parameter)}
               ref={(el: HTMLDivElement) => {
-                if (i !== +day && !isMore) return;
-                isMore
-                  ? (allListRef.current[`${object.key + i + week}`] = el)
-                  : (listRef.current[`${object.key + i + week}`] = el);
+                if (i !== +day) return;
+                listRef.current[`${object.key + i + week}`] = el;
               }}
             >
               {!isLong && arrayCount < listViewCount - 1 && (
@@ -211,7 +186,6 @@ const Schedule = React.memo(
                 key={object.key}
                 className={`${style.list} ${
                   isLong &&
-                  !isMore &&
                   `${style.long} ${object.color} ${
                     modal.key === object.key ? style.clicked : ""
                   }`
@@ -222,11 +196,7 @@ const Schedule = React.memo(
                     object.isDone && style.done
                   }`}
                 >
-                  {isMore
-                    ? `${
-                        Object.keys(schedule[date]).length - listViewCount + 1
-                      }개 더보기`
-                    : object.startDate === object.endDate
+                  {!isLong
                     ? object.startTime + " " + object.title
                     : object.title}
                 </div>
@@ -235,11 +205,7 @@ const Schedule = React.memo(
                     object.isDone && style.done
                   }`}
                 >
-                  {isMore
-                    ? `+${
-                        Object.keys(schedule[date]).length - listViewCount + 1
-                      }`
-                    : object.title}
+                  {object.title}
                 </div>
               </div>
             </div>
@@ -249,9 +215,42 @@ const Schedule = React.memo(
       }
     }
 
+    let viewCount: number = 0;
+
+    for (let i = 0; i < listViewCount - 1; i++) {
+      if (array[+day][i]) viewCount++;
+    }
+
+    const 더보기개수: number = Object.keys(schedule[date]).length - viewCount;
+
     return (
       <div className={style["list-box"]}>
-        <div className={style["list-area"]}>{array[+day]}</div>
+        <div className={style["list-area"]}>
+          {array[+day]}
+          {더보기개수 > 0 && (
+            <div
+              key={`${week} + ${day} `}
+              className={`${style["list-boundary"]} ${style["list-more"]}`}
+              style={{
+                width: "98%",
+                top: `${listElementHeight * (listViewCount - 1)}px`,
+                display: "flex",
+              }}
+              onMouseDown={(e) => mouseDownMore(e)}
+              onMouseUp={(e) => mouseUpMore(e)}
+              ref={(el: HTMLDivElement) => {
+                allListRef.current[`${week} + ${day} `] = el;
+              }}
+            >
+              <div className={style.list}>
+                <div className={style["type-one"]}>
+                  {`${더보기개수}개 더보기`}
+                </div>
+                <div className={style["type-two"]}>{`+${더보기개수}`}</div>
+              </div>
+            </div>
+          )}
+        </div>
       </div>
     );
   }

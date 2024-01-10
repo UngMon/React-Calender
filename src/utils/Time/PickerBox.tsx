@@ -2,12 +2,15 @@ import React, { useRef, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { ListOrMore } from "../../type/RefType";
 import { faClock } from "@fortawesome/free-regular-svg-icons";
+import { useAppDispatch } from "../../redux/store";
+import { dateActions } from "../../redux/date-slice";
 import SecondCaleder from "../miniCalender/Secon-Month";
 import TimeBoxOne from "./TimeBoxOne";
 import TimeBoxTwo from "./TimeBoxTwo";
 import "./PickerBox.css";
 
 interface T {
+  platform: string;
   startDate: string;
   endDate: string;
   openDate: [boolean, string];
@@ -20,6 +23,7 @@ interface T {
 }
 
 const PickerBox = ({
+  platform,
   startDate,
   endDate,
   openDate,
@@ -30,19 +34,23 @@ const PickerBox = ({
   timeInputOneRef,
   timeInputTwoRef,
 }: T) => {
+  const dispatch = useAppDispatch();
+
   const dateRef = useRef<ListOrMore>({});
   const timeRef = useRef<ListOrMore>({});
   const oneRef = useRef<ListOrMore>({});
   const twoRef = useRef<ListOrMore>({});
-  // console.log(startDate)
-  // console.log(endDate)
-  // console.log(time)
-  // console.log(openDate, openTime)
 
-  const openDateHandler = (type: string) => {
+  const openDateHandler = (type: string, pickDate: string) => {
     if (openDate[1] === type) setOpenDate([false, ""]);
     if (openDate[1] !== type) setOpenDate([true, type]);
     setOpenTime([false, ""]);
+    dispatch(
+      dateActions.setDate({
+        year: pickDate.split("-")[0],
+        month: pickDate.split("-")[1],
+      })
+    );
   };
 
   const openTimeHandler = (type: string) => {
@@ -94,7 +102,7 @@ const PickerBox = ({
             <div
               className={openDate[1] === "start" ? "date-on" : ""}
               ref={(el: HTMLDivElement) => (dateRef.current[0] = el)}
-              onClick={() => openDateHandler("start")}
+              onClick={() => openDateHandler("start", startDate)}
             >
               <span>{startDate}</span>
             </div>
@@ -116,7 +124,7 @@ const PickerBox = ({
             <div
               className={openDate[1] === "end" ? "date-on" : ""}
               ref={(el: HTMLDivElement) => (dateRef.current[1] = el)}
-              onClick={() => openDateHandler("end")}
+              onClick={() => openDateHandler("end", endDate)}
             >
               <span>{endDate}</span>
             </div>
@@ -133,7 +141,11 @@ const PickerBox = ({
       </div>
       <div className="picker-two">
         {openDate[0] && (
-          <SecondCaleder platform="pc" type={openDate[1]} dateRef={dateRef} />
+          <SecondCaleder
+            platform={platform}
+            type={openDate[1]}
+            dateRef={dateRef}
+          />
         )}
         <TimeBoxOne
           oneRef={oneRef}

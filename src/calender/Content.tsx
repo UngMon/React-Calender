@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { useAppDispatch } from "../redux/store";
 import { modalActions } from "../redux/modal-slice";
@@ -17,7 +17,8 @@ const Calender = () => {
 
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-
+  
+  const [checkUrl, setCheckUrl] = useState<boolean>(false);
   const [param] = useSearchParams();
   // 사용자가 의도적으로 수를 제외한 문자열을 입력할 경우 수를 제외한 모든 문자 공백
   let year = param.get("year")?.replace(/\D/g, "");
@@ -25,28 +26,29 @@ const Calender = () => {
 
   useEffect(() => {
     // 아래 조건식으로 불 필요한 렌더링 방지
-    if (!year || !month) {
+    setCheckUrl(true);
+    if (!year || !month)
       // 사용자가 year or month를 입력하지 않은 경우
       return navigate(`/calender/date?year=${ye}&month=${mon}`);
-    }
 
     let y = year === "" ? ye : year;
     let m = month === "" ? mon : month;
-
+    
     if (
       y > "2003" &&
       y < String(+y + 3) &&
       m < "13" &&
-      m > "00" &&
-      sessionStorage.getItem(y)
+      m > "01" &&
+      m.length === 2
     )
       return;
 
-    y = String(Math.max(2004, Math.min(+ye + 2, +y)));
-    m = String(Math.max(1, Math.min(12, +m))).padStart(2, "0");
+    y = String(Math.max(2004, Math.min(+ye + 2, +year)));
+    m = String(Math.max(1, Math.min(12, +month))).padStart(2, "0");
 
     navigate(`/calender/date?year=${y}&month=${m}`);
-    dispatch(getNationalDay(y));
+
+    if (!sessionStorage.getItem(y)) dispatch(getNationalDay(y));
   }, [dispatch, navigate, month, year]);
 
   const movePrevMonth = () => {
@@ -105,7 +107,7 @@ const Calender = () => {
         movePrevMonth={movePrevMonth}
         moveNextMonth={moveNextMonth}
       />
-      <Main year={year!} month={month!} />
+      {checkUrl && <Main year={year!} month={month!} />}
     </div>
   );
 };

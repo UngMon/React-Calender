@@ -1,4 +1,7 @@
-export const makeSlideArray = (year: string, month: string) => {
+export const makeSlideArray = (
+  year: string,
+  month: string
+): Array<[string, string, number, number]> => {
   const prevMonth = +month - 1 === 0 ? "12" : String(+month - 1);
   const nextMonth = +month + 1 === 13 ? "01" : String(+month + 1);
 

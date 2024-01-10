@@ -4,6 +4,7 @@ import "./NotFound.css";
 
 const NotFound = () => {
   const navigate = useNavigate();
+
   return (
     <div className="NF-Container">
       <ul>

@@ -27,7 +27,7 @@ const Main = ({ year, month }: T) => {
 
   const firstDay: number = new Date(+year, +month - 1, 1).getDay();
   const lastDate: number = new Date(+year, +month, 0).getDate();
-  console.log(firstDay, lastDate)
+
   const week: number = Math.ceil((firstDay + lastDate) / 7); // 해당 month가 4주 ~ 5주인지?
 
   useEffect(() => {

@@ -133,6 +133,8 @@ const List = ({
 
     dispatch(sendUserData({ newSchedule, uid, type: "POST" }));
     dispatch(modalActions.clearSet({ type: "all" }));
+    dispatch(cloneActions.clearSet());
+    setIsDragging(false);
   };
 
   const editButtonHandler = () => {
@@ -200,7 +202,6 @@ const List = ({
     setAnimaOn(false);
     setIsDragging(false);
     setTimeout(() => {
-      console.log("close Modal Handler");
       clickedElement.current = null;
       dispatch(
         modalActions.clearSet({
@@ -261,6 +262,7 @@ const List = ({
             </div>
           </div>
           <PickerBox
+            platform="pc"
             startDate={startDate}
             endDate={endDate}
             openDate={openDate}

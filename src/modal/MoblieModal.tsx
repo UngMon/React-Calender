@@ -30,7 +30,6 @@ interface T {
 }
 
 const MobileModal = ({ data, modal, clone }: T) => {
-  console.log("mobilcModal");
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 

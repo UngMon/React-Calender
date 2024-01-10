@@ -1,11 +1,14 @@
 .NF-Container {
+  box-sizing: border-box;
   min-width: 320px;
   width: 100%;
   min-height: 320px;
   height: 100%;
+  padding-bottom: 100px;
   display: flex;
   align-items: center;
   justify-content: center;
+
 }
 
 .NF-Container ul li {

@@ -33,9 +33,8 @@ const CalenderSlide = ({
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
-  const [calenderArray, setCalenderArray] = useState<any[][]>(
-    makeSlideArray(year, month)
-  ); //[..., [year, month, firstDay, week], ...]
+  //[..., [year, month, firstDay, week], ...]
+  const calenderArray = makeSlideArray(year, month)
   const [startPoint, setStartPoint] = useState<number>(0);
   const [movingPoint, setMovingPoint] = useState<number>(0);
   const [isScroling, setIsScroll] = useState<boolean>(false);
@@ -48,10 +47,6 @@ const CalenderSlide = ({
   const [viewWidth, setViewWidth] = useState<number>(window.innerWidth);
 
   const slideRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    setCalenderArray(makeSlideArray(year, month));
-  }, [year, month]);
 
   useEffect(() => {
     const resizeHandler = () => {
@@ -76,7 +71,6 @@ const CalenderSlide = ({
         dispatch(modalActions.clearSet({ type: "all" }));
       }
       setListBarHeight(window.innerWidth > 500 ? 24 : 20);
-      setCalenderArray(makeSlideArray(year, month));
     };
 
     window.addEventListener("resize", resizeHandler);

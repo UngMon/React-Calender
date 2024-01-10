@@ -3,8 +3,6 @@ import { useSearchParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { RootState } from "../redux/store";
 import { CalenderData } from "../type/ReduxType";
-// import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-// import { faSearch } from "@fortawesome/free-solid-svg-icons";
 import Header from "../calender/header/Header";
 import "./Result.css";
 
@@ -23,7 +21,7 @@ const Result = () => {
       }
     }
   }
-  console.log(result);
+
   const keyArray = Object.keys(result);
   return (
     <>

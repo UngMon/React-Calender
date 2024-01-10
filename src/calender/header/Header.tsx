@@ -10,7 +10,7 @@ import {
   faBars,
 } from "@fortawesome/free-solid-svg-icons";
 import Menu from "./Menu";
-import UserInfo from "../../modal/UserInfo";
+import UserInfo from "./UserInfo";
 import "./Header.css";
 
 interface T {
@@ -142,18 +142,11 @@ const Header = ({ type, year, month, movePrevMonth, moveNextMonth }: T) => {
             </button>
           )}
         </div>
-        <div className="header-user-info">
-          <div
-            className="user-info-circle"
-            onClick={() => setOpenUserInfo((prevState) => !prevState)}
-          >
-            {auth.currentUser?.displayName}
-          </div>
-          {openUserInfo && (
-            <UserInfo auth={auth} setOpenUserInfo={setOpenUserInfo} />
-          )}
-        </div>
-        <div></div>
+        <UserInfo
+          auth={auth}
+          openUserInfo={openUserInfo}
+          setOpenUserInfo={setOpenUserInfo}
+        />
       </div>
     </header>
   );

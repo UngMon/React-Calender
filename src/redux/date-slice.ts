@@ -37,11 +37,6 @@ const dateSlice = createSlice({
       state.year = action.payload.year;
       state.month = action.payload.month;
     },
-
-    setMonth(state, action) {
-      state.year = action.payload.선택날짜[0];
-      state.month = action.payload.thisMonth;
-    },
   },
 });
 

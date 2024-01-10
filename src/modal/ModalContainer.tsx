@@ -33,7 +33,7 @@ const ModalContainer = ({
   const data = useSelector((state: RootState) => state.data);
   const modal = useSelector((state: RootState) => state.modal);
   const clone = useSelector((state: RootState) => state.clone);
-
+  console.log('Modal Container')
   return (
     <div
       className={`modal-container ${
@@ -77,7 +77,7 @@ const ModalContainer = ({
         />
       )}
       {modal.mobileModalOpen && window.innerWidth <= 500 && (
-        <MobileModal data={data} modal={modal} clone={clone} />
+        <MobileModal data={data} clone={clone} />
       )}
     </div>
   );

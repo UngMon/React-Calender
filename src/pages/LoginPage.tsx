@@ -6,8 +6,8 @@ import {
   GoogleAuthProvider,
   setPersistence,
   signInWithPopup,
-  browserLocalPersistence,
   sendEmailVerification,
+  browserSessionPersistence
 } from "firebase/auth";
 import { FacebookAuthProvider } from "firebase/auth";
 import { signInWithEmailAndPassword } from "firebase/auth";
@@ -15,9 +15,12 @@ import { createUserWithEmailAndPassword } from "firebase/auth";
 import StartImages from "./StartImages";
 import style from "./LoginPage.module.css";
 
+const d = new Date();
+const year = d.getFullYear();
+const month = String(d.getMonth() + 1).padStart(2, '0');
+
 const LoginPage = () => {
   const navigagte = useNavigate();
-  console.log("loginpage");
   // 회원가입 인지 아닌지~
   const [creatingUser, setCreatingUser] = useState<boolean>(false);
 
@@ -124,11 +127,11 @@ const LoginPage = () => {
         provider = new FacebookAuthProvider();
     }
 
-    setPersistence(auth, browserLocalPersistence).then(() => {
+    setPersistence(auth, browserSessionPersistence).then(() => {
       signInWithPopup(auth, provider)
         .then((data) => {
           console.log(data);
-          navigagte("/calender/date?year=2023&month=07");
+          navigagte(`/calender/date?year=${year}&month=${month}`);
         })
         .catch((err) => {
           alert("로그인하는데 실패했습니다.");
@@ -148,24 +151,40 @@ const LoginPage = () => {
 
     if (!isEmail || !isPassword) return alert("올바른 양식을 기입해주세요!");
 
-    signInWithEmailAndPassword(auth, email, password)
-      .then((userCredential) => {
-        // Signed in
-        console.log(userCredential);
-        if (!userCredential.user.emailVerified)
-          return alert("이메일 인증을 해주세요!");
-        navigagte("/calender");
-      })
-      .catch((err) => {
-        if (err.message === "Firebase: Error (auth/wrong-password).") {
-          alert("패스워드가 틀렸습니다!");
-        }
+    setPersistence(auth, browserSessionPersistence)
+    .then((userCredential) => {
+      console.log(userCredential)
+      // Existing and future Auth states are now persisted in the current
+      // session only. Closing the window would clear any existing state even
+      // if a user forgets to sign out.
+      // ...
+      // New sign-in will be persisted with session persistence.
+      return signInWithEmailAndPassword(auth, email, password);
+    })
+    .catch((error) => {
+      // Handle Errors here.
+      const errorCode = error.code;
+      const errorMessage = error.message;
+    });
 
-        if (err.message === "Firebase: Error (auth/user-not-found).") {
-          alert("회원정보가 없습니다!");
-        }
-        console.log(err.message);
-      });
+    // signInWithEmailAndPassword(auth, email, password)
+    //   .then((userCredential) => {
+    //     // Signed in
+    //     console.log(userCredential);
+    //     if (!userCredential.user.emailVerified)
+    //       return alert("이메일 인증을 해주세요!");
+    //     navigagte("/calender");
+    //   })
+    //   .catch((err) => {
+    //     if (err.message === "Firebase: Error (auth/wrong-password).") {
+    //       alert("패스워드가 틀렸습니다!");
+    //     }
+
+    //     if (err.message === "Firebase: Error (auth/user-not-found).") {
+    //       alert("회원정보가 없습니다!");
+    //     }
+    //     console.log(err.message);
+    //   });
   };
 
   const createAccount = (email: string, password: string) => {
@@ -190,7 +209,7 @@ const LoginPage = () => {
       })
       .catch((err) => {
         if (err.message === "Firebase: Error (auth/email-already-in-use).") {
-          alert("기입한 이메일이 이미 존재합니다.");
+          alert("이미 가입한 이메일 입니다.");
         } else {
           console.log(err);
           alert("계정 생성 중 오류가 발생했습니다.");

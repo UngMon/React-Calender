@@ -1,9 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
 import { RootState, useAppDispatch } from "../redux/store";
-import { dateActions } from "../redux/date-slice";
 import { useNavigate, useParams, useSearchParams } from "react-router-dom";
-import { ListOrMore } from "../type/RefType";
 import { MakeList } from "../utils/MakeList";
 import { MakeListParameter } from "../type/Etc";
 import { UserData } from "../type/ReduxType";
@@ -11,7 +9,7 @@ import { auth } from "../Auth/firebase";
 import { sendUserData } from "../redux/fetch-action";
 import { cloneActions } from "../redux/clone-slice";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faArrowRight, faXmark } from "@fortawesome/free-solid-svg-icons";
+import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import { makeDateArray } from "../utils/MakeLongArr";
 import {
   faPenToSquare,
@@ -20,12 +18,10 @@ import {
 } from "@fortawesome/free-regular-svg-icons";
 import { newMonth, newYear } from "../utils/nowDate";
 import { setTime } from "../utils/Time/SetTime";
-// import MobileTimePicker from "../ui/MobileTimePicker";
-// import SeconMonth from "../utils/miniCalender/Secon-Month";
 import ColorBox from "../utils/Time/ColorBox";
-import NotFound from "../error/NotFound";
-import "./MobileMakeEvent.css";
+import NotFound from "./NotFound";
 import PickerBox from "../utils/Time/PickerBox";
+import "./MobileMakeEvent.css";
 
 const nowTime = setTime();
 
@@ -35,15 +31,13 @@ const MakeEvent = () => {
   const param = useParams();
   const [parameter] = useSearchParams();
   const pickScheduleKey = parameter.get("key") ?? "";
-  // key를 가지고 slice를 해서 date 찾아내야함..
-  // 그리고 data.useschedule[date] = {startDate, endDate ... } 받아옴
-  // 그 다음 데이터가 존재하지 않으면 404 페이지로 그리고, 존재하면 이벤트 컴포넌트 보이게하기 ㅇㅋ?
-  const startDate = pickScheduleKey?.slice(0, 10) || date;
 
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const data = useSelector((state: RootState) => state.data);
   const clone = useSelector((state: RootState) => state.clone);
+  const startDate = clone.startDate || pickScheduleKey?.slice(0, 10) || date;
+  const endDate = clone.endDate || date;
   console.log("MakeEvent Mobile Render");
 
   const [openDate, setOpenDate] = useState<[boolean, string]>([false, ""]);
@@ -53,11 +47,6 @@ const MakeEvent = () => {
   const [existKey, setExistKey] = useState<boolean>(true);
 
   const inputRef = useRef<HTMLInputElement>(null);
-  const dateRef = useRef<ListOrMore>({});
-  const startDateRef = useRef<HTMLSpanElement>(null);
-  const endDateRef = useRef<HTMLSpanElement>(null);
-  const startTimeRef = useRef<HTMLSpanElement>(null);
-  const endTimeRef = useRef<HTMLSpanElement>(null);
 
   const timeIputOneRef = useRef<HTMLInputElement>(null);
   const timeInputTwoRef = useRef<HTMLInputElement>(null);
@@ -115,41 +104,18 @@ const MakeEvent = () => {
   let startTime = clone.startTime || nowTime.currentTime;
   let endTime = clone.endTime || nowTime.lastTime;
 
-  const openHandler = (category: string, order: string) => {
-    // cateogry => date or time && order => start or end
-
-    if (category === "date") {
-      setOpenTime([false, ""]);
-      setOpenDate([
-        openDate[1] === order ? false : true,
-        openDate[1] === order ? "" : order,
-      ]);
-      const [startYear, startMonth] = clone.startDate.split("-");
-      const [endYear, endMonth] = clone.endDate.split("-");
-
-      dispatch(
-        dateActions.setDate({
-          year: order === "start" ? startYear : endYear,
-          month: order === "start" ? startMonth : endMonth,
-        })
-      );
-    } else {
-      setOpenDate([false, ""]);
-      setOpenTime([
-        openTime[1] === order ? false : true,
-        openTime[1] === order ? "" : order,
-      ]);
-    }
-  };
-
-  const deleteAndCreate = (type: string) => {
+  const deleteAndCreate = (
+    type: string,
+    startTime: string,
+    endTime: string
+  ) => {
     const schedule = JSON.parse(JSON.stringify(data.userSchedule));
     let dateArray = makeDateArray(clone.startDate, clone.endDate);
     // 기존 항목 삭제 하고..
 
     if (param["*"] === "event/edit") {
       for (let date of dateArray) {
-        delete schedule[date][clone.key];
+        delete schedule?.[date]?.[clone.key];
       }
     }
 
@@ -172,7 +138,6 @@ const MakeEvent = () => {
     dispatch(
       sendUserData({ newSchedule, uid: auth.currentUser!.uid, type: "POST" })
     );
-    console.log("delete And Create");
     navigate(-1);
   };
 
@@ -183,15 +148,26 @@ const MakeEvent = () => {
       alert("종료 날짜가 시작 날짜 보다 뒤에 있어야 합니다.");
       return;
     }
+    const pattern = /^(오전|오후)\s(([0][0-9]|[1][0-2])):([0-5][0-9])$/;
+
+    startTime = (
+      timeIputOneRef.current!.value || timeIputOneRef.current!.placeholder
+    ).trim();
+    endTime = (
+      timeInputTwoRef.current!.value || timeInputTwoRef.current!.placeholder
+    ).trim();
+
+    if (!pattern.test(startTime) || !pattern.test(endTime)) {
+      return alert("시간을 제대로 입력해주세요! ex) 오후 01:30");
+    }
 
     if (clone.startDate === clone.endDate) {
       if (startTime > endTime) {
-        alert("종료 시간이 시작시간 보다 뒤에 있어야 합니다.");
-        return;
+        return alert("종료 시간이 시작시간 보다 뒤에 있어야 합니다.");
       }
     }
 
-    deleteAndCreate("create");
+    deleteAndCreate("create", startTime, endTime);
   };
 
   return (
@@ -232,8 +208,9 @@ const MakeEvent = () => {
             <FontAwesomeIcon icon={faClock} className="Make-clock-icon" />
           </div>
           <PickerBox
+            platform="mobile"
             startDate={startDate}
-            endDate={startDate}
+            endDate={endDate}
             openDate={openDate}
             setOpenDate={setOpenDate}
             time={[startTime, endTime]}
@@ -247,7 +224,7 @@ const MakeEvent = () => {
               <button
                 className="mobile-button"
                 type="button"
-                onTouchEnd={() => deleteAndCreate("delete")}
+                onTouchEnd={() => deleteAndCreate("delete", startTime, endTime)}
                 style={{ width: param["*"] === "event/edit" ? "50%" : "0" }}
               >
                 <FontAwesomeIcon icon={faTrashCan} />
@@ -270,55 +247,3 @@ const MakeEvent = () => {
 };
 
 export default MakeEvent;
-
-/* {data.succesGetScheduleData && (
-            <div className="Make-time">
-              <div className="time">
-                <div
-                  className={openDate[1] === "start" ? "clicked" : ""}
-                  onTouchEnd={() => openHandler("date", "start")}
-                >
-                  <span ref={startDateRef}>{clone.startDate || date}</span>
-                </div>
-                <div
-                  className={openTime[1] === "start" ? "clicked" : ""}
-                  onTouchEnd={() => openHandler("time", "start")}
-                >
-                  <span ref={startTimeRef}>{startTime}</span>
-                </div>
-              </div>
-              <div className="arrow">
-                <FontAwesomeIcon icon={faArrowRight} />
-              </div>
-              <div className="time">
-                <div
-                  className={openDate[1] === "end" ? "clicked" : ""}
-                  onTouchEnd={() => openHandler("date", "end")}
-                >
-                  <span ref={endDateRef}>{clone.endDate || date}</span>
-                </div>
-                <div
-                  className={openTime[1] === "end" ? "clicked" : ""}
-                  onTouchEnd={() => openHandler("time", "end")}
-                >
-                  <span ref={endTimeRef}>{endTime}</span>
-                </div>
-              </div>
-            </div>
-          )}
-          <div className="picker-box">
-            {openDate[0] && (
-              <SeconMonth
-                platform="mobile"
-                type={openDate[1]}
-                dateRef={dateRef}
-              />
-            )}
-            {openTime[0] && (
-              <MobileTimePicker
-                type={openTime[1]}
-                startTime={startTime}
-                endTime={endTime}
-              />
-            )}
-          </div> */
