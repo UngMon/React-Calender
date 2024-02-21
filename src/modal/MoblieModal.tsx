@@ -3,12 +3,7 @@ import { useAppDispatch } from "../redux/store";
 import { cloneActions } from "../redux/clone-slice";
 import { modalActions } from "../redux/modal-slice";
 import { useNavigate } from "react-router-dom";
-import {
-  CalenderData,
-  DataType,
-  ModalBasicType,
-  ModalType,
-} from "../type/ReduxType";
+import { CalenderData, DataType, ModalBasicType } from "../type/ReduxType";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCalendarDay } from "@fortawesome/free-solid-svg-icons";
 import "./MobileModal.css";
@@ -25,11 +20,10 @@ const dayText: { [key: string]: string } = {
 
 interface T {
   data: DataType;
-  modal: ModalType;
   clone: ModalBasicType;
 }
 
-const MobileModal = ({ data, modal, clone }: T) => {
+const MobileModal = ({ data, clone }: T) => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
@@ -60,7 +54,11 @@ const MobileModal = ({ data, modal, clone }: T) => {
   };
 
   return (
-    <div className="mobile-background" ref={backRef}>
+    <div
+      className="mobile-background"
+      ref={backRef}
+      onWheel={(e) => e.stopPropagation()}
+    >
       <div className="mobile">
         <header className="mobile-modal-title">
           <span>{+clone.startDate.split("-")[2]}</span>

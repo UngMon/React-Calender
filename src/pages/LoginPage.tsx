@@ -1,23 +1,20 @@
 /* eslint-disable */
 import React, { useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
-import { auth } from "../Auth/firebase";
+import { auth } from "../auth/firebase";
 import {
   GoogleAuthProvider,
   setPersistence,
   signInWithPopup,
   sendEmailVerification,
-  browserSessionPersistence
+  browserSessionPersistence,
 } from "firebase/auth";
 import { FacebookAuthProvider } from "firebase/auth";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { createUserWithEmailAndPassword } from "firebase/auth";
+import { newYear, newMonth } from "../utils/nowDate";
 import StartImages from "./StartImages";
 import style from "./LoginPage.module.css";
-
-const d = new Date();
-const year = d.getFullYear();
-const month = String(d.getMonth() + 1).padStart(2, '0');
 
 const LoginPage = () => {
   const navigagte = useNavigate();
@@ -28,19 +25,16 @@ const LoginPage = () => {
   const [name, setName] = useState<string>("");
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
-  // const [passwordConfirm, setPasswordConfirm] = useState("");
 
   // 이메일과 패스워드 유효성 검사 state
   const [isName, setIsName] = useState<boolean>(false);
   const [isEmail, setIsEmail] = useState<boolean>(false);
   const [isPassword, setIsPassword] = useState<boolean>(false);
-  // const [isPasswordConfirm, setIsPasswordConfirm] = useState(false);
 
   // 이메일과 패스워드 에러메시지 state
   const [nameMessage, setNameMessage] = useState<string>("");
   const [emailMessage, setEmailMessage] = useState<string>("");
   const [passwordMessage, setPasswordMessage] = useState<string>("");
-  // const [passwordConfirmMessage, setPasswordConfirmMessage] = useState("");
 
   const onChangeName = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     setName(e.target.value);
@@ -130,8 +124,7 @@ const LoginPage = () => {
     setPersistence(auth, browserSessionPersistence).then(() => {
       signInWithPopup(auth, provider)
         .then((data) => {
-          console.log(data);
-          navigagte(`/calender/date?year=${year}&month=${month}`);
+          navigagte(`/calender/date?year=${newYear}&month=${newMonth}`);
         })
         .catch((err) => {
           alert("로그인하는데 실패했습니다.");
@@ -152,20 +145,20 @@ const LoginPage = () => {
     if (!isEmail || !isPassword) return alert("올바른 양식을 기입해주세요!");
 
     setPersistence(auth, browserSessionPersistence)
-    .then((userCredential) => {
-      console.log(userCredential)
-      // Existing and future Auth states are now persisted in the current
-      // session only. Closing the window would clear any existing state even
-      // if a user forgets to sign out.
-      // ...
-      // New sign-in will be persisted with session persistence.
-      return signInWithEmailAndPassword(auth, email, password);
-    })
-    .catch((error) => {
-      // Handle Errors here.
-      const errorCode = error.code;
-      const errorMessage = error.message;
-    });
+      .then((userCredential) => {
+        return signInWithEmailAndPassword(auth, email, password);
+      })
+      .catch((error) => {
+        // Handle Errors here.
+        if (error.message === "Firebase: Error (auth/wrong-password).") {
+          alert("패스워드가 틀렸습니다!");
+        }
+
+        if (error.message === "Firebase: Error (auth/user-not-found).") {
+          alert("회원정보가 없습니다!");
+        }
+        console.log(`${error.message} ${error.code}`);
+      });
 
     // signInWithEmailAndPassword(auth, email, password)
     //   .then((userCredential) => {
@@ -203,16 +196,14 @@ const LoginPage = () => {
             navigagte("/login");
           })
           .catch((err) => {
-            console.log(err);
-            alert("인증 링크를 보내는데 실패했습니다!");
+            alert(`인증 링크를 보내는데 실패했습니다! ${err.message}`);
           });
       })
       .catch((err) => {
         if (err.message === "Firebase: Error (auth/email-already-in-use).") {
           alert("이미 가입한 이메일 입니다.");
         } else {
-          console.log(err);
-          alert("계정 생성 중 오류가 발생했습니다.");
+          alert(`계정 생성 중 오류가 발생했습니다. ${err.message}`);
         }
       });
   };

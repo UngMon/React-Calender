@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from "react";
-import style from "./ColorBox.module.css";
 import { useAppDispatch } from "../../redux/store";
 import { cloneActions } from "../../redux/clone-slice";
+import style from "./ColorBox.module.css";
 
 interface T {
   platform: string;

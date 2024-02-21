@@ -1,8 +1,8 @@
 import { MakeListParameter } from "../type/Etc";
 import { UserData } from "../type/ReduxType";
-import { makeDateArray } from "./MakeLongArr";
+import { makeDateArray } from "./makedateArray";
 
-export const MakeList = (parameter: MakeListParameter): UserData => {
+export const makeList = (parameter: MakeListParameter): UserData => {
   const type = parameter.startDate === parameter.endDate ? "S" : "L";
   const dateObject = JSON.parse(JSON.stringify(parameter.userSchedule));
   const dateArray = makeDateArray(parameter.startDate, parameter.endDate);
@@ -29,7 +29,7 @@ export const MakeList = (parameter: MakeListParameter): UserData => {
     isDone: false,
     key,
   };
-  console.log(object)
+
   for (let date of dateArray) {
     if (!dateObject[date]) dateObject[date] = {};
     dateObject[date][key] = object; // O(1)
@@ -37,7 +37,7 @@ export const MakeList = (parameter: MakeListParameter): UserData => {
       Object.entries(dateObject[date]).sort((a, b) => (a < b ? -1 : 1))
     );
   }
-  console.log(dateObject)
+
   if (dateObject["dummy"]) delete dateObject["dummy"];
 
   return dateObject;

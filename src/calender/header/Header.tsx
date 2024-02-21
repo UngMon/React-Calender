@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
-import { auth } from "../../Auth/firebase";
+import { NavLink, useNavigate } from "react-router-dom";
+import { auth } from "../../auth/firebase";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faAngleLeft,
@@ -25,7 +25,6 @@ const fixYear = new Date().getFullYear();
 
 const Header = ({ type, year, month, movePrevMonth, moveNextMonth }: T) => {
   const navigate = useNavigate();
-  const param = useLocation();
   const inputRef = useRef<HTMLInputElement>(null);
 
   const [openUserInfo, setOpenUserInfo] = useState<boolean>(false);
@@ -41,12 +40,8 @@ const Header = ({ type, year, month, movePrevMonth, moveNextMonth }: T) => {
   };
 
   const backButton = () => {
-    if (param.pathname === "/search") navigate(-1);
+    if (type === "search") navigate(-1);
     else setOpenSearch(false);
-  };
-
-  const logoClickHandler = () => {
-    navigate(`/calender/date?year=${year}&month=${month}`);
   };
 
   const menuClickHandler = () => {
@@ -54,12 +49,8 @@ const Header = ({ type, year, month, movePrevMonth, moveNextMonth }: T) => {
   };
 
   useEffect(() => {
-    if (type === "search" && !openSearch) {
-      setOpenSearch(true);
-      return;
-    }
-
-    if (param.pathname === "/search" || !openSearch) return;
+    if (type === "search" && !openSearch) return setOpenSearch(true);
+    if (type === "search" || !openSearch) return;
 
     const clickHandler = (e: MouseEvent) => {
       const target = e.target as Node;
@@ -72,7 +63,7 @@ const Header = ({ type, year, month, movePrevMonth, moveNextMonth }: T) => {
     window.addEventListener("click", clickHandler);
 
     return () => window.removeEventListener("click", clickHandler);
-  }, [param, openSearch, type]);
+  }, [openSearch, type]);
 
   return (
     <header className="header">
@@ -82,9 +73,12 @@ const Header = ({ type, year, month, movePrevMonth, moveNextMonth }: T) => {
           <FontAwesomeIcon icon={faBars} onClick={menuClickHandler} />
         </div>
         {!openSearch && type === "calender" && (
-          <div className="header-title" onClick={logoClickHandler}>
+          <NavLink
+            className="header-title"
+            to={`/calender/date?year=${year}&month=${month}`}
+          >
             <span>Your Calender</span>
-          </div>
+          </NavLink>
         )}
         {openSearch && (
           <div className="search-b">
@@ -98,21 +92,17 @@ const Header = ({ type, year, month, movePrevMonth, moveNextMonth }: T) => {
         )}
         {!openSearch && type === "calender" && (
           <div className="select-month">
-            {window.innerWidth > 500 && (
-              <button onClick={movePrevMonth}>
-                <FontAwesomeIcon icon={faAngleLeft} />
-              </button>
-            )}
+            <button onClick={movePrevMonth}>
+              <FontAwesomeIcon icon={faAngleLeft} />
+            </button>
             <div>
               <span>
                 {+year! === fixYear ? `${+month!}월` : `${year}년 ${+month!}월`}
               </span>
             </div>
-            {window.innerWidth > 500 && (
-              <button onClick={moveNextMonth}>
-                <FontAwesomeIcon icon={faAngleRight} />
-              </button>
-            )}
+            <button onClick={moveNextMonth}>
+              <FontAwesomeIcon icon={faAngleRight} />
+            </button>
           </div>
         )}
         {openSearch && (
@@ -131,14 +121,13 @@ const Header = ({ type, year, month, movePrevMonth, moveNextMonth }: T) => {
         )}
         <div className="search">
           {!openSearch && type === "calender" && (
-            <button>
-              <FontAwesomeIcon
-                icon={faSearch}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setOpenSearch(true);
-                }}
-              />
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                setOpenSearch(true);
+              }}
+            >
+              <FontAwesomeIcon icon={faSearch} />
             </button>
           )}
         </div>

@@ -1,5 +1,5 @@
 import React from "react";
-import { auth } from "../../Auth/firebase";
+import { auth } from "../../auth/firebase";
 import { signOut } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
 import { faRightFromBracket, faXmark } from "@fortawesome/free-solid-svg-icons";

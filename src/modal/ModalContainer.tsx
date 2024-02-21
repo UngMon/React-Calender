@@ -1,8 +1,7 @@
-import React from "react";
-import { ListOrMore } from "../type/RefType";
+import React, { useRef } from "react";
 import { useSelector } from "react-redux";
 import { RootState } from "../redux/store";
-import { auth } from "../Auth/firebase";
+import { auth } from "../auth/firebase";
 import MakeEvent from "./MakeEvent";
 import List from "./List";
 import MoreList from "./MoreList";
@@ -10,30 +9,31 @@ import MobileModal from "./MoblieModal";
 import "./Modal.css";
 
 interface T {
+  type: string;
   lastweek: number;
   viewRef: React.RefObject<HTMLDivElement>;
-  listRef: React.MutableRefObject<ListOrMore>;
-  allListRef: React.MutableRefObject<ListOrMore>;
-  list: React.RefObject<HTMLDivElement>;
-  moreModalRef: React.MutableRefObject<HTMLDivElement | null>;
+  listsRef?: React.MutableRefObject<{ [key: string]: HTMLDivElement | null }>;
+  allListRef?: React.MutableRefObject<{ [key: string]: HTMLDivElement | null }>;
   clickedElement: React.MutableRefObject<HTMLDivElement | null>;
-  setIsDragging: React.Dispatch<React.SetStateAction<boolean>>;
+  setIsDragging?: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const ModalContainer = ({
+  type,
   lastweek,
   viewRef,
-  listRef,
+  listsRef,
   allListRef,
-  list,
-  moreModalRef,
   clickedElement,
   setIsDragging,
 }: T) => {
   const data = useSelector((state: RootState) => state.data);
   const modal = useSelector((state: RootState) => state.modal);
   const clone = useSelector((state: RootState) => state.clone);
-  console.log('Modal Container')
+
+  const list = useRef<HTMLDivElement>(null); // list모달창 ref
+  const moreModalRef = useRef<HTMLDivElement>(null); // 더 보기 모달창에 사용할 ref
+
   return (
     <div
       className={`modal-container ${
@@ -47,7 +47,7 @@ const ModalContainer = ({
           lastweek={lastweek}
           uid={auth.currentUser!.uid}
           viewRef={viewRef}
-          setIsDragging={setIsDragging}
+          setIsDragging={setIsDragging!}
         />
       )}
       {modal.moreModalOpen && (
@@ -58,18 +58,19 @@ const ModalContainer = ({
           viewRef={viewRef}
           moreModalRef={moreModalRef}
           list={list}
-          allListRef={allListRef}
+          allListRef={allListRef!}
           clickedElement={clickedElement}
         />
       )}
       {modal.listModalOpen && (
         <List
+          type={type}
           data={data}
           modal={modal}
           clone={clone}
           lastweek={lastweek}
           viewRef={viewRef}
-          listRef={listRef}
+          listsRef={listsRef}
           clickedElement={clickedElement}
           list={list}
           uid={auth.currentUser!.uid}

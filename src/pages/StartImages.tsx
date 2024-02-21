@@ -1,6 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
 import "./StartImages.css";
-import { ListOrMore } from "../type/RefType";
 
 const images = [
   {
@@ -13,7 +12,7 @@ const images = [
 
 const StartImages = () => {
   const [count, setCount] = useState<number>(0);
-  const imageRef = useRef<ListOrMore>({});
+  const imageRef = useRef<{ [key: string]: HTMLDivElement | null }>({});
 
   useEffect(() => {
     setTimeout(() => {

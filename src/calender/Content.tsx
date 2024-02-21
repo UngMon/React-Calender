@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { useAppDispatch } from "../redux/store";
+import { cloneActions } from "../redux/clone-slice";
 import { modalActions } from "../redux/modal-slice";
 import { getNationalDay } from "../redux/fetch-action";
 import Main from "./main/Main";
@@ -13,34 +14,29 @@ const ye = String(newDate.getFullYear());
 const mon = String(newDate.getMonth() + 1);
 
 const Calender = () => {
-  console.log("Content Render");
-
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  
+
   const [checkUrl, setCheckUrl] = useState<boolean>(false);
+  const [isDragging, setIsDragging] = useState<boolean>(false);
   const [param] = useSearchParams();
-  // 사용자가 의도적으로 수를 제외한 문자열을 입력할 경우 수를 제외한 모든 문자 공백
+  // 사용자가 의도적으로 url에 수를 제외한 문자열을 입력할 경우 수를 제외한 모든 문자 제거
   let year = param.get("year")?.replace(/\D/g, "");
   let month = param.get("month")?.replace(/\D/g, "");
 
   useEffect(() => {
-    // 아래 조건식으로 불 필요한 렌더링 방지
+    // 페이지의 경로를 확인하고, 양식에 맞지 않은 경로를 입력했다면 수정한다.
     setCheckUrl(true);
+
     if (!year || !month)
-      // 사용자가 year or month를 입력하지 않은 경우
+      // 사용자가 year or month를 입력하지 않은 경우(undefined)
       return navigate(`/calender/date?year=${ye}&month=${mon}`);
 
+    // 이후 year, month는 반드시 undefined가 아닌 문자열 데이터를 가진다.
     let y = year === "" ? ye : year;
     let m = month === "" ? mon : month;
-    
-    if (
-      y > "2003" &&
-      y < String(+y + 3) &&
-      m < "13" &&
-      m > "01" &&
-      m.length === 2
-    )
+
+    if (+y > 2003 && +y < +ye + 3 && m < "13" && m > "01" && m.length === 2)
       return;
 
     y = String(Math.max(2004, Math.min(+ye + 2, +year)));
@@ -50,6 +46,12 @@ const Calender = () => {
 
     if (!sessionStorage.getItem(y)) dispatch(getNationalDay(y));
   }, [dispatch, navigate, month, year]);
+
+  const clearState = () => {
+    dispatch(modalActions.clearSet({ type: "all" }));
+    dispatch(cloneActions.clearSet());
+    setIsDragging(false);
+  };
 
   const movePrevMonth = () => {
     switch (+month!) {
@@ -62,6 +64,7 @@ const Calender = () => {
     }
 
     navigate(`/calender/date?year=${year}&month=${month}`);
+    clearState();
     delay = true;
     setTimeout(() => {
       delay = false;
@@ -69,7 +72,7 @@ const Calender = () => {
   };
 
   const moveNextMonth = () => {
-    switch (month) {
+    switch (month!) {
       case "12":
         month = "01";
         year = String(+year! + 1);
@@ -79,6 +82,7 @@ const Calender = () => {
     }
 
     navigate(`/calender/date?year=${year}&month=${month}`);
+    clearState();
     delay = true;
     setTimeout(() => {
       delay = false;
@@ -88,7 +92,6 @@ const Calender = () => {
   const wheelHandler = (e: React.WheelEvent) => {
     if (delay) return;
 
-    dispatch(modalActions.clearSet({ type: "all" }));
     switch (e.deltaY > 0) {
       case true:
         movePrevMonth();
@@ -99,7 +102,7 @@ const Calender = () => {
   };
 
   return (
-    <div onWheel={(e) => wheelHandler(e)} style={{ width: "100%" }}>
+    <div onWheel={(e) => wheelHandler(e)}>
       <Header
         type="calender"
         year={year!}
@@ -107,7 +110,14 @@ const Calender = () => {
         movePrevMonth={movePrevMonth}
         moveNextMonth={moveNextMonth}
       />
-      {checkUrl && <Main year={year!} month={month!} />}
+      {checkUrl && (
+        <Main
+          year={year!}
+          month={month!}
+          isDragging={isDragging}
+          setIsDragging={setIsDragging}
+        />
+      )}
     </div>
   );
 };

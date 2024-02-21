@@ -1,11 +1,9 @@
 import React, { useEffect } from "react";
-import { ListOrMore } from "../../type/RefType";
 
 interface T {
-  oneRef: React.MutableRefObject<ListOrMore>;
-  timeRef: React.MutableRefObject<ListOrMore>;
+  oneRef: React.MutableRefObject<{ [key: string]: HTMLDivElement | null }>;
+  timeRef: React.MutableRefObject<{ [key: string]: HTMLDivElement | null }>;
   timeInputOneRef: React.RefObject<HTMLInputElement>;
-  openTime: string;
 }
 
 const timeArray = [
@@ -106,8 +104,7 @@ const timeArray = [
   "오후 11:45",
 ];
 
-const TimeBox = ({ timeInputOneRef, oneRef, openTime, timeRef }: T) => {
-
+const TimeBox = ({ timeInputOneRef, oneRef, timeRef }: T) => {
   useEffect(() => {
     Object.keys(oneRef.current).forEach((item, index) => {
       let value: string =
@@ -123,12 +120,8 @@ const TimeBox = ({ timeInputOneRef, oneRef, openTime, timeRef }: T) => {
   };
 
   return (
-    <div className={`time-selec-container ${openTime === "start" && "t-open"}`}>
-      <div
-        id="time-selector"
-        ref={(el) => (timeRef.current[0] = el)}
-        style={{ display: openTime === "start" ? "block" : "none" }}
-      >
+    <div className="time-selec-container">
+      <div id="time-selector" ref={(el) => (timeRef.current[0] = el)}>
         {timeArray.map((item, index) => (
           <div
             key={index}

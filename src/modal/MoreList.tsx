@@ -1,9 +1,8 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { CalenderData, DataType, ModalType } from "../type/ReduxType";
 import { useAppDispatch } from "../redux/store";
 import { modalActions } from "../redux/modal-slice";
 import { cloneActions } from "../redux/clone-slice";
-import { ListOrMore } from "../type/RefType";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import { morePosition } from "../utils/morePosition";
@@ -14,8 +13,8 @@ interface T {
   modal: ModalType;
   lastweek: number;
   viewRef: React.RefObject<HTMLDivElement>;
-  moreModalRef: React.MutableRefObject<HTMLDivElement | null>;
-  allListRef: React.MutableRefObject<ListOrMore>;
+  moreModalRef: React.RefObject<HTMLDivElement>;
+  allListRef: React.MutableRefObject<{ [key: string]: HTMLDivElement | null }>;
   clickedElement: React.MutableRefObject<HTMLDivElement | null>;
   list: React.RefObject<HTMLDivElement>;
 }
@@ -58,6 +57,7 @@ const MoreList = ({
 
   const schedule = data.userSchedule;
   const clickDate: string = modal.date;
+  const itemRef = useRef<{ [key: string]: HTMLDivElement }>({});
 
   const [size, setSize] = useState<[number, number]>([
     viewRef.current!.clientWidth,
@@ -111,13 +111,13 @@ const MoreList = ({
     object: CalenderData,
     index: number
   ) => {
-    if (clickedElement.current === (e.target as HTMLDivElement)) {
-      return dispatch(modalActions.onOffModal({ type: "list" }));
-    }
+    if (clickedElement.current === (e.target as HTMLDivElement))
+      return dispatch(modalActions.offModal({ type: "List" }));
 
     const giveDate = new Date(object.startDate);
-    const day = String(giveDate.getDay() + 1);
-    const week = String(Math.ceil((giveDate.getDate() + +day - 1) / 7));
+    const day: string = String(giveDate.getDay() + 1);
+    const week: string = String(Math.ceil((giveDate.getDate() + +day - 1) / 7));
+    if (index > 4) index = 4;
 
     dispatch(
       cloneActions.setListInfo({
@@ -128,14 +128,17 @@ const MoreList = ({
         index: index > 3 ? 3 : index,
       })
     );
+
     dispatch(
       modalActions.setListInfo({
         type: "More",
         ...object,
         index: index > 3 ? 3 : index,
+        offsetTop: moreModalRef.current!.offsetTop + index * 24 + 73,
       })
     );
-    dispatch(modalActions.onList());
+
+    dispatch(modalActions.onModal({ type: "List" }));
   };
 
   const 좌표 = morePosition(modal.day, modal.week, size, lastweek);
@@ -183,6 +186,9 @@ const MoreList = ({
                   key={index}
                   className="AllList-item"
                   onClick={(e) => listClickHandler(e, object, index)}
+                  ref={(el: HTMLDivElement) =>
+                    (itemRef.current[`${index}`] = el)
+                  }
                 >
                   {object.startDate < modal.date && (
                     <div

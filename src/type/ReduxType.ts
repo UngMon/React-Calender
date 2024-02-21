@@ -59,10 +59,12 @@ export interface ModalBasicType {
 }
 
 export interface ModalType extends ModalBasicType {
+  offsetTop: number;
   addModalOpen: boolean;
   listModalOpen: boolean;
   moreModalOpen: boolean;
   mobileModalOpen: boolean;
+  listInMoreOpen: boolean;
   openEdit: boolean;
 }
 

@@ -12,6 +12,7 @@ li {
   display: flex;
   align-items: center;
   background-color: rgba(0, 0, 0, 0.5);
+  font-size: 16px;
 }
 
 .mobile {
@@ -60,18 +61,17 @@ li {
 
 .mobile-lists li div:nth-child(1) {
   width: 30px;
-  font-size: 22px;
+  font-size: 1.3em;
 }
 
 .mobile-lists li div:nth-child(2) {
   width: 5px;
   margin-right: 5px;
   margin-bottom: 5px;
-  font-size: 22px;
 }
 
 .mobile-lists li div:nth-child(3) {
-  font-size: 15px;
+  font-size: 0.9em;
   width: auto;
 }
 
@@ -100,4 +100,10 @@ li {
   font-size: 30px;
   display: flex;
   justify-content: center;
+}
+
+@media (max-width: 400px) {
+  .mobile-background {
+    font-size: 14px;
+  }
 }

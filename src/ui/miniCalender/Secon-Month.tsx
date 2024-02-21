@@ -21,7 +21,6 @@ const fixMonth = String(date.getMonth() + 1).padStart(2, "0");
 const fixDate = String(date.getDate()).padStart(2, "0");
 
 const Month = ({ platform, type, dateRef }: T) => {
-  console.log("secondMonth");
   const date = useSelector((state: RootState) => state.date);
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
@@ -58,7 +57,11 @@ const Month = ({ platform, type, dateRef }: T) => {
   };
 
   return (
-    <div className={`${style["container"]} ${style["platform-pc"]}`}>
+    <div
+      className={`${style["container"]} ${
+        platform === "pc" ? style.pc : style.mobile
+      }`}
+    >
       <div className={style["month-picker"]}>
         <div>
           <span>

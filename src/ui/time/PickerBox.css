@@ -1,0 +1,179 @@
+.pick-container {
+  position: relative;
+  margin: 20px auto 0;
+  width: 340px;
+  font-size: 14px;
+  font-family: "Dongle", sans-serif;
+}
+
+.picker-box {
+  width: 100%;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+
+  .picker-icon {
+    width: 40px;
+    height: 100%;
+    font-size: 1.2em;
+  }
+}
+
+.picker-one {
+  text-align: center;
+
+  .date-picker {
+    width: 140px;
+    height: 32px;
+    line-height: 32px;
+
+    &:hover {
+      cursor: pointer;
+    }
+
+    span {
+      font-family: 'Dongle', sans-serif;
+      font-weight: 400;
+      font-size: 1.7em;
+    }
+  }
+
+  .time-picker {
+    position: relative;
+    margin: 8px 0 10px;
+
+    input {
+      box-sizing: border-box;
+      width: 120px;
+      height: 30px;
+      text-align: center;
+      font-family: 'Dongle', sans-serif;
+      font-weight: 400;
+      font-size: 1.65em;
+
+      &::placeholder {
+        color: black;
+      }
+
+      &:hover {
+        cursor: pointer;
+      }
+    }
+  }
+
+  .span-wave {
+    width: 30px;
+    height: 30px;
+    font-size: 1.2em;
+    line-height: 30px;
+    text-align: center;
+  }
+
+  .date-on {
+    margin: 0 10px;
+    width: 120px;
+    background-color: rgb(73, 152, 255);
+    color: white;
+    border-radius: 7px;
+  }
+}
+
+.picker-two {
+  box-sizing: border-box;
+  width: 340px;
+  height: auto;
+}
+
+.time-selec-container {
+  box-sizing: border-box;
+  overflow-y: scroll;
+  height: 150px;
+  border: 1px solid rgb(159, 159, 159);
+
+  &::-webkit-scrollbar {
+    width: 10px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: lightgray;
+    border-radius: 3px;
+  }
+
+  #time-selector {
+    box-sizing: border-box;
+    width: 100%;
+    text-align: center;
+
+    div {
+      height: 30px;
+      line-height: 30px;
+      font-family: "Dongle", sans-serif;
+      font-weight: 400;
+      font-size: 1.6em;
+
+      &:hover {
+        background-color: rgb(225, 224, 224);
+      }
+    }
+  }
+}
+
+@media (max-width: 500px) {
+  .pick-container {
+    display: block;
+    margin: 0;
+    width: 100%;
+    font-size: 18px;
+  }
+
+  .picker-box {
+    padding: 0;
+  }
+
+  .picker-one {
+    width: calc(50% - 15px);
+
+    .date-picker {
+      width: 100%;
+      height: 50px;
+      margin-bottom: 10px;
+
+      div {
+        font-size: 0.9em;
+        margin: auto;
+        width: 90%;
+        height: 50px;
+        line-height: 50px;
+      }
+    }
+
+    .time-picker {
+      height: 50px;
+      margin: 0;
+
+      input {
+        display: block;
+        padding: 0;
+        margin: auto;
+        width: 100%;
+        height: 50px;
+        line-height: 50px;
+        border: 2px solid lightgray;
+        font-size: 15px;
+      }
+    }
+  }
+
+  .picker-two {
+    margin-top: 20px;
+    width: 100%;
+    grid-column-start: 1;
+    grid-column-end: 3;
+    grid-row-start: 2;
+    grid-row-end: 3;
+  }
+
+  #time-selector {
+    font-size: 0.8em;
+  }
+}

@@ -1,11 +1,10 @@
-import React, { ReactNode, useEffect, useState } from "react";
+import React, { ReactNode, useRef } from "react";
 import { useAppDispatch } from "../../redux/store";
 import { modalActions } from "../../redux/modal-slice";
 import { cloneActions } from "../../redux/clone-slice";
 import { DataType, ModalType } from "../../type/ReduxType";
-import { ListOrMore } from "../../type/RefType";
 import { CalenderData } from "../../type/ReduxType";
-import { calculateWidth } from "../../utils/CalculateWidth";
+import { calculateWidth } from "../../utils/calculateWidth";
 import style from "../Calender.module.css";
 
 interface Parameter extends CalenderData {
@@ -22,11 +21,12 @@ interface T {
   day: string;
   week: string;
   array: ReactNode[][];
-  listRef: React.MutableRefObject<ListOrMore>;
-  allListRef: React.MutableRefObject<ListOrMore>;
+  listRef: React.MutableRefObject<{ [key: string]: HTMLDivElement | null }>;
+  allListRef: React.MutableRefObject<{ [key: string]: HTMLDivElement | null }>;
   listViewCount: number;
   setIsDragging: (value: boolean) => void;
   clicekdMoreRef: React.MutableRefObject<HTMLDivElement | null>;
+  setCountDown: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const Schedule = React.memo(
@@ -42,37 +42,17 @@ const Schedule = React.memo(
     listViewCount,
     setIsDragging,
     clicekdMoreRef,
+    setCountDown,
   }: T): JSX.Element => {
     const dispatch = useAppDispatch();
 
     const schedule = data.userSchedule;
-
-    const listElementHeight = window.innerWidth > 500 ? 24 : 20;
-    const [countDown, setCountDown] = useState<boolean>(false);
-    const [x, setX] = useState<number>(0);
-    const [y, setY] = useState<number>(0);
-
-    useEffect(() => {
-      // 사용자가 일정이나 날짜를 1초 이상 클릭하고 있는 경우,
-      // 드래깅 기능을 활성화
-      if (!countDown) return;
-      // 사용자가 1초 이상 클릭하고 있는 경우, cloneList 생성
-      const checkDragging = () => {
-        window.document.body.style.cursor = "move";
-        setIsDragging(true);
-        setCountDown(false);
-      };
-
-      const timeout = setTimeout(checkDragging, 5000);
-
-      return () => clearTimeout(timeout);
-    }, [countDown, setIsDragging]);
+    const 일정막대높이 = window.innerWidth > 500 ? 24 : 20;
+    const divRef = useRef<HTMLDivElement>(null);
 
     const mouseDown = (e: React.MouseEvent, param: Parameter) => {
       e.stopPropagation();
-      if (window.innerWidth < 500 || param!.key === modal.key) return;
-      setX(e.pageX);
-      setY(e.pageY);
+      if (window.innerWidth < 500 || param.key === modal.key) return;
       setCountDown(true);
       dispatch(cloneActions.setListInfo({ type: "List", ...param }));
     };
@@ -80,25 +60,14 @@ const Schedule = React.memo(
     const mouseUp = (e: React.MouseEvent, param: Parameter) => {
       e.stopPropagation();
       if (window.innerWidth < 500) return;
+      if (clicekdMoreRef.current) {
+        clicekdMoreRef.current = null;
+        return;
+      }
       setCountDown(false);
       setIsDragging(false);
-      if (param!.key !== modal.key) {
-        dispatch(modalActions.setListInfo({ type: "List", ...param }));
-        !modal.listModalOpen && dispatch(modalActions.onList());
-      }
-    };
-
-    const mouseMove = (e: React.MouseEvent, param: Parameter) => {
-      e.stopPropagation();
-      if (e.buttons !== 1) return;
-      if (Math.abs(e.pageX - x) > 35 || Math.abs(e.pageY - y) > 35) {
-        if (modal.listModalOpen) {
-          dispatch(modalActions.clearSet({ type: "list" }));
-        }
-        dispatch(modalActions.setListInfo({ type: "List", ...param }));
-        setCountDown(false);
-        setIsDragging(true);
-      }
+      dispatch(modalActions.setListInfo({ type: "List", ...param }));
+      !modal.listModalOpen && dispatch(modalActions.onModal({ type: "List" }));
     };
 
     const mouseDownMore = (e: React.MouseEvent) => {
@@ -120,21 +89,14 @@ const Schedule = React.memo(
 
       // 긴 일정인지 아닌지
       const isLong: boolean = object.startDate < object.endDate ? true : false;
-      // 화면에 보일 list 개수 저장
-      let arrayCount: number = 0;
+
+      let arrayCount: number = 0; // 화면에 보일 list 개수 저장
 
       for (let item of array[+day]) {
         // 리스트 개수가 화면에 보이는 날짜 칸을 넘어가면 break;
         if (arrayCount >= listViewCount - 1) break;
 
         if (item) {
-          if ((item as React.ReactElement).key === key) {
-            return (
-              <div className={style["list-box"]}>
-                <div className={style["list-area"]}>{array[+day]}</div>
-              </div>
-            );
-          }
           arrayCount += 1;
           continue;
         }
@@ -160,7 +122,7 @@ const Schedule = React.memo(
             <div
               key={object.key}
               className={`${style["list-boundary"]} ${
-                object.endDate > object.startDate
+                object.startDate < object.endDate
                   ? style["bound-long"]
                   : style["short"]
               } `}
@@ -168,15 +130,14 @@ const Schedule = React.memo(
                 width: isLong
                   ? `${calculateWidth(date, +day, object.endDate)}00%`
                   : "98%",
-                top: `${listElementHeight * arrayCount}px`,
+                top: `${일정막대높이 * arrayCount}px`,
                 display: i === +day ? "flex" : "none",
               }}
               onMouseDown={(e) => mouseDown(e, parameter)}
               onMouseUp={(e) => mouseUp(e, parameter)}
-              onMouseMove={(e) => mouseMove(e, parameter)}
               ref={(el: HTMLDivElement) => {
-                if (i !== +day) return;
-                listRef.current[`${object.key + i + week}`] = el;
+                if (i === +day)
+                  listRef.current[`${object.key + i + week}`] = el;
               }}
             >
               {!isLong && arrayCount < listViewCount - 1 && (
@@ -189,24 +150,13 @@ const Schedule = React.memo(
                   `${style.long} ${object.color} ${
                     modal.key === object.key ? style.clicked : ""
                   }`
-                }`}
+                } ${object.isDone && style.done}`}
               >
-                <div
-                  className={`${style["type-one"]}  ${
-                    object.isDone && style.done
-                  }`}
-                >
-                  {!isLong
-                    ? object.startTime + " " + object.title
-                    : object.title}
-                </div>
-                <div
-                  className={`${style["type-two"]} ${
-                    object.isDone && style.done
-                  }`}
-                >
-                  {object.title}
-                </div>
+                {isLong
+                  ? object.title
+                  : window.innerWidth > 800
+                  ? object.startTime + " " + object.title
+                  : object.title}
               </div>
             </div>
           );
@@ -224,7 +174,7 @@ const Schedule = React.memo(
     const 더보기개수: number = Object.keys(schedule[date]).length - viewCount;
 
     return (
-      <div className={style["list-box"]}>
+      <div className={style["list-box"]} ref={divRef}>
         <div className={style["list-area"]}>
           {array[+day]}
           {더보기개수 > 0 && (
@@ -233,8 +183,7 @@ const Schedule = React.memo(
               className={`${style["list-boundary"]} ${style["list-more"]}`}
               style={{
                 width: "98%",
-                top: `${listElementHeight * (listViewCount - 1)}px`,
-                display: "flex",
+                top: `${일정막대높이 * (listViewCount - 1)}px`,
               }}
               onMouseDown={(e) => mouseDownMore(e)}
               onMouseUp={(e) => mouseUpMore(e)}
@@ -243,10 +192,9 @@ const Schedule = React.memo(
               }}
             >
               <div className={style.list}>
-                <div className={style["type-one"]}>
-                  {`${더보기개수}개 더보기`}
-                </div>
-                <div className={style["type-two"]}>{`+${더보기개수}`}</div>
+                {window.innerWidth > 800
+                  ? `${더보기개수}개 더보기`
+                  : `+${더보기개수}`}
               </div>
             </div>
           )}

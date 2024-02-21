@@ -3,15 +3,15 @@ import { useSelector } from "react-redux";
 import { RootState, useAppDispatch } from "../redux/store";
 import { modalActions } from "../redux/modal-slice";
 import { cloneActions } from "../redux/clone-slice";
-import { MakeList } from "../utils/MakeList";
+import { makeList } from "../utils/makeList";
 import { MakeListParameter } from "../type/Etc";
 import { sendUserData } from "../redux/fetch-action";
 import { DataType } from "../type/ReduxType";
-import { makeHeightObject } from "./Object";
+import { calculateModalHeight } from "../utils/calculateModalHeight";
 import { makePosition } from "../utils/makePosition";
-import { setTime } from "../utils/Time/SetTime";
-import PickerBox from "../utils/Time/PickerBox";
-import ColorBox from "../utils/Time/ColorBox";
+import { setTime } from "../ui/time/SetTime";
+import PickerBox from "../ui/time/PickerBox";
+import ColorBox from "../ui/time/ColorBox";
 import "./MakeEvent.css";
 
 interface T {
@@ -27,10 +27,9 @@ const startTime = setT.currentTime;
 const endTime = setT.lastTime;
 
 const MakeEvent = ({ data, lastweek, uid, viewRef, setIsDragging }: T) => {
-  console.log("MakeEvent Render");
   const dispatch = useAppDispatch();
   const clone = useSelector((state: RootState) => state.clone);
-
+  
   const [isMount, setIsMount] = useState<boolean>(true);
   const [color, setColor] = useState<string>("라벤더");
   const [openColor, setOpenColor] = useState<boolean>(false);
@@ -128,7 +127,7 @@ const MakeEvent = ({ data, lastweek, uid, viewRef, setIsDragging }: T) => {
       userSchedule: data.userSchedule,
     };
     try {
-      const newSchedule = MakeList(parameter);
+      const newSchedule = makeList(parameter);
       dispatch(sendUserData({ newSchedule, uid, type: "PUT" }));
     } catch (error) {
       alert("데이터 전송 실패...");
@@ -165,14 +164,13 @@ const MakeEvent = ({ data, lastweek, uid, viewRef, setIsDragging }: T) => {
       <div className="add-modal-title">일정 추가</div>
       <form className="addModal" onSubmit={makeListHandler}>
         <div
-          className={`addModal-menu ${
-            makeHeightObject[lastweek] > window.innerHeight ? "scroll" : ""
-          }`}
+          className="addModal-menu"
           style={{
-            height:
-              openDate[0] && makeHeightObject[lastweek] > window.innerHeight
-                ? 440 - (makeHeightObject[lastweek] - window.innerHeight)
-                : "",
+            height: calculateModalHeight(
+              clone.week < "4" ? 좌표[1] + 65 : 좌표[1],
+              openDate[0],
+              openTime[0]
+            ),
           }}
         >
           <div className="edit-title">

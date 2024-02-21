@@ -1,12 +1,12 @@
 import React, { useRef, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { ListOrMore } from "../../type/RefType";
 import { faClock } from "@fortawesome/free-regular-svg-icons";
 import { useAppDispatch } from "../../redux/store";
 import { dateActions } from "../../redux/date-slice";
 import SecondCaleder from "../miniCalender/Secon-Month";
 import TimeBoxOne from "./TimeBoxOne";
 import TimeBoxTwo from "./TimeBoxTwo";
+import MobileTimePicker from "./MobileTimePicker";
 import "./PickerBox.css";
 
 interface T {
@@ -36,10 +36,10 @@ const PickerBox = ({
 }: T) => {
   const dispatch = useAppDispatch();
 
-  const dateRef = useRef<ListOrMore>({});
-  const timeRef = useRef<ListOrMore>({});
-  const oneRef = useRef<ListOrMore>({});
-  const twoRef = useRef<ListOrMore>({});
+  const dateRef = useRef<{ [key: string]: HTMLDivElement | null }>({});
+  const timeRef = useRef<{ [key: string]: HTMLDivElement | null }>({});
+  const oneRef = useRef<{ [key: string]: HTMLDivElement | null }>({});
+  const twoRef = useRef<{ [key: string]: HTMLDivElement | null }>({});
 
   const openDateHandler = (type: string, pickDate: string) => {
     if (openDate[1] === type) setOpenDate([false, ""]);
@@ -91,21 +91,23 @@ const PickerBox = ({
 
   return (
     <div className="pick-container">
-      <FontAwesomeIcon
-        icon={faClock}
-        width="20"
-        style={{ display: window.innerWidth > 500 ? "block" : "none" }}
-      />
       <div className="picker-box">
+        <div className="picker-icon">
+          <FontAwesomeIcon
+            icon={faClock}
+            width="20"
+            style={{ display: window.innerWidth > 500 ? "block" : "none" }}
+          />
+        </div>
         <div className="picker-one">
-          <div className="date-picker">
-            <div
-              className={openDate[1] === "start" ? "date-on" : ""}
-              ref={(el: HTMLDivElement) => (dateRef.current[0] = el)}
-              onClick={() => openDateHandler("start", startDate)}
-            >
-              <span>{startDate}</span>
-            </div>
+          <div
+            className={`date-picker ${
+              openDate[1] === "start" ? "date-on" : ""
+            }`}
+            ref={(el: HTMLDivElement) => (dateRef.current[0] = el)}
+            onClick={() => openDateHandler("start", startDate)}
+          >
+            <span>{startDate}</span>
           </div>
           <div className="time-picker">
             <input
@@ -116,18 +118,14 @@ const PickerBox = ({
             />
           </div>
         </div>
-        <div className="span-wave">
-          <span>~</span>
-        </div>
+        <div className="span-wave">~</div>
         <div className="picker-one">
-          <div className="date-picker">
-            <div
-              className={openDate[1] === "end" ? "date-on" : ""}
-              ref={(el: HTMLDivElement) => (dateRef.current[1] = el)}
-              onClick={() => openDateHandler("end", endDate)}
-            >
-              <span>{endDate}</span>
-            </div>
+          <div
+            className={`date-picker ${openDate[1] === "end" ? "date-on" : ""}`}
+            ref={(el: HTMLDivElement) => (dateRef.current[1] = el)}
+            onClick={() => openDateHandler("end", endDate)}
+          >
+            <span>{endDate}</span>
           </div>
           <div className="time-picker">
             <input
@@ -147,18 +145,29 @@ const PickerBox = ({
             dateRef={dateRef}
           />
         )}
-        <TimeBoxOne
-          oneRef={oneRef}
-          timeRef={timeRef}
-          timeInputOneRef={timeInputOneRef}
-          openTime={openTime[1]}
-        />
-        <TimeBoxTwo
-          twoRef={twoRef}
-          timeRef={timeRef}
-          timeInputTwoRef={timeInputTwoRef}
-          openTime={openTime[1]}
-        />
+        {window.innerWidth > 500 && openTime[0] && openTime[1] === "start" && (
+          <TimeBoxOne
+            oneRef={oneRef}
+            timeRef={timeRef}
+            timeInputOneRef={timeInputOneRef}
+          />
+        )}
+        {window.innerWidth > 500 && openTime[0] && openTime[1] === "end" && (
+          <TimeBoxTwo
+            twoRef={twoRef}
+            timeRef={timeRef}
+            timeInputTwoRef={timeInputTwoRef}
+          />
+        )}
+        {window.innerWidth <= 500 && openTime[0] && (
+          <MobileTimePicker
+            type={openTime[1]}
+            startTime={time[0]}
+            endTime={time[1]}
+            timeInputOneRef={timeInputOneRef}
+            timeInputTwoRef={timeInputTwoRef}
+          />
+        )}
       </div>
     </div>
   );

@@ -14,7 +14,7 @@ interface T {
 }
 
 const MakeCaledner = ({ type, year, month, identify, dateRef }: T) => {
-  console.log("second");
+
   const dispatch = useDispatch();
   const clone = useSelector((state: RootState) => state.clone);
   const firstDay = new Date(+year, +month - 1, 1).getDay();
@@ -25,7 +25,7 @@ const MakeCaledner = ({ type, year, month, identify, dateRef }: T) => {
   const clickHandler = (date: string, day: number, week: number) => {
     let startDate: string = type === "start" ? date : clone.startDate;
     let endDate: string = type === "end" ? date : clone.endDate;
-    console.log(week)
+
     dispatch(
       cloneActions.clickedDate({
         type,

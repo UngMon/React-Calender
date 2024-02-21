@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { auth } from "../Auth/firebase";
+import { auth } from "../auth/firebase";
 import { useSelector } from "react-redux";
 import { RootState, useAppDispatch } from "../redux/store";
 import { cloneActions } from "../redux/clone-slice";
@@ -8,9 +8,9 @@ import { sendUserData } from "../redux/fetch-action";
 import { useNavigate } from "react-router-dom";
 import { UserData } from "../type/ReduxType";
 import { MakeListParameter } from "../type/Etc";
-import { MakeList } from "../utils/MakeList";
-import { calculateWidth } from "../utils/CalculateWidth";
-import { makeDateArray } from "../utils/MakeLongArr";
+import { makeList } from "../utils/makeList";
+import { calculateWidth } from "../utils/calculateWidth";
+import { makeDateArray } from "../utils/makedateArray";
 import style from "./Calender.module.css";
 
 interface T {
@@ -20,7 +20,6 @@ interface T {
   lastWeek: number;
   setIsDragging: (value: boolean) => void;
   clickedElement: React.MutableRefObject<HTMLDivElement | null>;
-  viewRef: React.RefObject<HTMLDivElement>;
 }
 
 const CloneList = ({
@@ -30,11 +29,9 @@ const CloneList = ({
   lastWeek,
   setIsDragging,
   clickedElement,
-  viewRef,
 }: T) => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-
   const data = useSelector((state: RootState) => state.data);
   const modal = useSelector((state: RootState) => state.modal);
   const clone = useSelector((state: RootState) => state.clone);
@@ -42,11 +39,13 @@ const CloneList = ({
   const uid = auth.currentUser!.uid;
   const [고정좌표, 고정좌표설정] = useState<[number, number]>([0, 0]);
   const [실시간좌표, 실시간좌표설정] = useState<[number, number]>([0, 0]);
-
   const [mouseEnter, setMouseEnter] = useState<boolean>(false);
   const [isMoving, setIsMoving] = useState<boolean>(false);
   const [startDate, setStartDate] = useState<string>(clone.startDate);
   const [endDate, setEndDate] = useState<string>(clone.endDate);
+  const [listCount, setListCount] = useState<number>(
+    Math.floor((window.innerHeight - 80 - 26) / lastWeek / 24)
+  );
 
   const moveDate = useCallback((date: string, move: number) => {
     const currentDate = new Date(date);
@@ -83,10 +82,20 @@ const CloneList = ({
       end = clone.endDate;
     }
 
-    setStartDate(start);
     setEndDate(end);
+    setStartDate(start);
     setMouseEnter(false);
   }, [moveDate, clone, 고정좌표, 실시간좌표, mouseEnter]);
+
+  useEffect(() => {
+    const resizeHandler = () => {
+      setListCount(Math.floor((window.innerHeight - 80 - 26) / lastWeek / 24));
+    };
+
+    window.addEventListener("resize", resizeHandler);
+
+    return () => window.removeEventListener("resize", resizeHandler);
+  });
 
   const mouseEnterHandler = (day: number, week: number) => {
     if (modal.addModalOpen || modal.openEdit) return;
@@ -107,10 +116,9 @@ const CloneList = ({
     document.body.style.cursor = "auto";
 
     if (clone.mouseType === "MakeList") {
-      if (viewRef.current!.clientWidth <= 500) navigate("/calender/makeEvent");
+      if (window.innerWidth <= 500) navigate("/calender/makeEvent");
       else
-        !modal.addModalOpen &&
-          dispatch(modalActions.onOffModal({ type: "make" }));
+        !modal.addModalOpen && dispatch(modalActions.onModal({ type: "Make" }));
 
       if (실시간좌표[0] === 고정좌표[0] && 실시간좌표[1] === 고정좌표[1])
         return;
@@ -171,7 +179,7 @@ const CloneList = ({
         userSchedule: schedule,
       };
       // 새롭게 설정된 기간에 일정 생성 후에
-      const newSchedule: UserData = MakeList(parameter);
+      const newSchedule: UserData = makeList(parameter);
       // 데이터 전송
       dispatch(sendUserData({ newSchedule, uid, type: "POST" }));
       dispatch(cloneActions.clearSet());
@@ -191,8 +199,11 @@ const CloneList = ({
     if (!startDate || !endDate) return;
 
     if (date < startDate || endDate < date) return;
-
+    // 사용자가 드래그 시작 날짜와 끝나는 날짜들 사이의 date만 아래 로직 실행
     if (day !== 1 && date !== startDate) return;
+    // 일요일이 아니면서, 함수가 실행되는 날짜가 startDate가 아니면 return
+    if (listCount <= 1) return;
+    // 사용자가 화면의 세로 사이즈를 계속 줄이면 일정이 하나씩 줄어든다. 일정의 개수가 하나도 안 보일쯤에는 clone도 안 보이게 해야한다.
 
     let barWidth: number =
       startDate < endDate ? calculateWidth(date, day, endDate) : 1;
@@ -200,7 +211,7 @@ const CloneList = ({
     const isLong = startDate !== endDate ? true : false;
     const title =
       modal.mouseType === "MakeList"
-        ? " "
+        ? "(제목 없음)"
         : !isLong
         ? modal.startTime + " " + modal.title
         : modal.title;
@@ -225,52 +236,6 @@ const CloneList = ({
     );
   };
 
-  const dateElements: React.ReactNode[] = [];
-
-  // /* 날짜 생성하기 */
-  const makeDay = (주: number) => {
-    const thisMonthArray = [];
-
-    let move: number;
-
-    if (주 === 1) move = -24 * 60 * 60 * 1000 * firstDay;
-    else move = 24 * 60 * 60 * 1000 * ((주 - 2) * 7 + (7 - firstDay));
-
-    const thisDate = new Date(new Date(+year, +month - 1, 1).getTime() + move)
-      .toISOString()
-      .split("T")[0];
-
-    for (let i = 1; i <= 7; i++) {
-      let next: number = i * 24 * 60 * 60 * 1000;
-      const date = new Date(new Date(thisDate).getTime() + next)
-        .toISOString()
-        .split("T")[0];
-
-      thisMonthArray.push(
-        <td
-          key={date}
-          className={style.date_box}
-          onMouseEnter={() => mouseEnterHandler(i, 주)}
-          onMouseUp={(e) => mouseUp(e)}
-          onMouseMove={mouseMove}
-        >
-          <div className={style["list-box"]}>
-            <div className={style["list-area"]}>{scheduleHandler(date, i)}</div>
-          </div>
-        </td>
-      );
-    }
-    return thisMonthArray;
-  };
-
-  for (let i = 1; i <= lastWeek; i++) {
-    dateElements.push(
-      <tr key={i} className={`week ${i}`}>
-        {makeDay(i)}
-      </tr>
-    );
-  }
-
   return (
     <div
       className={style.calender}
@@ -278,22 +243,53 @@ const CloneList = ({
         position: "absolute",
         top: "0px",
         zIndex: 5,
-        height: "calc(100vh - 80px)",
       }}
     >
       <table className={style.table}>
-        <thead className={style.weekname}>
-          <tr>
-            <th></th>
-            <th></th>
-            <th></th>
-            <th></th>
-            <th></th>
-            <th></th>
-            <th></th>
-          </tr>
-        </thead>
-        <tbody className={style.presentation}>{dateElements}</tbody>
+        <thead className={style.weekname} />
+        <tbody className={style.presentation}>
+          {Array.from({ length: lastWeek }, (_, index) => index + 1).map(
+            (주) => {
+              let move: number;
+
+              if (주 === 1) move = -24 * 60 * 60 * 1000 * firstDay;
+              else move = 24 * 60 * 60 * 1000 * ((주 - 2) * 7 + (7 - firstDay));
+
+              const thisDate = new Date(
+                new Date(+year, +month - 1, 1).getTime() + move
+              )
+                .toISOString()
+                .split("T")[0];
+
+              return (
+                <tr key={주} className={`week ${주}`}>
+                  {[1, 2, 3, 4, 5, 6, 7].map((요일) => {
+                    let next: number = 요일 * 24 * 60 * 60 * 1000;
+                    const date = new Date(new Date(thisDate).getTime() + next)
+                      .toISOString()
+                      .split("T")[0];
+
+                    return (
+                      <td
+                        key={date}
+                        className={style.date_box}
+                        onMouseEnter={() => mouseEnterHandler(요일, 주)}
+                        onMouseUp={(e) => mouseUp(e)}
+                        onMouseMove={mouseMove}
+                      >
+                        <div className={style["list-box"]}>
+                          <div className={style["list-area"]}>
+                            {scheduleHandler(date, 요일)}
+                          </div>
+                        </div>
+                      </td>
+                    );
+                  })}
+                </tr>
+              );
+            }
+          )}
+        </tbody>
       </table>
     </div>
   );

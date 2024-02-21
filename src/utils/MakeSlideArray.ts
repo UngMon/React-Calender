@@ -2,8 +2,10 @@ export const makeSlideArray = (
   year: string,
   month: string
 ): Array<[string, string, number, number]> => {
-  const prevMonth = +month - 1 === 0 ? "12" : String(+month - 1);
-  const nextMonth = +month + 1 === 13 ? "01" : String(+month + 1);
+  const prevMonth =
+    +month - 1 === 0 ? "12" : String(+month - 1).padStart(2, "0");
+  const nextMonth =
+    +month + 1 === 13 ? "01" : String(+month + 1).padStart(2, "0");
 
   const prevYear = prevMonth === "12" ? String(+year - 1) : year;
   const nextYear = nextMonth === "01" ? String(+year + 1) : year;

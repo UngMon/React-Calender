@@ -2,25 +2,25 @@ import React, { useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
 import { RootState, useAppDispatch } from "../redux/store";
 import { useNavigate, useParams, useSearchParams } from "react-router-dom";
-import { MakeList } from "../utils/MakeList";
+import { makeList } from "../utils/makeList";
 import { MakeListParameter } from "../type/Etc";
 import { UserData } from "../type/ReduxType";
-import { auth } from "../Auth/firebase";
+import { auth } from "../auth/firebase";
 import { sendUserData } from "../redux/fetch-action";
 import { cloneActions } from "../redux/clone-slice";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
-import { makeDateArray } from "../utils/MakeLongArr";
+import { makeDateArray } from "../utils/makedateArray";
 import {
   faPenToSquare,
   faTrashCan,
   faClock,
 } from "@fortawesome/free-regular-svg-icons";
 import { newMonth, newYear } from "../utils/nowDate";
-import { setTime } from "../utils/Time/SetTime";
-import ColorBox from "../utils/Time/ColorBox";
+import { setTime } from "../ui/time/SetTime";
+import ColorBox from "../ui/time/ColorBox";
 import NotFound from "./NotFound";
-import PickerBox from "../utils/Time/PickerBox";
+import PickerBox from "../ui/time/PickerBox";
 import "./MobileMakeEvent.css";
 
 const nowTime = setTime();
@@ -38,8 +38,7 @@ const MakeEvent = () => {
   const clone = useSelector((state: RootState) => state.clone);
   const startDate = clone.startDate || pickScheduleKey?.slice(0, 10) || date;
   const endDate = clone.endDate || date;
-  console.log("MakeEvent Mobile Render");
-
+  
   const [openDate, setOpenDate] = useState<[boolean, string]>([false, ""]);
   const [openTime, setOpenTime] = useState<[boolean, string]>([false, ""]);
   const [color, setColor] = useState<string>(clone.color || "라벤더");
@@ -132,7 +131,7 @@ const MakeEvent = () => {
 
     // 새롭게 설정된 기간에 일정 생성 후에
     const newSchedule: UserData =
-      type === "create" ? MakeList(parameter) : schedule;
+      type === "create" ? makeList(parameter) : schedule;
 
     // 데이터 전송
     dispatch(

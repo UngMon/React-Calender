@@ -31,23 +31,9 @@ const cloneSlice = createSlice({
       state.isDone = action.payload.isDone;
       state.key = action.payload.key;
       state.index = action.payload.index;
-      state.week = action.payload.week;
-      state.day = action.payload.day;
+      state.week = action.payload.week ?? "";
+      state.day = action.payload.day ?? "";
       state.mouseType = action.payload.type;
-    },
-
-    setDate(state, action) {
-      switch (action.payload.type) {
-        case "Move":
-          state.startDate = action.payload.start;
-          state.endDate = action.payload.end;
-          break;
-        case "Start":
-          state.startDate = action.payload.start;
-          break;
-        default:
-          state.endDate = action.payload.end;
-      }
     },
 
     clickedDate(state, action) {

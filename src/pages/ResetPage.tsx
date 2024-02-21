@@ -1,6 +1,6 @@
 /* eslint-disable */
 import React, { useState, useCallback, ChangeEvent } from "react";
-import { auth } from "../Auth/firebase";
+import { auth } from "../auth/firebase";
 import { useNavigate } from "react-router-dom";
 import { sendPasswordResetEmail } from "firebase/auth";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -9,7 +9,6 @@ import classes from "./ResetPage.module.css";
 
 const ResetPage = () => {
   const navigate = useNavigate();
-  console.log("reset");
 
   // 이메일 state
   const [email, setEmail] = useState<string>("");
@@ -45,19 +44,14 @@ const ResetPage = () => {
     sendPasswordResetEmail(auth, email)
       .then((data) => {
         // Password reset email sent!
-        console.log(auth);
-        console.log(data);
         alert("이메일 인증 링크를 보냈습니다!");
         navigate("/");
       })
       .catch((error) => {
         const errorCode = error.code;
-        const errorMessage = error.message;
 
         if (errorCode === "auth/user-not-found")
           alert("찾을 수 없는 이메일 입니다. 회원가입을 해주세요!");
-        console.log(errorCode);
-        console.log(errorMessage);
       });
   };
 

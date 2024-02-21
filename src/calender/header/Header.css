@@ -4,17 +4,22 @@
   top: 0;
   left: 1.5%;
   width: 97%;
+  min-width: 310px;
   padding: 10px 0;
   font-size: 16px;
 }
 
 .header-box {
   box-sizing: border-box;
-  height: 44px;
+  height: 45px;
   padding: 0 20px;
   display: flex;
-  justify-content: space-between;
   align-items: center;
+
+  a {
+    color: black;
+    text-decoration: none;
+  }
 }
 
 .menu-icon {
@@ -25,24 +30,12 @@
 }
 
 .menu-icon svg {
-  width: 100%;
+  width: 20px;
 }
 
 .header-title span {
-  font-family: 'Pacifico', 'Tourney', sans-serif;
+  font-family: "Pacifico", "Tourney", sans-serif;
   font-size: 18px;
-}
-
-.header-name {
-  box-sizing: border-box;
-  padding: 8px;
-  height: 44px;
-  line-height: 1.625em;
-  font-size: 1em;
-}
-
-.header-name span {
-  font-weight: 600;
 }
 
 .header-user-info {
@@ -79,13 +72,18 @@
 .search-b {
   display: flex;
   align-items: center;
+  margin-right: 20px;
+}
+
+.search-b div {
+  width: 40px;
+  text-align: center;
 }
 
 .search-b button {
   width: 40px;
   height: 40px;
   font-size: 20px;
-  margin-right: 5px;
 }
 
 .search-b button:hover {
@@ -101,8 +99,9 @@
 
 .search-form {
   position: relative;
-  min-width: 200px;
-  width: 50%;
+  min-width: 190px;
+  width: 70%;
+  max-width: 650px;
 }
 
 .search-form button {
@@ -123,7 +122,7 @@
   box-sizing: border-box;
   padding: 5px 10px 5px 42px;
   height: 40px;
-  width: calc(100% - 40px);
+  width: 95%;
   border: 1px solid black;
   border-radius: 5px;
   box-shadow: 4px 4px 0px rgba(60, 64, 67, 0.3);
@@ -183,6 +182,10 @@
 }
 
 @media (max-width: 500px) {
+  .header-box {
+    padding-left: 10px;
+  }
+
   .menu-icon {
     display: block;
   }
@@ -191,12 +194,23 @@
     display: none;
   }
 
+  .search-form {
+    width: 100%;
+  }
+
   .search {
     right: 10px;
+  }
+
+  .search-b {
+    margin-right: 10px;
   }
 
   .header-user-info {
     display: none;
   }
-}
 
+  .select-month button {
+    display: none;
+  }
+}

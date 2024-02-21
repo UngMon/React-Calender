@@ -6,6 +6,7 @@ const initialState: ModalType = {
   listModalOpen: false,
   moreModalOpen: false,
   mobileModalOpen: false,
+  listInMoreOpen: false,
   openEdit: false,
   date: "",
   week: "",
@@ -19,6 +20,7 @@ const initialState: ModalType = {
   title: "",
   key: "",
   index: 0, // 그 날 일정에서 몇 번째 항목인지
+  offsetTop: 0, // result 페이지에서 사용될 index
   mouseType: "",
 };
 
@@ -30,19 +32,35 @@ const modalSlice = createSlice({
       state.mobileModalOpen = !state.mobileModalOpen;
     },
 
-    onOffModal(state, action) {
+    offModal(state, action) {
       switch (action.payload.type) {
-        case "mobile":
-          state.mobileModalOpen = !state.mobileModalOpen;
+        case "Mobile":
+          state.mobileModalOpen = false;
           break;
-        case "make":
-          state.addModalOpen = !state.addModalOpen;
+        case "Make":
+          state.addModalOpen = false;
           break;
-        case "list":
-          state.listModalOpen = !state.listModalOpen;
+        case "List":
+          state.listModalOpen = false;
           break;
         default:
-          state.moreModalOpen = !state.moreModalOpen;
+          state.moreModalOpen = false;
+      }
+    },
+
+    onModal(state, action) {
+      switch (action.payload.type) {
+        case "Mobile":
+          state.mobileModalOpen = true;
+          break;
+        case "Make":
+          state.addModalOpen = true;
+          break;
+        case "List":
+          state.listModalOpen = true;
+          break;
+        default:
+          state.moreModalOpen = true;
       }
     },
 
@@ -56,15 +74,14 @@ const modalSlice = createSlice({
       state.isDone = action.payload.isDone;
       state.key = action.payload.key;
       state.index = action.payload.index;
+      state.offsetTop = action.payload.offsetTop || 0;
       if (action.payload.type !== "More") {
-        state.week = action.payload.week;
-        state.day = action.payload.day;
+        state.week = action.payload.week || "";
+        state.day = action.payload.day || "";
         state.mouseType = action.payload.type;
+        state.addModalOpen = false;
+        state.moreModalOpen = false;
       }
-    },
-
-    onList(state) {
-      state.listModalOpen = true;
     },
 
     clickedMore(state, action) {
@@ -76,6 +93,14 @@ const modalSlice = createSlice({
       state.week = action.payload.week;
       state.mouseType = "More";
       state.key = "";
+    },
+
+    clickedEdit(state) {
+      state.openEdit = !state.openEdit;
+      if (state.moreModalOpen) state.listInMoreOpen = true;
+      state.addModalOpen = false;
+      state.moreModalOpen = false;
+      state.mobileModalOpen = false;
     },
 
     clearSet(state, action) {
@@ -101,15 +126,10 @@ const modalSlice = createSlice({
       state.endTime = "";
       state.title = "";
       state.key = "";
-      state.index = 0; // 그 날 일정에서 몇 번째 항목인지
+      state.index = 0;
+      state.offsetTop = 0;
       state.mouseType = "";
-    },
-
-    clickedEdit(state) {
-      state.openEdit = !state.openEdit;
-      state.addModalOpen = false;
-      state.moreModalOpen = false;
-      state.mobileModalOpen = false;
+      state.listInMoreOpen = false;
     },
   },
 });

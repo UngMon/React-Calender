@@ -1,5 +1,5 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import { firebaseConfig } from "../Auth/firebase";
+import { firebaseConfig } from "../auth/firebase";
 import { Fetch, UserData } from "../type/ReduxType";
 import { getDatabase, ref, update } from "firebase/database";
 
@@ -36,7 +36,7 @@ export const getNationalDay = createAsyncThunk(
 
     // redux extraReducers에 전달한 data배열 만들기
     let data: any[] = [];
-    console.log("????????");
+
     try {
       // 앞서 requests(해당 년도의 국경일이 세션스토리지에 없는 fetch(url))을 병렬처리
       const responses = await Promise.all(requests);
@@ -49,7 +49,6 @@ export const getNationalDay = createAsyncThunk(
           return response.json();
         })
       );
-      console.log(data);
     } catch (error) {
       console.log(error);
     }
@@ -73,9 +72,8 @@ export const sendUserData = createAsyncThunk("send", async (object: Obj) => {
     const updates: any = {};
     updates[`/userData/${object.uid}/schedule`] = object.newSchedule;
     update(ref(db), updates);
-  } catch (error) {
-    console.log(error);
-    throw new Error("");
+  } catch (error: any) {
+    alert(error.message)
   }
 
   const { newSchedule, uid, type } = object;

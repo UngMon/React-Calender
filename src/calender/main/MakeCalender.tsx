@@ -3,22 +3,30 @@ import { useSelector } from "react-redux";
 import { RootState, useAppDispatch } from "../../redux/store";
 import { modalActions } from "../../redux/modal-slice";
 import { cloneActions } from "../../redux/clone-slice";
-import { ListOrMore } from "../../type/RefType";
-import { basicHolidayObject } from "../../utils/holiday";
+import { HoliDay } from "../../type/ReduxType";
 import Schedule from "./Schedule";
 import style from "../Calender.module.css";
 
-const date: Date = new Date();
-const fixYear: number = date.getFullYear();
-const fixMonth: number = date.getMonth() + 1;
-const fixDate: number = date.getDate();
+const basicHolidayObject: HoliDay = {
+  "0101": { isHoliday: "Y", dateName: "신정" },
+  "0301": { isHoliday: "Y", dateName: "삼일절" },
+  "0505": { isHoliday: "Y", dateName: "어린이날" },
+  "0527": { isHoliday: "Y", dateName: "석가탄신일" },
+  "0606": { isHoliday: "Y", dateName: "현충일" },
+  "0717": { isHoliday: "N", dateName: "제헌절" },
+  "0815": { isHoliday: "Y", dateName: "광복절" },
+  "1003": { isHoliday: "Y", dateName: "개천절" },
+  "1009": { isHoliday: "Y", dateName: "한글날" },
+  "1225": { isHoliday: "Y", dateName: "크리스마스" },
+};
 
+const date: Date = new Date();
 const identify: string =
-  fixYear +
+  date.getFullYear() +
   "-" +
-  fixMonth.toString().padStart(2, "0") +
+  (date.getMonth() + 1).toString().padStart(2, "0") +
   "-" +
-  fixDate.toString().padStart(2, "0");
+  date.getDate().toString().padStart(2, "0");
 
 interface T {
   year: string;
@@ -27,8 +35,8 @@ interface T {
   firstDay: number;
   isScroling: boolean; // 좌, 우 움직이는
   setIsDragging: (value: boolean) => void; // 드래고 일정 생성할지 안 할지
-  listRef: React.MutableRefObject<ListOrMore>;
-  allListRef: React.MutableRefObject<ListOrMore>;
+  listRef: React.MutableRefObject<{ [key: string]: HTMLDivElement | null }>;
+  allListRef: React.MutableRefObject<{ [key: string]: HTMLDivElement | null }>;
   clicekdMoreRef: React.MutableRefObject<HTMLDivElement | null>;
   listViewCount: number;
 }
@@ -52,10 +60,10 @@ const MakeCalender = React.memo(
     const holiday = JSON.parse(sessionStorage.getItem(year)!);
     // UTC기준 해당 달의 1일이 되는 시간
     const dayOneTime = new Date(year + "-" + month + "-01").getTime();
-    
+    // const [x, setX] = useState<number>(0);
+    // const [y, setY] = useState<number>(0);
     const [countDown, setCountDown] = useState<boolean>(false);
-    
-    console.log("MakeCalender Redner");
+
     useEffect(() => {
       // 사용자가 일정이나 날짜를 1초 이상 클릭하고 있는 경우, 드래깅 기능을 활성화
       if (!countDown) return;
@@ -72,7 +80,6 @@ const MakeCalender = React.memo(
 
     const mouseDown = (day: string, week: string, date: string) => {
       if (window.innerWidth < 500) return;
-
       const type = "MakeList";
       const [startDate, endDate] = [date, date];
       setCountDown(true);
@@ -89,10 +96,13 @@ const MakeCalender = React.memo(
     };
 
     const mouseUp = () => {
+      if (clicekdMoreRef.current) {
+        clicekdMoreRef.current = null;
+        return;
+      }
       setCountDown(false); // 카운트다운 취소
-      if (clicekdMoreRef.current) return;
       setIsDragging(true); // 마우스 up후에 clone List가 보이게 true로 설정
-      dispatch(modalActions.onOffModal({ type: "make" }));
+      dispatch(modalActions.onModal({ type: "make" }));
     };
 
     const touchEndHandler = (day: string, week: string, date: string) => {
@@ -188,10 +198,7 @@ const MakeCalender = React.memo(
                           </span>
                         )}
                       </div>
-                      <div className={style["list-box"]}>
-                        <div className={style["list-area"]}>{array[+day]}</div>
-                      </div>
-                      {data.userSchedule[date] && (
+                      {listViewCount > 0 && data.userSchedule[date] && (
                         <Schedule
                           date={date}
                           modal={modal}
@@ -204,6 +211,7 @@ const MakeCalender = React.memo(
                           listViewCount={listViewCount}
                           setIsDragging={setIsDragging}
                           clicekdMoreRef={clicekdMoreRef}
+                          setCountDown={setCountDown}
                         />
                       )}
                     </td>

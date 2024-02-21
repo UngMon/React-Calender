@@ -8,32 +8,34 @@ export const morePosition = (
 
   const width = size[0];
   const height = size[1];
-
-  const array = [0, 0];
+  let x = 0,
+    y = 0;
 
   switch (day) {
     case "1":
-      array[0] = 0;
+      x = 0;
       break;
     case "7":
-      array[0] = width - 230;
+      x = width - 230;
       break;
     default: // 1 < day < 7
-      array[0] = (width * (+day - 1)) / 7 + width / 14 - 115;
+      x = (width * (+day - 1)) / 7 + width / 14 - 115;
       break;
   }
 
   switch (week) {
     case "1":
-      array[1] = 26;
+      y = 26;
       break;
     case String(lastweek):
-      array[1] = height - 270;
+      y = height - 270;
       break;
     default: // 1 < week < lastweek
-      array[1] =
-        (height / lastweek) * (+week - 1) + height / (lastweek * 2) - 120;
+      y = (height / lastweek) * (+week - 1) + height / (lastweek * 2) - 120;
   }
-  return array;
-};
 
+  if (x < 0) x = 0;
+  if (y < 0) y = 0;
+
+  return [x, y];
+};

@@ -2,7 +2,6 @@ import React, { useRef, useState, useEffect } from "react";
 import { useAppDispatch } from "../redux/store";
 import { modalActions } from "../redux/modal-slice";
 import { cloneActions } from "../redux/clone-slice";
-import { ListOrMore } from "../type/RefType";
 import {
   DataType,
   ModalBasicType,
@@ -17,42 +16,44 @@ import {
   faCheck,
   faEdit,
 } from "@fortawesome/free-solid-svg-icons";
-import PickerBox from "../utils/Time/PickerBox";
-import ColorBox from "../utils/Time/ColorBox";
-import { makeDateArray } from "../utils/MakeLongArr";
-import { MakeList } from "../utils/MakeList";
+import PickerBox from "../ui/time/PickerBox";
+import ColorBox from "../ui/time/ColorBox";
+import { makeDateArray } from "../utils/makedateArray";
+import { makeList } from "../utils/makeList";
 import { MakeListParameter } from "../type/Etc";
 import { listPosition } from "../utils/listPosition";
 import { markDate } from "../utils/markDate";
+import { calculateModalHeight } from "../utils/calculateModalHeight";
 import "./List.css";
 
 interface T {
+  type: string;
   data: DataType;
   clone: ModalBasicType;
   modal: ModalType;
   uid: string;
   lastweek: number;
   viewRef: React.RefObject<HTMLDivElement>;
-  listRef: React.MutableRefObject<ListOrMore>;
+  listsRef?: React.MutableRefObject<{ [key: string]: HTMLDivElement | null }>;
   clickedElement: React.MutableRefObject<HTMLDivElement | null>;
   list: React.RefObject<HTMLDivElement>;
-  setIsDragging: React.Dispatch<React.SetStateAction<boolean>>;
+  setIsDragging?: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const List = ({
+  type,
   data,
   clone,
   modal,
   uid,
   lastweek,
   viewRef,
-  listRef,
+  listsRef,
   clickedElement,
   list,
   setIsDragging,
 }: T) => {
   const dispatch = useAppDispatch();
-
   const startDate = clone.startDate || modal.startDate;
   const endDate = clone.endDate || modal.endDate;
 
@@ -62,7 +63,7 @@ const List = ({
   const [color, setColor] = useState<string>(modal.color || "라벤더");
   const [openColor, setOpenColor] = useState<boolean>(false);
   const [size, setSize] = useState<[number, number]>([
-    viewRef.current!.clientWidth,
+    viewRef.current!.clientWidth / 7,
     (viewRef.current!.clientHeight - 26) / lastweek,
   ]);
   const [openDate, setOpenDate] = useState<[boolean, string]>([false, ""]);
@@ -75,7 +76,7 @@ const List = ({
   useEffect(() => {
     const widthCalculator = () => {
       setSize([
-        viewRef.current!.clientWidth,
+        viewRef.current!.clientWidth / 7,
         (viewRef.current!.clientHeight - 26) / lastweek,
       ]);
     };
@@ -101,16 +102,19 @@ const List = ({
       if (!list.current?.contains(target)) {
         if (clickedElement.current?.contains(target)) {
           // list 밖 같은 리스트를 클릭하면 리스트 창이 닫게함.
+          console.log('Same List Cliekc')
           return !modal.moreModalOpen && closeModalHandler();
         }
 
         // clickedElement Ref에 target저장
         clickedElement.current = e.target as HTMLDivElement;
-
-        for (const key in listRef.current) {
-          if (listRef.current[key]?.contains(target)) return;
+        console.log(listsRef?.current)
+        for (const key in listsRef?.current) {
+          console.log(key)
+          if (listsRef.current[key]?.contains(target)) return;
         }
         // 위 영역이 아닌 다른 영역을 클릭한 경우 list 모달창 닫음.
+        console.log('Close Modal Handler Working')
         closeModalHandler();
       }
     };
@@ -134,11 +138,11 @@ const List = ({
     dispatch(sendUserData({ newSchedule, uid, type: "POST" }));
     dispatch(modalActions.clearSet({ type: "all" }));
     dispatch(cloneActions.clearSet());
-    setIsDragging(false);
+    type !== "Search" && setIsDragging!(false);
   };
 
   const editButtonHandler = () => {
-    setIsDragging((prevState) => !prevState);
+    type !== "Search" && setIsDragging!((prevState) => !prevState);
     dispatch(modalActions.clickedEdit());
   };
 
@@ -181,7 +185,7 @@ const List = ({
     };
 
     // 새롭게 설정된 기간에 일정 생성 후에
-    const newSchedule: UserData = MakeList(parameter);
+    const newSchedule: UserData = makeList(parameter);
     // 데이터 전송
     dispatch(sendUserData({ newSchedule, uid, type: "POST" }));
     inputRef.current!.value = "";
@@ -200,7 +204,7 @@ const List = ({
 
   const closeModalHandler = () => {
     setAnimaOn(false);
-    setIsDragging(false);
+    type !== "Search" && setIsDragging!(false);
     setTimeout(() => {
       clickedElement.current = null;
       dispatch(
@@ -214,11 +218,20 @@ const List = ({
 
   const styleClass = data.userSchedule[modal.startDate]?.[modal.key]?.isDone
     ? "done"
-    : false;
+    : "";
 
-  const corDay = modal.openEdit ? clone.day : modal.day;
-  const corWeek = modal.openEdit ? clone.week : modal.week;
-  const 좌표 = listPosition(corDay, corWeek, size, modal.openEdit, modal.index);
+  const 좌표 = listPosition({
+    type: modal.mouseType,
+    day: modal.openEdit ? +clone.day : +modal.day,
+    week: modal.openEdit ? +clone.week : +modal.week,
+    openEdit: modal.openEdit,
+    index: modal.index,
+    offsetTop: modal.offsetTop === 0 ? size[1] : modal.offsetTop,
+    offsetLeft: size[0],
+    lastweek,
+    openInMore: modal.listInMoreOpen,
+  });
+
   const markD = markDate(modal.startDate, modal.endDate);
 
   return (
@@ -229,8 +242,9 @@ const List = ({
       ref={list}
       style={{
         left: 좌표[0],
-        ...(modal.openEdit && modal.week > "3" ? {} : { top: 좌표[1] }),
-        ...(modal.openEdit && modal.week > "3" ? { bottom: 좌표[1] } : {}),
+        ...(modal.openEdit && modal.week > "3"
+          ? { bottom: 좌표[1] }
+          : { top: 좌표[1] }),
       }}
       onWheel={(e) => e.stopPropagation()}
     >
@@ -253,33 +267,44 @@ const List = ({
           className="list-edit-form"
           onSubmit={(e: React.FormEvent) => editListSubmitHandler(e)}
         >
-          <div className="edit-title">
-            <div>
-              <img src="../images/memo.png" alt="memo" width="18" />
+          <div
+            className="list-menu-box"
+            style={{
+              height: calculateModalHeight(
+                clone.week < "4" ? 좌표[1] + 65 : 좌표[1],
+                openDate[0],
+                openTime[0]
+              ),
+            }}
+          >
+            <div className="edit-title">
+              <div>
+                <img src="../images/memo.png" alt="memo" width="18" />
+              </div>
+              <div>
+                <input placeholder={modal.title} type="text" ref={inputRef} />
+              </div>
             </div>
-            <div>
-              <input placeholder={modal.title} type="text" ref={inputRef} />
-            </div>
+            <PickerBox
+              platform="pc"
+              startDate={startDate}
+              endDate={endDate}
+              openDate={openDate}
+              setOpenDate={setOpenDate}
+              time={[clone.startTime, clone.endTime]}
+              openTime={openTime}
+              setOpenTime={setOpenTime}
+              timeInputOneRef={timeInputOneRef}
+              timeInputTwoRef={timeInputTwoRef}
+            />
+            <ColorBox
+              platform={"pc"}
+              color={color}
+              setColor={setColor}
+              openColor={openColor}
+              setOpenColor={setOpenColor}
+            />
           </div>
-          <PickerBox
-            platform="pc"
-            startDate={startDate}
-            endDate={endDate}
-            openDate={openDate}
-            setOpenDate={setOpenDate}
-            time={[clone.startTime, clone.endTime]}
-            openTime={openTime}
-            setOpenTime={setOpenTime}
-            timeInputOneRef={timeInputOneRef}
-            timeInputTwoRef={timeInputTwoRef}
-          />
-          <ColorBox
-            platform={"pc"}
-            color={color}
-            setColor={setColor}
-            openColor={openColor}
-            setOpenColor={setOpenColor}
-          />
           <div className="edit-button-box">
             <button type="submit">저장</button>
           </div>
@@ -288,20 +313,17 @@ const List = ({
       {!modal.openEdit && (
         <div className="list-info">
           <div className="list-title">
-            <div className={`list-color-box ${modal.color}`}></div>
-            <div className={`listName  ${styleClass}`}>{modal.title}</div>
+            <div className={modal.color}></div>
+            <div className={styleClass}>{modal.title}</div>
           </div>
           <div className="list-time">
-            <div className="time-item">{markD[0]}</div>
-            <div className="time-item">{modal.startTime}</div>
-            <span className="time-item">~</span>
-            <div
-              className="time-item"
-              style={{ display: date.length === 3 ? "none" : "" }}
-            >
-              {markD[1]}
-            </div>
-            <div className="time-item">{modal.endTime}</div>
+            <span>{markD[0]}&nbsp;&nbsp;</span>
+            <span>{modal.startTime}</span>
+            <span>&nbsp;~&nbsp;</span>
+            <span style={{ display: date.length === 3 ? "none" : "" }}>
+              {markD[1]}&nbsp;&nbsp;
+            </span>
+            <span>{modal.endTime}</span>
           </div>
         </div>
       )}
