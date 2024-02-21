@@ -1,50 +1,73 @@
-# React Calender Project
+Your Calender
+=============
 
-외부라이브러리 없이 React로 구현한 캘린더 웹 프로젝트 입니다.
+## Your Calender v1.44
+
+Typescript, React로 구현한 반응형 Web Calender Application 입니다. 계정 가입을 통하여 사용자의 일정을 관리할 수 있습니다.
+
+## 
 
 ## 프로젝트 구조
 
 
 
-### 프로젝트 사용방법
+### 시작 가이드
 
-1. npm install
+## Installation
 
-=> npm install를 터미널에 입력하시면 프로젝트의 package의 dependencies에 있는 모듈이 설치됩니다.
+<pre>
+<code>
+1. git clone https://github.com/UngMon/React-Calender.git 
+2. npm install
+</code>
+</pre>
 
-2. firebase에 프로젝트를 등록
-=> https://console.firebase.google.com/ 해당 링크로 들어가 Firebase 사이트에 로그인을 합니다. 로그인 후, 프로젝트 추가 버튼을 누르시면 좌측 상단에 웹 앱 추가 버튼을 누르시면 됩니다. 이후 가이드를 따라 진행하시면 Calender를 사용하실 수 있습니다. 설치 가이드를 따라가시면 Firebase SDK추가 단계에서 이 프로젝트 Auth 폴더에 firebase.js에 해당 값을 입력해주시면 됩니다. 이 값은 여러분 프로젝트의 고유값 입니다.
+## 기술 스택
 
-3. 위 과정을 마치셨다면 npm start를 입력하여 프로젝트를 실행합니다.
+Language
+<div style={{display: flex}}>
+  <img src="https://img.shields.io/badge/html5-E34F26?style=for-the-badge&logo=html5&logoColor=white">
+  <img src="https://img.shields.io/badge/css-1572B6?style=for-the-badge&logo=css3&logoColor=white">
+  <img src="https://img.shields.io/badge/javascript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black">
+  <img src="https://img.shields.io/badge/tyoescript-3178C6?style=for-the-badge&logo=react&logoColor=black">
+</div>
 
-### 기능 소개
+Library
+<div style={{display: flex}}>
+  <img src="https://img.shields.io/badge/react-61DAFB?style=for-the-badge&logo=react&logoColor=black">
+  <img src="https://img.shields.io/badge/redux-764ABC?style=for-the-badge&logo=react&logoColor=black">
+</div>
 
-1. 로그인 기능
-= 이 프로젝트는 파이어베이스 Authentication를 통해 firebase 자체 회원 가입, 소셜 로그인 기능이 구현 됐습니다. 
+Database
+<img src="https://img.shields.io/badge/firebase-FFCA28?style=for-the-badge&logo=react&logoColor=black">
 
-2. 비밀번호 재설정
-= 만약 firebase 자체에 회원가입을 하신 경우, 비밀번호 찾기 기능을 통해 회원가입 했던 사용자의 이메일에 비밀번호 재설정 메일을 발송합니다. 파이어베이스의 비밀번호 재설정 메일을 확인 하시고, 패스워드를 새롭게 저장하시면 로그인을 하실 수 있습니다.
+## 추가 사항 
 
-3. 일정 추가
-= 해당 날짜를 클릭하면 일정 입력 모달창이 등장합니다. 사용자가 원하는 만큼의 날짜를 선택하여 일정을 등록할 수 있습니다.
+1. firebase Auth2.0 기능을 사용하기 위해 https://console.firebase.google.com/ 해당 링크로 접속합니다.
+2. irebase 사이트에 로그인을 합니다.
+3. 프로젝트 추가 버튼을 누르고 좌측 상단에 웹 앱 추가 버튼을 클릭합니다.
+4. 이후 화면에 보이는 설치 가이드를 따라갑니다.
+5. Firebase SDK 추가 페이지에서 프로젝트 auth 폴더의 firebase.js에 해당 key를 기입해주시면 됩니다.
 
-4. 시간, 컬러 기능
-= 일정을 시간별로 지정할 수 있으며, 시간이 빠른 순으로 정렬되어 보여집니다. 또한 일정을 구분하기 쉽게 색을 지정하여 좀 더 예쁜 일정을 만들 수 있습니다.
+## 기능 소개
 
-5. 마우스 휠 기능
-= 사용자가 마우스 휠을 움직이면 방향에 따라서 월이 이동하는 기능.
+* 로그인 기능, 비밀번호 재설정
+= 이 프로젝트는 파이어베이스 OAuth2.0로 firebase 자체 회원가입, 소셜 로그인 기능이 구현 됐습니다. 자체 회원가입에서는 비밀번호 찾기 기능이 있습니다.
+  사용자의 이메일에 비밀번호 재설정 메일을 발송합니다. 이메일을 확인하고 비밀번호를 재설정 할 수 있습니다.
 
-6. 반응협 웹
-= 브라우저 창의 크기에 따라 전체적인 Ui가 달라집니다.
+* 일정 추가
+= 해당 날짜를 클릭하면 일정 입력 모달이 등장합니다. 사용자가 생각하는 날짜와 시간 선택하여 일정을 자유롭게 생성할 수 있습니다. 또한 컬러를 선택하여 사용자의 취향대로 자유롭게 일정을 구분할 수 있습니다.
 
-### 느낀점
- to-do-list를 만들고 바로 진행한 프로젝트 입니다. 코드 자체에 익숙하지 않은 시기여서 제작 기간이 상당히 소요되었습니다. 구글 캘린더와 네이버 캘린더의 Ui를 참고하여 만들었으며, 특히 긴 일정을 구현하는데 많은 시간을 쏟아부었습니다. 네이버 캘린더의 경우 아래와 같이 긴 일정 사이에 빈 공간이 있는 반면, 구글 캘린더는 빈 공간 없이 표현한 것을 참고하여 2차원 배열을 사용하여 해결했습니다. 프로젝트 진행 중에 많은 에러를 접했는데 이 부분을 블로그에 정리하지 않았던 점 아쉽습니다. 이후의 프로젝트는 타입스크립트를 적용했는데 확실히 사전에 에러를 방지할 수 있어서 기능 구현에 있어서 한결 수월했습니다. 결과적으로 조금 제작 기간이 오래걸렸지만, 리액트의 부가적인 라이브러리를 사용한 경험과 Firebase를 이용해서 Ajax 요청을 경험해볼 수 있어서 웹 개발자로 한 단계 성장할 수 있었습니다. 
+* 월(Month) 이동
+= '<', '>'를 클릭하여 월을 이동할 수 있습니다. 마지막으로 마우스 휠을 움직이면 방향에 따라서 월을 이동할 수 있습니다.
 
-### 향후 계획
+* 드래그(Dragg)
+= 사용자가 마우스를 클릭하고 움직이면 일정이 생성됩니다.
 
-1. 일정을 드래그하여 움직이게 하며, 사용자가 drop-down 한 날짜에 일정이 저장되게 끔 기능 추가
+* 검색
+= 일정의 제목을 입력하면 사용자의 일정을 탐색하여 
 
-2. 부족한 반응형 css 조정
+* 공휴일
+= 한국천문연구원의 국경일 API를 사용하여 사용자에게 국경일, 공휴일 정보를 제공합니다.
 
-3. 타입스크립트 적용과 가독성이 떨어지는 현재 코드를 좀 더 간결하게 리팩토리 진행 예정
 
