@@ -5,8 +5,8 @@ import { RootState, useAppDispatch } from "../redux/store";
 import { CalenderData } from "../type/ReduxType";
 import { modalActions } from "../redux/modal-slice";
 import { cloneActions } from "../redux/clone-slice";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCalendarDays } from "@fortawesome/free-solid-svg-icons";
+// import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+// import { faCalendarDays } from "@fortawesome/free-solid-svg-icons";
 import Header from "../calender/header/Header";
 import ModalContainer from "../modal/ModalContainer";
 import "./Result.css";
@@ -88,14 +88,14 @@ const Result = () => {
                           modal.key === item.key && "picked"
                         }`}
                         key={item.key}
-                        ref={(el: HTMLDivElement) =>
-                          (listsRef.current[item.key + index + idx] = el)
-                        }
+                        // ref={(el: HTMLDivElement) =>
+                        //   (listsRef.current[item.key + index + idx] = el)
+                        // }
                         onClick={() => listClickHandler(item, index, idx)}
                         onTouchEnd={() => listClickHandler(item, index, idx)}
                       >
                         <div className="mobile-r-l-1">
-                          <FontAwesomeIcon icon={faCalendarDays} />
+                          {/* <FontAwesomeIcon icon={faCalendarDays} /> */}
                         </div>
                         <div className={`color-circle ${item.color}`}></div>
                         <div className="list-times">

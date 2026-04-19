@@ -3,8 +3,8 @@ import { useSelector } from "react-redux";
 import { dateActions } from "../../redux/date-slice";
 import { RootState, useAppDispatch } from "../../redux/store";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faAngleLeft, faAngleRight } from "@fortawesome/free-solid-svg-icons";
+// import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+// import { faAngleLeft, faAngleRight } from "@fortawesome/free-solid-svg-icons";
 import { ButtonRef } from "../../type/RefType";
 import MakeCaledner from "./Secon-MakeCalender";
 import style from "./miniCal.module.css";
@@ -72,22 +72,22 @@ const Month = ({ platform, type, dateRef }: T) => {
           <button
             onClick={() => moveMonthHandler("prev")}
             type="button"
-            ref={(el: HTMLButtonElement) => (dateRef.current[2] = el)}
+            // ref={(el: HTMLButtonElement) => (dateRef.current[2] = el)}
           >
-            <FontAwesomeIcon
+            {/* <FontAwesomeIcon
               icon={faAngleLeft}
               style={{ backgroundColor: "transparent" }}
-            />
+            /> */}
           </button>
           <button
             onClick={() => moveMonthHandler("next")}
             type="button"
-            ref={(el: HTMLButtonElement) => (dateRef.current[3] = el)}
+            // ref={(el: HTMLButtonElement) => (dateRef.current[3] = el)}
           >
-            <FontAwesomeIcon
+            {/* <FontAwesomeIcon
               icon={faAngleRight}
               style={{ backgroundColor: "transparent" }}
-            />
+            /> */}
           </button>
         </div>
       </div>

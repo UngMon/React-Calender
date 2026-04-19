@@ -1,10 +1,9 @@
-/* eslint-disable */
-import React, { useState, useCallback, ChangeEvent } from "react";
+import { useState, useCallback, ChangeEvent } from "react";
 import { auth } from "../auth/firebase";
 import { useNavigate } from "react-router-dom";
 import { sendPasswordResetEmail } from "firebase/auth";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
+// import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+// import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 import classes from "./ResetPage.module.css";
 
 const ResetPage = () => {
@@ -62,7 +61,7 @@ const ResetPage = () => {
           className={classes["back-page-button"]}
           onClick={() => navigate("/")}
         >
-          <FontAwesomeIcon icon={faArrowLeft} className={classes["arrow"]} />
+          {/* <FontAwesomeIcon icon={faArrowLeft} className={classes["arrow"]} /> */}
         </div>
         <div className={classes["reset-box-title"]}>
           <span>비밀번호 초기화</span>

@@ -4,8 +4,8 @@ import { cloneActions } from "../redux/clone-slice";
 import { modalActions } from "../redux/modal-slice";
 import { useNavigate } from "react-router-dom";
 import { CalenderData, DataType, ModalBasicType } from "../type/ReduxType";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCalendarDay } from "@fortawesome/free-solid-svg-icons";
+// import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+// import { faCalendarDay } from "@fortawesome/free-solid-svg-icons";
 import "./MobileModal.css";
 
 const dayText: { [key: string]: string } = {
@@ -71,7 +71,7 @@ const MobileModal = ({ data, clone }: T) => {
                 (item, index) => (
                   <li key={index} onTouchEnd={() => listTouchHandler(item)}>
                     <div>
-                      <FontAwesomeIcon icon={faCalendarDay} />
+                      {/* <FontAwesomeIcon icon={faCalendarDay} /> */}
                     </div>
                     <div className={`color-bar ${item.color}`}></div>
                     <div>

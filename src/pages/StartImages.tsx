@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import "./StartImages.css";
 
 const images = [
@@ -34,7 +34,7 @@ const StartImages = () => {
         <div
           key={index}
           className="image"
-          ref={(el) => (imageRef.current![index] = el)}
+          // ref={(el) => (imageRef.current![index] = el)}
           style={{
             zIndex: index === 0 ? "1" : index === 1 ? "5" : "0",
             opacity: index === 0 ? "1" : index === 1 ? "1" : 0,

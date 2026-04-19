@@ -213,19 +213,7 @@ const LoginPage = () => {
       <StartImages />
       <div className={style["login-box"]}>
         <div className={style.logo}>
-          <span>Y</span>
-          <span>o</span>
-          <span>u</span>
-          <span>r</span>
-          <span> </span>
-          <span>C</span>
-          <span>a</span>
-          <span>l</span>
-          <span>e</span>
-          <span>n</span>
-          <span>d</span>
-          <span>e</span>
-          <span>r</span>
+          <span>Your Calender</span>
         </div>
         <form
           className={style["login-form"]}
@@ -286,7 +274,7 @@ const LoginPage = () => {
               onClick={(e) => socialLoginHandler(e, "Google")}
               width="40"
               height="40"
-              src="/images/Google.jpeg"
+              src="./images/Google.jpeg"
               alt="Google"
             />
             <img
@@ -294,7 +282,7 @@ const LoginPage = () => {
               onClick={(e) => socialLoginHandler(e, "Facebook")}
               width="35"
               height="35"
-              src="/images/Facebook_Logo.png"
+              src="./images/Facebook_Logo.png"
               alt="Google"
             />
           </div>

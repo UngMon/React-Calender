@@ -3,8 +3,8 @@ import { CalenderData, DataType, ModalType } from "../type/ReduxType";
 import { useAppDispatch } from "../redux/store";
 import { modalActions } from "../redux/modal-slice";
 import { cloneActions } from "../redux/clone-slice";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faXmark } from "@fortawesome/free-solid-svg-icons";
+// import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+// import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import { morePosition } from "../utils/morePosition";
 import "./MoreList.css";
 
@@ -158,7 +158,7 @@ const MoreList = ({
         <button
           onClick={() => dispatch(modalActions.clearSet({ type: "all" }))}
         >
-          <FontAwesomeIcon icon={faXmark} />
+          {/* <FontAwesomeIcon icon={faXmark} /> */}
         </button>
       </div>
       <h3 className="AllList-date">{modal.date}</h3>
@@ -186,9 +186,9 @@ const MoreList = ({
                   key={index}
                   className="AllList-item"
                   onClick={(e) => listClickHandler(e, object, index)}
-                  ref={(el: HTMLDivElement) =>
-                    (itemRef.current[`${index}`] = el)
-                  }
+                  // ref={(el: HTMLDivElement) =>
+                  //   (itemRef.current[`${index}`] = el)
+                  // }
                 >
                   {object.startDate < modal.date && (
                     <div

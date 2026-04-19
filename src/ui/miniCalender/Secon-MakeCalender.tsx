@@ -51,7 +51,7 @@ const MakeCaledner = ({ type, year, month, identify, dateRef }: T) => {
           <tr
             key={주}
             className={style["week-box"]}
-            ref={(el) => (dateRef.current![주 + 3] = el)}
+            // ref={(el) => (dateRef.current![주 + 3] = el)}
           >
             {[1, 2, 3, 4, 5, 6, 7].map((d) => {
               let next: number = d * 24 * 60 * 60 * 1000;
