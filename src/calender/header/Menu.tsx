@@ -1,9 +1,6 @@
-import React from "react";
 import { auth } from "../../auth/firebase";
 import { signOut } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
-import { faRightFromBracket, faXmark } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import "./Menu.css";
 
 interface T {
@@ -28,7 +25,7 @@ const Menu = ({ openMenu, setOpenMenu }: T) => {
   return (
     <div className={`menu ${openMenu ? "menuopen" : "menuoff"}`}>
       <div className="xmark" onClick={() => setOpenMenu(false)}>
-        <FontAwesomeIcon icon={faXmark} />
+        {/* <FontAwesomeIcon icon={faXmark} /> */}
       </div>
       <div className="user-info">
         <div className="user-image">
@@ -41,7 +38,7 @@ const Menu = ({ openMenu, setOpenMenu }: T) => {
           <span>{auth.currentUser?.email}</span>
         </div>
         <div className="logout" onClick={logoutHandler}>
-          <FontAwesomeIcon icon={faRightFromBracket} />
+          {/* <FontAwesomeIcon icon={faRightFromBracket} /> */}
         </div>
       </div>
     </div>

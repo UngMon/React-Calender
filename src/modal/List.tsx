@@ -9,13 +9,13 @@ import {
   UserData,
 } from "../type/ReduxType";
 import { sendUserData } from "../redux/fetch-action";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faXmark,
-  faTrash,
-  faCheck,
-  faEdit,
-} from "@fortawesome/free-solid-svg-icons";
+// import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+// import {
+//   faXmark,
+//   faTrash,
+//   faCheck,
+//   faEdit,
+// } from "@fortawesome/free-solid-svg-icons";
 import PickerBox from "../ui/time/PickerBox";
 import ColorBox from "../ui/time/ColorBox";
 import { makeDateArray } from "../utils/makedateArray";

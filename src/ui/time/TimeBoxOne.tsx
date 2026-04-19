@@ -1,8 +1,8 @@
 import React, { useEffect } from "react";
 
 interface T {
-  oneRef: React.MutableRefObject<{ [key: string]: HTMLDivElement | null }>;
-  timeRef: React.MutableRefObject<{ [key: string]: HTMLDivElement | null }>;
+  oneRef: React.RefObject<HTMLInputElement | null>;
+  timeRef:React.RefObject<HTMLInputElement | null>;
   timeInputOneRef: React.RefObject<HTMLInputElement>;
 }
 

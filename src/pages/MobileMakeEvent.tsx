@@ -8,14 +8,14 @@ import { UserData } from "../type/ReduxType";
 import { auth } from "../auth/firebase";
 import { sendUserData } from "../redux/fetch-action";
 import { cloneActions } from "../redux/clone-slice";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faXmark } from "@fortawesome/free-solid-svg-icons";
+// import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+// import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import { makeDateArray } from "../utils/makedateArray";
-import {
-  faPenToSquare,
-  faTrashCan,
-  faClock,
-} from "@fortawesome/free-regular-svg-icons";
+// import {
+//   faPenToSquare,
+//   faTrashCan,
+//   faClock,
+// } from "@fortawesome/free-regular-svg-icons";
 import { newMonth, newYear } from "../utils/nowDate";
 import { setTime } from "../ui/time/SetTime";
 import ColorBox from "../ui/time/ColorBox";
@@ -184,7 +184,7 @@ const MakeEvent = () => {
         <form className="Make-Form" onSubmit={submitHandler}>
           <div className="X-mark">
             <div onClick={() => navigate(-1)}>
-              <FontAwesomeIcon icon={faXmark} />
+              {/* <FontAwesomeIcon icon={faXmark} /> */}
             </div>
           </div>
           <label htmlFor="title"></label>
@@ -204,7 +204,7 @@ const MakeEvent = () => {
             setOpenColor={setOpenColor}
           />
           <div className="faclock">
-            <FontAwesomeIcon icon={faClock} className="Make-clock-icon" />
+            {/* <FontAwesomeIcon icon={faClock} className="Make-clock-icon" /> */}
           </div>
           <PickerBox
             platform="mobile"
@@ -226,7 +226,7 @@ const MakeEvent = () => {
                 onTouchEnd={() => deleteAndCreate("delete", startTime, endTime)}
                 style={{ width: param["*"] === "event/edit" ? "50%" : "0" }}
               >
-                <FontAwesomeIcon icon={faTrashCan} />
+                {/* <FontAwesomeIcon icon={faTrashCan} /> */}
                 <span>삭제</span>
               </button>
             )}
@@ -235,7 +235,7 @@ const MakeEvent = () => {
               type="submit"
               style={{ width: param["*"] === "event/make" ? "100%" : "50%" }}
             >
-              <FontAwesomeIcon icon={faPenToSquare} />
+              {/* <FontAwesomeIcon icon={faPenToSquare} /> */}
               <span>생성</span>
             </button>
           </div>

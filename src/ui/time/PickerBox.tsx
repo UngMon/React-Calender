@@ -1,6 +1,6 @@
 import React, { useRef, useEffect } from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faClock } from "@fortawesome/free-regular-svg-icons";
+// import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+// import { faClock } from "@fortawesome/free-regular-svg-icons";
 import { useAppDispatch } from "../../redux/store";
 import { dateActions } from "../../redux/date-slice";
 import SecondCaleder from "../miniCalender/Secon-Month";
@@ -93,18 +93,18 @@ const PickerBox = ({
     <div className="pick-container">
       <div className="picker-box">
         <div className="picker-icon">
-          <FontAwesomeIcon
+          {/* <FontAwesomeIcon
             icon={faClock}
             width="20"
             style={{ display: window.innerWidth > 500 ? "block" : "none" }}
-          />
+          /> */}
         </div>
         <div className="picker-one">
           <div
             className={`date-picker ${
               openDate[1] === "start" ? "date-on" : ""
             }`}
-            ref={(el: HTMLDivElement) => (dateRef.current[0] = el)}
+            // ref={(el: HTMLDivElement) => (dateRef.current[0] = el)}
             onClick={() => openDateHandler("start", startDate)}
           >
             <span>{startDate}</span>
@@ -122,7 +122,7 @@ const PickerBox = ({
         <div className="picker-one">
           <div
             className={`date-picker ${openDate[1] === "end" ? "date-on" : ""}`}
-            ref={(el: HTMLDivElement) => (dateRef.current[1] = el)}
+            // ref={(el: HTMLDivElement) => (dateRef.current[1] = el)}
             onClick={() => openDateHandler("end", endDate)}
           >
             <span>{endDate}</span>

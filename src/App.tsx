@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useAppDispatch } from "./redux/store";
 import { Navigate, Route, Routes } from "react-router-dom";
 import { onAuthStateChanged } from "firebase/auth";

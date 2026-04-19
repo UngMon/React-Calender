@@ -1,14 +1,14 @@
 import React, { useEffect, useRef, useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { auth } from "../../auth/firebase";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faAngleLeft,
-  faAngleRight,
-  faArrowLeft,
-  faSearch,
-  faBars,
-} from "@fortawesome/free-solid-svg-icons";
+// import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+// import {
+//   faAngleLeft,
+//   faAngleRight,
+//   faArrowLeft,
+//   faSearch,
+//   faBars,
+// } from "@fortawesome/free-solid-svg-icons";
 import Menu from "./Menu";
 import UserInfo from "./UserInfo";
 import "./Header.css";
@@ -70,7 +70,7 @@ const Header = ({ type, year, month, movePrevMonth, moveNextMonth }: T) => {
       <div className="header-box">
         <Menu openMenu={openMenu} setOpenMenu={setOpenMenu} />
         <div className="menu-icon">
-          <FontAwesomeIcon icon={faBars} onClick={menuClickHandler} />
+          {/* <FontAwesomeIcon icon={faBars} onClick={menuClickHandler} /> */}
         </div>
         {!openSearch && type === "calender" && (
           <NavLink
@@ -83,7 +83,7 @@ const Header = ({ type, year, month, movePrevMonth, moveNextMonth }: T) => {
         {openSearch && (
           <div className="search-b">
             <button className="back-button" onClick={backButton} ref={backRef}>
-              <FontAwesomeIcon icon={faArrowLeft} />
+              {/* <FontAwesomeIcon icon={faArrowLeft} /> */}
             </button>
             <div>
               <span>검색</span>
@@ -93,7 +93,7 @@ const Header = ({ type, year, month, movePrevMonth, moveNextMonth }: T) => {
         {!openSearch && type === "calender" && (
           <div className="select-month">
             <button onClick={movePrevMonth}>
-              <FontAwesomeIcon icon={faAngleLeft} />
+              {/* <FontAwesomeIcon icon={faAngleLeft} /> */}
             </button>
             <div>
               <span>
@@ -101,14 +101,14 @@ const Header = ({ type, year, month, movePrevMonth, moveNextMonth }: T) => {
               </span>
             </div>
             <button onClick={moveNextMonth}>
-              <FontAwesomeIcon icon={faAngleRight} />
+              {/* <FontAwesomeIcon icon={faAngleRight} /> */}
             </button>
           </div>
         )}
         {openSearch && (
           <form className="search-form" onSubmit={submitHandler} ref={formRef}>
             <button type="submit">
-              <FontAwesomeIcon icon={faSearch} />
+              {/* <FontAwesomeIcon icon={faSearch} /> */}
             </button>
             <label title="search" />
             <input
@@ -127,7 +127,7 @@ const Header = ({ type, year, month, movePrevMonth, moveNextMonth }: T) => {
                 setOpenSearch(true);
               }}
             >
-              <FontAwesomeIcon icon={faSearch} />
+              {/* <FontAwesomeIcon icon={faSearch} /> */}
             </button>
           )}
         </div>
