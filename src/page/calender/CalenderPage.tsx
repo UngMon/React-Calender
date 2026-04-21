@@ -1,7 +1,11 @@
-
+import Header from "../../feature/header/Header";
 
 const CalenderPage = () => {
-  return <div></div>;
+  return (
+    <div>
+      <Header />
+    </div>
+  );
 };
 
 export default CalenderPage;

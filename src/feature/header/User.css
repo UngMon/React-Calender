@@ -1,4 +1,25 @@
-.user-info-box {
+.user {
+  position: relative;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  overflow: hidden;
+  background: red;
+}
+
+.user__image img {
+  width: 100%;
+  height: 100%;
+}
+
+@media (min-width: 1024px) {
+  .user {
+    width: 42px;
+    height: 42px;
+  }
+}
+
+/* .user-info-box {
   z-index: 4;
   position: absolute;
   right: 30px;
@@ -80,4 +101,4 @@
     height: 40px;
     line-height: 40px;
   }
-}
+} */

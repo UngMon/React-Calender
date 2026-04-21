@@ -17,7 +17,7 @@ const redirectToCalender = `/calender/month/${getTodayDateString()}`;
 // 로그인이 '필요한' 그룹의 로더 (없으면 로그인으로 쫓아냄)
 const protectedLoader = async () => {
   const user = await checkAuth();
-
+  console.log('protectedLoader')
   if (!user) return redirect("/login");
 
   return null; // 통과
@@ -51,7 +51,7 @@ const router = createBrowserRouter([
   {
     id: "protected",
     path: "/",
-    element: <Root />,
+    element: <Outlet />,
     loader: protectedLoader,
     children: [
       {

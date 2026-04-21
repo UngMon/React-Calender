@@ -14,6 +14,7 @@ import { createUserWithEmailAndPassword } from "firebase/auth";
 import { newYear, newMonth } from "../../utils/nowDate";
 import StartImages from "./StartImages";
 import style from "./LoginPage.module.css";
+import { getTodayDateString } from "../../utils/getTodayDateString";
 
 const LoginPage = () => {
   console.log('Login Page')
@@ -124,7 +125,7 @@ const LoginPage = () => {
     setPersistence(auth, browserSessionPersistence).then(() => {
       signInWithPopup(auth, provider)
         .then((data) => {
-          navigagte(`/calender/date?year=${newYear}&month=${newMonth}`);
+          navigagte(`/calender/month/${getTodayDateString()}`);
         })
         .catch((err) => {
           alert("로그인하는데 실패했습니다.");
