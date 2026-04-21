@@ -5,7 +5,7 @@ import { cloneActions } from "../redux/clone-slice";
 import { modalActions } from "../redux/modal-slice";
 import { getNationalDay } from "../redux/fetch-action";
 import Main from "./main/Main";
-import Header from "./header/Header";
+import Header from "../feature/header/Header";
 
 let delay = false;
 

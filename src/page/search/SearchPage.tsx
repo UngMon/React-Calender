@@ -1,17 +1,17 @@
 import React, { useRef } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { useSelector } from "react-redux";
-import { RootState, useAppDispatch } from "../redux/store";
-import { CalenderData } from "../type/ReduxType";
-import { modalActions } from "../redux/modal-slice";
-import { cloneActions } from "../redux/clone-slice";
+import { RootState, useAppDispatch } from "../../redux/store";
+import { CalenderData } from "../../type/ReduxType";
+import { modalActions } from "../../redux/modal-slice";
+import { cloneActions } from "../../redux/clone-slice";
 // import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 // import { faCalendarDays } from "@fortawesome/free-solid-svg-icons";
-import Header from "../calender/header/Header";
-import ModalContainer from "../modal/ModalContainer";
-import "./Result.css";
+import Header from "../../feature/header/Header";
+import ModalContainer from "../../modal/ModalContainer";
+import "./SearchPage.css";
 
-const Result = () => {
+const SearchPage = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const [param] = useSearchParams();
@@ -127,4 +127,4 @@ const Result = () => {
   );
 };
 
-export default Result;
+export default SearchPage;

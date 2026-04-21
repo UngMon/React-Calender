@@ -1,7 +1,6 @@
-/* eslint-disable */
-import React, { useState, useCallback } from "react";
+import { useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
-import { auth } from "../auth/firebase";
+import { auth } from "../../auth/firebase";
 import {
   GoogleAuthProvider,
   setPersistence,
@@ -12,11 +11,12 @@ import {
 import { FacebookAuthProvider } from "firebase/auth";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { createUserWithEmailAndPassword } from "firebase/auth";
-import { newYear, newMonth } from "../utils/nowDate";
+import { newYear, newMonth } from "../../utils/nowDate";
 import StartImages from "./StartImages";
 import style from "./LoginPage.module.css";
 
 const LoginPage = () => {
+  console.log('Login Page')
   const navigagte = useNavigate();
   // 회원가입 인지 아닌지~
   const [creatingUser, setCreatingUser] = useState<boolean>(false);
@@ -68,7 +68,7 @@ const LoginPage = () => {
         setEmailMessage("");
       }
     },
-    []
+    [],
   );
 
   const confirmPassword = useCallback(
@@ -83,7 +83,7 @@ const LoginPage = () => {
         setPassword("");
       }
     },
-    []
+    [],
   );
 
   // 회원가입 버튼을 누른 후, 생성된 password input의 onClick 함수
@@ -94,7 +94,7 @@ const LoginPage = () => {
 
       if (!passwordRegex.test(e.target.value)) {
         setPasswordMessage(
-          "숫자+영문자+특수문자 조합으로 8자리 이상 입력해주세요!"
+          "숫자+영문자+특수문자 조합으로 8자리 이상 입력해주세요!",
         );
         setIsPassword(false);
         setPassword("");
@@ -104,7 +104,7 @@ const LoginPage = () => {
         setPassword(e.target.value);
       }
     },
-    []
+    [],
   );
 
   const socialLoginHandler = (e: React.MouseEvent, type: string) => {
@@ -136,7 +136,7 @@ const LoginPage = () => {
   const loginFormHandler = (
     e: React.FormEvent,
     email: string,
-    password: string
+    password: string,
   ) => {
     e.preventDefault();
 

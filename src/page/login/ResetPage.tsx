@@ -1,5 +1,5 @@
 import { useState, useCallback, ChangeEvent } from "react";
-import { auth } from "../auth/firebase";
+import { auth } from "../../auth/firebase";
 import { useNavigate } from "react-router-dom";
 import { sendPasswordResetEmail } from "firebase/auth";
 // import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";

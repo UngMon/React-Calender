@@ -1,16 +1,8 @@
 import React, { useEffect, useRef, useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { auth } from "../../auth/firebase";
-// import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-// import {
-//   faAngleLeft,
-//   faAngleRight,
-//   faArrowLeft,
-//   faSearch,
-//   faBars,
-// } from "@fortawesome/free-solid-svg-icons";
 import Menu from "./Menu";
-import UserInfo from "./UserInfo";
+import User from "./User";
 import "./Header.css";
 
 interface T {
@@ -27,7 +19,7 @@ const Header = ({ type, year, month, movePrevMonth, moveNextMonth }: T) => {
   const navigate = useNavigate();
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const [openUserInfo, setOpenUserInfo] = useState<boolean>(false);
+  // const [openUserInfo, setOpenUserInfo] = useState<boolean>(false);
   const [openSearch, setOpenSearch] = useState<boolean>(false);
   const [openMenu, setOpenMenu] = useState<boolean>(false);
   const formRef = useRef<HTMLFormElement>(null);
@@ -131,11 +123,7 @@ const Header = ({ type, year, month, movePrevMonth, moveNextMonth }: T) => {
             </button>
           )}
         </div>
-        <UserInfo
-          auth={auth}
-          openUserInfo={openUserInfo}
-          setOpenUserInfo={setOpenUserInfo}
-        />
+        <User />
       </div>
     </header>
   );

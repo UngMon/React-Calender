@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from "react";
 import { Auth, signOut } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
-import "./UserInfo.css";
+import "./User.css";
 
 interface T {
   auth: Auth;
@@ -9,7 +9,7 @@ interface T {
   setOpenUserInfo: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const UserInfo = ({ auth, openUserInfo, setOpenUserInfo }: T) => {
+const User = ({ auth, openUserInfo, setOpenUserInfo }: T) => {
   const navigagte = useNavigate();
 
   const userInfoBoxRef = useRef<HTMLDivElement>(null);
@@ -65,4 +65,4 @@ const UserInfo = ({ auth, openUserInfo, setOpenUserInfo }: T) => {
   );
 };
 
-export default UserInfo;
+export default User;

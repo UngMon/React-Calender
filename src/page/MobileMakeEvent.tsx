@@ -19,7 +19,7 @@ import { makeDateArray } from "../utils/makedateArray";
 import { newMonth, newYear } from "../utils/nowDate";
 import { setTime } from "../ui/time/SetTime";
 import ColorBox from "../ui/time/ColorBox";
-import NotFound from "./NotFound";
+import NotFound from "../ui/NotFound";
 import PickerBox from "../ui/time/PickerBox";
 import "./MobileMakeEvent.css";
 
