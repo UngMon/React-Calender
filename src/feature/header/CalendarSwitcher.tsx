@@ -1,4 +1,5 @@
 import { useNavigate, useParams } from "react-router-dom";
+import "./CalendarSwitcher.css";
 
 const CalendarSwitcher = () => {
   const { view, date } = useParams<{ view: string; date: string }>();
@@ -34,14 +35,20 @@ const CalendarSwitcher = () => {
     return `${year}-${month}-${day}`;
   };
 
+  const formatDateForHader = (date?: string): string => {
+    if (!date) return "";
+    const dateArray = date.split("-");
+    return `${dateArray[0]}년 ${dateArray[1]}월 ${dateArray[2]}일`;
+  };
+
   return (
     <div className="calender-switcher">
       <button type="button" onClick={handlePrevDay}>
-        좌
+        <span className="material-symbols-outlined">keyboard_arrow_left</span>
       </button>
-      <h2>{date}</h2>
+      <h2>{formatDateForHader(date)}</h2>
       <button type="button" onClick={handleNextDay}>
-        우
+        <span className="material-symbols-outlined">keyboard_arrow_right</span>
       </button>
     </div>
   );

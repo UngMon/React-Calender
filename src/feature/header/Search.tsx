@@ -6,20 +6,29 @@ const Search = () => {
 
   return (
     <div className="search">
-      {openSearch ? (
-        <div className="search__icon" onClick={() => setOpenSearch(true)}>
-          <span className="material-symbols-outlined">search</span>
-        </div>
-      ) : (
-        <div className="search__modal">
-          <div className="search__modal-ui">
-            <span>{"<-"}</span>
-            <span>검색</span>
+      <button
+        type="button"
+        className="search__icon"
+        onClick={() => setOpenSearch(true)}
+      >
+        <span className="material-symbols-outlined">search</span>
+      </button>
+      {openSearch && (
+        <div className="search__modal-overlay">
+          <div className="search__modal-header">
+            <form className="search__modal-form">
+              <button
+                type="button"
+                className="search__modal-back"
+                onClick={() => setOpenSearch(false)}
+              >
+                <span className="material-symbols-outlined">chevron_left</span>
+              </button>
+              {/* <span className="material-symbols-outlined">search</span> */}
+              <label htmlFor="keyword" />
+              <input id="keyword" type="text" />
+            </form>
           </div>
-          <form className="search__modal-form">
-            <span className="material-symbols-outlined">search</span>
-            <input type="text" />
-          </form>
         </div>
       )}
     </div>

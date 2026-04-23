@@ -1,0 +1,40 @@
+.month-calender {
+  box-sizing: border-box;
+  width: 100%;
+  height: calc(100% - 70px);
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+.month-calender__head tr th {
+  padding: 10px 0;
+  border-bottom: 2px solid #ddd;
+  font-weight: bold;
+  text-align: center;
+}
+
+.month-calender__body-date {
+  border: 1px solid #ddd;
+  vertical-align: top; /* 날짜를 셀 좌측 상단에 배치 */
+  position: relative;
+  padding: 0;
+}
+
+.month-calender__body-date-day {
+  display: inline-block;
+  width: 24px;
+  height: 24px;
+  line-height: 24px;
+  text-align: center;
+  border-radius: 50%;
+}
+
+.month-calender__body-schedule {
+  position: relative;
+  width: 100%;
+}
+
+@media (min-width: 700px) {
+  .month-calender {
+    height: calc(100% - 80px);
+  }
+}

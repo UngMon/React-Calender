@@ -8,13 +8,15 @@
   align-items: center;
 }
 
-.header-box {
-  
+.header__box{
+  display: flex;
+  align-items: center;
+  column-gap: 10px;
 }
 
-@media (min-width: 1024px) {
+@media (min-width: 700px) {
   .header {
-    height: 70px;
+    height: 80px;
   }
 }
 

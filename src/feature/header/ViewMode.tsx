@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import "./ViewMode.css";
 
 // 뷰 모드에 따른 한글 텍스트 매핑 객체 (선택된 뷰를 화면에 표시하기 위함)
 const VIEW_LABELS: Record<string, string> = {
@@ -30,27 +31,28 @@ const ViewMode = () => {
         className="view-mode__selector"
         onClick={() => setOpen(!open)}
       >
-        {VIEW_LABELS[view]} ▾
+        <span>{VIEW_LABELS[view]}</span>
+        <span>▾</span>
       </button>
       {open && (
-          <ul className="view-mode__list">
-            <li onClick={() => handleViewChange("day")}>
-              <span>일</span>
-              <span>D</span>
-            </li>
-            <li onClick={() => handleViewChange("week")}>
-              <span>주</span>
-              <span>W</span>
-            </li>
-            <li onClick={() => handleViewChange("month")}>
-              <span>월</span>
-              <span>M</span>
-            </li>
-            <li onClick={() => handleViewChange("year")}>
-              <span>연도</span>
-              <span>Y</span>
-            </li>
-          </ul>
+        <ul className="view-mode__list">
+          <li onClick={() => handleViewChange("day")}>
+            <span>일</span>
+            <span>D</span>
+          </li>
+          <li onClick={() => handleViewChange("week")}>
+            <span>주</span>
+            <span>W</span>
+          </li>
+          <li onClick={() => handleViewChange("month")}>
+            <span>월</span>
+            <span>M</span>
+          </li>
+          <li onClick={() => handleViewChange("year")}>
+            <span>연도</span>
+            <span>Y</span>
+          </li>
+        </ul>
       )}
     </div>
   );

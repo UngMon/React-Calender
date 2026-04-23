@@ -1,0 +1,28 @@
+.today {
+  width: 30px;
+  height: 30px;
+  border-radius: 10px;
+  text-align: center;
+  line-height: 30px;
+  border: 2px solid black;
+}
+
+.today a {
+  display: inline-block;
+  width: 100%;
+  height: 100%;
+  text-align: center;
+  text-decoration: none;
+  color: #333;
+  font-weight: 600;
+}
+
+.today a span {
+  line-height: 28px;
+}
+
+@media (min-width: 700px) {
+  .today {
+    display: none;
+  }
+}

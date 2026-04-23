@@ -1,5 +1,6 @@
-const Logo = () => {
+import "./Logo.css";
 
+const Logo = () => {
   return (
     <div className="logo">
       <span>Your Calender</span>

@@ -3,12 +3,12 @@ import { signOut } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
 import "./Menu.css";
 
-interface T {
-  openMenu: boolean;
-  setOpenMenu: (type: boolean) => void;
-}
+// interface T {
+//   openMenu: boolean;
+//   setOpenMenu: (type: boolean) => void;
+// }
 
-const Menu = ({ openMenu, setOpenMenu }: T) => {
+const Menu = () => {
   const navigate = useNavigate();
 
   const logoutHandler = () => {
@@ -23,10 +23,11 @@ const Menu = ({ openMenu, setOpenMenu }: T) => {
   };
 
   return (
-    <div className={`menu ${openMenu ? "menuopen" : "menuoff"}`}>
-      <div className="xmark" onClick={() => setOpenMenu(false)}>
-        {/* <FontAwesomeIcon icon={faXmark} /> */}
-      </div>
+    <div className="menu">
+      <span className="material-symbols-outlined">dehaze</span>
+      {/* <div className="xmark" onClick={() => setOpenMenu(false)}>
+        <FontAwesomeIcon icon={faXmark} />
+      </div> 
       <div className="user-info">
         <div className="user-image">
           <img src={auth.currentUser?.photoURL || ""} alt="user" width="45" />
@@ -38,9 +39,9 @@ const Menu = ({ openMenu, setOpenMenu }: T) => {
           <span>{auth.currentUser?.email}</span>
         </div>
         <div className="logout" onClick={logoutHandler}>
-          {/* <FontAwesomeIcon icon={faRightFromBracket} /> */}
+          <FontAwesomeIcon icon={faRightFromBracket} />
         </div>
-      </div>
+      </div> */}
     </div>
   );
 };
