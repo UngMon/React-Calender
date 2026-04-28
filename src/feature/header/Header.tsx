@@ -1,11 +1,11 @@
-import Menu from "./Menu";
-import Logo from "./Logo";
-import CalendarSwitcher from "./CalendarSwitcher";
-import Search from "./Search";
-import ViewMode from "./ViewMode";
-import User from "./User";
+import Menu from "./menu/Menu";
+import Logo from "./logo/Logo";
+import CalendarSwitcher from "./switcher/CalendarSwitcher";
+import Search from "./search/Search";
+import ViewMode from "./viewmode/ViewMode";
+import User from "./user/User";
+import Today from "./today/Today";
 import "./Header.css";
-import Today from "./Today";
 
 const Header = () => {
   return (

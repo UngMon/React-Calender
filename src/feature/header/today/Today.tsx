@@ -1,5 +1,5 @@
 import { Link, useParams } from "react-router-dom";
-import { getTodayDateString } from "../../utils/getTodayDateString";
+import { getTodayDateString } from "../../../utils/getTodayDateString";
 import "./Today.css";
 
 const Today = () => {

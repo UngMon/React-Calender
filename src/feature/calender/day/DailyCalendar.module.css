@@ -1,0 +1,118 @@
+.dailyContainer {
+  height: calc(100vh - 80px);
+  box-sizing: border-box;
+  width: 100%;
+  padding: 0 7px 10px 0;
+  color: #202124;
+  font-family:
+    "Pretendard",
+    -apple-system,
+    sans-serif;
+}
+
+/* 메인 스크롤 영역 */
+.timeGridWrapper {
+  box-sizing: border-box;
+  width: 100%;
+  height: 100%;
+  padding-bottom: 30px;
+  background: rgb(234, 235, 255);
+  border-radius: 15px;
+  overflow: hidden;
+}
+
+.timeGridBox {
+  display: flex;
+  overflow-y: auto;
+  height: calc(100% - 70px);
+}
+
+/* 왼쪽 시간 라벨 */
+.timeLabels {
+  width: 60px;
+  flex-shrink: 0;
+  user-select: none;
+  padding-right: 7px;
+  box-sizing: border-box;
+  height: fit-content;
+}
+
+.timeLabel {
+  position: relative;
+  color: #70757a;
+  font-size: 11px;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  position: relative;
+  text-align: right;
+}
+
+.timeLabel span {
+  position: absolute;
+  top: -7px;
+  display: block;
+  width: 100%;
+}
+
+.timeLabel:nth-of-type(1) span {
+  top: 0;
+}
+
+/* 일정 도화지 */
+.gridBoard {
+  position: relative;
+  border-left: 1px solid rgba(0, 0, 0, 0.12);
+  flex: 1;
+  border-collapse: collapse;
+  height: fit-content;
+}
+
+/* 가로 구분선 */
+.gridLine {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+  box-sizing: border-box;
+}
+
+.gridLine:nth-of-type(1) {
+  border-top: 1px solid rgba(0, 0, 0, 0.12);
+}
+
+/* 이벤트 블록 */
+.eventBlock {
+  position: absolute;
+  cursor: pointer;
+  box-sizing: border-box;
+  padding: 0px 8px;
+  font-size: 12px;
+  transition:
+    transform 0.1s,
+    box-shadow 0.1s;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  border: 1px solid white;
+  border-radius: 4px;
+  line-height: 30px;
+  overflow: hidden;
+}
+
+.eventBlock:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.eventContent {
+  height: 100%;
+}
+
+.eventContent strong {
+  font-weight: 600;
+  margin-bottom: 4px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.eventContent span {
+  color: #f9f9f9;
+  font-weight: 600;
+  white-space: nowrap;
+}

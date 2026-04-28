@@ -17,8 +17,8 @@ export interface CalendarEvent {
     | "포도"
     | "흑연";
   timeCategory: "allday" | "time"; // 종일 일정 여부
-  startTime?: string; // 'HH:mm' (24시간제, timeCategory가 'time'일 때만 존재)
-  endTime?: string; // 'HH:mm'
+  startTime: string; // 'HH:mm' (24시간제, timeCategory가 'time'일 때만 존재)
+  endTime: string; // 'HH:mm'
   createdAt: string; // ISO String 형태
 }
 
@@ -32,8 +32,10 @@ export const mockEvents: CalendarEvent[] = [
     endDate: "2026-04-11",
     monthList: ["2026-03", "2026-04"], // 3월 달력, 4월 달력 모두에서 불러와짐
     color: "블루베리",
-    timeCategory: "allday",
     createdAt: new Date().toISOString(),
+    timeCategory: "time",
+    startTime: "02:00",
+    endTime: "04:00",
   },
   {
     // 케이스 1: 3월에서 4월로 넘어가는 '긴 종일 일정' (Spanning)
@@ -43,8 +45,10 @@ export const mockEvents: CalendarEvent[] = [
     endDate: "2026-04-09",
     monthList: ["2026-03", "2026-04"], // 3월 달력, 4월 달력 모두에서 불러와짐
     color: "바나나",
-    timeCategory: "allday",
     createdAt: new Date().toISOString(),
+    timeCategory: "time",
+    startTime: "03:00",
+    endTime: "04:00",
   },
   {
     // 케이스 1: 3월에서 4월로 넘어가는 '긴 종일 일정' (Spanning)
@@ -54,10 +58,12 @@ export const mockEvents: CalendarEvent[] = [
     endDate: "2026-04-10",
     monthList: ["2026-03", "2026-04"], // 3월 달력, 4월 달력 모두에서 불러와짐
     color: "토마토",
-    timeCategory: "allday",
     createdAt: new Date().toISOString(),
+    timeCategory: "time",
+    startTime: "02:30",
+    endTime: "04:10",
   },
-    {
+  {
     // 케이스 1: 3월에서 4월로 넘어가는 '긴 종일 일정' (Spanning)
     id: "evt-001",
     title: "도쿄 출장 및 휴가 ✈️ 3",
@@ -65,8 +71,10 @@ export const mockEvents: CalendarEvent[] = [
     endDate: "2026-04-11",
     monthList: ["2026-03", "2026-04"], // 3월 달력, 4월 달력 모두에서 불러와짐
     color: "바질",
-    timeCategory: "allday",
     createdAt: new Date().toISOString(),
+    timeCategory: "allday",
+    startTime: "",
+    endTime: "",
   },
   {
     // 케이스 2: 4월 내의 당일 '시간 지정' 일정
@@ -89,8 +97,10 @@ export const mockEvents: CalendarEvent[] = [
     endDate: "2026-04-15",
     monthList: ["2026-04"],
     color: "토마토",
-    timeCategory: "allday",
     createdAt: new Date().toISOString(),
+    timeCategory: "allday",
+    startTime: "",
+    endTime: "",
   },
   {
     // 케이스 4: 4월 내의 'n박 n일' 일정
@@ -100,8 +110,10 @@ export const mockEvents: CalendarEvent[] = [
     endDate: "2026-04-22",
     monthList: ["2026-04"],
     color: "바질",
-    timeCategory: "allday",
     createdAt: new Date().toISOString(),
+    timeCategory: "allday",
+    startTime: "",
+    endTime: "",
   },
   {
     // 케이스 5: 심야/새벽에 걸친 시간 일정 (당일)
@@ -124,7 +136,126 @@ export const mockEvents: CalendarEvent[] = [
     endDate: "2026-05-02",
     monthList: ["2026-04", "2026-05"],
     color: "포도",
+    createdAt: new Date().toISOString(),
     timeCategory: "allday",
+    startTime: "",
+    endTime: "",
+  },
+  {
+    // 케이스 7: 5월 일정
+    id: "evt-007",
+    title: "테스트 123",
+    startDate: "2026-04-25",
+    endDate: "2026-04-25",
+    monthList: ["2026-05"],
+    color: "흑연",
+    timeCategory: "time",
+    startTime: "11:00", // 오후 12시
+    endTime: "14:00", // 오후 6시
+    createdAt: new Date().toISOString(),
+  },
+  {
+    // 케이스 7: 5월 일정
+    id: "evt-007",
+    title: "테스트 1",
+    startDate: "2026-04-24",
+    endDate: "2026-04-26",
+    monthList: ["2026-05"],
+    color: "연분홍",
+    timeCategory: "time",
+    startTime: "12:00", // 오후 12시
+    endTime: "18:00", // 오후 6시
+    createdAt: new Date().toISOString(),
+  },
+  {
+    // 케이스 7: 5월 일정
+    id: "evt-007",
+    title: "테스트 2",
+    startDate: "2026-04-24",
+    endDate: "2026-04-26",
+    monthList: ["2026-05"],
+    color: "바질",
+    timeCategory: "time",
+    startTime: "12:00", // 오후 12시
+    endTime: "18:00", // 오후 6시
+    createdAt: new Date().toISOString(),
+  },
+  {
+    // 케이스 7: 5월 일정
+    id: "evt-007",
+    title: "테스트 3",
+    startDate: "2026-04-24",
+    endDate: "2026-04-26",
+    monthList: ["2026-05"],
+    color: "포도",
+    timeCategory: "time",
+    startTime: "12:00", // 오후 12시
+    endTime: "14:00", // 오후 6시
+    createdAt: new Date().toISOString(),
+  },
+  {
+    // 케이스 7: 5월 일정
+    id: "evt-007",
+    title: "테스트 1234",
+    startDate: "2026-04-25",
+    endDate: "2026-04-25",
+    monthList: ["2026-05"],
+    color: "흑연",
+    timeCategory: "time",
+    startTime: "14:00", // 오후 12시
+    endTime: "15:00", // 오후 6시
+    createdAt: new Date().toISOString(),
+  },
+  {
+    // 케이스 7: 5월 일정
+    id: "evt-007",
+    title: "테스트 4",
+    startDate: "2026-04-24",
+    endDate: "2026-04-26",
+    monthList: ["2026-05"],
+    color: "바나나",
+    timeCategory: "time",
+    startTime: "14:00", // 오후 12시
+    endTime: "15:00", // 오후 6시
+    createdAt: new Date().toISOString(),
+  },
+  {
+    // 케이스 7: 5월 일정
+    id: "evt-007",
+    title: "테스트 5",
+    startDate: "2026-04-24",
+    endDate: "2026-04-26",
+    monthList: ["2026-05"],
+    color: "토마토",
+    timeCategory: "time",
+    startTime: "15:00", // 오후 12시
+    endTime: "18:00", // 오후 6시
+    createdAt: new Date().toISOString(),
+  },
+  {
+    // 케이스 7: 5월 일정
+    id: "evt-007",
+    title: "짧은 시간 일정",
+    startDate: "2026-04-24",
+    endDate: "2026-04-26",
+    monthList: ["2026-05"],
+    color: "토마토",
+    timeCategory: "time",
+    startTime: "18:00", // 오후 12시
+    endTime: "18:15", // 오후 6시
+    createdAt: new Date().toISOString(),
+  },
+    {
+    // 케이스 7: 5월 일정
+    id: "evt-007",
+    title: "짧은 시간 일정2",
+    startDate: "2026-04-24",
+    endDate: "2026-04-26",
+    monthList: ["2026-05"],
+    color: "바질",
+    timeCategory: "time",
+    startTime: "18:15", // 오후 12시
+    endTime: "18:30", // 오후 6시
     createdAt: new Date().toISOString(),
   },
   {

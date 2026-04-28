@@ -29,6 +29,7 @@
   background: rgb(216, 230, 255);
   padding: 10px 10px;
   border-radius: 10px;
+  z-index: 11;
 }
 
 .view-mode__list li {

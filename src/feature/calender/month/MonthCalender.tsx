@@ -1,10 +1,10 @@
 import { useMemo } from "react";
-import { CalendarEvent, mockEvents } from "./mockData";
+import { CalendarEvent, mockEvents } from "../mockData";
 import "./MonthCalender.css";
 
 interface Props {
   date: string; // URL 파라미터에서 넘어온 날짜 (예: '2026-04-22')
-  events: CalendarEvent[]; // 부모 컴포넌트로부터 받을 더미 데이터
+  // events: CalendarEvent[]; // 부모 컴포넌트로부터 받을 더미 데이터
 }
 
 interface CalendarCell {

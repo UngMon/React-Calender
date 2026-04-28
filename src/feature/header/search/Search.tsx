@@ -24,7 +24,6 @@ const Search = () => {
               >
                 <span className="material-symbols-outlined">chevron_left</span>
               </button>
-              {/* <span className="material-symbols-outlined">search</span> */}
               <label htmlFor="keyword" />
               <input id="keyword" type="text" />
             </form>
