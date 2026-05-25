@@ -2,7 +2,7 @@ import React, { useRef } from "react";
 import { useSelector } from "react-redux";
 import { RootState } from "../redux/store";
 import { auth } from "../auth/firebase";
-import MakeEvent from "./MakeEvent";
+import MakeEvent from "../feature/calender/modal/makeEvent/MakeEvent";
 import List from "./List";
 import MoreList from "./MoreList";
 import MobileModal from "./MoblieModal";

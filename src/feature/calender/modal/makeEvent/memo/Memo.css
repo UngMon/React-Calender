@@ -1,0 +1,32 @@
+.memo-container {
+  display: flex;
+  column-gap: 10px;
+  padding: 20px 0;
+}
+
+.memo {
+  width: calc(100% - 34px);
+  position: relative;
+}
+
+.memo__text {
+width: 100%;
+  box-sizing: border-box;
+  border: 0;
+  border-bottom: 2px solid #dcdcdc;
+  padding: 0 5px 5px;
+  font-weight: 550;
+  outline: none;
+  background: transparent;
+  overflow: hidden;
+  font-size: 14px;
+  resize: none;
+  line-height: 1.2;   
+  min-height: 24px;
+}
+
+.memo__count {
+  position: absolute;
+  bottom: -20px; 
+  right: 5px;
+}

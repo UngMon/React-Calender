@@ -1,7 +1,9 @@
-import { useMemo } from "react";
-import { CalendarEvent, mockEvents } from "../mockData";
+import React, { useCallback, useMemo } from "react";
+import { mockEvents } from "../mockData";
 import { generateCalendarMatrix, calculateWeekSlots } from "./renderdWeeks";
-import "./MonthCalender.css";
+import { useModalStore } from "../../../store/useModalStore";
+import { useTimeDateStore } from "@/store/useTimeDateStore";
+import "./MonthCalendar.css";
 
 interface Props {
   date: string; // URL 파라미터에서 넘어온 날짜 (예: '2026-04-22')
@@ -24,7 +26,13 @@ const MORE_BTN_HEIGHT = 20;
 
 const weekDays = ["일", "월", "화", "수", "목", "금", "토"];
 
-const MonthCalender = ({ date }: Props) => {
+const MonthCalendar = ({ date }: Props) => {
+  console.log('Month Claendar Rendering')
+  const setPosition = useModalStore((state) => state.setPosition);
+  const setTimeAndDate = useTimeDateStore(
+    (state) => state.setInitialTimeAndDate,
+  );
+
   const events = mockEvents;
 
   // 1. 기준 날짜 분해
@@ -48,6 +56,16 @@ const MonthCalender = ({ date }: Props) => {
   const MAX_VISIBLE_SLOTS = Math.floor(
     (CELL_MIN_HEIGHT - DATE_NUMBER_HEIGHT - MORE_BTN_HEIGHT) /
       (EVENT_HEIGHT + EVENT_GAP),
+  );
+
+  const handlerClick = useCallback(
+    (e: React.MouseEvent, week: number, day: number, date: string) => {
+      const { width, height } = e.currentTarget.getBoundingClientRect();
+
+      setPosition({ week, day, width, height });
+      setTimeAndDate({ startDate: date, endDate: date });
+    },
+    [],
   );
 
   return (
@@ -93,6 +111,11 @@ const MonthCalender = ({ date }: Props) => {
                     backgroundColor: isToday ? "#dfe5ff" : "", // 선택된 날짜 배경색
                     color: cell.isCurrentMonth ? "#333" : "#8e8e8e", // 이전/다음달 날짜는 회색 처리
                   }}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    console.log(e.currentTarget.getBoundingClientRect());
+                    handlerClick(e, wIdx, dIdx, cell.fullDateStr);
+                  }}
                 >
                   {/* 날짜 텍스트 */}
                   <div
@@ -101,6 +124,10 @@ const MonthCalender = ({ date }: Props) => {
                       height: `${DATE_NUMBER_HEIGHT}px`,
                       color: cell.isCurrentMonth ? "black" : "#ccc",
                       fontWeight: isToday ? "bold" : "normal",
+                    }}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      console.log("날짜 클릭");
                     }}
                   >
                     <span
@@ -121,13 +148,13 @@ const MonthCalender = ({ date }: Props) => {
 
                   {/* 일정 렌더링 구역 */}
                   <div style={{ position: "relative" }}>
-                    {startingEvents.map((evt) => {
+                    {startingEvents.map((evt, idx) => {
                       // 한계선을 넘어가는 슬롯은 렌더링하지 않음 (숨김 처리)
                       if (evt.slot >= MAX_VISIBLE_SLOTS) return null;
 
                       return (
                         <div
-                          key={evt.createdAt + dIdx}
+                          key={wIdx + dIdx + idx}
                           className={evt.color}
                           style={{
                             boxSizing: "border-box",
@@ -202,4 +229,4 @@ const MonthCalender = ({ date }: Props) => {
   );
 };
 
-export default MonthCalender;
+export default React.memo(MonthCalendar);

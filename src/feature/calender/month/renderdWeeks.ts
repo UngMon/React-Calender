@@ -51,7 +51,7 @@ export const generateCalendarMatrix = (
     }
     matrix.push(weekRow);
   }
-
+  console.log(matrix)
   return matrix;
 };
 

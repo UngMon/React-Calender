@@ -1,0 +1,135 @@
+.make-event {
+  position: fixed;
+  top: 0;
+  left: 0;
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 375px;
+  height: 100%;
+  background-color: rgb(231, 238, 255);
+  z-index: 20;
+  font-size: 16px;
+}
+
+.make-event__top {
+  width: 100%;
+  height: 70px;
+  text-align: center;
+  font-size: 1.2em;
+  font-weight: bold;
+  line-height: 70px;
+}
+
+.make-event__form {
+  margin: auto;
+  box-sizing: border-box;
+  width: 90%;
+  height: calc(100% - 170px);
+}
+
+.make__form-wrapper {
+  border-radius: 12px;
+  background: rgb(246, 250, 255);
+  padding: 20px 0;
+}
+
+.make-form-wrapper-two {
+  padding: 0 25px;
+  height: 100%;
+  overflow-y: scroll;
+  overflow-x:hidden;
+  scrollbar-width: thin;
+  scrollbar-color: #cacaca transparent;
+  z-index: 19;
+}
+
+.make-form-wrapper-two::-webkit-scrollbar {
+  width: 4px;
+}
+
+.scroll-box::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.make-form-wrapper-two::-webkit-scrollbar-thumb {
+  background: #cacaca;
+  border-radius: 2px;
+}
+
+.make__form-box {
+  min-height: 100%;
+}
+
+.make__form-input {
+  margin: auto;
+  width: auto;
+  padding: 30px 0;
+}
+
+.make__form-input input {
+  width: 100%;
+  height: 35px;
+  padding: 0 5px;
+  border: 0;
+  border-bottom: 2px solid #dcdcdc;
+  background: transparent;
+  font-size: 1.1em;
+  font-weight: 600;
+
+  &:focus {
+    border-color: #2693ff;
+  }
+}
+
+.make-event__button {
+  padding: 10px 0;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  column-gap: 20px;
+}
+
+.make-event__button button {
+  width: 40%;
+  height: 40px;
+  color: #5526ff;
+  font-weight: bold;
+  font-size: 1em;
+  border-radius: 10px;
+
+  &:hover {
+    background: #d6d6d6e4;
+  }
+}
+
+@media (min-width: 750px) {
+  .make-event {
+    top: calc(50% - 250px);
+    left: calc(50% - 225px);
+    box-sizing: border-box;
+    width: 450px;
+    height: auto;
+    background-color: rgb(220, 231, 255);
+    z-index: 20;
+    font-size: 16px;
+    border-radius: 20px;
+  }
+
+  .make-event__top {
+    height: 50px;
+    font-size: 1.1em;
+    font-weight: bold;
+    line-height: 50px;
+  }
+
+  .make-form-wrapper-two {
+    height: clamp(100px, 50vh, 550px);
+  }
+}
+
+@media (min-width: 1200px) {
+  .make-event {
+    position: absolute;
+  }
+}

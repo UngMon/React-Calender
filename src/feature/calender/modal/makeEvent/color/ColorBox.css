@@ -1,14 +1,13 @@
 .color-container {
-  width: 340px;
-  height: 30px;
-  margin: 15px auto 25px;
+  width: 100%;
+  padding: 20px 0;
   display: flex;
-  align-items: center;
+  column-gap: 10px;
 }
 
 .color-icon {
-  width: 40px;
-  height: 30px;
+  width: 24px;
+  height: 24px;
   display: flex;
   align-items: center;
 }
@@ -17,30 +16,57 @@
   display: block;
 }
 
+.color-box {
+  width: calc(100% - 34px);
+}
+
+.color-opener {
+  display: flex;
+  align-items: center;
+  column-gap: 10px;
+  padding: 5px 8px;
+  font-size: 0.9em;
+  background: rgb(238, 238, 238);
+  box-shadow: 0px 0px 10px 1px rgba(0, 0, 0, 0.036);
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+.color-opener span {
+  display: inline-block;
+  font-weight: 600;
+  height: 20px;
+  line-height: 20px;
+
+  &:nth-of-type(2) {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+  }
+}
+
 .circle {
-  width: 18px;
-  height: 18px;
+  width: 20px;
+  height: 20px;
   border-radius: 50%;
 }
 
 .colors {
-  width: 80%;
-  height: 100%;
-  margin-left: 10px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  display: inline-block;
+  margin: 10px 0;
+  padding: 7px;
+  background: white;
+  border-radius: 5px;
+  box-shadow: 0 0 5px 3px rgba(0, 0, 0, 0.036);
 }
 
 .colors div {
-  width: 18px;
-  height: 18px;
+  display: inline-block;
+  width: 20px;
+  height: 20px;
   border-radius: 50%;
-  margin: 0 4px;
-
-  &:hover {
-    cursor: pointer;
-  }
+  margin: 5px;
+  cursor: pointer;
 }
 
 .c-on {
@@ -55,7 +81,7 @@
   cursor: pointer;
 }
 
-@media (max-width: 500px) {
+/* @media (max-width: 500px) {
   .color-container {
     position: absolute;
     top: 100px;
@@ -100,4 +126,4 @@
   .c-off {
     display: none;
   }
-}
+} */

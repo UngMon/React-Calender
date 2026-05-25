@@ -1,12 +1,10 @@
-import React, { useRef } from "react";
+import { useRef } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { RootState, useAppDispatch } from "../../redux/store";
 import { CalenderData } from "../../type/ReduxType";
 import { modalActions } from "../../redux/modal-slice";
 import { cloneActions } from "../../redux/clone-slice";
-// import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-// import { faCalendarDays } from "@fortawesome/free-solid-svg-icons";
 import Header from "../../feature/header/Header";
 import ModalContainer from "../../modal/ModalContainer";
 import "./SearchPage.css";
@@ -38,7 +36,7 @@ const SearchPage = () => {
   const listClickHandler = (
     object: CalenderData,
     index: number,
-    secondIndex: number
+    secondIndex: number,
   ) => {
     let offsetTop =
       listsRef.current[object.key + index + secondIndex]!.offsetTop;
@@ -52,7 +50,7 @@ const SearchPage = () => {
 
     if (window.innerWidth > 500) {
       dispatch(
-        modalActions.setListInfo({ type: "List", ...object, index, offsetTop })
+        modalActions.setListInfo({ type: "List", ...object, index, offsetTop }),
       );
       dispatch(modalActions.onModal({ type: "List" }));
     } else {
@@ -63,7 +61,7 @@ const SearchPage = () => {
   const keyArray = Object.keys(result);
   return (
     <>
-      <Header type="search" />
+      {/* <Header type="search" /> */}
       <main className="result-container" ref={viewRef}>
         <div className="result-box">
           {keyArray.length === 0 && (
@@ -88,9 +86,6 @@ const SearchPage = () => {
                           modal.key === item.key && "picked"
                         }`}
                         key={item.key}
-                        // ref={(el: HTMLDivElement) =>
-                        //   (listsRef.current[item.key + index + idx] = el)
-                        // }
                         onClick={() => listClickHandler(item, index, idx)}
                         onTouchEnd={() => listClickHandler(item, index, idx)}
                       >
@@ -115,13 +110,13 @@ const SearchPage = () => {
             </ul>
           )}
         </div>
-        <ModalContainer
+        {/* <ModalContainer
           type="Search"
           lastweek={5}
-          viewRef={viewRef}
+          // viewRef={viewRef}
           listsRef={listsRef}
           clickedElement={clickedElement}
-        />
+        /> */}
       </main>
     </>
   );

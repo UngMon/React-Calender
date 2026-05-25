@@ -1,0 +1,91 @@
+/* TimeDial.css */
+.time-dial-wrapper {
+  display: flex;
+  column-gap: 20px;
+  justify-content: center;
+  align-items: center;
+  height: 150px; /* 50px(항목 높이) * 3(보여질 개수) */
+  position: relative;
+  /* 위아래 자연스럽게 흐려지는 마스킹 효과 */
+  -webkit-mask-image: linear-gradient(
+    to bottom,
+    transparent 5%,
+    black 45%,
+    black 55%,
+    transparent 95%
+  );
+  mask-image: linear-gradient(
+    to bottom,
+    transparent 5%,
+    black 45%,
+    black 55%,
+    transparent 95%
+  );
+}
+
+.dial-column {
+  height: 100%;
+  overflow-y: scroll;
+  scroll-snap-type: y mandatory;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.dial-column::-webkit-scrollbar {
+  display: none;
+}
+
+.dial-item {
+  height: 50px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  scroll-snap-align: center;
+  font-size: 20px;
+  color: #1a1a1a; /* 비활성 색상 (연한 회색) */
+  transition: all 0.1s ease-in-out;
+  cursor: pointer;
+  user-select: none;
+  font-weight: 700;
+}
+
+/* 중앙에 스냅되어 활성화된 상태 */
+.dial-item.active {
+  font-weight: 700;
+  font-size: 24px;
+}
+
+.dial-separator {
+  font-size: 24px;
+  font-weight: 700;
+  color: #1a1a1a;
+  padding-bottom: 5px; /* 시각적 중앙 정렬 보정 */
+}
+
+/* 아코디언 컨테이너 (핵심 애니메이션) */
+.time-accordion {
+  display: grid;
+  grid-template-rows: 0fr; /* 닫혀있을 때는 0 */
+  transition: grid-template-rows 0.3s ease-in-out;
+  width: 100%;
+}
+
+.time-accordion.is-open {
+  grid-template-rows: 1fr; /* 열렸을 때 내부 컨텐츠 높이만큼 팽창 */
+}
+
+/* 내부 컨텐츠가 접힐 때 삐져나오지 않도록 숨김 처리 */
+.time-accordion__inner {
+  overflow: hidden;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+/* 활성화된 버튼 스타일 (선택적) */
+.time-box__time-btn.active {
+  background-color: #e8f0fe; /* 연한 파란색 배경 등 */
+  color: #1a73e8;
+  font-weight: bold;
+  border-radius: 8px;
+}
