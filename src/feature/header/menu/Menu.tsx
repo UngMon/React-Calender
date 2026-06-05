@@ -1,5 +1,5 @@
-import { auth } from "../../../auth/firebase";
-import { signOut } from "firebase/auth";
+// import { auth } from "../../../auth/firebase";
+// import { signOut } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
 import "./Menu.css";
 
@@ -11,16 +11,16 @@ import "./Menu.css";
 const Menu = () => {
   const navigate = useNavigate();
 
-  const logoutHandler = () => {
-    signOut(auth)
-      .then(() => {
-        navigate("/");
-      })
-      .catch((err) => {
-        console.log(err);
-        alert("로그아웃 실패 했습니다!");
-      });
-  };
+  // const logoutHandler = () => {
+  //   signOut(auth)
+  //     .then(() => {
+  //       navigate("/");
+  //     })
+  //     .catch((err) => {
+  //       console.log(err);
+  //       alert("로그아웃 실패 했습니다!");
+  //     });
+  // };
 
   return (
     <div className="menu">

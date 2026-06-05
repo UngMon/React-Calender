@@ -1,6 +1,4 @@
-import { Auth, signOut } from "firebase/auth";
 import { create } from "zustand";
-import { auth } from "../auth/firebase";
 
 interface AuthState {
   isLoading: boolean;

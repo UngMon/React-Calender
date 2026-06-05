@@ -1,3 +1,5 @@
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { checkAuth } from "./auth/authHelper";
 import { getTodayDateString } from "./utils/getTodayDateString";
 import {
@@ -10,12 +12,20 @@ import {
 import LoginPage from "./page/login/LoginPage";
 import CalenderPage from "./page/calender/CalenderPage";
 
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 1000 * 60 * 10,
+    },
+  },
+});
+
 const redirectToCalender = `/calender/month/${getTodayDateString()}`;
 
 // 로그인이 '필요한' 그룹의 로더 (없으면 로그인으로 쫓아냄)
 const protectedLoader = async () => {
   const user = await checkAuth();
-  console.log("protectedLoader");
+
   if (!user) return redirect("/login");
 
   return null; // 통과
@@ -24,7 +34,8 @@ const protectedLoader = async () => {
 // 로그인이 '안 된' 사람만 보는 그룹의 로더
 const publicLoader = async () => {
   const user = await checkAuth();
-  if (user) redirect(redirectToCalender);
+  
+  if (user) return redirect(redirectToCalender);
 
   return null; // 통과
 };
@@ -61,7 +72,12 @@ const router = createBrowserRouter([
 ]);
 
 function App() {
-  return <RouterProvider router={router} />;
+  return (
+    <QueryClientProvider client={queryClient}>
+      <RouterProvider router={router} />
+      <ReactQueryDevtools initialIsOpen={false} />
+    </QueryClientProvider>
+  );
 }
 
 export default App;

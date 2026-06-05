@@ -1,7 +1,7 @@
 import React, { useCallback, useMemo } from "react";
 import { mockEvents } from "../mockData";
 import { generateCalendarMatrix, calculateWeekSlots } from "./renderdWeeks";
-import { useModalStore } from "../../../store/useModalStore";
+import { useModalStore } from "@/store/useModalStore";
 import { useTimeDateStore } from "@/store/useTimeDateStore";
 import "./MonthCalendar.css";
 

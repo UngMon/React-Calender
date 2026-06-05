@@ -1,4 +1,3 @@
-// types/calendar.ts (예시 스키마 타입)
 export interface CalendarEvent {
   id: string; // 데이터 렌더링을 위한 고유 키
   title: string; // 일정 내용 (content)
