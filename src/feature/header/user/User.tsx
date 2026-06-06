@@ -1,17 +1,26 @@
 import { useState } from "react";
+import { useAuth } from "@/hooks/useAuth";
+import { authActions, useAuthStore } from "@/store/useAuthStore";
 import { useNavigate } from "react-router-dom";
-import { useAuthStore } from "../../../store/useAuthStore";
 import "./User.css";
 
 const User = () => {
-  const { photoURL, displayName, email, logout } = useAuthStore();
-  
+  const { photoURL, displayName, email, isLoading } = useAuthStore();
+  const { clearAuth } = authActions;
+  const handleLogout = useAuth().logout;
+
   const navigagte = useNavigate();
   const [open, setOpen] = useState<boolean>(false);
 
   const logoutHandler = async () => {
-    await logout();
-    navigagte("/login", { replace: true });
+    try {
+      await handleLogout();
+      clearAuth();
+      navigagte("/login", { replace: true });
+    } catch (erorr: any) {
+      console.error("에러가 발생했습니다.", erorr.message);
+      alert("에러가 발생했습니다.");
+    }
   };
 
   return (

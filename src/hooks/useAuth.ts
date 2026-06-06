@@ -45,6 +45,7 @@ export const useAuth = () => {
     });
 
     if (error) throw new Error(handleAuthError(error));
+    return data;
   };
 
   // 소셜 로그인 (OAuth)

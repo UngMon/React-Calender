@@ -34,7 +34,7 @@ const protectedLoader = async () => {
 // 로그인이 '안 된' 사람만 보는 그룹의 로더
 const publicLoader = async () => {
   const user = await checkAuth();
-  
+
   if (user) return redirect(redirectToCalender);
 
   return null; // 통과

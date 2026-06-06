@@ -1,53 +1,50 @@
 import { create } from "zustand";
+import { User } from "@supabase/supabase-js";
 
+// 타입 정의
 interface AuthState {
   isLoading: boolean;
   isLoggedIn: boolean;
   uid: string | null;
-  displayName: string | null | undefined;
-  photoURL: string | null | undefined;
-  email: string | null | undefined;
-  // 상태를 변경하는 액션 함수들
-  login: (userData: Auth) => void;
-  logout: () => void;
-  error: string;
+  displayName: string | null;
+  photoURL: string | null;
+  email: string | null;
 }
 
-const initialState = {
-  isLoading: false,
+const initialState: AuthState = {
+  isLoading: true,
   isLoggedIn: false,
   uid: null,
   displayName: null,
   photoURL: null,
   email: null,
-  error: "",
 };
 
-export const useAuthStore = create<AuthState>((set) => ({
-  // --- 상태 (State) ---
-  ...initialState,
+// 스토어 생성
+export const useAuthStore = create<AuthState>()(() => initialState);
 
-  // --- 액션 (Actions) ---
-  login: (userData: Auth) => {
-    const { uid, displayName, photoURL, email } = userData.currentUser!;
-
-    set({
+// 인증 액션 함수.
+export const authActions = {
+  setAuth: (user: User) => {
+    useAuthStore.setState({
       isLoggedIn: true,
-      uid,
-      displayName,
-      photoURL,
-      email,
+      uid: user.id,
+      displayName:
+        user.user_metadata?.name || user.user_metadata?.full_name || null,
+      photoURL: user.user_metadata?.avatar_url || null,
+      email: user.email || null,
+      isLoading: false,
     });
   },
 
-  logout: async () => {
-    set({ isLoading: true });
-    try {
-      await signOut(auth);
-
-      set({ ...initialState });
-    } catch (error: any) {
-      set({ error: error.message, isLoading: false });
-    }
+  clearAuth: () => {
+    useAuthStore.setState({
+      ...initialState,
+      isLoading: false,
+    });
   },
-}));
+
+  setLoading: (isLoading: boolean) => {
+    useAuthStore.setState({ isLoading });
+  },
+};
