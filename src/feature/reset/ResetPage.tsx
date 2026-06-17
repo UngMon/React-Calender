@@ -9,7 +9,7 @@ const ResetPage = () => {
   // 이메일 state
   const { sendResetEmail } = useAuth();
   const { email, emailMessage, isEmail, onChangeEmail } = useAuthForm(false);
-
+  console.log(email)
   const handleResetPassword = async () => {
     if (!isEmail) {
       alert("이메일을 제대로 입력해주세요!");
@@ -26,14 +26,12 @@ const ResetPage = () => {
   };
 
   return (
-    <section className={styles["reset-area"]}>
+    <form className={styles["reset-area"]}>
       <div className={styles["reset-box"]}>
         <div
           className={styles["back-page-button"]}
           onClick={() => navigate("/")}
-        >
-          {/* <FontAwesomeIcon icon={faArrowLeft} className={styles["arrow"]} /> */}
-        </div>
+        ></div>
         <div className={styles["reset-box-title"]}>
           <span>비밀번호 초기화</span>
         </div>
@@ -52,7 +50,7 @@ const ResetPage = () => {
               placeholder="이메일"
               required
               value={email}
-              onChange={onChangeEmail}
+              onChange={(e) => onChangeEmail(e.currentTarget.value)}
             />
             <p style={{ color: isEmail ? "lightgray" : "red" }}>
               {emailMessage}
@@ -67,7 +65,7 @@ const ResetPage = () => {
           인증하기
         </button>
       </div>
-    </section>
+    </form>
   );
 };
 

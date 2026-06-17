@@ -26,6 +26,7 @@ const User = () => {
   return (
     <div className="user">
       <div className="user__image" onClick={() => setOpen(!open)}>
+        <div className="user__not-found"></div>
         <img src={photoURL || ""} alt="user" />
       </div>
       {open && (
@@ -34,14 +35,14 @@ const User = () => {
             <span className="material-symbols-outlined">close_small</span>
           </div>
           <div className="user__menu-info">
-            <div className="user-image">
+            <div className="user__menu-image">
               <img src={photoURL || ""} alt="user" width="45" />
-            </div>
-            <div className="user__menu-name">
-              <span>{displayName || ""}</span>
             </div>
             <div className="user__menu-email">
               <span>{email || ""}</span>
+            </div>
+            <div className="user__menu-name">
+              <span>{displayName || ""}</span>
             </div>
             <div className="user__menu-logout" onClick={logoutHandler}>
               <span className="material-symbols-outlined">logout</span>

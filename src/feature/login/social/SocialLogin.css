@@ -1,0 +1,36 @@
+.social-login {
+  position: relative;
+  width: 80%;
+  border-top: 1px solid lightgray;
+  margin: 40px auto 10px;
+  padding: 15px 0 10px;
+}
+
+.social-login::after {
+  content: "소셜 로그인";
+  display: block;
+  position: absolute;
+  width: 60px;
+  height: 20px;
+  line-height: 20px;
+  top: -10px;
+  left: calc(50% - 30px);
+  text-align: center;
+  font-weight: bold;
+  font-size: 0.7em;
+  z-index: 22;
+  background: rgb(252, 252, 252);
+}
+
+.social-login__icons {
+  padding: 10px 0;
+  display: flex;
+  justify-self: center;
+  align-items: center;
+  column-gap: 15px;
+}
+
+.social-login__icons img {
+  cursor: pointer;
+  border-radius: 50%;
+}

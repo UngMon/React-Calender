@@ -1,7 +1,7 @@
 import React, { useMemo } from "react";
 import { generateCalendarMatrix } from "../../../month/renderdWeeks";
 import { CalendarCell } from "../../../month/renderdWeeks";
-import { getTodayDateString } from "@/utils/getTodayDateString";
+import { getTodayDateString } from "@/utils/getTodayString";
 import { useModalStore } from "@/store/useModalStore";
 import { useTimeDateStore } from "@/store/useTimeDateStore";
 import styles from "./MiniCalendar.module.css";

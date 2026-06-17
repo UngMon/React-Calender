@@ -1,5 +1,5 @@
 import { supabase } from "@/auth/supabase";
-import { getTodayDateString } from "@/utils/getTodayDateString";
+import { getTodayDateString } from "@/utils/getTodayString";
 
 export const useAuth = () => {
   const handleAuthError = (error: any): string => {
@@ -7,7 +7,7 @@ export const useAuth = () => {
 
     switch (error.message) {
       case "Invalid login credentials":
-        return "이메일 또는 패스워드가 틀렸습니다!";
+        return "이메일 또는 비밀번호가 잘못되었습니다.";
       case "User already exists":
       case "Email already in use":
         return "이미 가입된 이메일 주소입니다.";
@@ -24,7 +24,7 @@ export const useAuth = () => {
       email,
       password,
     });
-
+    console.log(error);
     if (error) throw new Error(handleAuthError(error));
 
     return data;
@@ -46,6 +46,15 @@ export const useAuth = () => {
 
     if (error) throw new Error(handleAuthError(error));
     return data;
+  };
+
+  // 6자리 OTP 코드 검증 (회원가입용)
+  const verifySignupCode = async (email: string, token: string) => {
+    await supabase.auth.verifyOtp({
+      email,
+      token,
+      type: "signup", // 회원가입 인증이므로 'signup'으로 타입 작성
+    });
   };
 
   // 소셜 로그인 (OAuth)
@@ -82,6 +91,7 @@ export const useAuth = () => {
     signUpWithEmail,
     loginWithSocial,
     sendResetEmail,
+    verifySignupCode,
     logout,
   };
 };

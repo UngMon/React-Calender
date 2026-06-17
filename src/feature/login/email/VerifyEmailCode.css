@@ -1,0 +1,67 @@
+.verify__form {
+  margin: auto;
+  width: 80%;
+}
+
+.verify__form__title {
+  font-size: 1em;
+  font-weight: bold;
+}
+
+.verify__form__explain {
+  padding: 15px 0 20px;
+  font-size: 0.8em;
+  font-weight: 500;
+}
+
+.otp__box__container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  column-gap: 8px;
+}
+
+.otp__box__input {
+  box-sizing: border-box;
+  padding: 10px;
+  width: 35px;
+  height: 45px;
+  border-radius: 5px;
+  border: 2px solid #5b5b5b;
+  font-size: 1.2em;
+  font-weight: 600;
+}
+
+.verify__form__timer {
+  padding: 20px 0;
+  font-weight: 600;
+  font-size: 0.9em;
+  color: rgba(255, 42, 0, 0.886);
+}
+
+.verify__form__resend {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: 600;
+  font-size: 0.9em;
+  column-gap: 10px;
+}
+
+.verify__form__resend button {
+  font-weight: 500;
+  color: #333;
+
+  &:hover {
+    color: rgb(42, 42, 255);
+  }
+}
+
+.verify__form__move-prev button {
+  padding: 20px 0 0;
+  font-weight: 600;
+
+  &:hover {
+    color: rgb(42, 42, 255);
+  }
+}

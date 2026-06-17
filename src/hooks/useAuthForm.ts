@@ -1,5 +1,9 @@
 import { useState, useCallback } from "react";
 
+const EMAIL_REGEX =
+  /([\w-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([\w-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$/;
+const PASSWORD_REGEX = /^(?=.*[a-zA-Z])(?=.*[!@#$%^*+=-])(?=.*[0-9]).{8,25}$/;
+
 export const useAuthForm = (creatingUser: boolean) => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -13,11 +17,9 @@ export const useAuthForm = (creatingUser: boolean) => {
   const [emailMessage, setEmailMessage] = useState("");
   const [passwordMessage, setPasswordMessage] = useState("");
 
-  const onChangeName = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
-
-    setName(value);
-    if (value.length < 2 || value.length > 7) {
+  const onChangeName = useCallback((text: string) => {
+    setName(text);
+    if (text.length < 2 || text.length > 7) {
       setNameMessage("이름을 2글자 이상 7글자 이하로 입력해주세요.");
       setIsName(false);
     } else {
@@ -26,36 +28,24 @@ export const useAuthForm = (creatingUser: boolean) => {
     }
   }, []);
 
-  const onChangeEmail = useCallback(
-    (e: React.ChangeEvent<HTMLInputElement>) => {
-      const value = e.target.value;
-      setEmail(value);
-      const regex =
-        /([\w-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([\w-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$/;
+  const onChangeEmail = useCallback((text: string) => {
+    setEmail(text);
 
-      if (regex.test(value)) {
-        setEmailMessage("올바른 이메일 형식입니다!");
-        setIsEmail(true);
-      } else {
-        setEmailMessage("올바른 이메일을 입력하세요! ex)abc@abc.com");
-        setIsEmail(false);
-      }
-
-      if (value.trim() === "") setEmailMessage("");
-    },
-    [],
-  );
+    if (EMAIL_REGEX.test(text)) {
+      setEmailMessage("올바른 이메일 형식입니다!");
+      setIsEmail(true);
+    } else {
+      setEmailMessage("올바른 이메일을 입력하세요! ex)abc@abc.com");
+      setIsEmail(false);
+    }
+  }, []);
 
   const onChangePassword = useCallback(
-    (e: React.ChangeEvent<HTMLInputElement>) => {
-      const value = e.target.value;
-      setPassword(value);
+    (text: string) => {
+      setPassword(text);
 
       if (creatingUser) {
-        const passwordRegex =
-          /^(?=.*[a-zA-Z])(?=.*[!@#$%^*+=-])(?=.*[0-9]).{8,25}$/;
-
-        if (!passwordRegex.test(value)) {
+        if (!PASSWORD_REGEX.test(text)) {
           setPasswordMessage(
             "숫자+영문자+특수문자 조합으로 8자리 이상 입력해주세요!",
           );
@@ -65,7 +55,7 @@ export const useAuthForm = (creatingUser: boolean) => {
           setIsPassword(true);
         }
       } else {
-        if (value.trim() !== "") {
+        if (text.trim() !== "") {
           setPasswordMessage("");
           setIsPassword(true);
         } else {

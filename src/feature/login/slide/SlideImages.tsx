@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import "./StartImages.css";
+import "./SlideImages.css";
 
 const images = [
   {
@@ -10,7 +10,8 @@ const images = [
   { url: "", description: "" },
 ];
 
-const StartImages = () => {
+const SlideImages = () => {
+
   const [count, setCount] = useState<number>(0);
   const imageRef = useRef<{ [key: string]: HTMLDivElement | null }>({});
 
@@ -47,4 +48,4 @@ const StartImages = () => {
   );
 };
 
-export default StartImages;
+export default SlideImages;

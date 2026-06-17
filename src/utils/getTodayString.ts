@@ -7,3 +7,14 @@ export const getTodayDateString = () => {
 
   return `${year}-${month}-${day}`;
 };
+
+export const getYMDString = (condition: string): string => {
+  const today = new Date();
+  const year = today.getFullYear();
+  const month = String(today.getMonth() + 1).padStart(0, "2");
+  const day = String(today.getDate()).padStart(2, "0");
+
+  if (condition === "YM") return `${year}-${month}`;
+  else if (condition === "YMD") return `${year}-${month}-${day}`;
+  else return "";
+};

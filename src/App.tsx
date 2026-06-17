@@ -1,7 +1,7 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { checkAuth } from "./auth/authHelper";
-import { getTodayDateString } from "./utils/getTodayDateString";
+import { getTodayDateString } from "./utils/getTodayString";
 import {
   createBrowserRouter,
   Navigate,
@@ -11,6 +11,7 @@ import {
 } from "react-router-dom";
 import LoginPage from "./page/login/LoginPage";
 import CalenderPage from "./page/calender/CalenderPage";
+import ResetPage from "./feature/reset/ResetPage";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -51,6 +52,7 @@ const router = createBrowserRouter([
     children: [
       { path: "/", element: <Navigate to="/login" replace /> }, // 기본 진입 시 로그인으로
       { path: "/login", element: <LoginPage /> },
+      { path: "/reset-password", element: <ResetPage /> },
       // 추후 /signup, /forgot-password 등이 여기에 추가
     ],
   },
@@ -64,7 +66,7 @@ const router = createBrowserRouter([
     loader: protectedLoader,
     children: [
       {
-        path: "calender/:view/:date",
+        path: "calendar/:view/:date",
         element: <CalenderPage />,
       },
     ],

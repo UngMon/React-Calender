@@ -26,6 +26,8 @@ export const useAuthStore = create<AuthState>()(() => initialState);
 // 인증 액션 함수.
 export const authActions = {
   setAuth: (user: User) => {
+    console.log(user)
+
     useAuthStore.setState({
       isLoggedIn: true,
       uid: user.id,
