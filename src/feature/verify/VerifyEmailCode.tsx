@@ -1,19 +1,18 @@
-import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { ChangeEvent, useEffect, useRef, useState } from "react";
-import { getYMDString } from "@/utils/getTodayString";
-import { supabase } from "@/auth/supabase";
 import "./VerifyEmailCode.css";
 
 interface Props {
+  type: "signup" | "recovery";
   email: string; // 인증 코드를 보낸 이메일 주소 (화면 표시용)
+  setStep?: (text: "인증단계" | "초기화단계") => void;
   onGoBack: () => void; // 이전(회원가입 폼)으로 돌아가는 함수
 }
 
-const VerifyEmailCode = ({ email, onGoBack }: Props) => {
-  const navigate = useNavigate();
-  const { verifySignupCode } = useAuth();
+const VerifyEmailCode = ({ type, email, setStep, onGoBack }: Props) => {
+  const { verifyOtp, sendResetPWOtp, resendOtp } = useAuth();
 
+  const [errorCode, setErrorCode] = useState<string>("");
   const [codes, setCodes] = useState<string[]>(new Array(6).fill(""));
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
 
@@ -45,7 +44,7 @@ const VerifyEmailCode = ({ email, onGoBack }: Props) => {
     return `${minutes}:${seconds}`;
   };
 
-  // =================입력 이벤트 핸들러======================
+  // =================입력 이벤트 핸들러====================
   const handleChange = (e: ChangeEvent<HTMLInputElement>, index: number) => {
     const value = e.target.value.replace(/[^0-9]/g, ""); // 숫자만 허용
     const newCodes = [...codes];
@@ -65,6 +64,15 @@ const VerifyEmailCode = ({ email, onGoBack }: Props) => {
     }
   };
 
+  // ============== 텍스트 포커스 함수 ================
+  const focusAndSelect = (input: HTMLInputElement | null) => {
+    if (!input) return;
+
+    input.focus();
+    // settimeout을 사용함으로써 렌더링 사이클과 겹치지 않게 하기 위함
+    setTimeout(() => input.select(), 0);
+  };
+
   // ==============백스페이스/화살표 키 핸들러==================
   const handleKeyDown = (
     e: React.KeyboardEvent<HTMLInputElement>,
@@ -72,26 +80,28 @@ const VerifyEmailCode = ({ email, onGoBack }: Props) => {
   ) => {
     if (timeLeft === 0) return;
 
-    if (e.key === "Backspace" && index > 0) {
+    if (e.key === "Backspace") {
       e.preventDefault(); // 기본 백스페이스 동작 방지
       const newCodes = [...codes];
 
       if (codes[index] !== "") {
+        // 현재 칸에 숫자가 있으면 지우기
         newCodes[index] = "";
         setCodes(newCodes);
+      } else if (index > 0) {
+        // 현재 칸이 비어있으면 왼쪽 칸으로 이동하면서 그 칸 지우기
+        newCodes[index - 1] = "";
+        setCodes(newCodes);
+        focusAndSelect(inputRefs.current[index - 1]);
       }
-
-      if (index > 0) inputRefs.current[index - 1]?.focus();
     } else if (e.key === "ArrowLeft" && index > 0) {
-      inputRefs.current[index - 1]?.focus();
+      focusAndSelect(inputRefs.current[index - 1]);
     } else if (e.key === "ArrowRight" && index < 5) {
-      inputRefs.current[index + 1]?.focus();
+      focusAndSelect(inputRefs.current[index + 1]);
     }
   };
 
-  // ====================================================
-  // 복사 붙여넣기(Paste) 핸들러
-  // ====================================================
+  // =================복사 붙여넣기(Paste)===================
   const handlePaste = (
     e: React.ClipboardEvent<HTMLInputElement>,
     currentIndex: number,
@@ -100,7 +110,6 @@ const VerifyEmailCode = ({ email, onGoBack }: Props) => {
     if (timeLeft === 0) return;
 
     const pasteData = e.clipboardData.getData("text").replace(/[^0-9]/g, "");
-    console.log(e.clipboardData, pasteData);
     if (!pasteData) return;
 
     const pasteArray: string[] = pasteData.split("");
@@ -115,9 +124,6 @@ const VerifyEmailCode = ({ email, onGoBack }: Props) => {
       if (targetIndex > 5) break;
 
       newCodes[targetIndex] = pasteArray[i];
-      if (inputRefs.current[targetIndex]) {
-        inputRefs.current[targetIndex]!.value = pasteArray[i];
-      }
 
       lastUpdatedIndex = targetIndex;
     }
@@ -136,40 +142,66 @@ const VerifyEmailCode = ({ email, onGoBack }: Props) => {
 
   // ==================제출 처리 함수=======================
   const submitVerification = async (finalCode: string) => {
+    if (timeLeft <= 0) return;
+
     try {
-      await verifySignupCode(email, finalCode);
-      alert("회원가입이 완료되었습니다! 환영합니다");
+      await verifyOtp(email, finalCode, type);
+
+      if (type === "recovery" && setStep) setStep("초기화단계");
       onGoBack();
-      navigate(`/calendar/month/${getYMDString("YM")}`);
     } catch (error: any) {
-      alert(`인증 실패: ${error.message}`);
       // 실패 시 박스 초기화
       setCodes(new Array(6).fill(""));
+      setErrorCode(error.message);
       inputRefs.current[0]?.focus();
     }
   };
 
-  // 다시 보내기 함수
+  // 인증코드 다시 보내기
   const handleResend = async () => {
     try {
-      await supabase.auth.resend({ type: "signup", email });
+      if (type === "recovery") {
+        // 비밀번호 초기화
+        await sendResetPWOtp(email);
+      } else {
+        // 회원가입
+        await resendOtp(email);
+      }
+
       alert("인증 코드가 재발송되었습니다. 이메일을 다시 확인해주세요.");
       setTimeLeft(180); // 타이머 3분으로 리셋
       setCodes(new Array(6).fill("")); // 입력창 초기화
+      setErrorCode("");
       inputRefs.current[0]?.focus();
     } catch (error: any) {
       alert(`인증 코드 재발송 실패: ${error.message}`);
+      setErrorCode(error.message);
     }
   };
 
   return (
     <form className="verify__form" onSubmit={(e) => e.preventDefault()}>
-      <div className="verify__form__title">
-        <span>이메일 인증</span>
+      <button
+        className="verify__form__prev-btn"
+        type="button"
+        onClick={onGoBack}
+      >
+        <span className="material-symbols-outlined">arrow_back</span>
+      </button>
+
+      <div className="verify__form__logo">
+        <img src="./images/Email.png" alt="email" width={50} height={50} />
       </div>
       <div className="verify__form__explain">
+        {type === "recovery" && (
+          <p className="warning">⚠️ 입력하신 이메일이 가입한 계정일 때,</p>
+        )}
+        {type === "recovery" && (
+          <p className="warning">비밀번호 재설정 코드가 발송됩니다.</p>
+        )}
+        <br />
         <p>
-          방금 <strong>{email}</strong>로 전송된
+          <strong>{email}</strong>로 전송된
         </p>
         <p>6자리 인증 코드를 입력해 주세요.</p>
       </div>
@@ -182,7 +214,7 @@ const VerifyEmailCode = ({ email, onGoBack }: Props) => {
             id={`otp-code-${index}`}
             name={`otp-code-${index}`}
             inputMode="numeric" // 모바일에서 숫자 키패드 띄우기
-            maxLength={1} // 한 글자만 입력하기
+            // maxLength={1} // 한 글자만 입력하기
             value={code}
             ref={(el) => {
               inputRefs.current[index] = el;
@@ -194,23 +226,22 @@ const VerifyEmailCode = ({ email, onGoBack }: Props) => {
           />
         ))}
       </div>
+
+      {/* 에러 메세지*/}
+      {errorCode && <p className="verify__form__error">{errorCode}</p>}
+
       {/* 타이머 텍스트 렌더링 */}
       <div className="verify__form__timer">
         {timeLeft > 0 ? formatTime(timeLeft) : "입력 시간이 초과되었습니다."}
       </div>
       <div className="verify__form__resend">
         <span>인증 코드를 받지 못하셨나요?</span>
-        <button type="button" onClick={handleResend}>
-          다시 보내기
-        </button>
-      </div>
-      <div className="verify__form__move-prev">
         <button
-          className="verify__form__toggle"
           type="button"
-          onClick={onGoBack}
+          onClick={handleResend}
+          disabled={timeLeft > 120 ? true : false}
         >
-          <span>이전으로 돌아가기</span>
+          다시 보내기
         </button>
       </div>
     </form>

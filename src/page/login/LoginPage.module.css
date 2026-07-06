@@ -1,7 +1,6 @@
 .login-section {
   margin: auto;
   display: flex;
-  justify-content: space-evenly;
   align-items: center;
   width: 100%;
   max-width: 1200px;
@@ -9,23 +8,35 @@
   height: 100%;
 }
 
+.login-container {
+  margin: auto;
+  width: 350px;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 .login__box {
+  position: relative;
   box-sizing: border-box;
-  width: clamp(320px, 80%, 350px);;
+  width: clamp(320px, 80%, 350px);
   min-height: 400px;
-  border: 1px solid rgb(146, 146, 146);
+  /* border: 1px solid rgb(146, 146, 146);
   background-color: rgb(252, 252, 252);
-  border-radius: 16px;
+  border-radius: 16px; */
   text-align: center;
 }
 
 .logo {
   width: 100%;
   line-height: 60px;
+  padding-bottom: 10px;
 }
 
 .logo span {
+  font-size: 20px;
   font-family: "Pacifico", cursive;
+  font-weight: 500;
+  font-style: normal;
 }
-
-

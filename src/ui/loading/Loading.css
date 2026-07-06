@@ -1,26 +1,17 @@
-.centered {
-  font-size: 3rem;
-}
-
-.lds-dual-ring {
-  display: inline-block;
-  width: 5rem;
-  height: 5rem;
-}
-
-.lds-dual-ring:after {
-  content: " ";
-  display: block;
-  width: 4rem;
-  height: 4rem;
-  margin: 0.5rem;
+.loader {
+  --color-1: #545bd2;
+  --size: 1px;
+  width: calc(24 * var(--size));
+  height: calc(24 * var(--size));
+  border: calc(5 * var(--size)) solid var(--color-1);
+  border-bottom-color: transparent;
   border-radius: 50%;
-  border: 6px solid #fff;
-  border-color: #a3a3a3 transparent #a3a3a3 transparent;
-  animation: lds-dual-ring 1.2s linear infinite;
+  display: inline-block;
+  box-sizing: border-box;
+  animation: rotation 1s linear infinite;
 }
 
-@keyframes lds-dual-ring {
+@keyframes rotation {
   0% {
     transform: rotate(0deg);
   }

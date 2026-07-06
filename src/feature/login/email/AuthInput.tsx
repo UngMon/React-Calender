@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import "./AuthInput.css";
 
 interface AuthInputProps {
   id: string;
@@ -8,7 +9,7 @@ interface AuthInputProps {
   onChange: (text: string) => void;
   message: string;
   isValid: boolean;
-  creatingUser: boolean;
+  category: "signin" | "signup" | 'recovery';
 }
 
 const AuthInput = ({
@@ -19,7 +20,7 @@ const AuthInput = ({
   onChange,
   message,
   isValid,
-  creatingUser,
+  category,
 }: AuthInputProps) => {
   // 인풋이 현재 포커스 되어있는지 여부를 추적하는 상태
   const [isFocused, setIsFocused] = useState(false);
@@ -30,7 +31,7 @@ const AuthInput = ({
 
   useEffect(() => {
     setIsTouched(false);
-  }, [creatingUser])
+  }, [category]);
 
   return (
     <div
@@ -57,7 +58,7 @@ const AuthInput = ({
           className="auth-input"
         />
       </div>
-      <p style={{ color: isValid ? "rgb(154, 154, 154)" : "red" }}>{message}</p>
+      <p style={{ color: isValid ? "green" : "red" }}>{message}</p>
     </div>
   );
 };

@@ -4,7 +4,7 @@ const EMAIL_REGEX =
   /([\w-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([\w-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$/;
 const PASSWORD_REGEX = /^(?=.*[a-zA-Z])(?=.*[!@#$%^*+=-])(?=.*[0-9]).{8,25}$/;
 
-export const useAuthForm = (creatingUser: boolean) => {
+export const useAuthForm = (type: "signin" | "signup" | "recovery") => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -19,8 +19,8 @@ export const useAuthForm = (creatingUser: boolean) => {
 
   const onChangeName = useCallback((text: string) => {
     setName(text);
-    if (text.length < 2 || text.length > 7) {
-      setNameMessage("이름을 2글자 이상 7글자 이하로 입력해주세요.");
+    if (text.length < 2 || text.length > 8) {
+      setNameMessage("이름을 2글자 이상 8글자 이하로 입력해주세요.");
       setIsName(false);
     } else {
       setNameMessage("올바른 이름 형식입니다 ");
@@ -30,7 +30,6 @@ export const useAuthForm = (creatingUser: boolean) => {
 
   const onChangeEmail = useCallback((text: string) => {
     setEmail(text);
-
     if (EMAIL_REGEX.test(text)) {
       setEmailMessage("올바른 이메일 형식입니다!");
       setIsEmail(true);
@@ -43,8 +42,20 @@ export const useAuthForm = (creatingUser: boolean) => {
   const onChangePassword = useCallback(
     (text: string) => {
       setPassword(text);
+      console.log(type)
+      // signin, signup, recovery
 
-      if (creatingUser) {
+      if (type === "signin") {
+        // 로그인
+        if (text.trim() !== "") {
+          setPasswordMessage("");
+          setIsPassword(true);
+        } else {
+          setPasswordMessage("패스워드를 입력해주세요!");
+          setIsPassword(false);
+        }
+      } else {
+        // 비밀번호 초기화 or 회원가입
         if (!PASSWORD_REGEX.test(text)) {
           setPasswordMessage(
             "숫자+영문자+특수문자 조합으로 8자리 이상 입력해주세요!",
@@ -54,17 +65,9 @@ export const useAuthForm = (creatingUser: boolean) => {
           setPasswordMessage("안전한 비밀번호에요!");
           setIsPassword(true);
         }
-      } else {
-        if (text.trim() !== "") {
-          setPasswordMessage("");
-          setIsPassword(true);
-        } else {
-          setPasswordMessage("패스워드를 입력해주세요!");
-          setIsPassword(false);
-        }
       }
     },
-    [creatingUser],
+    [type],
   );
 
   const clearForm = useCallback(() => {
@@ -79,9 +82,8 @@ export const useAuthForm = (creatingUser: boolean) => {
     setIsPassword(false);
   }, []);
 
-  const isFormValid = creatingUser
-    ? isName && isEmail && isPassword
-    : isEmail && isPassword;
+  const isFormValid =
+    type === "signup" ? isName && isEmail && isPassword : isEmail && isPassword;
 
   return {
     name,

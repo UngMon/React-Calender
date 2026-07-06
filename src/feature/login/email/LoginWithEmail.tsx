@@ -4,7 +4,8 @@ import { useAuth } from "@/hooks/useAuth";
 import { useNavigate } from "react-router-dom";
 import { getYMDString } from "@/utils/getTodayString";
 import AuthInput from "./AuthInput";
-import VerifyEmailCode from "./VerifyEmailCode";
+import VerifyEmailCode from "../../verify/VerifyEmailCode";
+import Loading from "@/ui/loading/Loading";
 import "./LoginWithEmail.css";
 
 interface Props {}
@@ -13,7 +14,8 @@ const LoginWithEmail = () => {
   const navigate = useNavigate();
   const { loginWithEmail, signUpWithEmail } = useAuth();
 
-  const [creatingUser, setCreatingUser] = useState<boolean>(false); // 회원 가입 유무
+  const [loading, setLoading] = useState<boolean>(false);
+  const [category, setCategory] = useState<"signin" | "signup">("signin"); // 회원 가입 유무
   const [isVerifying, setIsVerifying] = useState<boolean>(false); // 인증 코드 UI 전환
   const [errorMessage, setErrorMessage] = useState<string>("");
 
@@ -32,22 +34,23 @@ const LoginWithEmail = () => {
     onChangePassword,
     clearForm,
     isName,
-  } = useAuthForm(creatingUser);
+  } = useAuthForm(category);
 
   useEffect(() => {
     clearForm();
     setIsVerifying(false);
-    setErrorMessage('');
-  }, [creatingUser, clearForm]);
+    setErrorMessage("");
+  }, [category, clearForm]);
 
   if (isVerifying) {
     return (
       <VerifyEmailCode
+        type="signup"
         email={email}
         onGoBack={() => {
           clearForm();
           setIsVerifying(false);
-          setCreatingUser(false);
+          setCategory("signin");
         }}
       />
     );
@@ -59,9 +62,10 @@ const LoginWithEmail = () => {
     if (!isFormValid) return;
 
     try {
-      if (creatingUser) {
-        const data = await signUpWithEmail(email, password, name);
-        console.log(data);
+      setLoading(true);
+
+      if (category === "signup") {
+        await signUpWithEmail(email, password, name);
         setIsVerifying(true); // 성공 시, 인증 코드 입력 UI로 전환
       } else {
         await loginWithEmail(email, password);
@@ -70,15 +74,21 @@ const LoginWithEmail = () => {
     } catch (error: any) {
       console.log("Error 발생", error);
       setErrorMessage(error.message);
+    } finally {
+      setLoading(false);
     }
+  };
+
+  const handleToggleCategory = () => {
+    setCategory(category === "signin" ? "signup" : "signin");
   };
 
   return (
     <form className="login__form" onSubmit={handleSubmit}>
       <div className="login__form-title">
-        <span>{creatingUser ? "회원 가입" : "이메일 로그인"}</span>
+        <span>{category === "signup" ? "회원 가입" : "이메일 로그인"}</span>
       </div>
-      {creatingUser && (
+      {category === "signup" && (
         <AuthInput
           id="name"
           label="이름"
@@ -87,7 +97,7 @@ const LoginWithEmail = () => {
           onChange={onChangeName}
           message={nameMessage}
           isValid={isName}
-          creatingUser={creatingUser}
+          category={category}
         />
       )}
       <AuthInput
@@ -98,7 +108,7 @@ const LoginWithEmail = () => {
         onChange={onChangeEmail}
         message={emailMessage}
         isValid={isEmail}
-        creatingUser={creatingUser}
+        category={category}
       />
       <AuthInput
         id="password"
@@ -108,16 +118,16 @@ const LoginWithEmail = () => {
         onChange={onChangePassword}
         message={passwordMessage}
         isValid={isPassword}
-        creatingUser={creatingUser}
+        category={category}
       />
       {/* 로그인 or 가입 전환 */}
       <div className="login__form__btn-box">
         <button
           className="login__form-toggle"
           type="button"
-          onClick={() => setCreatingUser((prevState) => !prevState)}
+          onClick={handleToggleCategory}
         >
-          <span>{creatingUser ? "이메일 로그인" : "회원가입"}</span>
+          <span>{category === "signup" ? "이메일 로그인" : "회원가입"}</span>
         </button>
         <button
           className="login__form__find-pw"
@@ -128,9 +138,13 @@ const LoginWithEmail = () => {
         </button>
       </div>
       {errorMessage && <p className="login__form__error">{errorMessage}</p>}
-      <button className="login__form-submit" type="submit">
-        {creatingUser ? "계정 생성" : "로그인"}
-      </button>
+      {loading ? (
+        <Loading />
+      ) : (
+        <button className="login__form-submit" type="submit">
+          {category === "signup" ? "계정 생성" : "로그인"}
+        </button>
+      )}
     </form>
   );
 };

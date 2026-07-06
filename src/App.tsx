@@ -11,7 +11,7 @@ import {
 } from "react-router-dom";
 import LoginPage from "./page/login/LoginPage";
 import CalenderPage from "./page/calender/CalenderPage";
-import ResetPage from "./feature/reset/ResetPage";
+import ResetPage from "./page/reset/ResetPage";
 
 const queryClient = new QueryClient({
   defaultOptions: {

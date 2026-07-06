@@ -11,10 +11,9 @@ const images = [
 ];
 
 const SlideImages = () => {
-
   const [count, setCount] = useState<number>(0);
-  const imageRef = useRef<{ [key: string]: HTMLDivElement | null }>({});
-
+  const imageRef = useRef<Record<string, HTMLDivElement | null>>({});
+  
   useEffect(() => {
     setTimeout(() => {
       const prevIndex = count === 0 ? images.length - 1 : count - 1;
@@ -35,7 +34,9 @@ const SlideImages = () => {
         <div
           key={index}
           className="image"
-          // ref={(el) => (imageRef.current![index] = el)}
+          ref={(el) => {
+            imageRef.current![index] = el;
+          }}
           style={{
             zIndex: index === 0 ? "1" : index === 1 ? "5" : "0",
             opacity: index === 0 ? "1" : index === 1 ? "1" : 0,
