@@ -1,7 +1,10 @@
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+import { useEffect } from "react";
 import { checkAuth } from "./auth/authHelper";
+import { supabase } from "./auth/supabase";
+import { authActions } from "./store/useAuthStore";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { getTodayDateString } from "./utils/getTodayString";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import {
   createBrowserRouter,
   Navigate,
@@ -21,7 +24,7 @@ const queryClient = new QueryClient({
   },
 });
 
-const redirectToCalender = `/calender/month/${getTodayDateString()}`;
+const redirectToCalender = `/calendar/month/${getTodayDateString()}`;
 
 // 로그인이 '필요한' 그룹의 로더 (없으면 로그인으로 쫓아냄)
 const protectedLoader = async () => {
@@ -74,6 +77,27 @@ const router = createBrowserRouter([
 ]);
 
 function App() {
+  useEffect(() => {
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((event, session) => {
+      console.log("인증상태 변경", event);
+
+      if (session?.user) {
+        // 유저 정보가 있다면 zustand 상태 업데이트
+        authActions.setAuth(session.user);
+      } else {
+        // 로그아웃 혹은 세션 만료 시 zustand 상태 초기화
+        authActions.clearAuth();
+      }
+    });
+
+    // 컴포넌트 언마운트 시 리스너 구독 해제
+    return () => {
+      subscription.unsubscribe();
+    };
+  }, []);
+
   return (
     <QueryClientProvider client={queryClient}>
       <RouterProvider router={router} />

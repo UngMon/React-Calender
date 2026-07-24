@@ -5,21 +5,24 @@ import Search from "./search/Search";
 import ViewMode from "./viewmode/ViewMode";
 import User from "./user/User";
 import Today from "./today/Today";
+import { useMediaQuery } from "@/hooks/useMediaQuery";
 import "./Header.css";
 
 const Header = () => {
+  const isDesktop = useMediaQuery("(min-width: 800px)");
+
   return (
     <header className="header">
-      <div className="header__box">
-        <Menu />
+      <div className="header__box header__left">
+        {!isDesktop && <Menu />}
         <Logo />
-        <CalendarSwitcher />
       </div>
-      <div className="header__box">
+      <CalendarSwitcher />
+      <div className="header__box header__right">
         <Search />
-        <ViewMode />
+        {isDesktop && <ViewMode />}
         <Today />
-        <User />
+        {isDesktop && <User />}
       </div>
     </header>
   );

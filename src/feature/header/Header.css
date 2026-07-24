@@ -3,236 +3,31 @@
   padding: 0 20px;
   width: 100%;
   height: 60px;
-  display: flex;
-  justify-content: space-between;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
   align-items: center;
 }
 
-.header__box{
+.header__box {
   display: flex;
   align-items: center;
-  column-gap: 10px;
+  column-gap: 15px;
 }
 
-@media (min-width: 700px) {
+.header__left {
+  justify-self: start;
+}
+
+.header-center {
+  justify-self: center; /* 스위처는 중앙으로 */
+}
+
+.header__right {
+  justify-self: right;
+}
+
+@media (min-width: 800px) {
   .header {
-    height: 80px;
+    height: 70px;
   }
 }
-
-/* .header {
-  position: fixed;
-  z-index: 15;
-  top: 0;
-  left: 1.5%;
-  width: 97%;
-  min-width: 310px;
-  padding: 10px 0;
-  font-size: 16px;
-}
-
-.header-box {
-  box-sizing: border-box;
-  height: 45px;
-  padding: 0 20px;
-  display: flex;
-  align-items: center;
-
-  a {
-    color: black;
-    text-decoration: none;
-  }
-}
-
-.menu-icon {
-  display: none;
-  width: 20px;
-  height: 100%;
-  line-height: 46px;
-}
-
-.menu-icon svg {
-  width: 20px;
-}
-
-.header-title span {
-  font-family: "Pacifico", "Tourney", sans-serif;
-  font-size: 18px;
-}
-
-.header-user-info {
-  position: absolute;
-  right: 15px;
-  padding: 5px;
-  width: 34px;
-  height: 34px;
-  text-align: center;
-}
-
-.user-info-circle {
-  width: 100%;
-  height: 100%;
-  font-size: 0.8em;
-  font-weight: bold;
-  line-height: 35px;
-  color: rgb(240, 240, 240);
-  border-radius: 50%;
-  background-color: blueviolet;
-  position: relative;
-}
-
-.header-user-info:hover {
-  cursor: pointer;
-}
-
-.search {
-  position: absolute;
-  top: 14px;
-  right: 60px;
-}
-
-.search-b {
-  display: flex;
-  align-items: center;
-  margin-right: 20px;
-}
-
-.search-b div {
-  width: 40px;
-  text-align: center;
-}
-
-.search-b button {
-  width: 40px;
-  height: 40px;
-  font-size: 20px;
-}
-
-.search-b button:hover {
-  cursor: pointer;
-}
-
-.search-b span {
-  font-size: 18px;
-  height: 40px;
-  font-weight: 500;
-  letter-spacing: 1px;
-}
-
-.search-form {
-  position: relative;
-  min-width: 190px;
-  width: 70%;
-  max-width: 650px;
-}
-
-.search-form button {
-  position: absolute;
-  left: 0px;
-  top: 0px;
-  width: 40px;
-  height: 40px;
-  font-size: 17px;
-  border-radius: 5px;
-}
-
-.search-form button:hover {
-  background-color: rgba(240, 240, 240, 0.8);
-}
-
-.search-form input {
-  box-sizing: border-box;
-  padding: 5px 10px 5px 42px;
-  height: 40px;
-  width: 95%;
-  border: 1px solid black;
-  border-radius: 5px;
-  box-shadow: 4px 4px 0px rgba(60, 64, 67, 0.3);
-  font-size: 16px;
-}
-
-.search button {
-  width: 40px;
-  height: 40px;
-  font-size: 20px;
-}
-
-.search button {
-  cursor: pointer;
-}
-
-.search input {
-  box-sizing: border-box;
-  padding: 2px 12px;
-  width: 80vw;
-  max-width: 600px;
-  height: 35px;
-  border: 0;
-  border-radius: 5px;
-  box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.9);
-  font-size: 16px;
-}
-
-.select-month {
-  position: absolute;
-  left: calc(50vw - 95px);
-  box-sizing: border-box;
-  width: 190px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-size: 1em;
-  font-weight: 600;
-}
-
-.select-month div {
-  width: 110px;
-  text-align: center;
-}
-
-.select-month button {
-  width: 40px;
-  height: 40px;
-  border: 0;
-  font-size: 1.2em;
-}
-
-.select-month button:hover {
-  cursor: pointer;
-  border-radius: 50%;
-  background-color: rgb(231, 231, 231);
-}
-
-@media (max-width: 500px) {
-  .header-box {
-    padding-left: 10px;
-  }
-
-  .menu-icon {
-    display: block;
-  }
-
-  .header-title {
-    display: none;
-  }
-
-  .search-form {
-    width: 100%;
-  }
-
-  .search {
-    right: 10px;
-  }
-
-  .search-b {
-    margin-right: 10px;
-  }
-
-  .header-user-info {
-    display: none;
-  }
-
-  .select-month button {
-    display: none;
-  }
-} */

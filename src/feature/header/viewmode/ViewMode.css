@@ -6,7 +6,7 @@
   height: 40px;
   border: 1px solid black;
   border-radius: 10px;
-  background: transparent
+  background: transparent;
 }
 
 .view-mode button {
@@ -26,10 +26,11 @@
   width: 80px;
   top: 50px;
   left: -30px;
-  background: rgb(216, 230, 255);
+  background: var(--modal_background--);
   padding: 10px 10px;
   border-radius: 10px;
   z-index: 11;
+  box-shadow: 0 0 8px 3px rgba(0, 0, 0, .1);
 }
 
 .view-mode__list li {
@@ -41,7 +42,7 @@
   align-items: center;
   border-radius: 5px;
   &:hover {
-    background: rgb(192, 212, 255);
+    background: rgb(223, 229, 255);
   }
 }
 
@@ -51,7 +52,7 @@
   text-align: center;
 }
 
-@media (min-width: 700px) {
+@media (min-width: 800px) {
   .view-mode {
     display: block;
   }

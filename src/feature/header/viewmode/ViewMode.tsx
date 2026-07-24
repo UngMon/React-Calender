@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import "./ViewMode.css";
+import { useClickOutside } from "@/hooks/useClickOutside";
 
 // 뷰 모드에 따른 한글 텍스트 매핑 객체 (선택된 뷰를 화면에 표시하기 위함)
 const VIEW_LABELS: Record<string, string> = {
@@ -12,7 +13,7 @@ const VIEW_LABELS: Record<string, string> = {
 
 const ViewMode = () => {
   const [open, setOpen] = useState<boolean>(false);
-
+  const viewModeRef = useClickOutside(() => setOpen(false));
   const { view = "month", date } = useParams<{ view: string; date: string }>();
   const navigate = useNavigate();
 
@@ -25,7 +26,7 @@ const ViewMode = () => {
   };
 
   return (
-    <div className="view-mode">
+    <div className="view-mode" ref={viewModeRef}>
       <button
         type="button"
         className="view-mode__selector"

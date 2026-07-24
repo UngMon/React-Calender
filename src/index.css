@@ -15,8 +15,11 @@
 
 html,
 body {
+  --background--: rgb(247, 248, 252);
+  --modal_background--: rgb(245, 248, 255);
+  --list_hover_color--: rgb(223, 229, 255); 
   min-width: 320px;
-  background-color: rgb(247, 248, 252);
+  background-color: var(--background--);
   /* background-color: rgb(239, 240, 254); */
 }
 
@@ -53,6 +56,12 @@ button {
 
 input:focus {
   outline: none;
+}
+
+#flex-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 /* 모달 애니메이션 */

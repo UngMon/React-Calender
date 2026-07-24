@@ -26,14 +26,15 @@ export const useAuthStore = create<AuthState>()(() => initialState);
 // 인증 액션 함수.
 export const authActions = {
   setAuth: (user: User) => {
-    console.log(user)
-
+    console.log(user);
+    console.log(user.user_metadata.avatar_url, user.user_metadata.picture);
     useAuthStore.setState({
       isLoggedIn: true,
       uid: user.id,
       displayName:
         user.user_metadata?.name || user.user_metadata?.full_name || null,
-      photoURL: user.user_metadata?.avatar_url || null,
+      photoURL:
+        user.user_metadata?.avatar_url || user.user_metadata?.picture || '/images/User.png',
       email: user.email || null,
       isLoading: false,
     });
