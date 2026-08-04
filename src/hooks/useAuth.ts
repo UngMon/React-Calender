@@ -1,5 +1,5 @@
 import { supabase } from "@/auth/supabase";
-import { getTodayDateString } from "@/utils/getTodayString";
+import { getYMDString } from "@/utils/getTodayString";
 
 export const useAuth = () => {
   const handleAuthError = (error: any): string => {
@@ -78,7 +78,7 @@ export const useAuth = () => {
     const { data, error } = await supabase.auth.signInWithOAuth({
       provider,
       options: {
-        redirectTo: `${window.location.origin}/calender/month/${getTodayDateString()}`,
+        redirectTo: `${window.location.origin}/calender/month/${getYMDString('M')}`,
       },
     });
 

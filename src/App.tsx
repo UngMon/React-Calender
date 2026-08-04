@@ -1,20 +1,28 @@
-import { useEffect } from "react";
-import { checkAuth } from "./auth/authHelper";
+import { lazy, Suspense, useEffect } from "react";
 import { supabase } from "./auth/supabase";
 import { authActions } from "./store/useAuthStore";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
-import { getTodayDateString } from "./utils/getTodayString";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import {
   createBrowserRouter,
   Navigate,
   Outlet,
-  redirect,
   RouterProvider,
 } from "react-router-dom";
-import LoginPage from "./page/login/LoginPage";
-import CalenderPage from "./page/calender/CalenderPage";
-import ResetPage from "./page/reset/ResetPage";
+import {
+  calendarLoader,
+  protectedLoader,
+  publicLoader,
+} from "./router/loaders";
+
+const LoginPage = lazy(() => import("./page/login/LoginPage"));
+const ResetPage = lazy(() => import("./page/reset/ResetPage"));
+const CalendarLayout = lazy(() => import("./page/calendar/CalednarLayout"));
+const YearCalendarPage = lazy(() => import("./page/calendar/YearCalendarPage"));
+const MonthCalendarPage = lazy(() => import("./page/calendar/MonthCalendarPage"));
+const WeekCalendarPage = lazy(() => import("./page/calendar/WeekCalendarPage"));
+const DayCalendarPage = lazy(() => import("./page/calendar/DayCalendarPage"));
+const NotFound = lazy(() => import("./page/error/NotFound"));
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -24,33 +32,13 @@ const queryClient = new QueryClient({
   },
 });
 
-const redirectToCalender = `/calendar/month/${getTodayDateString()}`;
-
-// 로그인이 '필요한' 그룹의 로더 (없으면 로그인으로 쫓아냄)
-const protectedLoader = async () => {
-  const user = await checkAuth();
-
-  if (!user) return redirect("/login");
-
-  return null; // 통과
-};
-
-// 로그인이 '안 된' 사람만 보는 그룹의 로더
-const publicLoader = async () => {
-  const user = await checkAuth();
-
-  if (user) return redirect(redirectToCalender);
-
-  return null; // 통과
-};
-
 const router = createBrowserRouter([
   // ==========================================
   // 1. Public Routes (인증 불필요 구역)
   // ==========================================
   {
     id: "public",
-    element: <Outlet />, // 껍데기
+    element: <Outlet />,
     loader: publicLoader,
     children: [
       { path: "/", element: <Navigate to="/login" replace /> }, // 기본 진입 시 로그인으로
@@ -64,16 +52,33 @@ const router = createBrowserRouter([
   // ==========================================
   {
     id: "protected",
-    path: "/",
-    element: <Outlet />,
+    path: "/calendar",
+    element: <CalendarLayout />,
     loader: protectedLoader,
     children: [
       {
-        path: "calendar/:view/:date",
-        element: <CalenderPage />,
+        path: "year/:year",
+        element: <YearCalendarPage />,
+        loader: calendarLoader,
+      },
+      {
+        path: "month/:year/:month",
+        element: <MonthCalendarPage />,
+        loader: calendarLoader,
+      },
+      {
+        path: "week/:year/:month/:day",
+        element: <WeekCalendarPage />,
+        loader: calendarLoader,
+      },
+      {
+        path: "day/:year/:month/:day",
+        element: <DayCalendarPage />,
+        loader: calendarLoader,
       },
     ],
   },
+  { path: "*", element: <NotFound /> },
 ]);
 
 function App() {

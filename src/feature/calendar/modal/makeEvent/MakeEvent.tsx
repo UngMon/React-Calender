@@ -1,10 +1,10 @@
 import { useEffect, useRef, useState } from "react";
-import { useModalStore } from "../../../../store/useModalStore";
+import { useModalStore } from "@/store/useModalStore";
+import { makePosition } from "./utils/makePosition";
 import TimeAndDateBox from "./time/TimeAndDateBox";
 import Memo from "./memo/Memo";
 import ColorBox from "./color/ColorBox";
 import "./MakeEvent.css";
-import { makePosition } from "./utils/makePosition";
 
 interface T {
   week: number; // 주

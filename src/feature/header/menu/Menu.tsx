@@ -3,6 +3,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { useNavigate } from "react-router-dom";
 import { useAuthStore } from "@/store/useAuthStore";
 import { useClickOutside } from "@/hooks/useClickOutside";
+import { getYMDString } from "@/utils/getTodayString";
 import "./Menu.css";
 
 const Menu = () => {
@@ -26,6 +27,10 @@ const Menu = () => {
       console.error(error);
       alert("로그아웃 중 오류가 발생했습니다.");
     }
+  };
+
+  const handleNavi = (view: string, type: string) => {
+    navigate(`/calendar/${view}/${getYMDString(type)}`);
   };
 
   return (
@@ -57,25 +62,25 @@ const Menu = () => {
         </div>
         <ul className="menu-box__list">
           <li>
-            <button type="button" onClick={() => navigate("/calendar/year")}>
+            <button type="button" onClick={() => handleNavi('year', 'Y')}>
               <span className="material-symbols-outlined">calendar_month</span>
               <span>년</span>
             </button>
           </li>
           <li>
-            <button type="button" onClick={() => navigate("/calednar/month/")}>
+            <button type="button" onClick={() => handleNavi('month', 'M')}>
               <span className="material-symbols-outlined">edit_calendar</span>
               <span>월</span>
             </button>
           </li>
           <li>
-            <button type="button" onClick={() => navigate("/calednar/week/")}>
+            <button type="button" onClick={() => handleNavi('week', 'W')}>
               <span className="material-symbols-outlined">date_range</span>
               <span>주</span>
             </button>
           </li>
           <li>
-            <button type="button" onClick={() => navigate("/calednar/date/")}>
+            <button type="button" onClick={() => handleNavi('day', 'D')}>
               <span className="material-symbols-outlined">event</span>
               <span>일</span>
             </button>

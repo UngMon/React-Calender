@@ -1,8 +1,7 @@
 import React, { useMemo } from "react";
 import { generateCalendarMatrix } from "../../../month/renderdWeeks";
 import { CalendarCell } from "../../../month/renderdWeeks";
-import { getTodayDateString } from "@/utils/getTodayString";
-import { useModalStore } from "@/store/useModalStore";
+import { getYMDString } from "@/utils/getTodayString";
 import { useTimeDateStore } from "@/store/useTimeDateStore";
 import styles from "./MiniCalendar.module.css";
 
@@ -11,7 +10,7 @@ interface Props {
 }
 
 const weekDays = ["일", "월", "화", "수", "목", "금", "토"];
-const today = getTodayDateString();
+const today = getYMDString("YMD");
 
 const MiniCalendar = ({ order }: Props) => {
   // 1. 기준 날짜 분해
