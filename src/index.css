@@ -18,9 +18,8 @@ body {
   --background--: rgb(247, 248, 252);
   --modal_background--: rgb(245, 248, 255);
   --list_hover_color--: rgb(223, 229, 255); 
-  min-width: 320px;
+  min-width: 375px;
   background-color: var(--background--);
-  /* background-color: rgb(239, 240, 254); */
 }
 
 body {

@@ -27,7 +27,7 @@ const MORE_BTN_HEIGHT = 20;
 const weekDays = ["일", "월", "화", "수", "목", "금", "토"];
 
 const MonthCalendar = ({ date }: Props) => {
-  console.log('Month Claendar Rendering')
+  console.log("Month Claendar Rendering");
   const setPosition = useModalStore((state) => state.setPosition);
   const setTimeAndDate = useTimeDateStore(
     (state) => state.setInitialTimeAndDate,
@@ -94,7 +94,7 @@ const MonthCalendar = ({ date }: Props) => {
               const startingEvents = eventsWithPosition.filter(
                 (e) => e.startIdx === dIdx,
               );
-
+              console.log(startingEvents)
               // 현재 셀(요일 dIdx)에 숨겨진(오버플로우 된) 일정 개수 카운트
               let overflowCount = 0;
               for (let s = MAX_VISIBLE_SLOTS; s < slots.length; s++) {
@@ -122,7 +122,6 @@ const MonthCalendar = ({ date }: Props) => {
                     className="month-calender__body-date-day"
                     style={{
                       height: `${DATE_NUMBER_HEIGHT}px`,
-                      color: cell.isCurrentMonth ? "black" : "#ccc",
                       fontWeight: isToday ? "bold" : "normal",
                     }}
                     onClick={(e) => {
@@ -132,12 +131,6 @@ const MonthCalendar = ({ date }: Props) => {
                   >
                     <span
                       style={{
-                        display: "inline-block",
-                        width: "26px",
-                        height: "26px",
-                        lineHeight: "30px",
-                        textAlign: "center",
-                        borderRadius: "50%",
                         backgroundColor: isToday ? "#1a73e8" : "transparent",
                         color: isToday ? "#fff" : "inherit",
                       }}
@@ -155,35 +148,16 @@ const MonthCalendar = ({ date }: Props) => {
                       return (
                         <div
                           key={wIdx + dIdx + idx}
-                          className={evt.color}
+                          className={`month-calender__body-date-event ${evt.color}`}
                           style={{
-                            boxSizing: "border-box",
-                            position: "absolute",
                             top: `${evt.slot * (EVENT_HEIGHT + EVENT_GAP)}px`,
-                            left: "2px",
                             width: `calc(100% * ${evt.span} - 5px)`,
                             height: `${EVENT_HEIGHT}px`,
                             lineHeight: `${EVENT_HEIGHT}px`,
-                            borderRadius: "3px",
-                            padding: "0 6px",
-                            fontSize: "12px",
-                            color: "#fff",
-                            whiteSpace: "nowrap",
-                            overflow: "hidden",
-                            textOverflow: "ellipsis",
-                            zIndex: 10,
-                            cursor: "pointer",
-                            boxShadow: "0 1px 2px rgba(0,0,0,0.1)",
                           }}
                         >
                           {evt.timeCategory === "time" && (
-                            <span
-                              style={{
-                                fontSize: "10px",
-                                marginRight: "4px",
-                                opacity: 0.9,
-                              }}
-                            >
+                            <span className="month-calender__body-date-event-time">
                               {evt.startTime}
                             </span>
                           )}
@@ -196,19 +170,7 @@ const MonthCalendar = ({ date }: Props) => {
                   {/* 숨겨진 일정이 있다면 하단에 '+ N개 더보기' 버튼 렌더링 */}
                   {overflowCount > 0 && (
                     <div
-                      style={{
-                        boxSizing: "border-box",
-                        position: "absolute",
-                        bottom: "2px",
-                        left: "0px",
-                        fontSize: "12px",
-                        color: "#1a73e8",
-                        fontWeight: "bold",
-                        cursor: "pointer",
-                        padding: "2px 4px",
-                        borderRadius: "4px",
-                        width: "100%",
-                      }}
+                      className="month-calendar__body-date-hidden"
                       onClick={() => {
                         // TODO: 클릭 시 해당 날짜의 전체 일정을 팝업이나 모달로 보여주는 로직 추가
                         alert(
