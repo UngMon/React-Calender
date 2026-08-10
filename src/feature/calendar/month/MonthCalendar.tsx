@@ -3,6 +3,8 @@ import { mockEvents } from "../mockData";
 import { generateCalendarMatrix, calculateWeekSlots } from "./renderdWeeks";
 import { useModalStore } from "@/store/useModalStore";
 import { useTimeDateStore } from "@/store/useTimeDateStore";
+import { useMonthCalendarLayout } from "./useMonthCalendarLayout";
+import { calculateWeekLayout } from "./calculateWeekLayout";
 import "./MonthCalendar.css";
 
 interface Props {
@@ -10,19 +12,9 @@ interface Props {
   // events: CalendarEvent[]; // 부모 컴포넌트로부터 받을 더미 데이터
 }
 
-interface CalendarCell {
-  year: number;
-  month: number;
-  day: number;
-  isCurrentMonth: boolean; // 이번 달 날짜인지 여부 (투명도 처리를 위함)
-  fullDateStr: string; // 식별자 및 키 값 (예: '2026-04-22')
-}
-// 사용자 뷰포트 너비에 따라 유동적으로 움직일 수 있게 event리스너가 필요할듯 싶다.
-const CELL_MIN_HEIGHT = 120;
 const EVENT_HEIGHT = 22;
 const EVENT_GAP = 2;
 const DATE_NUMBER_HEIGHT = 26;
-const MORE_BTN_HEIGHT = 20;
 
 const weekDays = ["일", "월", "화", "수", "목", "금", "토"];
 
@@ -53,9 +45,10 @@ const MonthCalendar = ({ date }: Props) => {
     [calendarMatrix, events],
   );
 
-  const MAX_VISIBLE_SLOTS = Math.floor(
-    (CELL_MIN_HEIGHT - DATE_NUMBER_HEIGHT - MORE_BTN_HEIGHT) /
-      (EVENT_HEIGHT + EVENT_GAP),
+  const { cellRef, MAX_VISIBLE_SLOTS } = useMonthCalendarLayout(
+    DATE_NUMBER_HEIGHT,
+    EVENT_HEIGHT,
+    EVENT_GAP,
   );
 
   const handlerClick = useCallback(
@@ -85,110 +78,160 @@ const MonthCalendar = ({ date }: Props) => {
         </tr>
       </thead>
       <tbody className="month-calender__body">
-        {renderedWeeks.map(({ weekRow, eventsWithPosition, slots }, wIdx) => (
-          <tr key={`week-${wIdx}`} className="month-calender__body-week">
-            {weekRow.map((cell, dIdx) => {
-              const isToday = cell.day === currentDay && cell.isCurrentMonth;
+        {renderedWeeks.map(({ weekRow, eventsWithPosition }, wIdx) => {
+          const { overflowCounts, visibleEvents, dailyLimits } =
+            calculateWeekLayout(eventsWithPosition, MAX_VISIBLE_SLOTS);
 
-              // 현재 셀(날짜)에서 시작하는 이벤트들만 렌더링 (중복 방지)
-              const startingEvents = eventsWithPosition.filter(
-                (e) => e.startIdx === dIdx,
-              );
-              console.log(startingEvents)
-              // 현재 셀(요일 dIdx)에 숨겨진(오버플로우 된) 일정 개수 카운트
-              let overflowCount = 0;
-              for (let s = MAX_VISIBLE_SLOTS; s < slots.length; s++) {
-                if (slots[s] && slots[s][dIdx] !== "") {
-                  overflowCount++;
+          return (
+            <tr key={`week-${wIdx}`} className="month-calender__body-week">
+              {weekRow.map((cell, dIdx) => {
+                const isToday = cell.day === currentDay && cell.isCurrentMonth;
+
+                // 해당 날짜(dIdx)의 최종 숨겨진 일정 개수
+                const overflowCount = overflowCounts[dIdx];
+                if (wIdx === 1) {
+                  console.log(wIdx, dIdx, dailyLimits[dIdx]);
                 }
-              }
-
-              return (
-                <td
-                  key={cell.fullDateStr}
-                  className="month-calender__body-date"
-                  style={{
-                    backgroundColor: isToday ? "#dfe5ff" : "", // 선택된 날짜 배경색
-                    color: cell.isCurrentMonth ? "#333" : "#8e8e8e", // 이전/다음달 날짜는 회색 처리
-                  }}
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    console.log(e.currentTarget.getBoundingClientRect());
-                    handlerClick(e, wIdx, dIdx, cell.fullDateStr);
-                  }}
-                >
-                  {/* 날짜 텍스트 */}
-                  <div
-                    className="month-calender__body-date-day"
+                return (
+                  <td
+                    key={cell.fullDateStr}
+                    className="month-calender__body-date"
                     style={{
-                      height: `${DATE_NUMBER_HEIGHT}px`,
-                      fontWeight: isToday ? "bold" : "normal",
+                      backgroundColor: isToday ? "#dfe5ff" : "", // 선택된 날짜 배경색
+                      color: cell.isCurrentMonth ? "#333" : "#8e8e8e", // 이전/다음달 날짜는 회색 처리
                     }}
                     onClick={(e) => {
                       e.stopPropagation();
-                      console.log("날짜 클릭");
+                      console.log(e.currentTarget.getBoundingClientRect());
+                      handlerClick(e, wIdx, dIdx, cell.fullDateStr);
                     }}
+                    ref={wIdx === 0 && dIdx === 0 ? cellRef : null}
                   >
-                    <span
-                      style={{
-                        backgroundColor: isToday ? "#1a73e8" : "transparent",
-                        color: isToday ? "#fff" : "inherit",
-                      }}
-                    >
-                      {cell.day}
-                    </span>
-                  </div>
-
-                  {/* 일정 렌더링 구역 */}
-                  <div style={{ position: "relative" }}>
-                    {startingEvents.map((evt, idx) => {
-                      // 한계선을 넘어가는 슬롯은 렌더링하지 않음 (숨김 처리)
-                      if (evt.slot >= MAX_VISIBLE_SLOTS) return null;
-
-                      return (
-                        <div
-                          key={wIdx + dIdx + idx}
-                          className={`month-calender__body-date-event ${evt.color}`}
-                          style={{
-                            top: `${evt.slot * (EVENT_HEIGHT + EVENT_GAP)}px`,
-                            width: `calc(100% * ${evt.span} - 5px)`,
-                            height: `${EVENT_HEIGHT}px`,
-                            lineHeight: `${EVENT_HEIGHT}px`,
-                          }}
-                        >
-                          {evt.timeCategory === "time" && (
-                            <span className="month-calender__body-date-event-time">
-                              {evt.startTime}
-                            </span>
-                          )}
-                          {evt.title}
-                        </div>
-                      );
-                    })}
-                  </div>
-
-                  {/* 숨겨진 일정이 있다면 하단에 '+ N개 더보기' 버튼 렌더링 */}
-                  {overflowCount > 0 && (
+                    {/* 날짜 텍스트 */}
                     <div
-                      className="month-calendar__body-date-hidden"
-                      onClick={() => {
-                        // TODO: 클릭 시 해당 날짜의 전체 일정을 팝업이나 모달로 보여주는 로직 추가
-                        alert(
-                          `${cell.fullDateStr}의 숨겨진 일정 ${overflowCount}개 보기!`,
-                        );
+                      className="month-calender__body-date-day"
+                      style={{
+                        height: `${DATE_NUMBER_HEIGHT}px`,
+                        fontWeight: isToday ? "bold" : "normal",
+                      }}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        console.log("날짜 클릭");
                       }}
                     >
-                      + {overflowCount}개 더보기
+                      <span
+                        style={{
+                          backgroundColor: isToday ? "#1a73e8" : "transparent",
+                          color: isToday ? "#fff" : "inherit",
+                        }}
+                      >
+                        {cell.day}
+                      </span>
                     </div>
-                  )}
-                </td>
-              );
-            })}
-          </tr>
-        ))}
+
+                    {/* 일정 렌더링 구역 */}
+                    <div className="month-calendar__body-date-eventarea">
+                      {visibleEvents
+                        .filter((evt) => evt.startIdx === dIdx)
+                        .map((evt, idx) => (
+                          <div
+                            key={wIdx + dIdx + idx}
+                            className={`month-calender__body-date-event ${evt.color}`}
+                            style={{
+                              top: `${evt.slot * (EVENT_HEIGHT + EVENT_GAP)}px`,
+                              width: `calc(100% * ${evt.span} - 5px)`,
+                              height: `${EVENT_HEIGHT}px`,
+                              lineHeight: `${EVENT_HEIGHT}px`,
+                            }}
+                          >
+                            {evt.timeCategory === "time" && (
+                              <span className="month-calender__body-date-event-time">
+                                {evt.startTime}
+                              </span>
+                            )}
+                            {evt.title}
+                          </div>
+                        ))}
+                    </div>
+
+                    {/* 숨겨진 일정이 있다면 하단에 '+ N개 더보기' 버튼 렌더링 */}
+                    {overflowCount > 0 && (
+                      <div
+                        className="month-calendar__body-date-hidden"
+                        style={{
+                          // 더보기 버튼은 항상 허용된 마지막 슬롯 자리에 고정
+                          top: `${(dailyLimits[dIdx] + 1) * (EVENT_HEIGHT + EVENT_GAP)}px`,
+                        }}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          alert(
+                            `${cell.fullDateStr}의 숨겨진 일정 ${overflowCount}개 보기!`,
+                          );
+                        }}
+                      >
+                        + {overflowCount}개 더보기
+                      </div>
+                    )}
+                  </td>
+                );
+              })}
+            </tr>
+          );
+        })}
       </tbody>
     </table>
   );
 };
 
 export default React.memo(MonthCalendar);
+
+// <div style={{ position: "relative" }}>
+//   {eventsWithPosition
+//     .filter(
+//       (evt) =>
+//         evt.startIdx === dIdx &&
+//         evt.slot <= MAX_VISIBLE_SLOTS,
+//     )
+//     .map((evt, idx) => {
+//       // 한계선을 넘어가는 슬롯은 렌더링하지 않음 (숨김 처리)
+//       // 현재 셀(날짜)에서 시작하는 이벤트들만 렌더링 (긴 일정 중복 방지)
+
+//       if (evt.slot < MAX_VISIBLE_SLOTS) {
+//         return (
+//           <div
+//             key={wIdx + dIdx + idx}
+//             className={`month-calender__body-date-event ${evt.color}`}
+//             style={{
+//               top: `${evt.slot * (EVENT_HEIGHT + EVENT_GAP)}px`,
+//               width: `calc(100% * ${evt.span} - 5px)`,
+//               height: `${EVENT_HEIGHT}px`,
+//               lineHeight: `${EVENT_HEIGHT}px`,
+//             }}
+//           >
+//             {evt.timeCategory === "time" && (
+//               <span className="month-calender__body-date-event-time">
+//                 {evt.startTime}
+//               </span>
+//             )}
+//             {evt.title}
+//           </div>
+//         );
+//       } else
+//         return (
+//           <div
+//             className="month-calendar__body-date-hidden"
+//             style={{
+//               top: `${(evt.slot - 1) * (EVENT_HEIGHT + EVENT_GAP)}px`,
+//             }}
+//             onClick={() => {
+//               // TODO: 클릭 시 해당 날짜의 전체 일정을 팝업이나 모달로 보여주는 로직 추가
+//               alert(
+//                 `${cell.fullDateStr}의 숨겨진 일정 ${overflowCount}개 보기!`,
+//               );
+//             }}
+//           >
+//             + {overflowCount}개 더보기
+//           </div>
+//         );
+//     })}
+// </div>

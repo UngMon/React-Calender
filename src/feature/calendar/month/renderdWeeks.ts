@@ -1,5 +1,31 @@
 import { CalendarEvent } from "../mockData";
 
+export interface EventsWithPosition {
+  startIdx: number;
+  endIdx: number;
+  span: number;
+  slot: number;
+  id: string;
+  title: string;
+  startDate: string;
+  endDate: string;
+  color:
+    | "\uD1A0\uB9C8\uD1A0"
+    | "\uC5F0\uBD84\uD64D"
+    | "\uBC14\uB098\uB098"
+    | "\uC138\uC774\uC9C0"
+    | "\uBC14\uC9C8"
+    | "\uACF5\uC791"
+    | "\uBE14\uB8E8\uBCA0\uB9AC"
+    | "\uB77C\uBCA4\uB354"
+    | "\uD3EC\uB3C4"
+    | "\uD751\uC5F0";
+  timeCategory: "allday" | "time";
+  startTime: string;
+  endTime: string;
+  createdAt: string;
+}
+
 export interface CalendarCell {
   year: number;
   month: number;
@@ -13,7 +39,6 @@ export const generateCalendarMatrix = (
   currentYear: number,
   currentMonth: number,
 ): CalendarCell[][] => {
-  console.log("🗓️ 캘린더 매트릭스 계산 중..."); // 연/월이 바뀔 때만 찍히는지 확인용
   const matrix: CalendarCell[][] = [];
 
   // 이번 달 1일의 요일 (0: 일요일 ~ 6: 토요일)
@@ -51,7 +76,7 @@ export const generateCalendarMatrix = (
     }
     matrix.push(weekRow);
   }
-  console.log(matrix)
+  console.log(matrix);
   return matrix;
 };
 
@@ -115,9 +140,15 @@ export const calculateWeekSlots = (
         assignedSlot++;
       }
 
-      return { ...evt, startIdx, span, slot: assignedSlot };
+      return {
+        ...evt,
+        startIdx,
+        endIdx: startIdx + span - 1,
+        span,
+        slot: assignedSlot,
+      };
     });
 
-    return { weekRow, eventsWithPosition, slots };
+    return { weekRow, eventsWithPosition };
   });
 };
