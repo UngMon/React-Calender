@@ -1,4 +1,4 @@
-import { CalendarEvent } from "../mockData";
+import { GhostEvent, CalendarEvent } from "@/type/events";
 
 export interface EventsWithPosition {
   startIdx: number;
@@ -6,24 +6,26 @@ export interface EventsWithPosition {
   span: number;
   slot: number;
   id: string;
+  uid?: string;
   title: string;
-  startDate: string;
-  endDate: string;
+  start_date: string;
+  end_date: string;
   color:
-    | "\uD1A0\uB9C8\uD1A0"
-    | "\uC5F0\uBD84\uD64D"
-    | "\uBC14\uB098\uB098"
-    | "\uC138\uC774\uC9C0"
-    | "\uBC14\uC9C8"
-    | "\uACF5\uC791"
-    | "\uBE14\uB8E8\uBCA0\uB9AC"
-    | "\uB77C\uBCA4\uB354"
-    | "\uD3EC\uB3C4"
-    | "\uD751\uC5F0";
-  timeCategory: "allday" | "time";
-  startTime: string;
-  endTime: string;
-  createdAt: string;
+    | "토마토"
+    | "연분홍"
+    | "바나나"
+    | "세이지"
+    | "바질"
+    | "공작"
+    | "블루베리"
+    | "라벤더"
+    | "포도"
+    | "흑연";
+  time_category: "allday" | "time";
+  start_time: string;
+  end_time: string;
+  created_at: string;
+  isGhost?: boolean;
 }
 
 export interface CalendarCell {
@@ -33,6 +35,8 @@ export interface CalendarCell {
   isCurrentMonth: boolean;
   fullDateStr: string;
 }
+
+const nowMonth = new Date().getMonth() + 1;
 
 // year나 month가 바뀔 때만 단 한 번 계산됩니다. (일(Day)이 바뀔 때는 캐싱된 배열 사용)
 export const generateCalendarMatrix = (
@@ -62,12 +66,12 @@ export const generateCalendarMatrix = (
       const cellYear = cellDate.getFullYear();
       const cellMonth = cellDate.getMonth() + 1; // 1 ~ 12
       const cellDay = cellDate.getDate();
-
+      console.log(cellMonth, currentMonth);
       weekRow.push({
         year: cellYear,
         month: cellMonth,
         day: cellDay,
-        isCurrentMonth: cellDate.getMonth() === currentMonth,
+        isCurrentMonth: cellMonth === currentMonth + 1,
         // 'YYYY-MM-DD' 형태의 고유 문자열 포맷팅
         fullDateStr: `${cellYear}-${String(cellMonth).padStart(2, "0")}-${String(cellDay).padStart(2, "0")}`,
       });
@@ -76,14 +80,13 @@ export const generateCalendarMatrix = (
     }
     matrix.push(weekRow);
   }
-  console.log(matrix);
   return matrix;
 };
 
 // --- 핵심: 주 단위 슬롯 할당 알고리즘 ---
 export const calculateWeekSlots = (
   calendarMatrix: CalendarCell[][],
-  events: CalendarEvent[],
+  events: Array<CalendarEvent | GhostEvent>,
 ) => {
   return calendarMatrix.map((weekRow) => {
     const weekStartStr = weekRow[0].fullDateStr;
@@ -91,21 +94,21 @@ export const calculateWeekSlots = (
 
     // ① 이번 주 영역에 걸쳐 있는 일정 필터링
     const weekEvents = events.filter(
-      (evt) => evt.startDate <= weekEndStr && evt.endDate >= weekStartStr,
+      (evt) => evt.start_date <= weekEndStr && evt.end_date >= weekStartStr,
     );
 
     // ② 정렬 4원칙
     const sortedEvents = [...weekEvents].sort((a, b) => {
-      if (a.startDate !== b.startDate)
-        return a.startDate.localeCompare(b.startDate);
+      if (a.start_date !== b.start_date)
+        return a.start_date.localeCompare(b.start_date);
       const aLen =
-        new Date(a.endDate).getTime() - new Date(a.startDate).getTime();
+        new Date(a.end_date).getTime() - new Date(a.start_date).getTime();
       const bLen =
-        new Date(b.endDate).getTime() - new Date(b.startDate).getTime();
+        new Date(b.end_date).getTime() - new Date(b.start_date).getTime();
       if (aLen !== bLen) return bLen - aLen; // 긴 일정 우선
-      if (a.timeCategory !== b.timeCategory)
-        return a.timeCategory === "allday" ? -1 : 1;
-      return (a.startTime || "").localeCompare(b.startTime || "");
+      if (a.time_category !== b.time_category)
+        return a.time_category === "allday" ? -1 : 1;
+      return (a.start_time || "").localeCompare(b.start_time || "");
     });
 
     // ③ 그리디 슬롯 할당
@@ -115,12 +118,12 @@ export const calculateWeekSlots = (
       // 이 일정이 이번 주 내에서 시작하는 요일과 끝나는 요일 계산 (0~6)
       const startIdx = Math.max(
         0,
-        weekRow.findIndex((c) => c.fullDateStr === evt.startDate),
+        weekRow.findIndex((c) => c.fullDateStr === evt.start_date),
       );
       const endIdx =
-        evt.endDate > weekEndStr
+        evt.end_date > weekEndStr
           ? 6
-          : weekRow.findIndex((c) => c.fullDateStr === evt.endDate);
+          : weekRow.findIndex((c) => c.fullDateStr === evt.end_date);
       const span = endIdx - startIdx + 1;
 
       // 들어갈 수 있는 가장 낮은 층수 찾기

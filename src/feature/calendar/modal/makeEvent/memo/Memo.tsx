@@ -1,9 +1,13 @@
 import { useEffect, useRef, useState } from "react";
 import "./Memo.css";
 
-const Memo = () => {
+interface Props {
+  textRef: React.RefObject<HTMLTextAreaElement | null>;
+}
+
+const Memo = ({ textRef }: Props) => {
   const [text, setText] = useState<string>("");
-  const textRef = useRef<HTMLTextAreaElement>(null);
+  // const textRef = useRef<HTMLTextAreaElement>(null);
 
   // 💡 높이를 자동으로 맞추는 로직을 함수로 분리
   const adjustHeight = () => {
@@ -15,7 +19,7 @@ const Memo = () => {
 
   useEffect(() => {
     adjustHeight();
-  }, [])
+  }, []);
 
   const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setText(e.target.value);

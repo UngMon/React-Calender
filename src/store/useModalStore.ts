@@ -3,24 +3,22 @@ import { create } from "zustand";
 interface ModalBasicState {
   week: number;
   day: number;
-  width: number;
-  height: number;
   open: boolean;
+  // width: number;
+  // height: number;
 }
 
 interface ModalState extends ModalBasicState {
-  setPosition: (
-    value: Pick<ModalBasicState, "week" | "day" | "width" | "height">,
-  ) => void;
+  setPosition: (value: Pick<ModalBasicState, "week" | "day">) => void;
   clearPosition: () => void;
 }
 
 const initialState = {
   week: -1,
   day: -1,
-  width: 0,
-  height: 0,
   open: false,
+  // width: 0,
+  // height: 0,
 };
 
 export const useModalStore = create<ModalState>((set) => ({
@@ -29,13 +27,11 @@ export const useModalStore = create<ModalState>((set) => ({
   // --- 액션 (Actions) ---
   setPosition: (data) =>
     set(() => {
-      const { week, day, width, height } = data;
+      const { week, day } = data;
 
       return {
         week,
         day,
-        width,
-        height,
         open: true,
       };
     }),

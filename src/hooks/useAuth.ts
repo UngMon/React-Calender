@@ -119,7 +119,7 @@ export const useAuth = () => {
     return data;
   };
 
-  // 🟢 로그아웃 기능 추가
+  // 로그아웃 기능 추가
   const logout = async () => {
     const { error } = await supabase.auth.signOut();
 

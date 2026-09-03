@@ -1,7 +1,16 @@
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 10;
+  background: transparent;
+}
+
 .make-event {
   position: fixed;
   top: 0;
   left: 0;
+  right: 0;
+  bottom: 0;
   box-sizing: border-box;
   width: 100%;
   min-width: 375px;
@@ -37,7 +46,7 @@
   padding: 0 25px;
   height: 100%;
   overflow-y: scroll;
-  overflow-x:hidden;
+  overflow-x: hidden;
   scrollbar-width: thin;
   scrollbar-color: #cacaca transparent;
   z-index: 19;
@@ -105,8 +114,6 @@
 
 @media (min-width: 750px) {
   .make-event {
-    top: calc(50% - 250px);
-    left: calc(50% - 225px);
     box-sizing: border-box;
     width: 450px;
     height: auto;
@@ -125,6 +132,13 @@
 
   .make-form-wrapper-two {
     height: clamp(100px, 50vh, 550px);
+  }
+}
+
+@media (min-width: 750px) and (max-width: 1023px) {
+  .make-event {
+    top: calc(50% - 250px) !important;
+    left: calc(50% - 225px) !important;
   }
 }
 

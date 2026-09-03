@@ -19,7 +19,9 @@ const LoginPage = lazy(() => import("./page/login/LoginPage"));
 const ResetPage = lazy(() => import("./page/reset/ResetPage"));
 const CalendarLayout = lazy(() => import("./page/calendar/CalednarLayout"));
 const YearCalendarPage = lazy(() => import("./page/calendar/YearCalendarPage"));
-const MonthCalendarPage = lazy(() => import("./page/calendar/MonthCalendarPage"));
+const MonthCalendarPage = lazy(
+  () => import("./page/calendar/MonthCalendarPage"),
+);
 const WeekCalendarPage = lazy(() => import("./page/calendar/WeekCalendarPage"));
 const DayCalendarPage = lazy(() => import("./page/calendar/DayCalendarPage"));
 const NotFound = lazy(() => import("./page/error/NotFound"));
@@ -28,6 +30,8 @@ const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
       staleTime: 1000 * 60 * 10,
+      refetchOnWindowFocus: false,
+      retry: 0,
     },
   },
 });

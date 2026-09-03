@@ -28,6 +28,7 @@ export const formatDisplayTime = (timeStr: string) => {
   if (!timeStr) return "";
 
   const [hourStr, minuteStr] = timeStr.split(":");
+  // 문자열을 숫자로 변환 10진수
   let hour = parseInt(hourStr, 10);
 
   // 오전/오후 판별

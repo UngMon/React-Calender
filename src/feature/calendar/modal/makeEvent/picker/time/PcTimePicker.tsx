@@ -1,12 +1,11 @@
 import { useEffect, useRef } from "react";
-import { useModalStore } from "../../../../../../store/useModalStore";
+import { useTimeStore } from "@/store/useTimeStore";
 import "./PcTimePicker.css";
-import { useTimeDateStore } from "@/store/useTimeDateStore";
 
 interface Props {
   order: string;
-  startTime: string;
-  endTime: string;
+  start_time: string;
+  end_time: string;
 }
 
 // "HH:mm" 포맷을 총 분(minutes)으로 변환하는 헬퍼 함수
@@ -47,21 +46,22 @@ const generateDynamicTimeSlots = (
   return slots;
 };
 
-const PcTimePicker = ({ order, startTime, endTime }: Props) => {
-  const setTimeAction = useTimeDateStore((state) => state.setTime);
-  const onClose = useTimeDateStore((state) => state.onClose);
+const PcTimePicker = ({ order, start_time, end_time }: Props) => {
+  const setTime = useTimeStore((state) => state.setTime);
+  const onClose = useTimeStore((state) => state.onClose);
 
   const scrollRef = useRef<HTMLDivElement>(null);
 
-  const currentTime = order === "start" ? startTime : endTime;
+  const currentTime = order === "start" ? start_time : end_time;
 
   const timeSlots =
-    order === "end" && startTime
-      ? generateDynamicTimeSlots(startTime)
+    order === "end" && start_time
+      ? generateDynamicTimeSlots(start_time)
       : generateDynamicTimeSlots("00:00");
 
   const handleClick = (time: string) => {
-    setTimeAction(order, time);
+    console.log('Pc CLick')
+    setTime(order, time);
     onClose();
   };
 
@@ -69,7 +69,7 @@ const PcTimePicker = ({ order, startTime, endTime }: Props) => {
     if (!scrollRef.current) return;
 
     // 현재 타임피커 배열의 '기준 시작 시간' 파악
-    const baseTime = order === "end" && startTime ? startTime : "00:00";
+    const baseTime = order === "end" && start_time ? start_time : "00:00";
 
     // 기준 시간으로부터 타겟 시간 및 각 슬롯의 상대적 위치(분) 계산
     const targetRelMins = getRelativeMinutes(currentTime, baseTime);
@@ -90,7 +90,7 @@ const PcTimePicker = ({ order, startTime, endTime }: Props) => {
     const scrollIndex = Math.max(0, targetIndex - 2);
 
     scrollRef.current.scrollTop = scrollIndex * ITEM_HEIGHT;
-  }, [startTime, timeSlots]);
+  }, [start_time, timeSlots]);
 
   return (
     <div className="pc-time-picker">
@@ -113,7 +113,7 @@ const PcTimePicker = ({ order, startTime, endTime }: Props) => {
                   type="button"
                   role="option"
                   onClick={() => handleClick(rawValue)}
-                >
+                > 
                   {`${ampm} ${+displayHour % 12 === 0 ? "12" : +displayHour % 12}:${displayMinute}`}
                 </button>
               </li>

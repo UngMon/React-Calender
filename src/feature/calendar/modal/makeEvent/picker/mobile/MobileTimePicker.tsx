@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { useModalStore } from "../../../../../../store/useModalStore";
+import { useTimeStore } from "@/store/useTimeStore";
 import DialColumn from "./DialColumn";
 import "./MobileTimePicker.css";
-import { useTimeDateStore } from "@/store/useTimeDateStore";
 
 // 데이터 생성 규칙 변경
 const ampmList = ["오전", "오후"];
@@ -17,7 +16,7 @@ interface Props {
 
 const MobileTimePicker = ({ order }: Props) => {
   const initialTime =
-    useTimeDateStore.getState()[order === "start" ? "startTime" : "endTime"];
+    useTimeStore.getState()[order === "start" ? "start_time" : "end_time"];
 
   const [h, m] = initialTime.split(":").map(Number);
   const initialAmpm = h >= 12 ? "오후" : "오전";
@@ -27,7 +26,7 @@ const MobileTimePicker = ({ order }: Props) => {
   const [ampm, setAmpm] = useState<string | number>(initialAmpm);
   const [hour, setHour] = useState<string | number>(initialHour);
   const [minute, setMinute] = useState<string | number>(m);
-  const setTimeAction = useTimeDateStore((state) => state.setTime);
+  const setTimeAction = useTimeStore.getState().setTime;
 
   // 시(Hour)가 바뀔 때 호출되는 커스텀 핸들러
   const handleHourChange = (newHour: string | number) => {

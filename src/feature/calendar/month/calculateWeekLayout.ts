@@ -10,6 +10,8 @@ export const calculateWeekLayout = (
   eventsWithPosition: EventsWithPosition[],
   MAX_VISIBLE_SLOTS: number,
 ): DailyLayoutResult => {
+  // console.log('calculateWeekLayout')
+
   if (MAX_VISIBLE_SLOTS <= 0) {
     return {
       dailyLimits: Array(7).fill(0),

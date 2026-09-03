@@ -1,14 +1,15 @@
-import { useTimeDateStore } from "@/store/useTimeDateStore";
-import MobileTimePicker from "../../mobile/MobileTimePicker";
-import MiniCalendar from "../../../MiniCalendar/MiniCalendar";
+import { useTimeStore } from "@/store/useTimeStore";
+import MobileTimePicker from "./MobileTimePicker";
+import MiniCalendar from "../date/MiniCalendar";
+import { useDateStore } from "@/store/useDateStore";
 
 interface Props {
   isExpanded: boolean;
 }
 
 const MobilePanel = ({ isExpanded }: Props) => {
-  const activeDatePicker = useTimeDateStore((state) => state.activeDatePicker);
-  const activeTimePicker = useTimeDateStore((state) => state.activeTimePicker);
+  const isDateOpen = useDateStore((state) => state.open);
+  const activeTimePicker = useTimeStore((state) => state.activeTimePicker);
 
   return (
     <div
@@ -18,8 +19,8 @@ const MobilePanel = ({ isExpanded }: Props) => {
         {activeTimePicker?.device === "mobile" && (
           <MobileTimePicker order={activeTimePicker!.order} />
         )}
-        {activeDatePicker?.device === "mobile" && (
-          <MiniCalendar order={activeDatePicker!.order} />
+        {isDateOpen === "mobile" && (
+          <MiniCalendar order={isDateOpen} />
         )}
       </div>
     </div>

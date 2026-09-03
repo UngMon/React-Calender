@@ -1,6 +1,5 @@
 import React, { useRef, useState, UIEvent, useEffect, useCallback } from "react";
 import "./MobileTimePicker.css";
-import { useModalStore } from "../../../../../../store/useModalStore";
 
 interface DialColumnProps {
   width: number;

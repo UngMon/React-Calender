@@ -5,7 +5,7 @@ interface Props {
   onToggleAllDay: () => void;
 }
 
-const TimeDateHeader = ({ isAllDay, onToggleAllDay }: Props) => {
+const AllDay = ({ isAllDay, onToggleAllDay }: Props) => {
   return (
     <div className="time-date-box__header">
       <div className="time-date-box__title">
@@ -33,4 +33,4 @@ const TimeDateHeader = ({ isAllDay, onToggleAllDay }: Props) => {
   );
 };
 
-export default React.memo(TimeDateHeader);
+export default React.memo(AllDay);

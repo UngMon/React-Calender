@@ -1,65 +1,112 @@
-import React, { useCallback, useMemo } from "react";
-import { mockEvents } from "../mockData";
-import { generateCalendarMatrix, calculateWeekSlots } from "./renderdWeeks";
+import { useCallback, useMemo, useState } from "react";
+import { getYMDString } from "@/utils/getTodayString";
 import { useModalStore } from "@/store/useModalStore";
-import { useTimeDateStore } from "@/store/useTimeDateStore";
+import { useTimeStore } from "@/store/useTimeStore";
+import { generateCalendarMatrix, calculateWeekSlots } from "./renderdWeeks";
 import { useMonthCalendarLayout } from "./useMonthCalendarLayout";
 import { calculateWeekLayout } from "./calculateWeekLayout";
+import { useCalendarEvents } from "@/hooks/useCalendarEvents";
+import { useGhostEventStore } from "@/store/useGhostEventStore";
+import { GhostEvent, CalendarEvent } from "@/type/events";
 import "./MonthCalendar.css";
 
 interface Props {
-  date: string; // URL 파라미터에서 넘어온 날짜 (예: '2026-04-22')
-  // events: CalendarEvent[]; // 부모 컴포넌트로부터 받을 더미 데이터
+  year: string; // URL 파라미터에서 넘어온 날짜 (예: '2026-04-22')
+  month: string;
 }
+
+const nowMonth = new Date().getMonth();
 
 const EVENT_HEIGHT = 22;
 const EVENT_GAP = 2;
 const DATE_NUMBER_HEIGHT = 26;
-
 const weekDays = ["일", "월", "화", "수", "목", "금", "토"];
 
-const MonthCalendar = ({ date }: Props) => {
+const today = getYMDString("YMD");
+
+const MonthCalendar = ({ year, month }: Props) => {
   console.log("Month Claendar Rendering");
-  const setPosition = useModalStore((state) => state.setPosition);
-  const setTimeAndDate = useTimeDateStore(
-    (state) => state.setInitialTimeAndDate,
-  );
-
-  const events = mockEvents;
-
   // 1. 기준 날짜 분해
-  const targetDate = new Date(date);
+  const targetDate = new Date(Number(year), Number(month));
   const currentYear = targetDate.getFullYear();
   const currentMonth = targetDate.getMonth(); // 0부터 시작 (0: 1월, 3: 4월)
-  const currentDay = targetDate.getDate();
+  const currentDate = targetDate.getDate();
 
-  // 42칸 달력 매트릭스 생성 함수 (O(1) 시간복잡도)
+  // 2. 42칸 달력 매트릭스 생성 함수 (O(1) 시간복잡도)
   const calendarMatrix = useMemo(
-    () => generateCalendarMatrix(currentYear, currentMonth),
+    () => generateCalendarMatrix(currentYear, currentMonth - 1),
     [currentYear, currentMonth],
   );
 
-  // 주 단위 이벤트 슬롯(층수) 할당 함수
-  const renderedWeeks = useMemo(
-    () => calculateWeekSlots(calendarMatrix, events),
-    [calendarMatrix, events],
-  );
-
+  // 3. 셀안에서 일정막대 최대 개수 정하기
   const { cellRef, MAX_VISIBLE_SLOTS } = useMonthCalendarLayout(
     DATE_NUMBER_HEIGHT,
     EVENT_HEIGHT,
     EVENT_GAP,
   );
 
-  const handlerClick = useCallback(
-    (e: React.MouseEvent, week: number, day: number, date: string) => {
-      const { width, height } = e.currentTarget.getBoundingClientRect();
+  // 4. 1주차 일요일 ~ 6주차 토요일 날짜 추출
+  const rangeStart = calendarMatrix[0][0].fullDateStr;
+  const rangeEnd = calendarMatrix[calendarMatrix.length - 1][6].fullDateStr;
 
-      setPosition({ week, day, width, height });
-      setTimeAndDate({ startDate: date, endDate: date });
+  // 5. DB에 저장된 사용자의 캘린더 일정 불러오기
+  // GhostEvent 불러오기(드래그 or 클릭으로 임시로 생성된 일정)
+  const { serverEvents, isLoading } = useCalendarEvents({
+    rangeStart,
+    rangeEnd,
+  });
+  const ghostEvent = useGhostEventStore((state) => state.ghostEvent);
+  const setGhostEvent = useGhostEventStore((state) => state.setGhostEvent);
+
+  // 6. 드래그 상태 추가
+  const [isDragging, setIsDragging] = useState<boolean>(false);
+  const [dragStart, setDragStart] = useState<string | null>(null);
+
+  // 7. 마우스 이벤트 핸들러 추가
+  const handleMouseDown = useCallback((dateStr: string) => {
+    const isModalOpen = useModalStore.getState().open;
+    if (isModalOpen) return;
+    setIsDragging(true);
+    setDragStart(dateStr);
+    setGhostEvent(dateStr, dateStr); // 고스트 일정 생성(시작, 종료);
+  }, []);
+
+  const handleMouseEnter = useCallback(
+    (dateStr: string) => {
+      if (!isDragging || !dragStart) return;
+      const startDate = dragStart <= dateStr ? dragStart : dateStr;
+      const endDate = dragStart >= dateStr ? dragStart : dateStr;
+
+      setGhostEvent(startDate, endDate);
     },
-    [],
+    [isDragging, dragStart],
   );
+
+  const handleMouseUp = useCallback(
+    (e: React.MouseEvent, week: number, day: number) => {
+      e.stopPropagation();
+
+      if (!isDragging || !dragStart) return;
+      const setPosition = useModalStore.getState().setPosition;
+      const setInitialTime = useTimeStore.getState().setInitialTime;
+
+      setPosition({ week, day });
+      setInitialTime();
+
+      // 상태 초기화
+      setIsDragging(false);
+      setDragStart(null);
+    },
+    [isDragging, dragStart],
+  );
+
+  // 기존 코드에서 mockEvents 대신 displayEvents를 넣어 계산!
+  const weeksWithEvents = useMemo(() => {
+    const results: Array<CalendarEvent | GhostEvent> = [...serverEvents];
+    if (ghostEvent) results.push(ghostEvent);
+
+    return calculateWeekSlots(calendarMatrix, results);
+  }, [calendarMatrix, serverEvents, ghostEvent]);
 
   return (
     <table className="month-calender">
@@ -78,20 +125,28 @@ const MonthCalendar = ({ date }: Props) => {
         </tr>
       </thead>
       <tbody className="month-calender__body">
-        {renderedWeeks.map(({ weekRow, eventsWithPosition }, wIdx) => {
+        {weeksWithEvents.map(({ weekRow, eventsWithPosition }, wIdx) => {
           const { overflowCounts, visibleEvents, dailyLimits } =
             calculateWeekLayout(eventsWithPosition, MAX_VISIBLE_SLOTS);
+
+          const eventsByStartIdx: Record<number, typeof visibleEvents> = {};
+          visibleEvents.forEach((evt) => {
+            if (!eventsByStartIdx[evt.startIdx])
+              eventsByStartIdx[evt.startIdx] = [];
+            eventsByStartIdx[evt.startIdx].push(evt);
+          });
 
           return (
             <tr key={`week-${wIdx}`} className="month-calender__body-week">
               {weekRow.map((cell, dIdx) => {
-                const isToday = cell.day === currentDay && cell.isCurrentMonth;
+                const isToday = today === cell.fullDateStr;
+
+                // 현재 셀(날짜)에서의 이벤트 일정들
+                const currentCellEvents = eventsByStartIdx[dIdx] || [];
 
                 // 해당 날짜(dIdx)의 최종 숨겨진 일정 개수
                 const overflowCount = overflowCounts[dIdx];
-                if (wIdx === 1) {
-                  console.log(wIdx, dIdx, dailyLimits[dIdx]);
-                }
+
                 return (
                   <td
                     key={cell.fullDateStr}
@@ -100,11 +155,9 @@ const MonthCalendar = ({ date }: Props) => {
                       backgroundColor: isToday ? "#dfe5ff" : "", // 선택된 날짜 배경색
                       color: cell.isCurrentMonth ? "#333" : "#8e8e8e", // 이전/다음달 날짜는 회색 처리
                     }}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      console.log(e.currentTarget.getBoundingClientRect());
-                      handlerClick(e, wIdx, dIdx, cell.fullDateStr);
-                    }}
+                    onMouseDown={() => handleMouseDown(cell.fullDateStr)}
+                    onMouseEnter={() => handleMouseEnter(cell.fullDateStr)}
+                    onMouseUp={(e) => handleMouseUp(e, wIdx, dIdx)}
                     ref={wIdx === 0 && dIdx === 0 ? cellRef : null}
                   >
                     {/* 날짜 텍스트 */}
@@ -113,10 +166,6 @@ const MonthCalendar = ({ date }: Props) => {
                       style={{
                         height: `${DATE_NUMBER_HEIGHT}px`,
                         fontWeight: isToday ? "bold" : "normal",
-                      }}
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        console.log("날짜 클릭");
                       }}
                     >
                       <span
@@ -131,27 +180,27 @@ const MonthCalendar = ({ date }: Props) => {
 
                     {/* 일정 렌더링 구역 */}
                     <div className="month-calendar__body-date-eventarea">
-                      {visibleEvents
-                        .filter((evt) => evt.startIdx === dIdx)
-                        .map((evt, idx) => (
-                          <div
-                            key={wIdx + dIdx + idx}
-                            className={`month-calender__body-date-event ${evt.color}`}
-                            style={{
-                              top: `${evt.slot * (EVENT_HEIGHT + EVENT_GAP)}px`,
-                              width: `calc(100% * ${evt.span} - 5px)`,
-                              height: `${EVENT_HEIGHT}px`,
-                              lineHeight: `${EVENT_HEIGHT}px`,
-                            }}
-                          >
-                            {evt.timeCategory === "time" && (
-                              <span className="month-calender__body-date-event-time">
-                                {evt.startTime}
-                              </span>
-                            )}
-                            {evt.title}
-                          </div>
-                        ))}
+                      {currentCellEvents.map((evt) => (
+                        <div
+                          key={`${evt.id || "ghost"}-${cell.fullDateStr}`}
+                          className={`month-calender__body-date-event ${evt.color}`}
+                          style={{
+                            top: `${evt.slot * (EVENT_HEIGHT + EVENT_GAP)}px`,
+                            width: `calc(100% * ${evt.span} - 5px + ${evt.span - 1}px)`,
+                            height: `${EVENT_HEIGHT}px`,
+                            lineHeight: `${EVENT_HEIGHT}px`,
+                            opacity: evt.isGhost ? 0.6 : 1, // 가상 막대는 반투명하게
+                            pointerEvents: isDragging ? "none" : "auto",
+                          }}
+                        >
+                          {evt.time_category === "time" && (
+                            <span className="month-calender__body-date-event-time">
+                              {evt.start_time}
+                            </span>
+                          )}
+                          {evt.title}
+                        </div>
+                      ))}
                     </div>
 
                     {/* 숨겨진 일정이 있다면 하단에 '+ N개 더보기' 버튼 렌더링 */}
@@ -183,55 +232,4 @@ const MonthCalendar = ({ date }: Props) => {
   );
 };
 
-export default React.memo(MonthCalendar);
-
-// <div style={{ position: "relative" }}>
-//   {eventsWithPosition
-//     .filter(
-//       (evt) =>
-//         evt.startIdx === dIdx &&
-//         evt.slot <= MAX_VISIBLE_SLOTS,
-//     )
-//     .map((evt, idx) => {
-//       // 한계선을 넘어가는 슬롯은 렌더링하지 않음 (숨김 처리)
-//       // 현재 셀(날짜)에서 시작하는 이벤트들만 렌더링 (긴 일정 중복 방지)
-
-//       if (evt.slot < MAX_VISIBLE_SLOTS) {
-//         return (
-//           <div
-//             key={wIdx + dIdx + idx}
-//             className={`month-calender__body-date-event ${evt.color}`}
-//             style={{
-//               top: `${evt.slot * (EVENT_HEIGHT + EVENT_GAP)}px`,
-//               width: `calc(100% * ${evt.span} - 5px)`,
-//               height: `${EVENT_HEIGHT}px`,
-//               lineHeight: `${EVENT_HEIGHT}px`,
-//             }}
-//           >
-//             {evt.timeCategory === "time" && (
-//               <span className="month-calender__body-date-event-time">
-//                 {evt.startTime}
-//               </span>
-//             )}
-//             {evt.title}
-//           </div>
-//         );
-//       } else
-//         return (
-//           <div
-//             className="month-calendar__body-date-hidden"
-//             style={{
-//               top: `${(evt.slot - 1) * (EVENT_HEIGHT + EVENT_GAP)}px`,
-//             }}
-//             onClick={() => {
-//               // TODO: 클릭 시 해당 날짜의 전체 일정을 팝업이나 모달로 보여주는 로직 추가
-//               alert(
-//                 `${cell.fullDateStr}의 숨겨진 일정 ${overflowCount}개 보기!`,
-//               );
-//             }}
-//           >
-//             + {overflowCount}개 더보기
-//           </div>
-//         );
-//     })}
-// </div>
+export default MonthCalendar;
