@@ -80,6 +80,8 @@ export const useCalendarEvents = ({ rangeStart, rangeEnd }: Props = {}) => {
     createEvent: createMutation.mutate,
     isCreating: createMutation.isPending,
     updateEvent: updateMutation.mutate,
+    isUpdating: updateMutation.isPending,
     deleteEvent: deleteMutation.mutate,
+    isDeleting: deleteMutation.isPending,
   };
 };

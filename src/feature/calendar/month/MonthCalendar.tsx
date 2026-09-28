@@ -1,21 +1,23 @@
 import { useCallback, useMemo, useState } from "react";
 import { getYMDString } from "@/utils/getTodayString";
-import { useModalStore } from "@/store/useModalStore";
-import { useTimeStore } from "@/store/useTimeStore";
-import { generateCalendarMatrix, calculateWeekSlots } from "./renderdWeeks";
+import { useMakeModalStore } from "@/store/useMakeModalStore";
+import {
+  generateCalendarMatrix,
+  calculateWeekSlots,
+  EventsWithPosition,
+} from "./renderdWeeks";
 import { useMonthCalendarLayout } from "./useMonthCalendarLayout";
 import { calculateWeekLayout } from "./calculateWeekLayout";
 import { useCalendarEvents } from "@/hooks/useCalendarEvents";
 import { useGhostEventStore } from "@/store/useGhostEventStore";
 import { GhostEvent, CalendarEvent } from "@/type/events";
+import { useDetailModalStore } from "@/store/useDetailModalStore";
 import "./MonthCalendar.css";
 
 interface Props {
   year: string; // URL 파라미터에서 넘어온 날짜 (예: '2026-04-22')
   month: string;
 }
-
-const nowMonth = new Date().getMonth();
 
 const EVENT_HEIGHT = 22;
 const EVENT_GAP = 2;
@@ -30,7 +32,6 @@ const MonthCalendar = ({ year, month }: Props) => {
   const targetDate = new Date(Number(year), Number(month));
   const currentYear = targetDate.getFullYear();
   const currentMonth = targetDate.getMonth(); // 0부터 시작 (0: 1월, 3: 4월)
-  const currentDate = targetDate.getDate();
 
   // 2. 42칸 달력 매트릭스 생성 함수 (O(1) 시간복잡도)
   const calendarMatrix = useMemo(
@@ -64,8 +65,8 @@ const MonthCalendar = ({ year, month }: Props) => {
 
   // 7. 마우스 이벤트 핸들러 추가
   const handleMouseDown = useCallback((dateStr: string) => {
-    const isModalOpen = useModalStore.getState().open;
-    if (isModalOpen) return;
+    const isMakeModalOpen = useMakeModalStore.getState().openMakeModal;
+    if (isMakeModalOpen) return;
     setIsDragging(true);
     setDragStart(dateStr);
     setGhostEvent(dateStr, dateStr); // 고스트 일정 생성(시작, 종료);
@@ -87,11 +88,8 @@ const MonthCalendar = ({ year, month }: Props) => {
       e.stopPropagation();
 
       if (!isDragging || !dragStart) return;
-      const setPosition = useModalStore.getState().setPosition;
-      const setInitialTime = useTimeStore.getState().setInitialTime;
-
+      const setPosition = useMakeModalStore.getState().setPosition;
       setPosition({ week, day });
-      setInitialTime();
 
       // 상태 초기화
       setIsDragging(false);
@@ -107,6 +105,19 @@ const MonthCalendar = ({ year, month }: Props) => {
 
     return calculateWeekSlots(calendarMatrix, results);
   }, [calendarMatrix, serverEvents, ghostEvent]);
+
+  const handleClickEvent = (
+    e: React.MouseEvent,
+    week: number,
+    day: number,
+    event: EventsWithPosition,
+  ) => {
+    e.stopPropagation();
+
+    const rect = e.currentTarget.getBoundingClientRect();
+    const setPosition = useDetailModalStore.getState().setPosition;
+    setPosition(week, day, event, rect);
+  };
 
   return (
     <table className="month-calender">
@@ -192,10 +203,14 @@ const MonthCalendar = ({ year, month }: Props) => {
                             opacity: evt.isGhost ? 0.6 : 1, // 가상 막대는 반투명하게
                             pointerEvents: isDragging ? "none" : "auto",
                           }}
+                          onMouseDown={(e) => e.stopPropagation()}
+                          onMouseUp={(e) =>
+                            handleClickEvent(e, wIdx, dIdx, evt)
+                          }
                         >
                           {evt.time_category === "time" && (
                             <span className="month-calender__body-date-event-time">
-                              {evt.start_time}
+                              {evt.start_time.slice(0, 5)}
                             </span>
                           )}
                           {evt.title}

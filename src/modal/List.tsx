@@ -1,27 +1,20 @@
 import React, { useRef, useState, useEffect } from "react";
-import { useAppDispatch } from "../redux/store";
-import { modalActions } from "../redux/modal-slice";
-import { cloneActions } from "../redux/clone-slice";
+// import { useAppDispatch } from "../redux/store";
+// import { modalActions } from "../redux/modal-slice";
+// import { cloneActions } from "../redux/clone-slice";
 import {
   DataType,
   ModalBasicType,
   ModalType,
   UserData,
 } from "../type/ReduxType";
-import { sendUserData } from "../redux/fetch-action";
-// import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-// import {
-//   faXmark,
-//   faTrash,
-//   faCheck,
-//   faEdit,
-// } from "@fortawesome/free-solid-svg-icons";
-import PickerBox from "../ui/time/PickerBox";
-import ColorBox from "../ui/time/ColorBox";
-import { makeDateArray } from "../utils/makedateArray";
-import { makeList } from "../utils/makeList";
-import { MakeListParameter } from "../type/Etc";
-import { listPosition } from "../utils/listPosition";
+// import { sendUserData } from "../redux/fetch-action";
+// import PickerBox from "../ui/time/PickerBox";
+// import ColorBox from "../ui/time/ColorBox";
+// import { makeDateArray } from "../utils/makedateArray";
+// import { makeList } from "../utils/makeList";
+// import { MakeListParameter } from "../type/Etc";
+// import { listPosition } from "../utils/listPosition";
 import { markDate } from "../utils/markDate";
 import { calculateModalHeight } from "../utils/calculateModalHeight";
 import "./List.css";

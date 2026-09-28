@@ -1,0 +1,76 @@
+.edit-layout {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  --back-color--: rgb(249, 252, 255);
+  --btn-back-color--: rgb(208, 229, 255);
+  --btn-back-hover-color--: rgb(173, 193, 255);
+}
+
+/* ======= edit section ======= */
+.edit-container {
+  width: clamp(375px, 100%, 600px);
+  height: clamp(700px, 100%, 800px);
+  background: var(--back-color--);
+  border-radius: 8px;
+  border: 2px solid rgb(203, 203, 203);
+  display: flex;
+  align-items: center;
+}
+
+.edit-box {
+  margin: auto;
+  width: 80%;
+  height: auto;
+}
+
+/* ======== header ======== */
+.edit-header {
+  line-height: 70px;
+  text-align: center;
+}
+
+/* ======== body ======== */
+.edit-body {
+  display: flex;
+  flex-direction: column;
+  row-gap: 10px;
+}
+
+.edit-body__wraper {
+  height: 500px;
+  overflow-y: scroll;
+}
+
+.edit-body__wraper-two {
+  box-sizing: border-box;
+  padding: 0 5%;
+  width: 100%;
+}
+
+/* ======== footer ======== */
+.edit-footer {
+  padding-top: 40px;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  column-gap: 15px;
+}
+
+.edit-footer button {
+  width: 40%;
+  line-height: 50px;
+  font-size: 1.1em;
+  font-weight: bold;
+  background: var(--btn-back-color--);
+  border-radius: 10px;
+
+  &:hover {
+    cursor: pointer;
+    background: var(--btn-back-hover-color--);
+  }
+}

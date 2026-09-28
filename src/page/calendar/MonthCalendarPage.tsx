@@ -4,7 +4,7 @@ import { useParams } from "react-router-dom";
 
 const MonthCalendarPage = () => {
   const { year, month } = useParams();
-  const view = "month" as const;
+  const view = "month";
   const currentDateStr = `${year}-${month}`;
 
   const { handleWheel } = useCalendarWheelNav({ view, currentDateStr });

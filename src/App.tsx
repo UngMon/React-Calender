@@ -11,19 +11,22 @@ import {
 } from "react-router-dom";
 import {
   calendarLoader,
+  editEventLoader,
   protectedLoader,
   publicLoader,
 } from "./router/loaders";
+import Loading from "./ui/loading/Loading";
 
 const LoginPage = lazy(() => import("./page/login/LoginPage"));
 const ResetPage = lazy(() => import("./page/reset/ResetPage"));
-const CalendarLayout = lazy(() => import("./page/calendar/CalednarLayout"));
+const CalendarLayout = lazy(() => import("./page/calendar/CalendarLayout"));
 const YearCalendarPage = lazy(() => import("./page/calendar/YearCalendarPage"));
 const MonthCalendarPage = lazy(
   () => import("./page/calendar/MonthCalendarPage"),
 );
 const WeekCalendarPage = lazy(() => import("./page/calendar/WeekCalendarPage"));
 const DayCalendarPage = lazy(() => import("./page/calendar/DayCalendarPage"));
+const EditEventPage = lazy(() => import("./page/edit/EditEventPage"));
 const NotFound = lazy(() => import("./page/error/NotFound"));
 
 const queryClient = new QueryClient({
@@ -42,7 +45,11 @@ const router = createBrowserRouter([
   // ==========================================
   {
     id: "public",
-    element: <Outlet />,
+    element: (
+      <Suspense fallback={<Loading />}>
+        <Outlet />
+      </Suspense>
+    ),
     loader: publicLoader,
     children: [
       { path: "/", element: <Navigate to="/login" replace /> }, // 기본 진입 시 로그인으로
@@ -55,33 +62,55 @@ const router = createBrowserRouter([
   // 2. Protected Routes (인증 필수 구역)
   // ==========================================
   {
-    id: "protected",
-    path: "/calendar",
-    element: <CalendarLayout />,
+    id: "authenticated",
     loader: protectedLoader,
     children: [
+      // ========== Calendar ===========
       {
-        path: "year/:year",
-        element: <YearCalendarPage />,
-        loader: calendarLoader,
+        path: "/calendar",
+        element: (
+          <Suspense fallback={<Loading />}>
+            <CalendarLayout />
+          </Suspense>
+        ),
+        loader: protectedLoader,
+        children: [
+          {
+            path: "year/:year",
+            element: <YearCalendarPage />,
+            loader: calendarLoader,
+          },
+          {
+            path: "month/:year/:month",
+            element: <MonthCalendarPage />,
+            loader: calendarLoader,
+          },
+          {
+            path: "week/:year/:month/:day",
+            element: <WeekCalendarPage />,
+            loader: calendarLoader,
+          },
+          {
+            path: "day/:year/:month/:day",
+            element: <DayCalendarPage />,
+            loader: calendarLoader,
+          },
+        ],
       },
+      // ========== Event Edit ===========
       {
-        path: "month/:year/:month",
-        element: <MonthCalendarPage />,
-        loader: calendarLoader,
-      },
-      {
-        path: "week/:year/:month/:day",
-        element: <WeekCalendarPage />,
-        loader: calendarLoader,
-      },
-      {
-        path: "day/:year/:month/:day",
-        element: <DayCalendarPage />,
-        loader: calendarLoader,
+        id: "eventedit",
+        path: "/eventedit/:eventId",
+        loader: editEventLoader(queryClient),
+        element: (
+          <Suspense fallback={<Loading />}>
+            <EditEventPage />
+          </Suspense>
+        ),
       },
     ],
   },
+  // ====== etc ======
   { path: "*", element: <NotFound /> },
 ]);
 
