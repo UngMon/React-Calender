@@ -30,7 +30,6 @@
   position: relative;
   width: 40px;
   height: 20px;
-  margin-right: 10px;
   border-radius: 999px;
   background: rgb(159, 159, 159);
   transition: all 0.1s linear;
@@ -62,7 +61,7 @@
   display: flex;
   align-items: center;
   justify-content: space-evenly;
-  padding: 20px 0 30px;
+  padding-top: 20px;
 }
 
 .time-date-box__group {
@@ -93,26 +92,4 @@
 
 .time-date-box__separator {
   flex-shrink: 0;
-}
-
-/* Mobile panel */
-.time-date-box__mobile-panel {
-  display: grid;
-  grid-template-rows: 0fr;
-  transition: grid-template-rows 0.2s linear;
-}
-
-.time-date-box__mobile-panel.is-active {
-  grid-template-rows: 1fr;
-}
-
-.time-date-box__mobile-panel-inner {
-  overflow: hidden;
-  border-top: 2px solid transparent;
-  transition: border-color 0.2s linear;
-}
-
-
-.time-date-box__mobile-panel.is-active .time-date-box__mobile-panel-inner {
-  border-top-color: rgb(220, 220, 220);
 }

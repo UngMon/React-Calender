@@ -137,6 +137,7 @@ interface EventStoreState {
   setGhostEvent: (startDate: string, endDate: string) => void;
   setEditEvent: (pickedEvent: CalendarEvent) => void;
   setOpenPicker: (category: "date" | "time", order: "start" | "end") => void;
+  clearOpenPicker: () => void;
   setMoveDate: (order: string, dateStr: string, category: string) => void;
   setTime: (order: string, timeStr: string, category: string) => void;
   setIsAllday: (isAllday: "allday" | "time", category: "make" | "edit") => void;
@@ -191,17 +192,34 @@ export const useGhostEventStore = create<EventStoreState>((set) => ({
   // 날짜, 시간 picker 클릭 on/off
   setOpenPicker: (category, order) =>
     set((state) => {
-      if (state.openPicker?.order === order)
-        return { openPicker: initialPicker };
+      const device = window.innerWidth >= 750 ? "pc" : "mo";
+      const current = state.openPicker;
+
+      const isSamePicker =
+        current.device === device &&
+        current.category === category &&
+        current.order === order;
+
+      if (isSamePicker) {
+        return {
+          openPicker: {
+            ...current,
+            device: "", // 패널만 닫고 내부 콘텐츠는 유지
+          },
+        };
+      }
 
       return {
         openPicker: {
           category,
           order,
-          device: window.innerWidth >= 1024 ? "pc" : "mo",
+          device,
         },
       };
     }),
+
+  // openPicker 초기화
+  clearOpenPicker: () => set({ openPicker: { ...initialPicker } }),
 
   // 날짜 변경
   setMoveDate: (order, dateStr, category) =>
@@ -316,6 +334,7 @@ export const useGhostEventStore = create<EventStoreState>((set) => ({
   // 컬러 변경하기
   setEventColor: (color, category) =>
     set((state) => {
+      console.log("??????????", color, category);
       if (category === "make") {
         if (!state.ghostEvent) return state;
         return { ghostEvent: { ...state.ghostEvent, color } };

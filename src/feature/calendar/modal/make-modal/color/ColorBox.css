@@ -1,6 +1,6 @@
 .color-container {
   width: 100%;
-  padding: 20px 0;
+  height: 95px;
   display: flex;
   column-gap: 10px;
 }
@@ -26,10 +26,14 @@
   column-gap: 10px;
   padding: 5px 8px;
   font-size: 0.9em;
-  background: rgb(238, 238, 238);
-  box-shadow: 0px 0px 10px 1px rgba(0, 0, 0, 0.036);
+  background: transparent;
   cursor: pointer;
-  border-radius: 5px;
+  border-radius: 7px;
+
+  &:hover {
+    background: rgb(238, 238, 238);
+    box-shadow: 0px 0px 10px 1px rgba(0, 0, 0, 0.036);
+  }
 }
 
 .color-opener span {
@@ -62,8 +66,8 @@
 
 .colors div {
   display: inline-block;
-  width: 20px;
-  height: 20px;
+  width: 19px;
+  aspect-ratio: 1 / 1;
   border-radius: 50%;
   margin: 5px;
   cursor: pointer;
@@ -80,50 +84,3 @@
 .circle:hover {
   cursor: pointer;
 }
-
-/* @media (max-width: 500px) {
-  .color-container {
-    position: absolute;
-    top: 100px;
-    right: 10%;
-    width: 25px;
-    height: 25px;
-    border-radius: 50%;
-  }
-  
-  .circle {
-    position: absolute;
-    width: 25px;
-    height: 25px;
-  }
-  
-  .colors {
-    position: absolute;
-    right: 0px;
-    top: 35px;
-    width: auto;
-    height: auto;
-    padding: 15px;
-    border-radius: 10px;
-    background-color: rgb(71, 71, 71);
-    display: grid;
-    grid-template-columns: 20px 20px 20px 20px 20px;
-    grid-template-rows: 20px 20px;
-    column-gap: 10px;
-    row-gap: 10px;
-  }
-  
-  .colors div {
-    width: 20px;
-    height: 20px;
-    border-radius: 50%;
-  }
-
-  .c-on {
-    display: grid;
-  }
-  
-  .c-off {
-    display: none;
-  }
-} */

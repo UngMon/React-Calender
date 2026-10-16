@@ -1,7 +1,7 @@
 import { useCallback, useRef } from "react";
 import { useClickOutside } from "@/hooks/useClickOutside";
 import { useGhostEventStore } from "@/store/useGhostEventStore";
-import { getModalPositionStyle } from "./utils/getModalPositionStyle";
+import { useModalEventLayout } from "../hook/useModalEventLayout";
 import { useCalendarEvents } from "@/hooks/useCalendarEvents";
 import Title from "./title/Title";
 import TimeAndDateBox from "./picker/TimeAndDateBox";
@@ -13,12 +13,13 @@ interface Props {
   options: {
     week: number;
     day: number;
+    rect: DOMRect | null;
     clearPosition: () => void;
   };
 }
 
 const MakeEvent = ({ options }: Props) => {
-  const { week, day, clearPosition } = options;
+  const { week, day, rect, clearPosition } = options;
 
   console.log("MakeEvent Render");
   const titleRef = useRef<HTMLInputElement>(null);
@@ -26,22 +27,30 @@ const MakeEvent = ({ options }: Props) => {
 
   const { createEvent, isCreating } = useCalendarEvents();
   const ghostEvent = useGhostEventStore((state) => state.ghostEvent);
-  const setEventColor = useGhostEventStore.getState().setEventColor;
-  const onClear = useGhostEventStore.getState().onClear;
+  const setEventColor = useGhostEventStore((state) => state.setEventColor);
+  const onClear = useGhostEventStore((state) => state.onClear);
+  const clearOpenPicker = useGhostEventStore((state) => state.clearOpenPicker);
 
   const handleCancelButton = useCallback(() => {
     clearPosition();
     onClear();
   }, []);
 
-  const ref = useClickOutside(handleCancelButton);
+  const modalRef = useClickOutside(handleCancelButton);
 
-  // 여기는 스크린 크기에 따라 modal의 위치를 지정한다.
-  const dynamicStyle = getModalPositionStyle(week, day);
+  const { modalStyle, isPositioned, dragHandlers } = useModalEventLayout({
+    category: "make",
+    modalRef,
+    week,
+    day,
+    rect,
+    onDragStart: clearOpenPicker,
+  });
 
   const handleSubmit = async (e: React.SubmitEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log("????");
+
+    // api 보내는 중 일때는 정지, 중복 제출 x
     if (isCreating) return;
 
     if (!ghostEvent) {
@@ -72,12 +81,14 @@ const MakeEvent = ({ options }: Props) => {
   return (
     <div className="modal-backdrop">
       <div
-        className="make-event"
-        ref={ref}
+        className={`make-event${isPositioned ? " is-moved" : ""}`}
+        ref={modalRef}
         onClick={(e) => e.stopPropagation()}
-        style={dynamicStyle}
+        style={modalStyle}
       >
-        <header className="make-event__header">일정 생성</header>
+        <header className="make-event__header" {...dragHandlers}>
+          일정 생성
+        </header>
         <form className="make-event__form" onSubmit={(e) => handleSubmit(e)}>
           <div className="make__form-wrapper">
             <div className="make-form-wrapper-two">
@@ -93,7 +104,8 @@ const MakeEvent = ({ options }: Props) => {
                 />
                 <Memo textRef={textRef} defaultValue="" />
                 <ColorBox
-                  colorValue={ghostEvent?.color || "바질"}
+                  type="make"
+                  colorValue={ghostEvent?.color || "라벤더"}
                   setEventColor={setEventColor}
                 />
               </div>

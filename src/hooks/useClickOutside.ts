@@ -8,7 +8,7 @@ export const useClickOutside = (handler: () => void) => {
       if (e.key === "Escape") handler();
     };
 
-    const clickListener = (event: MouseEvent | TouchEvent) => {
+    const clickListener = (event: MouseEvent) => {
       // ref가 연결되어 있지 않거나, 이벤트 타겟이 모달 영역을 포함할 때는 무시
       if (!ref.current || ref.current.contains(event.target as Node)) {
         return;
@@ -19,7 +19,7 @@ export const useClickOutside = (handler: () => void) => {
 
     // 화면 전체에 클릭/터치 이벤트 등록
     document.addEventListener("keydown", keydownListener);
-    document.addEventListener("pointerdown", clickListener);
+    document.addEventListener("mouseup", clickListener);
 
     return () => {
       document.removeEventListener("keydown", keydownListener);

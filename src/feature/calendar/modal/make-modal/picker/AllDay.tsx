@@ -13,6 +13,7 @@ const AllDay = ({ type, time_category, setIsAllday }: Props) => {
     console.log("?????");
     setIsAllday(time_category === "time" ? "allday" : "time", type)
   };
+  
   return (
     <div className="time-date-box__header">
       <div className="time-date-box__title">

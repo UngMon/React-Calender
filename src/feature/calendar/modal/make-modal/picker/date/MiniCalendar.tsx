@@ -4,7 +4,7 @@ import { generateCalendarMatrix } from "../../../../month/renderdWeeks";
 import { CalendarCell } from "../../../../month/renderdWeeks";
 import { getYMDString } from "@/utils/getTodayString";
 import { useGhostEventStore } from "@/store/useGhostEventStore";
-import { useMakeModalStore } from "@/store/useMakeModalStore";
+import { useModalStore } from "@/store/useModalStore";
 import styles from "./MiniCalendar.module.css";
 
 interface Props {
@@ -62,12 +62,12 @@ const MiniCalendar = ({ type, order, start_date, end_date }: Props) => {
   const clickDate = (
     order: string,
     pickedDate: string,
-    wIdx: number,
-    dIdx: number,
+    week: number,
+    day: number,
   ) => {
     setMoveDate(order, pickedDate, type);
 
-    if (type === 'edit') return;
+    if (type === "edit") return;
 
     if (currentYear !== Number(year) || currentMonth !== Number(month)) {
       const newDate = new Date(pickedDate);
@@ -83,8 +83,8 @@ const MiniCalendar = ({ type, order, start_date, end_date }: Props) => {
 
     // MakeEvet 모달창 위치 변경
     if (order === "start") {
-      const setPosition = useMakeModalStore.getState().setPosition;
-      setPosition({ week: wIdx, day: dIdx });
+      const setPosition = useModalStore.getState().setPosition;
+      setPosition({ week, day, rect: null }, null, "make");
     }
   };
 

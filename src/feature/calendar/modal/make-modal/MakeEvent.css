@@ -1,46 +1,51 @@
 .modal-backdrop {
-  position: fixed;
-  inset: 0;
+  overflow: hidden;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
   z-index: 10;
   background: transparent;
 }
 
 .make-event {
+  overflow: hidden;
   position: absolute;
   box-sizing: border-box;
   width: 100%;
   min-width: 375px;
   height: 100%;
-  background-color: rgb(231, 238, 255);
+  background-color: rgb(227 232 255);
   z-index: 20;
   font-size: 16px;
 }
 
 .make-event__header {
   width: 100%;
-  height: 70px;
+  height: 60px;
   text-align: center;
   font-size: 1.2em;
   font-weight: bold;
-  line-height: 70px;
+  line-height: 60px;
 }
 
 .make-event__form {
   margin: auto;
   box-sizing: border-box;
   width: 90%;
-  height: calc(100% - 170px);
+  height: calc(100% - 60px);
 }
 
 .make__form-wrapper {
   border-radius: 12px;
-  background: rgb(246, 250, 255);
-  padding: 20px 0;
+  background: rgb(251 252 255);
+  padding: 20px 0 10px;
 }
 
 .make-form-wrapper-two {
+  height: calc(100% - 90px);
   padding: 0 25px;
-  height: 100%;
   overflow-y: scroll;
   overflow-x: hidden;
   scrollbar-width: thin;
@@ -62,7 +67,9 @@
 }
 
 .make__form-box {
-  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+  row-gap: 50px;
 }
 
 .make-event__button {
@@ -90,6 +97,8 @@
 @media (max-width: 749px) {
   .make-event {
     inset: 0 !important;
+    transform: none !important;
+    height: 100% !important;
   }
 }
 
@@ -105,26 +114,10 @@
   }
 
   .make-event__header {
-    height: 50px;
     font-size: 1.1em;
     font-weight: bold;
-    line-height: 50px;
-  }
-
-  .make-form-wrapper-two {
-    height: clamp(100px, 50vh, 550px);
-  }
-}
-
-@media (min-width: 750px) and (max-width: 1023px) {
-  .make-event {
-    top: calc(50% - 250px) !important;
-    left: calc(50% - 225px) !important;
-  }
-}
-
-@media (min-width: 1200px) {
-  .make-event {
-    position: absolute;
+    cursor: move;
+    user-select: none;
+    touch-action: none;
   }
 }

@@ -1,6 +1,6 @@
 import { useCallback, useMemo, useState } from "react";
 import { getYMDString } from "@/utils/getTodayString";
-import { useMakeModalStore } from "@/store/useMakeModalStore";
+import { useModalStore } from "@/store/useModalStore";
 import {
   generateCalendarMatrix,
   calculateWeekSlots,
@@ -11,7 +11,6 @@ import { calculateWeekLayout } from "./calculateWeekLayout";
 import { useCalendarEvents } from "@/hooks/useCalendarEvents";
 import { useGhostEventStore } from "@/store/useGhostEventStore";
 import { GhostEvent, CalendarEvent } from "@/type/events";
-import { useDetailModalStore } from "@/store/useDetailModalStore";
 import "./MonthCalendar.css";
 
 interface Props {
@@ -51,8 +50,7 @@ const MonthCalendar = ({ year, month }: Props) => {
   const rangeEnd = calendarMatrix[calendarMatrix.length - 1][6].fullDateStr;
 
   // 5. DB에 저장된 사용자의 캘린더 일정 불러오기
-  // GhostEvent 불러오기(드래그 or 클릭으로 임시로 생성된 일정)
-  const { serverEvents, isLoading } = useCalendarEvents({
+  const { serverEvents } = useCalendarEvents({
     rangeStart,
     rangeEnd,
   });
@@ -63,10 +61,13 @@ const MonthCalendar = ({ year, month }: Props) => {
   const [isDragging, setIsDragging] = useState<boolean>(false);
   const [dragStart, setDragStart] = useState<string | null>(null);
 
-  // 7. 마우스 이벤트 핸들러 추가
+  // 7. 모달 on / off 상태 추가
+  const setPosition = useModalStore((state) => state.setPosition);
+
+  // 8. 마우스 이벤트 핸들러 추가
   const handleMouseDown = useCallback((dateStr: string) => {
-    const isMakeModalOpen = useMakeModalStore.getState().openMakeModal;
-    if (isMakeModalOpen) return;
+    const openModal = useModalStore.getState().openModal;
+    if (openModal) return;
     setIsDragging(true);
     setDragStart(dateStr);
     setGhostEvent(dateStr, dateStr); // 고스트 일정 생성(시작, 종료);
@@ -88,8 +89,9 @@ const MonthCalendar = ({ year, month }: Props) => {
       e.stopPropagation();
 
       if (!isDragging || !dragStart) return;
-      const setPosition = useMakeModalStore.getState().setPosition;
-      setPosition({ week, day });
+
+      const rect = e.currentTarget.getBoundingClientRect();
+      setPosition({ week, day, rect }, null, "make");
 
       // 상태 초기화
       setIsDragging(false);
@@ -110,13 +112,12 @@ const MonthCalendar = ({ year, month }: Props) => {
     e: React.MouseEvent,
     week: number,
     day: number,
-    event: EventsWithPosition,
+    event_data: EventsWithPosition,
   ) => {
     e.stopPropagation();
 
     const rect = e.currentTarget.getBoundingClientRect();
-    const setPosition = useDetailModalStore.getState().setPosition;
-    setPosition(week, day, event, rect);
+    setPosition({ week, day, rect }, event_data, "detail");
   };
 
   return (

@@ -16,16 +16,18 @@ const colorArray: ColorType[] = [
 ];
 
 interface Props {
+  type: "make" | "edit";
   colorValue: ColorType;
   setEventColor: (color: ColorType, category: "make" | "edit") => void;
 }
 
-const ColorBox = ({ colorValue, setEventColor }: Props) => {
+const ColorBox = ({ type, colorValue, setEventColor }: Props) => {
   const [open, setOpen] = useState<boolean>(false);
   const colorRef = useRef<HTMLDivElement>(null);
-
+  console.log(colorValue);
   const selectedColor = (color: ColorType) => {
-    setEventColor(color, "edit");
+    console.log("here", type);
+    setEventColor(color, type);
     setOpen(false);
   };
 

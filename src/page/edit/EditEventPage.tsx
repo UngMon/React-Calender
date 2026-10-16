@@ -3,7 +3,7 @@ import { Suspense, useEffect, useRef, useState } from "react";
 import { Await, useLoaderData, useNavigate } from "react-router-dom";
 import { useGhostEventStore } from "@/store/useGhostEventStore";
 import { useCalendarEvents } from "@/hooks/useCalendarEvents";
-import { useDetailModalStore } from "@/store/useDetailModalStore";
+import { useModalStore } from "@/store/useModalStore";
 import Loading from "@/ui/loading/Loading";
 import Title from "@/feature/calendar/modal/make-modal/title/Title";
 import TimeAndDateBox from "@/feature/calendar/modal/make-modal/picker/TimeAndDateBox";
@@ -41,7 +41,7 @@ const EditEvent = ({ initialEvent }: Props) => {
   const handleCancel = () => {
     navigate("/");
     useGhostEventStore.getState().onClear();
-    useDetailModalStore.getState().onClose();
+    useModalStore.getState().clearPosition();
   };
 
   const handleSubmit = (e: React.SubmitEvent<HTMLFormElement>) => {
@@ -88,6 +88,7 @@ const EditEvent = ({ initialEvent }: Props) => {
                 />
                 <Memo textRef={textRef} defaultValue={editEvent.text} />
                 <ColorBox
+                  type="edit"
                   colorValue={editEvent.color}
                   setEventColor={setEventColor}
                 />

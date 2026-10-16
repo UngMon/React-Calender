@@ -1,6 +1,7 @@
 import { OpenPikcer } from "@/store/useGhostEventStore";
 import MobileTimePicker from "./MobileTimePicker";
 import MiniCalendar from "../date/MiniCalendar";
+import "./MobilePanel.css";
 
 interface Props {
   type: "make" | "edit";
@@ -9,7 +10,6 @@ interface Props {
   start_time: string;
   end_time: string;
   openPicker: OpenPikcer;
-  setOpenPicker: (category: "time" | "date", order: "start" | "end") => void;
 }
 
 const MobilePanel = ({
@@ -19,10 +19,10 @@ const MobilePanel = ({
   start_time,
   end_time,
   openPicker,
-  setOpenPicker,
 }: Props) => {
   const { category, order, device } = openPicker;
 
+  const innerWidth = window.innerWidth;
   const openMobilePanel: boolean = device === "mo" ? true : false;
 
   return (

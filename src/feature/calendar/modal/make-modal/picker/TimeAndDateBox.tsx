@@ -1,5 +1,6 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useGhostEventStore } from "@/store/useGhostEventStore";
+import { useMediaQuery } from "@/hooks/useMediaQuery";
 import AllDay from "./AllDay";
 import MobilePanel from "./mobile/MobilePanel";
 import DatePicker from "./date/DatePicker";
@@ -26,7 +27,22 @@ const TimeAndDateBox = ({
   const setIsAllday = useGhostEventStore((state) => state.setIsAllday);
   const openPicker = useGhostEventStore((state) => state.openPicker);
   const setOpenPicker = useGhostEventStore((state) => state.setOpenPicker);
+  const clearOpenPicker = useGhostEventStore((state) => state.clearOpenPicker);
+
+  const isDesktop = useMediaQuery("(min-width: 750px)");
+  console.log("TimeAndDateBox");
   console.log(openPicker);
+
+  useEffect(() => {
+    // 효과가 실행되는 시점의 최신 상태 확인
+    const { openPicker } = useGhostEventStore.getState();
+
+    // 모바일에서 열었던 피커만 초기화
+    if (openPicker.device !== "") {
+      clearOpenPicker();
+    }
+  }, [isDesktop]);
+
   return (
     <div className="time-date-box" onClick={(e) => e.stopPropagation()}>
       {/* 1. 상단: 하루 종일 토글 영역 */}
@@ -87,7 +103,7 @@ const TimeAndDateBox = ({
       </div>
 
       {/* 모바일 다이얼, 달력 */}
-      {openPicker?.device === "mo" && (
+      {!isDesktop && (
         <MobilePanel
           type={type}
           start_date={start_date}
@@ -95,7 +111,6 @@ const TimeAndDateBox = ({
           start_time={start_time}
           end_time={end_time}
           openPicker={openPicker}
-          setOpenPicker={setOpenPicker}
         />
       )}
     </div>

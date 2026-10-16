@@ -1,16 +1,16 @@
-import { useMakeModalStore } from "@/store/useMakeModalStore";
-import { useDetailModalStore } from "@/store/useDetailModalStore";
+import { useModalStore } from "@/store/useModalStore";
 import MakeEvent from "./make-modal/MakeEvent";
 import EventDetailModal from "./event-modal/EventDetailModal";
 
 const ModalLayout = () => {
-  const { openMakeModal, ...restOne } = useMakeModalStore();
-  const { openDetailModal, ...restTwo } = useDetailModalStore();
-  console.log(openMakeModal, restOne)
+  const { openModal, event_data, ...rest } = useModalStore();
+
   return (
     <div className="modal-layout">
-      {openMakeModal && <MakeEvent options={restOne} />}
-      {openDetailModal && <EventDetailModal options={{ ...restTwo }} />}
+      {openModal === "make" && <MakeEvent options={rest} />}
+      {openModal === "detail" && (
+        <EventDetailModal options={{ ...rest, event_data }} />
+      )}
     </div>
   );
 };

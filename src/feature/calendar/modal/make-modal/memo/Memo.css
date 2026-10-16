@@ -1,7 +1,6 @@
 .memo-container {
   display: flex;
   column-gap: 10px;
-  padding: 20px 0;
 }
 
 .memo {

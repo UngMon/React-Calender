@@ -1,0 +1,32 @@
+/* animation */
+@keyframes onoff {
+  0% {
+    height: 0;
+  }
+
+  100% {
+    height: 302px;
+  }
+}
+
+/* Mobile panel */
+.time-date-box__mobile-panel {
+  display: grid;
+  grid-template-rows: 0fr;
+  overflow: hidden;
+  transition: grid-template-rows 0.3s ease-in-out;
+}
+
+.time-date-box__mobile-panel.is-active {
+  grid-template-rows: 1fr;
+}
+
+.time-date-box__mobile-panel-inner {
+  min-height: 0;
+  overflow: hidden;
+  /* transition: border-color 0.2s linear; */
+}
+
+.time-date-box__mobile-panel.is-active .time-date-box__mobile-panel-inner {
+  border-top-color: rgb(220, 220, 220);
+}
